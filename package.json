@@ -1,0 +1,21 @@
+{
+  "name": "wt-aggregator",
+  "version": "0.0.1",
+  "description": "Winding Tree aggregator",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/windingtree/wt-aggregator.git"
+  },
+  "keywords": [
+    "Winding",
+    "Tree",
+    "Agreggator"
+  ],
+  "author": "Winding Tree devs",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/windingtree/wt-aggregator/issues"
+  },
+  "homepage": "https://github.com/windingtree/wt-aggregator#readme"
+}
