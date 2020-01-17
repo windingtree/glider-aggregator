@@ -1,4 +1,23 @@
 {
     "name": "wt-aggregator",
-    "version": 2
+    "version": 2,
+    "functions": {
+        "api/searchOffers.js": {
+            "includeFiles": "node_modules/camaro/dist/camaro.wasm"
+        }
+    },
+    "env": {
+        "AF_API_KEY": "@af_api_key",
+        "AF_COMISSION": "@af_comission",
+        "AF_SENDER_NAME": "@af_sender_name",
+        "AF_SENDER_PSEUDOCITY": "@af_sender_pseudocity",
+        "AF_SENDER_IATA_NUMBER": "@af_sender_iata_number",
+        "AF_SENDER_AGENCY_ID": "@af_sender_agency_id",
+        "AF_SENDER_AGENT_USER_ID": "@af_sender_agent_user_id",
+        "AF_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SEQUENCE_NUMBER": "@af_participant_enabled_system_participant_sequence_number",
+        "AF_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_NAME": "@af_participant_enabled_system_participant_name",
+        "AF_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SYSTEM_ID": "@af_participant_enabled_system_participant_system_id",
+        "AF_PARTICIPANT_RECIPENT_AIRLINE_ID": "@af_participant_recipent_airline_id",
+        "AF_PARTICIPANT_RECIPENT_NAME": "@af_participant_recipent_name"
+    }
 }
