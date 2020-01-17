@@ -29,8 +29,13 @@ module.exports = async (req, res) => {
       searchResults,
     });
   } catch (e) {
+    console.log(e);
+
+    const message = e instanceof TypeError 
+      ? 'Something is missing in body. Check ' + e.message.split(' ')[3]
+      : e.message;
     res.status(500).json({
-      message: e.message,
+      message,
     });
   }
   
