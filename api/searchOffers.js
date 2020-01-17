@@ -2,7 +2,10 @@ const { transform } = require('camaro');
 const axios = require('axios');
 const { mapNdcRequestData } = require('../helpers/searchOffers/mapNdcRequestData.js');
 const { provideAirShoppingRequestTemplate } = require('../helpers/searchOffers/xmlTemplates.js');
-const { provideAirShoppingTransformTemplate } = require('../helpers/searchOffers/transformTemplates');
+const { 
+  provideAirShoppingTransformTemplate,
+  provideAirShoppingErrorsTransformTemplate,
+} = require('../helpers/searchOffers/transformTemplates');
 const { segmentsByKey, roundCommissionDecimals } = require('../helpers/searchOffers/parsers');
 const { airFranceConfig } = require('../config.js');
 
@@ -22,6 +25,8 @@ module.exports = async (req, res) => {
           api_key: airFranceConfig.apiKey,
         },
       });
+    const { errors } = await transform(response.data, provideAirShoppingErrorsTransformTemplate);
+    if (errors.length) throw new Error(`${errors[0].message}`);
     const searchResults = await transform(response.data, provideAirShoppingTransformTemplate);
     searchResults.itineraries[0].segments = segmentsByKey(searchResults.itineraries[0].segments);
     searchResults.offers = roundCommissionDecimals(searchResults.offers);

@@ -53,6 +53,14 @@ const provideAirShoppingTransformTemplate = {
   }],
 };
 
+const provideAirShoppingErrorsTransformTemplate = {
+  errors: ['/S:Envelope/S:Body/AirShoppingRS/Errors/Error', {
+    message: '@ShortText',
+    code: '@Code',
+  }]
+};
+
 module.exports = {
   provideAirShoppingTransformTemplate,
+  provideAirShoppingErrorsTransformTemplate,
 };
