@@ -17,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/windingtree/wt-aggregator/issues"
   },
-  "homepage": "https://github.com/windingtree/wt-aggregator#readme"
+  "homepage": "https://github.com/windingtree/wt-aggregator#readme",
+  "dependencies": {
+    "axios": "^0.19.1",
+    "camaro": "^4.1.2"
+  }
 }
