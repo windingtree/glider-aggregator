@@ -1,0 +1,41 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "path-intellisense.absolutePathToWorkspace": true,
+    "path-intellisense.extensionOnImport": false,
+    "npm-intellisense.importDeclarationType": "const",
+    "npm-intellisense.importLinebreak": "\r\n",
+    "npm-intellisense.packageSubfoldersIntellisense": true,
+    "npm-intellisense.recursivePackageJsonLookup": true,
+    "npm-intellisense.importES6": true,
+    "npm-intellisense.importQuotes": "'",
+    "editor.tabSize": 2,
+    "flow.enabled": true,
+    "flow.fileExtensions": [
+      ".js",
+      ".mjs",
+      ".jsx",
+      ".flow",
+      ".json"
+    ],
+    "flow.pathToFlow": "${workspaceRoot}/node_modules/.bin/flow",
+    "files.associations": {
+      "*.js": "javascriptreact",
+    },
+    "flow.useNPMPackagedFlow": false,
+    "javascript.validate.enable": false,
+    "javascript.format.enable": false,
+    "editor.formatOnSave": true,
+    "better-comments.multilineComments": true,
+    "emmet.includeLanguages": {
+      "postcss": "css"
+    },
+    "emmet.syntaxProfiles": {
+      "postcss": "css"
+    },
+  }
+}
