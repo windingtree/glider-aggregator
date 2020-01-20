@@ -1,14 +1,5 @@
 import { airFranceConfig } from '../../config';
 
-const textOrDefault = (defaultValue = 'airport') => `concat(
-  text(),
-  substring(
-      "${defaultValue}", 
-      1, 
-      number(not(text())) * string-length("${defaultValue}")
-  )
-)`;
-
 const provideAirShoppingTransformTemplate = {
   offers: ['/S:Envelope/S:Body/AirShoppingRS/OffersGroup/AirlineOffers/Offer', {
     _id_: '@OfferID',
@@ -29,12 +20,16 @@ const provideAirShoppingTransformTemplate = {
     }],
     segments: ['FlightSegmentList/FlightSegment', {
       _id_: '@SegmentKey',
+      operator: {
+        operatorType: '#airline',
+        iataCode: 'OperatingCarrier/AirlineID',
+      },
       origin: {
-        locationType: textOrDefault(),
+        locationType: '#airport',
         iataCode: 'Departure/AirportCode',
       },
       destination: {
-        locationType: () => textOrDefault(),
+        locationType: '#airport',
         iataCode: 'Arrival/AirportCode',
       },
       splittedDepartureTime: 'Departure/Time',
