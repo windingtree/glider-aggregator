@@ -1,3 +1,10 @@
+const reduceToProperty = (object, property) =>  Object.keys(object)
+  .map((key)=> {
+    return {
+      [key]: object[key][property]
+    }
+  });
+
 const splitSegments = (combinations) => combinations.map(({_items_, ...others})=> ({
   ...others,
   _items_ : _items_.split(' '),
@@ -22,4 +29,5 @@ module.exports = {
   reduceToObjectByKey,
   roundCommissionDecimals,
   splitSegments,
+  reduceToProperty,
 };

@@ -9,6 +9,7 @@ const {
 const { reduceToObjectByKey,
  roundCommissionDecimals,
  splitSegments,
+ reduceToProperty,
 } = require('../helpers/searchOffers/parsers');
 const { airFranceConfig } = require('../config.js');
 
@@ -35,6 +36,7 @@ module.exports = async (req, res) => {
     searchResults.itineraries[0].segments = reduceToObjectByKey(searchResults.itineraries[0].segments);
     searchResults.itineraries[0].combinations = splitSegments(searchResults.itineraries[0].combinations);
     searchResults.itineraries[0].combinations = reduceToObjectByKey(searchResults.itineraries[0].combinations);
+    searchResults.itineraries[0].combinations = reduceToProperty(searchResults.itineraries[0].combinations, '_items_');
     searchResults.offers = roundCommissionDecimals(searchResults.offers);
     searchResults.offers = reduceToObjectByKey(searchResults.offers);
     searchResults.serviceClasses = reduceToObjectByKey(searchResults.serviceClasses);
