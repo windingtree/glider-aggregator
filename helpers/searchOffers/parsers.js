@@ -1,5 +1,9 @@
+const splitSegments = (combinations) => combinations.map(({_items_, ...others})=> ({
+  ...others,
+  _items_ : _items_.split(' '),
+}));
 
-const segmentsByKey = (segmentsArray) => segmentsArray
+const reduceToObjectByKey = (array) => array
   .reduce((segments, { _id_, ...others }) => ({
     ...segments,
     [_id_]: others,
@@ -15,6 +19,7 @@ const roundCommissionDecimals = (offers) => offers
   }));
 
 module.exports = {
-  segmentsByKey,
+  reduceToObjectByKey,
   roundCommissionDecimals,
+  splitSegments,
 };
