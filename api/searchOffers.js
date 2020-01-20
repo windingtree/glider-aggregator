@@ -6,17 +6,21 @@ const {
   provideAirShoppingTransformTemplate,
   provideAirShoppingErrorsTransformTemplate,
 } = require('../helpers/searchOffers/transformTemplates');
-const { segmentsByKey, roundCommissionDecimals } = require('../helpers/searchOffers/parsers');
+const { reduceToObjectByKey,
+ roundCommissionDecimals,
+ splitSegments,
+} = require('../helpers/searchOffers/parsers');
 const { airFranceConfig } = require('../config.js');
 
 module.exports = async (req, res) => {
-  const { itinerary } = req.body;
+  const requestBody = req.body;
 
   try {
-    const ndcRequestData = mapNdcRequestData(itinerary);
-    const body = provideAirShoppingRequestTemplate(ndcRequestData);
+    
+    const ndcRequestData = mapNdcRequestData(requestBody);
+    const ndcBody = provideAirShoppingRequestTemplate(ndcRequestData);
     const response = await axios.post('https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001448v01/EXT',
-      body,
+    ndcBody,
       {
         headers: {
           'Content-Type': 'text/xml;charset=UTF-8',
@@ -28,8 +32,13 @@ module.exports = async (req, res) => {
     const { errors } = await transform(response.data, provideAirShoppingErrorsTransformTemplate);
     if (errors.length) throw new Error(`${errors[0].message}`);
     const searchResults = await transform(response.data, provideAirShoppingTransformTemplate);
-    searchResults.itineraries[0].segments = segmentsByKey(searchResults.itineraries[0].segments);
+    searchResults.itineraries[0].segments = reduceToObjectByKey(searchResults.itineraries[0].segments);
+    searchResults.itineraries[0].combinations = splitSegments(searchResults.itineraries[0].combinations);
+    searchResults.itineraries[0].combinations = reduceToObjectByKey(searchResults.itineraries[0].combinations);
     searchResults.offers = roundCommissionDecimals(searchResults.offers);
+    searchResults.offers = reduceToObjectByKey(searchResults.offers);
+    searchResults.serviceClasses = reduceToObjectByKey(searchResults.serviceClasses);
+    searchResults.passengers = reduceToObjectByKey(searchResults.passengers);
     res.status(200).json({
       searchResults,
     });
