@@ -53,6 +53,10 @@ const provideAirShoppingTransformTemplate = {
     _id_: '@PassengerID',
     type: 'PTC',
   }],
+  checkedBaggages: ['/S:Envelope/S:Body/AirShoppingRS/DataLists/CheckedBagAllowanceList/CheckedBagAllowance', {
+    _id_: '@ListKey',
+    quantity: 'PieceAllowance/TotalQuantity'
+  }]
 };
 
 const provideAirShoppingErrorsTransformTemplate = {

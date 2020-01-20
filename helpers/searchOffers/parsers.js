@@ -1,5 +1,13 @@
 const parse = require('date-fns/parse');
 
+const useDictionary = (array, object, keyToReplace) => array
+  .map((element) =>({
+    ...element,
+    [keyToReplace]: object[element[keyToReplace]],
+  })
+
+  );
+
 const mergeHourAndDate = (array, dateName, timeName, finalName) => array
   .map(({ [dateName]: date, [timeName]: time, ...others}) => ({
     ...others,
@@ -39,4 +47,5 @@ module.exports = {
   splitSegments,
   reduceToProperty,
   mergeHourAndDate,
+  useDictionary,
 };

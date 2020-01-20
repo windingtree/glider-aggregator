@@ -11,6 +11,7 @@ const { reduceToObjectByKey,
  splitSegments,
  reduceToProperty,
  mergeHourAndDate,
+ useDictionary,
 } = require('../helpers/searchOffers/parsers');
 const { airFranceConfig } = require('../config.js');
 
@@ -44,8 +45,11 @@ module.exports = async (req, res) => {
     searchResults.itineraries[0].combinations = reduceToProperty(searchResults.itineraries[0].combinations, '_items_');
     searchResults.offers = roundCommissionDecimals(searchResults.offers);
     searchResults.offers = reduceToObjectByKey(searchResults.offers);
-    searchResults.serviceClasses = reduceToObjectByKey(searchResults.serviceClasses);
     searchResults.passengers = reduceToObjectByKey(searchResults.passengers);
+    searchResults.checkedBaggages = reduceToObjectByKey(searchResults.checkedBaggages);
+    searchResults.serviceClasses = useDictionary(searchResults.serviceClasses, searchResults.checkedBaggages, 'checkedBaggages');
+    searchResults.serviceClasses = reduceToObjectByKey(searchResults.serviceClasses);
+    delete searchResults.checkedBaggages;
     res.status(200).json({
       searchResults,
     });
