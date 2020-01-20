@@ -1,6 +1,8 @@
+const format = require('date-fns/format');
 const { airFranceConfig } = require('../../config');
 
 const mapNdcRequestData = ({itinerary, passengers}) => {
+  const departureTime = new Date(itinerary.segments[0].departureTime);
   const ndcRequestData = {
     ...airFranceConfig,
     PointOfSale: {
@@ -13,8 +15,8 @@ const mapNdcRequestData = ({itinerary, passengers}) => {
           Departure: {
             AirportCode: itinerary.segments[0].origin.locationType === 'airport'
               ? itinerary.segments[0].origin.iataCode : undefined,
-            Date: itinerary.segments[0].departureDate,
-            Time: itinerary.segments[0].departureTime,
+            Date: format(departureTime, 'yyyy-MM-dd'),
+            Time: format(departureTime, 'HH:mm'),
           },
           Arrival: {
             AirportCode: itinerary.segments[0].destination.locationType === 'airport'

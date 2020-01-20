@@ -10,6 +10,7 @@ const { reduceToObjectByKey,
  roundCommissionDecimals,
  splitSegments,
  reduceToProperty,
+ mergeHourAndDate,
 } = require('../helpers/searchOffers/parsers');
 const { airFranceConfig } = require('../config.js');
 
@@ -33,6 +34,10 @@ module.exports = async (req, res) => {
     const { errors } = await transform(response.data, provideAirShoppingErrorsTransformTemplate);
     if (errors.length) throw new Error(`${errors[0].message}`);
     const searchResults = await transform(response.data, provideAirShoppingTransformTemplate);
+    searchResults.itineraries[0].segments = 
+      mergeHourAndDate(searchResults.itineraries[0].segments, 'splittedDepartureDate', 'splittedDepartureTime', 'departureTime');
+    searchResults.itineraries[0].segments = 
+      mergeHourAndDate(searchResults.itineraries[0].segments, 'splittedArrivalDate', 'splittedArrivalTime', 'arrivalTime');
     searchResults.itineraries[0].segments = reduceToObjectByKey(searchResults.itineraries[0].segments);
     searchResults.itineraries[0].combinations = splitSegments(searchResults.itineraries[0].combinations);
     searchResults.itineraries[0].combinations = reduceToObjectByKey(searchResults.itineraries[0].combinations);

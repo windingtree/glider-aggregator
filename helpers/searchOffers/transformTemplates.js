@@ -37,8 +37,10 @@ const provideAirShoppingTransformTemplate = {
         locationType: () => textOrDefault(),
         iataCode: 'Arrival/AirportCode',
       },
-      departureTime: 'Departure/Time',
-      arrivalTime: 'Arrival/Time',
+      splittedDepartureTime: 'Departure/Time',
+      splittedDepartureDate: 'Departure/Date',
+      splittedArrivalTime: 'Arrival/Time',
+      splittedArrivalDate: 'Arrival/Date',
     }],
   }],
   serviceClasses: ['/S:Envelope/S:Body/AirShoppingRS/DataLists/PriceClassList/PriceClass', {

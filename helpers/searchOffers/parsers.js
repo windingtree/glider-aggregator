@@ -1,3 +1,11 @@
+const parse = require('date-fns/parse');
+
+const mergeHourAndDate = (array, dateName, timeName, finalName) => array
+  .map(({ [dateName]: date, [timeName]: time, ...others}) => ({
+    ...others,
+    [finalName]: parse(`${date} ${time}`, 'yyyy-MM-dd HH:mm', new Date())
+  }));
+
 const reduceToProperty = (object, property) =>  Object.keys(object)
   .map((key)=> {
     return {
@@ -30,4 +38,5 @@ module.exports = {
   roundCommissionDecimals,
   splitSegments,
   reduceToProperty,
+  mergeHourAndDate,
 };
