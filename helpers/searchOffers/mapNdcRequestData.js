@@ -1,6 +1,6 @@
 const { airFranceConfig } = require('../../config');
 
-const mapNdcRequestData = (itinerary) => {
+const mapNdcRequestData = ({itinerary, passengers}) => {
   const ndcRequestData = {
     ...airFranceConfig,
     PointOfSale: {
@@ -13,7 +13,8 @@ const mapNdcRequestData = (itinerary) => {
           Departure: {
             AirportCode: itinerary.segments[0].origin.locationType === 'airport'
               ? itinerary.segments[0].origin.iataCode : undefined,
-            Date: itinerary.segments[0].departureTime,
+            Date: itinerary.segments[0].departureDate,
+            Time: itinerary.segments[0].departureTime,
           },
           Arrival: {
             AirportCode: itinerary.segments[0].destination.locationType === 'airport'
@@ -29,11 +30,11 @@ const mapNdcRequestData = (itinerary) => {
         },
       },
       DataLists: {
-        PassengerList: {
+        PassengerList: passengers.map(p => ({
           Passenger: {
-            PTC: 'ADT',
+            PTC: p.type,
           },
-        },
+        })),
       },
     },
   };

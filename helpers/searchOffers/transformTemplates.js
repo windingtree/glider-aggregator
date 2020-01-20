@@ -11,7 +11,7 @@ const textOrDefault = (defaultValue = 'airport') => `concat(
 
 const provideAirShoppingTransformTemplate = {
   offers: ['/S:Envelope/S:Body/AirShoppingRS/OffersGroup/AirlineOffers/Offer', {
-    id: '@OfferID',
+    _id_: '@OfferID',
     expiration: 'TimeLimits/OfferExpiration/@DateTime',
     price: {
       currency: 'TotalPrice/DetailCurrencyPrice/Total/@Code',
@@ -23,7 +23,7 @@ const provideAirShoppingTransformTemplate = {
     serviceClassReference: 'FlightsOverview/FlightRef/@PriceClassRef',
   }],
   itineraries: ['/S:Envelope/S:Body/AirShoppingRS/DataLists', {
-    combination: ['FlightList/Flight', {
+    combinations: ['FlightList/Flight', {
       _id_: '@FlightKey',
       _items_: 'SegmentReferences',
     }],
