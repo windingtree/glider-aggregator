@@ -1,4 +1,6 @@
 const parse = require('date-fns/parse');
+const { zonedTimeToUtc } = require('date-fns-tz');
+const { airports } = require('./timeZoneByAirportCode');
 
 const useDictionary = (array, object, keyToReplace) => array
   .map((element) =>({
@@ -9,10 +11,13 @@ const useDictionary = (array, object, keyToReplace) => array
   );
 
 const mergeHourAndDate = (array, dateName, timeName, finalName) => array
-  .map(({ [dateName]: date, [timeName]: time, ...others}) => ({
+  .map(({ [dateName]: date, [timeName]: time, destination, ...others}) => {
+    const utcDate = zonedTimeToUtc(`${date} ${time}:00.000`, airports[destination.iataCode]);
+    return {
     ...others,
-    [finalName]: parse(`${date} ${time}`, 'yyyy-MM-dd HH:mm', new Date())
-  }));
+    destination,
+    [finalName]: utcDate,
+  }});
 
 const reduceToProperty = (object, property) =>  Object.keys(object)
   .map((key)=> {
