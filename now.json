@@ -4,6 +4,9 @@
     "functions": {
         "api/searchOffers.js": {
             "includeFiles": "node_modules/camaro/dist/camaro.wasm"
+        },
+        "api/orders/createWithOffer.js": {
+            "includeFiles": "node_modules/camaro/dist/camaro.wasm"
         }
     },
     "env": {
