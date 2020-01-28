@@ -10,7 +10,12 @@ const provideAirShoppingTransformTemplate = {
       commission: `number(OfferItem/TotalPriceDetail/BaseAmount) * ${airFranceConfig.commission}`,
       taxes: 'OfferItem/TotalPriceDetail/Taxes/Total',
     },
-    OfferItemId: 'OfferItem/@OfferItemID',
+    offerItems: ['OfferItem', {
+      _id_:'@OfferItemID',
+      _value_: {
+        passengerReferences: 'Service/PassengerRefs',
+      },
+    }],
     itineraryCombinationReference: 'FlightsOverview/FlightRef',
     serviceClassReference: 'FlightsOverview/FlightRef/@PriceClassRef',
   }],

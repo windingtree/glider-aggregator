@@ -24,7 +24,7 @@ const provideOrderCreateTransformTemplate = {
       civility: 'ns2:Individual/ns2:NameTitle',
       lastnames: 'ns2:Individual/ns2:Surname',
       firstnames: 'ns2:Individual/ns2:GivenName',
-      birthdate: 'ns2:Individual/ns2:Surname',
+      birthdate: 'ns2:Individual/ns2:Birthdate',
       contactInformation: 'ns2:ContactInfoRef'
     }],
     contactList : ['/S:Envelope/S:Body/ns2:OrderViewRS/ns2:Response/ns2:DataLists/ns2:ContactList/ns2:ContactInformation', {
@@ -33,7 +33,7 @@ const provideOrderCreateTransformTemplate = {
         value: 'ns2:EmailAddressValue'
       }],
       phones: ['ns2:Phone', {
-        value: 'ns2:PhoneNumber'
+        value: 'concat("+",ns2:PhoneNumber)', // OrderViewRS 17.1 doesn't return the + sign
       }],
     }],
     itinerary:  {
