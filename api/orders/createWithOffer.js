@@ -8,14 +8,13 @@ const { orderCreateRequestTemplate } = require('../../helpers/soapTemplates/crea
 const { provideOrderCreateTransformTemplate, ErrorsTransformTemplate } = require('../../helpers/camaroTemplates/provideOrderCreate');
 
 const { 
-  mergeHourAndDate, reduceToObjectByKey, useDictionary, reduceContactInformation
+  mergeHourAndDate, reduceToObjectByKey, useDictionary, reduceContactInformation, splitPropertyBySpace
 } = require('../../helpers/parsers');
 
 module.exports = async (req, res) => {
   const requestBody = req.body;
 
   try {
-    
     const ndcRequestData = mapNdcRequestData(requestBody);
     const ndcBody = orderCreateRequestTemplate(ndcRequestData);
     const response = await axios.post('https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001451v01/EXT',
@@ -42,20 +41,19 @@ module.exports = async (req, res) => {
 
     createResults.order.itinerary.segments = reduceToObjectByKey(createResults.order.itinerary.segments);
 
-    createResults.order.price.commission = createResults.order.price.commission.reduce((total, {value}) => total + parseFloat(value), 0);
-    createResults.order.price.taxes = createResults.order.price.taxes.reduce((total, {value}) => total + parseFloat(value), 0);
+    createResults.order.price.commission = createResults.order.price.commission.reduce((total, {value}) => total + parseFloat(value), 0).toString();
+    createResults.order.price.taxes = createResults.order.price.taxes.reduce((total, {value}) => total + parseFloat(value), 0).toString();
 
     createResults.order.contactList = reduceToObjectByKey(createResults.order.contactList);
     createResults.order.passengers = useDictionary(createResults.order.passengers, createResults.order.contactList, 'contactInformation');
+    createResults.order.passengers = splitPropertyBySpace(createResults.order.passengers, 'firstnames');
+    createResults.order.passengers = splitPropertyBySpace(createResults.order.passengers, 'lastnames');
     createResults.order.passengers = reduceContactInformation(createResults.order.passengers);
     createResults.order.passengers = reduceToObjectByKey(createResults.order.passengers);
 
     delete createResults.order.contactList;
 
-    res.status(200).json({
-      ok: true,
-      createResults,
-    });
+    res.status(200).json(createResults);
   } catch (e) {
     console.log(e);
 
