@@ -2,6 +2,13 @@ const parse = require('date-fns/parse');
 const { zonedTimeToUtc } = require('date-fns-tz');
 const { airports } = require('./timeZoneByAirportCode');
 
+
+const splitPropertyBySpace = (array, property) => array
+  .map((element) => ({
+    ...element,
+    [property]: element[property].split(' ')
+  }));
+
 const reduceContactInformation = (passengers) => passengers
   .map((passenger) => {
     const emails = passenger.contactInformation.emails.map(({value})=> value);
@@ -49,7 +56,7 @@ const roundCommissionDecimals = (offers) => offers
     ...others,
     price: {
       ...price,
-      commission: price.commission.toFixed(2)
+      commission: price.commission.toFixed(2).toString()
     }
   }));
 
@@ -61,4 +68,5 @@ module.exports = {
   mergeHourAndDate,
   useDictionary,
   reduceContactInformation,
+  splitPropertyBySpace,
 };
