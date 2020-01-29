@@ -9,6 +9,7 @@ const { reduceToObjectByKey,
  reduceToProperty,
  mergeHourAndDate,
  useDictionary,
+ reduceObjectToProperty,
 } = require('../helpers/parsers');
 const { airFranceConfig } = require('../config.js');
 
@@ -45,7 +46,7 @@ module.exports = async (req, res) => {
 
     for (const offer of Object.values(searchResults.offers)) {
       offer.offerItems = reduceToObjectByKey(offer.offerItems);
-      offer.offerItems =  reduceToProperty(offer.offerItems, '_value_');
+      offer.offerItems =  reduceObjectToProperty(offer.offerItems, '_value_');
     }
 
     searchResults.offers = roundCommissionDecimals(searchResults.offers);

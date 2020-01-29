@@ -2,6 +2,11 @@ const parse = require('date-fns/parse');
 const { zonedTimeToUtc } = require('date-fns-tz');
 const { airports } = require('./timeZoneByAirportCode');
 
+const reduceObjectToProperty = (object, property) => Object.entries(object)
+  .reduce((result, [key, value])=> ({
+      ...result,
+      [key]: value[property]
+    }), {});
 
 const splitPropertyBySpace = (array, property) => array
   .map((element) => ({
@@ -69,4 +74,5 @@ module.exports = {
   useDictionary,
   reduceContactInformation,
   splitPropertyBySpace,
+  reduceObjectToProperty,
 };
