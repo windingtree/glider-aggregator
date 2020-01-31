@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
 
     const { errors } = await transform(response.data, ErrorsTransformTemplate);
     if (errors.length) throw new Error(`${errors[0].message}`);
-    
+
     const createResults = await transform(response.data, provideOrderCreateTransformTemplate);
 
     createResults.order.itinerary.segments = 
