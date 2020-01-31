@@ -4,11 +4,20 @@ const { airFranceConfig } = require('../../../config');
 const { mapNdcRequestData}  = require('../../../helpers/transformInputData/fulfillOrder');
 const { fulfillOrderTemplate } = require('../../../helpers/soapTemplates/fulfillOrder');
 const { ErrorsTransformTemplate, fulfillOrderTransformTemplate } = require('../../../helpers/camaroTemplates/fulfillOrder');
-const { reduceToObjectByKey, reduceToProperty } = require('../../../helpers/parsers')
+const { reduceToObjectByKey, reduceToProperty } = require('../../../helpers/parsers');
+
 module.exports = async (req, res) => {
   try {
-    const { body, query } = req;
-    
+    const { body, query, headers } = req;
+    const simardHeaders = {
+      Authorization: headers.authorization,
+    }
+    const guarantreeResponse = await axios.get(`https://staging.simard.windingtree.net/api/v1/balances/guarantees/${body.guaranteeId}`,
+      {
+        headers: simardHeaders,
+      },
+    );
+    // Missing validations on guaranteeResponse
     const ndcRequestData = mapNdcRequestData(body, query);
     const ndcBody = fulfillOrderTemplate(ndcRequestData);
     const response = await axios.post('https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001489v01/EXT',
@@ -29,7 +38,14 @@ module.exports = async (req, res) => {
     
     fulfillResults.travelDocuments.etickets = reduceToObjectByKey(fulfillResults.travelDocuments.etickets);
     fulfillResults.travelDocuments.etickets = reduceToProperty(fulfillResults.travelDocuments.etickets, '_passenger_');
-    
+
+    const guarantreeClaim = await axios.post(`https://staging.simard.windingtree.net/api/v1/balances/guarantees/${body.guaranteeId}/claim`,
+      {
+        headers: simardHeaders,
+      },
+    );
+    console.log(guarantreeClaim);
+
     res.status(200).json(fulfillResults);
   } catch (e) {
     console.log(e);
