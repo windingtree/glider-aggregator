@@ -1,6 +1,7 @@
 const airFranceConfig = {
   apiKey: process.env.AF_API_KEY,
   commission: process.env.AF_COMISSION,
+  AirlineID: process.env.AF_PARTICIPANT_RECIPENT_AIRLINE_ID,
   Party: {
     Sender: {
       TravelAgencySender: {

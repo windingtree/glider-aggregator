@@ -1,18 +1,16 @@
 const { transform } = require('camaro');
 const axios = require('axios');
-const { mapNdcRequestData } = require('../helpers/searchOffers/mapNdcRequestData.js');
-const { provideAirShoppingRequestTemplate } = require('../helpers/searchOffers/xmlTemplates.js');
-const { 
-  provideAirShoppingTransformTemplate,
-  provideAirShoppingErrorsTransformTemplate,
-} = require('../helpers/searchOffers/transformTemplates');
+const { mapNdcRequestData } = require('../helpers/transformInputData/searchOffers');
+const { provideAirShoppingRequestTemplate } = require('../helpers/soapTemplates/searchOffers');
+const { provideAirShoppingTransformTemplate, ErrorsTransformTemplate } = require('../helpers/camaroTemplates/provideAirShopping');
 const { reduceToObjectByKey,
  roundCommissionDecimals,
  splitSegments,
  reduceToProperty,
  mergeHourAndDate,
  useDictionary,
-} = require('../helpers/searchOffers/parsers');
+ reduceObjectToProperty,
+} = require('../helpers/parsers');
 const { airFranceConfig } = require('../config.js');
 
 module.exports = async (req, res) => {
@@ -32,27 +30,35 @@ module.exports = async (req, res) => {
           api_key: airFranceConfig.apiKey,
         },
       });
-    const { errors } = await transform(response.data, provideAirShoppingErrorsTransformTemplate);
+    const { errors } = await transform(response.data, ErrorsTransformTemplate);
     if (errors.length) throw new Error(`${errors[0].message}`);
+
     const searchResults = await transform(response.data, provideAirShoppingTransformTemplate);
     searchResults.itineraries[0].segments = 
       mergeHourAndDate(searchResults.itineraries[0].segments, 'splittedDepartureDate', 'splittedDepartureTime', 'departureTime');
     searchResults.itineraries[0].segments = 
       mergeHourAndDate(searchResults.itineraries[0].segments, 'splittedArrivalDate', 'splittedArrivalTime', 'arrivalTime');
     searchResults.itineraries[0].segments = reduceToObjectByKey(searchResults.itineraries[0].segments);
+    
     searchResults.itineraries[0].combinations = splitSegments(searchResults.itineraries[0].combinations);
     searchResults.itineraries[0].combinations = reduceToObjectByKey(searchResults.itineraries[0].combinations);
     searchResults.itineraries[0].combinations = reduceToProperty(searchResults.itineraries[0].combinations, '_items_');
+
+    for (const offer of Object.values(searchResults.offers)) {
+      offer.offerItems = reduceToObjectByKey(offer.offerItems);
+      offer.offerItems =  reduceObjectToProperty(offer.offerItems, '_value_');
+    }
+
     searchResults.offers = roundCommissionDecimals(searchResults.offers);
     searchResults.offers = reduceToObjectByKey(searchResults.offers);
     searchResults.passengers = reduceToObjectByKey(searchResults.passengers);
     searchResults.checkedBaggages = reduceToObjectByKey(searchResults.checkedBaggages);
     searchResults.serviceClasses = useDictionary(searchResults.serviceClasses, searchResults.checkedBaggages, 'checkedBaggages');
     searchResults.serviceClasses = reduceToObjectByKey(searchResults.serviceClasses);
+
     delete searchResults.checkedBaggages;
-    res.status(200).json({
-      searchResults,
-    });
+
+    res.status(200).json(searchResults);
   } catch (e) {
     console.log(e);
 

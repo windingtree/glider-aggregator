@@ -2,13 +2,32 @@ const parse = require('date-fns/parse');
 const { zonedTimeToUtc } = require('date-fns-tz');
 const { airports } = require('./timeZoneByAirportCode');
 
+const reduceObjectToProperty = (object, property) => Object.entries(object)
+  .reduce((result, [key, value])=> ({
+      ...result,
+      [key]: value[property]
+    }), {});
+
+const splitPropertyBySpace = (array, property) => array
+  .map((element) => ({
+    ...element,
+    [property]: element[property].split(' ')
+  }));
+
+const reduceContactInformation = (passengers) => passengers
+  .map((passenger) => {
+    const emails = passenger.contactInformation.emails.map(({value})=> value);
+    const phones = passenger.contactInformation.phones.map(({value})=> value);
+    return {
+      ...passenger,
+      contactInformation: emails.concat(phones),
+    }});
+
 const useDictionary = (array, object, keyToReplace) => array
   .map((element) =>({
     ...element,
     [keyToReplace]: object[element[keyToReplace]],
-  })
-
-  );
+  }));
 
 const mergeHourAndDate = (array, dateName, timeName, finalName) => array
   .map(({ [dateName]: date, [timeName]: time, destination, ...others}) => {
@@ -42,7 +61,7 @@ const roundCommissionDecimals = (offers) => offers
     ...others,
     price: {
       ...price,
-      commission: price.commission.toFixed(2)
+      commission: price.commission.toFixed(2).toString()
     }
   }));
 
@@ -53,4 +72,7 @@ module.exports = {
   reduceToProperty,
   mergeHourAndDate,
   useDictionary,
+  reduceContactInformation,
+  splitPropertyBySpace,
+  reduceObjectToProperty,
 };

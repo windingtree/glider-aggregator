@@ -10,6 +10,12 @@ const provideAirShoppingTransformTemplate = {
       commission: `number(OfferItem/TotalPriceDetail/BaseAmount) * ${airFranceConfig.commission}`,
       taxes: 'OfferItem/TotalPriceDetail/Taxes/Total',
     },
+    offerItems: ['OfferItem', {
+      _id_:'@OfferItemID',
+      _value_: {
+        passengerReferences: 'Service/PassengerRefs',
+      },
+    }],
     itineraryCombinationReference: 'FlightsOverview/FlightRef',
     serviceClassReference: 'FlightsOverview/FlightRef/@PriceClassRef',
   }],
@@ -54,7 +60,7 @@ const provideAirShoppingTransformTemplate = {
   }]
 };
 
-const provideAirShoppingErrorsTransformTemplate = {
+const ErrorsTransformTemplate = {
   errors: ['/S:Envelope/S:Body/AirShoppingRS/Errors/Error', {
     message: '@ShortText',
     code: '@Code',
@@ -63,5 +69,5 @@ const provideAirShoppingErrorsTransformTemplate = {
 
 module.exports = {
   provideAirShoppingTransformTemplate,
-  provideAirShoppingErrorsTransformTemplate,
+  ErrorsTransformTemplate,
 };
