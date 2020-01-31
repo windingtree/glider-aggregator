@@ -40,6 +40,7 @@ module.exports = async (req, res) => {
     fulfillResults.travelDocuments.etickets = reduceToProperty(fulfillResults.travelDocuments.etickets, '_passenger_');
 
     const guarantreeClaim = await axios.post(`https://staging.simard.windingtree.net/api/v1/balances/guarantees/${body.guaranteeId}/claim`,
+      {},
       {
         headers: simardHeaders,
       },
