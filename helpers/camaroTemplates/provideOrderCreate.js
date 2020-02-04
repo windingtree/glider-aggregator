@@ -4,6 +4,7 @@ const provideOrderCreateTransformTemplate = {
   orderId: '/S:Envelope/S:Body/ns2:OrderViewRS/ns2:Response/ns2:Order/@OrderID',
   order: {
     version: '#1.0.0',
+    orderItems: ['/S:Envelope/S:Body/ns2:OrderViewRS/ns2:Response/ns2:Order/ns2:OrderItems/ns2:OrderItem', '@OrderItemID'],
     supplier: '#ORGIDAddressSupplier',
     distributor: '#ORGIDAddressDistributor',
     type: '#transportation',

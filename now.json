@@ -7,6 +7,9 @@
         },
         "api/orders/createWithOffer.js": {
             "includeFiles": "node_modules/camaro/dist/camaro.wasm"
+        },
+        "api/orders/[orderId]/fulfill.js": {
+            "includeFiles": "node_modules/camaro/dist/camaro.wasm"
         }
     },
     "env": {
