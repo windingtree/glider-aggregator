@@ -22,9 +22,9 @@ const verifyJWT = (type, jwt) => {
 
   const signatureB16 = (Buffer.from(sigatureB64.toString().replace('-', '+').replace('_', '/'), 'base64')).toString('hex');
   const hashedMessage = ethers.utils.hashMessage(signedMessage);
-  const singerAddress = ethers.utils.recoverAddress(hashedMessage, `0x${signatureB16}`);
+  const signingAddress = ethers.utils.recoverAddress(hashedMessage, `0x${signatureB16}`);
 
-  return { header, payload, signature, singerAddress };
+  return { header, payload, signature, signingAddress };
 };
 
 const isAuthorized = async (contractAddress, signer) => {

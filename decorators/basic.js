@@ -4,8 +4,8 @@ const basicDecorator = fn => async (req, res) => {
   try {
     const { headers } = req;
     const auth = headers.authorization.split(' ');
-    const { payload, singerAddress } = await verifyJWT(...auth);
-    await isAuthorized(payload.iss, singerAddress);
+    const { payload, signingAddress } = await verifyJWT(...auth);
+    await isAuthorized(payload.iss, signingAddress);
     await fn(req, res);
   } catch (e) {
     console.log(e);
