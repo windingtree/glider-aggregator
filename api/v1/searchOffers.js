@@ -1,9 +1,9 @@
 const { transform } = require('camaro');
 const axios = require('axios');
-const { basicDecorator } = require('../decorators/basic')
-const { mapNdcRequestData } = require('../helpers/transformInputData/searchOffers');
-const { provideAirShoppingRequestTemplate } = require('../helpers/soapTemplates/searchOffers');
-const { provideAirShoppingTransformTemplate, ErrorsTransformTemplate } = require('../helpers/camaroTemplates/provideAirShopping');
+const { basicDecorator } = require('../../decorators/basic')
+const { mapNdcRequestData } = require('../../helpers/transformInputData/searchOffers');
+const { provideAirShoppingRequestTemplate } = require('../../helpers/soapTemplates/searchOffers');
+const { provideAirShoppingTransformTemplate, ErrorsTransformTemplate } = require('../../helpers/camaroTemplates/provideAirShopping');
 const { reduceToObjectByKey,
  roundCommissionDecimals,
  splitSegments,
@@ -11,8 +11,8 @@ const { reduceToObjectByKey,
  mergeHourAndDate,
  useDictionary,
  reduceObjectToProperty,
-} = require('../helpers/parsers');
-const { airFranceConfig } = require('../config.js');
+} = require('../../helpers/parsers');
+const { airFranceConfig } = require('../../config.js');
 
 module.exports = basicDecorator(async (req, res) => {
   const requestBody = req.body;    
