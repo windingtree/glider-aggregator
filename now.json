@@ -24,7 +24,7 @@
             "destination": "/api/v1/$1.js"
         },
         {
-            "source": "/api/(.*)",
+            "source": "/api/docs/(.*)",
             "destination": "public/$1"
         },
         {
@@ -35,7 +35,11 @@
     "redirects": [
         {
             "source": "/",
-            "destination": "/api/docs"
+            "destination": "/api/docs/"
+        },
+        {
+            "source": "/api/docs",
+            "destination": "/api/docs/"
         }
     ],
     "env": {
