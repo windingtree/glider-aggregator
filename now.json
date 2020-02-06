@@ -1,17 +1,43 @@
 {
     "name": "wt-aggregator",
     "version": 2,
-    "functions": {
-        "api/searchOffers.js": {
-            "includeFiles": "node_modules/camaro/dist/camaro.wasm"
+    "builds": [
+        {
+            "src": "api/docs/index.js",
+            "use": "@now/node"
         },
-        "api/orders/createWithOffer.js": {
-            "includeFiles": "node_modules/camaro/dist/camaro.wasm"
+        {
+            "src": "api/**/*.js",
+            "use": "@now/node",
+            "config": {
+                "includeFiles": "node_modules/camaro/dist/camaro.wasm"
+            }
         },
-        "api/orders/[orderId]/fulfill.js": {
-            "includeFiles": "node_modules/camaro/dist/camaro.wasm"
+        {
+            "src": "public/**",
+            "use": "@now/static"
         }
-    },
+    ],
+    "rewrites": [
+        {
+            "source": "/api/v1/(.*)",
+            "destination": "/api/v1/$1.js"
+        },
+        {
+            "source": "/api/(.*)",
+            "destination": "public/$1"
+        },
+        {
+            "source": "/oauth2-redirect.html",
+            "destination": "public/oauth2-redirect.html"
+        }
+    ],
+    "redirects": [
+        {
+            "source": "/",
+            "destination": "/api/docs"
+        }
+    ],
     "env": {
         "AF_API_KEY": "@af_api_key",
         "AF_COMISSION": "@af_comission",
