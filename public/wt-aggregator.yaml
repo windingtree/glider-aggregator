@@ -12,11 +12,7 @@ info:
 
 servers:
 - url: http://localhost:3000/api/v1
-  description: Local demo server
-- url: https://staging.aggregator.windingtree.com/api/v1
-  description: Winding Tree staging server
-- url: https://aggregator.windingtree.com/api/v1
-  description: Winding Tree production server
+  description: Current server
 
 tags:
 - name: offers
