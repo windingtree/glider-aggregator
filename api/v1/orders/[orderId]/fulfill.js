@@ -1,17 +1,18 @@
 const axios = require('axios');
 const { transform } = require('camaro');
-const { airFranceConfig } = require('../../../../config');
+const { airFranceConfig, JWT } = require('../../../../config');
 const { basicDecorator } = require('../../../../decorators/basic');
 const { mapNdcRequestData}  = require('../../../../helpers/transformInputData/fulfillOrder');
 const { fulfillOrderTemplate } = require('../../../../helpers/soapTemplates/fulfillOrder');
 const { ErrorsTransformTemplate, fulfillOrderTransformTemplate } = require('../../../../helpers/camaroTemplates/fulfillOrder');
 const { reduceToObjectByKey, reduceToProperty } = require('../../../../helpers/parsers');
 
+const simardHeaders = {
+  Authorization: JWT,
+}
+
 module.exports = basicDecorator(async (req, res) => {
   const { body, query, headers } = req;
-  const simardHeaders = {
-    Authorization: headers.authorization,
-  }
   const guaranteeResponse = await axios.get(`https://staging.simard.windingtree.net/api/v1/balances/guarantees/${body.guaranteeId}`,
     {
       headers: simardHeaders,

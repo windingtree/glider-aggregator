@@ -58,6 +58,7 @@
         "AF_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_NAME": "@af_participant_enabled_system_participant_name",
         "AF_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SYSTEM_ID": "@af_participant_enabled_system_participant_system_id",
         "AF_PARTICIPANT_RECIPENT_AIRLINE_ID": "@af_participant_recipent_airline_id",
-        "AF_PARTICIPANT_RECIPENT_NAME": "@af_participant_recipent_name"
+        "AF_PARTICIPANT_RECIPENT_NAME": "@af_participant_recipent_name",
+        "JWT": "@staging.wt-aggregator.jwt"
     }
 }
