@@ -37,7 +37,10 @@
     window.onload = function () {
       // Begin Swagger UI call region
       const ui = SwaggerUIBundle({
-        url: "wt-aggregator.yaml",
+        urls: [{
+          url: "/api/docs/wt-aggregator.yaml",
+          name: "wt-aggregator.yaml",
+        }],
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [
