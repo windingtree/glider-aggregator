@@ -32,6 +32,9 @@ const airFranceConfig = {
   },
 };
 
+const JWT = process.env.JWT;
+
 module.exports = {
   airFranceConfig,
+  JWT,
 }
