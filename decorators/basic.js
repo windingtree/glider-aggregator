@@ -3,6 +3,7 @@ const { verifyJWT, isAuthorized } = require('../helpers/jwt');
 const basicDecorator = fn => async (req, res) => {
   try {
     const { headers } = req;
+    if (!headers.authorization) throw new Error('Authorization missing');
     const auth = headers.authorization.split(' ');
     const { payload, signingAddress } = await verifyJWT(...auth);
     await isAuthorized(payload.iss, signingAddress);
