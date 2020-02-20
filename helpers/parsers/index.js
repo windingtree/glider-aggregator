@@ -65,6 +65,15 @@ const roundCommissionDecimals = (offers) => offers
     }
   }));
 
+const reduceAcomodation = (acomodation) => acomodation
+  .reduce((ac, {_provider_, _id_, ...others}) => {
+    const key = `${_provider_}.${_id_}`;
+    return {
+      ...ac,
+      [key]: others,
+    };
+  }, {});
+
 module.exports = {
   reduceToObjectByKey,
   roundCommissionDecimals,
@@ -75,4 +84,5 @@ module.exports = {
   reduceContactInformation,
   splitPropertyBySpace,
   reduceObjectToProperty,
+  reduceAcomodation,
 };
