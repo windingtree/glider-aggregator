@@ -7,7 +7,7 @@ const { mapRequestData } = require('../transformInputData/hotelAvail');
 const { hotelAvailRequestTemplate } = require('../soapTemplates/hotelAvail');
 const { hotelAvailTransformTemplate, errorsTransformTemplate } = require('../camaroTemplates/hotelAvail');
 const {
-  reduceToObjectByKey, reduceObjectToProperty, reduceAcomodation,
+  reduceToObjectByKey, reduceObjectToProperty, reduceAcomodation, reduceRoomStays,
 } = require('../parsers');
 
 const searchHotel = async (body) => {
@@ -31,7 +31,7 @@ const searchHotel = async (body) => {
 
   const searchResults = await transform(response.data, hotelAvailTransformTemplate);
   
-  for (const accommodation of searchResults.accommodation) {
+  for (const accommodation of searchResults.accommodations) {
     accommodation.otherPolicies = reduceToObjectByKey(accommodation.otherPolicies);
     accommodation.otherPolicies = reduceObjectToProperty(accommodation.otherPolicies, '_value_');
  
@@ -43,7 +43,12 @@ const searchHotel = async (body) => {
     accommodation.ratePlans = reduceToObjectByKey(accommodation.ratePlans);
   }
 
-  searchResults.accommodation = reduceAcomodation(searchResults.accommodation);
+  searchResults.accommodations = reduceAcomodation(searchResults.accommodations);
+
+  // Create the offers
+  searchResults.offers = reduceRoomStays(searchResults._roomStays_);
+  delete(searchResults._roomStays_);
+
   return searchResults;
 };
 

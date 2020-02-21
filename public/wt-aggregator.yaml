@@ -672,10 +672,14 @@ components:
         contactInformation:
           type: object
           properties:
-            phoneNumber:
-              $ref: '#/components/schemas/PhoneNumber'
-            email:
-              $ref: '#/components/schemas/Email'
+            phoneNumbers:
+              type: array
+              items:
+                $ref: '#/components/schemas/PhoneNumber'
+            emails:
+              type: array
+              items:
+                $ref: '#/components/schemas/Email'
               
         checkinoutPolicy:
           description: The check-in and check-out time policy, format HH:MM

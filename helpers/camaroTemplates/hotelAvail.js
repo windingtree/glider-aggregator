@@ -1,6 +1,6 @@
 
 const hotelAvailTransformTemplate = {
-  accommodation: ['/soap:Envelope/soap:Body/OTA_HotelAvailRS/HotelStays/HotelStay', {
+  accommodations: ['/soap:Envelope/soap:Body/OTA_HotelAvailRS/HotelStays/HotelStay', {
     _provider_: '#ervmax',
     _id_: 'BasicPropertyInfo/@HotelCode',
     name: 'BasicPropertyInfo/@HotelName',
@@ -38,7 +38,7 @@ const hotelAvailTransformTemplate = {
       amenities: ['Amenities/Amenity', '@RoomAmenity'],
       size: {
         value: '@SizeMeasurement',
-        unit: '/soap:Envelope/soap:Body/OTA_HotelAvailRS/HotelStays/HotelStay/BasicPropertyInfo/Address/TPA_Extensions/Room_size_units'
+        _unit_: 'TPA_Extensions/Room_size_units'
       },
       maximumOccupancy: {
         adults: 'TPA_Extensions/MaxOccupancy/@MaxAdultOccupancy',
@@ -56,13 +56,27 @@ const hotelAvailTransformTemplate = {
       }],
     }],
     ratePlans: ['/soap:Envelope/soap:Body/OTA_HotelAvailRS/RoomStays/RoomStay/RatePlans/RatePlan', {
+      _provider_: '#ervmax',
       _id_: '@RatePlanCode',
       name: '@RatePlanName',
       penalties: {
         refund: {
-          refundable: 'CancelPenalties/CancelPenalty/@NonRefundable',
+          refundable: 'boolean(CancelPenalties/CancelPenalty/@NonRefundable = "false")',
         },
       },
+    }],
+  }],
+  _roomStays_: ['/soap:Envelope/soap:Body/OTA_HotelAvailRS/RoomStays/RoomStay', {
+    _provider_: '#erevmax',
+    _hotelCode_: 'BasicPropertyInfo/@HotelCode',
+    _roomRates_: ['RoomRates/RoomRate',{
+      ratePlanReference: '@RatePlanCode',
+      roomTypeReference: '@RoomTypeCode',
+      price: {
+        currency: 'Total/@CurrencyCode',
+        _afterTax_: 'Total/@AmountAfterTax',
+        _beforeTax_: 'Total/@AmountBeforeTax',
+      }
     }],
   }],
 };
