@@ -50,11 +50,13 @@ const splitSegments = (combinations) => combinations.map(({_items_, ...others})=
   _items_ : _items_.split(' '),
 }));
 
+
 const reduceToObjectByKey = (array) => array
   .reduce((segments, { _id_, ...others }) => ({
     ...segments,
     [_id_]: others,
   }), {});
+
 
 const roundCommissionDecimals = (offers) => offers
   .map(({price, ...others}) => ({
@@ -79,7 +81,7 @@ const reduceRoomStays = (_roomStays_ => {
   var offers = {}
   _roomStays_.forEach(roomStay => {
 
-    // Create the accomodation key
+    // Create the accommodation key
     var hotelkey = `${roomStay._provider_}.${roomStay._hotelCode_}`;
 
     // Build the offers by parsing the room rates
@@ -91,7 +93,7 @@ const reduceRoomStays = (_roomStays_ => {
         // Reference from other elements
         ratePlanReference: roomRate.ratePlanReference,
         roomTypeReference: roomRate.roomTypeReference,
-        accomodationReference: hotelkey,
+        accommodationReference: hotelkey,
 
         // Build price
         price: {

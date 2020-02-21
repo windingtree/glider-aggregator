@@ -4,7 +4,6 @@ const { searchFlight } = require('../../helpers/resolvers/searchFlight');
 
 module.exports = basicDecorator(async (req, res) => {
   const { body } = req;
-
   let resolver = () => {throw new Error('accommodation or itinerary missing in body');};
   
   if(body.accommodation) resolver = searchHotel;

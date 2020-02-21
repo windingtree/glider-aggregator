@@ -32,15 +32,18 @@ const searchFlight = async (body) => {
   if (errors.length) throw new Error(`${errors[0].message}`);
 
   const searchResults = await transform(response.data, provideAirShoppingTransformTemplate);
-  searchResults.itineraries[0].segments = 
-    mergeHourAndDate(searchResults.itineraries[0].segments, 'splittedDepartureDate', 'splittedDepartureTime', 'departureTime');
-  searchResults.itineraries[0].segments = 
-    mergeHourAndDate(searchResults.itineraries[0].segments, 'splittedArrivalDate', 'splittedArrivalTime', 'arrivalTime');
-  searchResults.itineraries[0].segments = reduceToObjectByKey(searchResults.itineraries[0].segments);
+  searchResults.itineraries.segments = 
+    mergeHourAndDate(searchResults.itineraries.segments, 'splittedDepartureDate', 'splittedDepartureTime', 'departureTime');
+  searchResults.itineraries.segments = 
+    mergeHourAndDate(searchResults.itineraries.segments, 'splittedArrivalDate', 'splittedArrivalTime', 'arrivalTime');
+  searchResults.itineraries.segments = reduceToObjectByKey(searchResults.itineraries.segments);
   
-  searchResults.itineraries[0].combinations = splitSegments(searchResults.itineraries[0].combinations);
-  searchResults.itineraries[0].combinations = reduceToObjectByKey(searchResults.itineraries[0].combinations);
-  searchResults.itineraries[0].combinations = reduceToProperty(searchResults.itineraries[0].combinations, '_items_');
+  // Walk through the flight list 
+  var combinations = {};
+  searchResults.itineraries.combinations.forEach(flight => {
+    combinations[flight._id_] = flight._items_.split(' ');
+  });
+  searchResults.itineraries.combinations = combinations;
 
   for (const offer of Object.values(searchResults.offers)) {
     offer.offerItems = reduceToObjectByKey(offer.offerItems);

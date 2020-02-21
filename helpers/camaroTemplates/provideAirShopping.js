@@ -19,12 +19,12 @@ const provideAirShoppingTransformTemplate = {
     itineraryCombinationReference: 'FlightsOverview/FlightRef',
     serviceClassReference: 'FlightsOverview/FlightRef/@PriceClassRef',
   }],
-  itineraries: ['/S:Envelope/S:Body/AirShoppingRS/DataLists', {
-    combinations: ['FlightList/Flight', {
+  itineraries: {
+    combinations: ['/S:Envelope/S:Body/AirShoppingRS/DataLists/FlightList/Flight', {
       _id_: '@FlightKey',
       _items_: 'SegmentReferences',
     }],
-    segments: ['FlightSegmentList/FlightSegment', {
+    segments: ['/S:Envelope/S:Body/AirShoppingRS/DataLists/FlightSegmentList/FlightSegment', {
       _id_: '@SegmentKey',
       operator: {
         operatorType: '#airline',
@@ -43,7 +43,7 @@ const provideAirShoppingTransformTemplate = {
       splittedArrivalTime: 'Arrival/Time',
       splittedArrivalDate: 'Arrival/Date',
     }],
-  }],
+  },
   serviceClasses: ['/S:Envelope/S:Body/AirShoppingRS/DataLists/PriceClassList/PriceClass', {
     _id_: '@PriceClassID',
     name: 'ClassOfService/MarketingName',

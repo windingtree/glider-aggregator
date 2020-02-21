@@ -61,7 +61,7 @@ paths:
                 summary: A search for hotels
                 value: 
                   {
-                    "accomodation": {
+                    "accommodation": {
                       "location" : {
                         "rectangle": {
                           "south": "50.0929802",
@@ -635,27 +635,27 @@ components:
       - train
       example: 'flight'
     
-    # Defines the list of accomodation types
-    AccomodationType:
-      description: Type of accomodation service
+    # Defines the list of accommodation types
+    AccommodationType:
+      description: Type of accommodation service
       type: string
       maxLength: 24
       enum:
       - hotel
       example: 'hotel'
       
-    Accomodation:
-      description: An accomodation object
+    Accommodation:
+      description: An accommodation object
       type: object
       properties:
       
         name:
-          description: The name of the property or accomodation
+          description: The name of the property or accommodation
           type: string
           example: Comfort Hotel Xpress Stockholm Central
           
         type:
-          $ref: '#/components/schemas/AccomodationType'
+          $ref: '#/components/schemas/AccommodationType'
           
         description:
           description: The description of the property
@@ -852,7 +852,7 @@ components:
           type: string
           enum:
           - transportation
-          - accomodation
+          - accommodation
           - lounge
           - fasttrack
           - parking
@@ -863,7 +863,7 @@ components:
           description: The sub-type of service
           oneOf:
           - $ref: '#/components/schemas/TransportationType'
-          - $ref: '#/components/schemas/AccomodationType'
+          - $ref: '#/components/schemas/AccommodationType'
           example: 'flight'
           
         # The price of the service
@@ -897,20 +897,20 @@ components:
         itinerary:
           $ref: '#/components/schemas/Itinerary'
           
-        # The option of the accomodation being searched
-        accomodation:
-          description: Criteria for the accomodation search
+        # The option of the accommodation being searched
+        accommodation:
+          description: Criteria for the accommodation search
           type: object
           properties:
             location:
               $ref: '#/components/schemas/Location'
             arrival:
               type: string
-              description: arrival day in the accomodation
+              description: arrival day in the accommodation
               format: datetime
             departure:
               type: string
-              description: departure day from the accomodation
+              description: departure day from the accommodation
               format: datetime
               
         
@@ -961,11 +961,11 @@ components:
               additionalProperties:
                 $ref: '#/components/schemas/Segment'
                 
-        accomodations:
+        accommodations:
           description: The acomodations matching an search request
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/Accomodation'
+            $ref: '#/components/schemas/Accommodation'
 
         # The service classes involved in the offer
         serviceClasses:
