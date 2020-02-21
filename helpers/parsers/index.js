@@ -81,7 +81,7 @@ const reduceRoomStays = (_roomStays_ => {
   var offers = {}
   _roomStays_.forEach(roomStay => {
 
-    // Create the accomodation key
+    // Create the accommodation key
     var hotelkey = `${roomStay._provider_}.${roomStay._hotelCode_}`;
 
     // Build the offers by parsing the room rates
@@ -93,7 +93,7 @@ const reduceRoomStays = (_roomStays_ => {
         // Reference from other elements
         ratePlanReference: roomRate.ratePlanReference,
         roomTypeReference: roomRate.roomTypeReference,
-        accomodationReference: hotelkey,
+        accommodationReference: hotelkey,
 
         // Build price
         price: {
