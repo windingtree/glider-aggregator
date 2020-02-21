@@ -11,7 +11,7 @@ const {
 } = require('../parsers');
 
 const searchHotel = async (body) => {
-  const hotelCodes = getHotelsInRectangle(body.acomodation.location.rectangle);
+  const hotelCodes = getHotelsInRectangle(body.accommodation.location.rectangle);
   if(!hotelCodes.length) throw new Error('Not matching hotels');
  
   const requestData = mapRequestData(hotelCodes, body);
@@ -31,19 +31,19 @@ const searchHotel = async (body) => {
 
   const searchResults = await transform(response.data, hotelAvailTransformTemplate);
   
-  for (const acomodation of searchResults.acomodation) {
-    acomodation.otherPolicies = reduceToObjectByKey(acomodation.otherPolicies);
-    acomodation.otherPolicies = reduceObjectToProperty(acomodation.otherPolicies, '_value_');
+  for (const accommodation of searchResults.accommodation) {
+    accommodation.otherPolicies = reduceToObjectByKey(accommodation.otherPolicies);
+    accommodation.otherPolicies = reduceObjectToProperty(accommodation.otherPolicies, '_value_');
  
-    for (const roomType of acomodation.roomTypes) {
+    for (const roomType of accommodation.roomTypes) {
       roomType.policies = reduceToObjectByKey(roomType.policies);
       roomType.policies = reduceObjectToProperty(roomType.policies, '_value_');
     }
-    acomodation.roomTypes = reduceToObjectByKey(acomodation.roomTypes);
-    acomodation.ratePlans = reduceToObjectByKey(acomodation.ratePlans);
+    accommodation.roomTypes = reduceToObjectByKey(accommodation.roomTypes);
+    accommodation.ratePlans = reduceToObjectByKey(accommodation.ratePlans);
   }
 
-  searchResults.acomodation = reduceAcomodation(searchResults.acomodation);
+  searchResults.accommodation = reduceAcomodation(searchResults.accommodation);
   return searchResults;
 };
 

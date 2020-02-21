@@ -1,6 +1,6 @@
 
 const hotelAvailTransformTemplate = {
-  acomodation: ['/soap:Envelope/soap:Body/OTA_HotelAvailRS/HotelStays/HotelStay', {
+  accommodation: ['/soap:Envelope/soap:Body/OTA_HotelAvailRS/HotelStays/HotelStay', {
     _provider_: '#ervmax',
     _id_: 'BasicPropertyInfo/@HotelCode',
     name: 'BasicPropertyInfo/@HotelName',

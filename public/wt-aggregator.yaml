@@ -699,7 +699,7 @@ components:
           $ref: '#/components/schemas/Media'
           
         roomTypes:
-          description: Type of rooms available for this acomodation
+          description: Type of rooms available for this accommodation
           type: object
           additionalProperties:
             description: A room type object

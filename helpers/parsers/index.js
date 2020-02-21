@@ -65,7 +65,7 @@ const roundCommissionDecimals = (offers) => offers
     }
   }));
 
-const reduceAcomodation = (acomodation) => acomodation
+const reduceAcomodation = (accommodation) => accommodation
   .reduce((ac, {_provider_, _id_, ...others}) => {
     const key = `${_provider_}.${_id_}`;
     return {
