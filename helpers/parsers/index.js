@@ -67,6 +67,50 @@ const roundCommissionDecimals = (offers) => offers
     }
   }));
 
+const reduceAcomodation = (accommodation) => accommodation
+  .reduce((ac, {_provider_, _id_, ...others}) => {
+    const key = `${_provider_}.${_id_}`;
+    return {
+      ...ac,
+      [key]: others,
+    };
+  }, {});
+
+const reduceRoomStays = (_roomStays_ => {
+  // The offer dicts will contain all offers
+  var offers = {}
+  _roomStays_.forEach(roomStay => {
+
+    // Create the accomodation key
+    var hotelkey = `${roomStay._provider_}.${roomStay._hotelCode_}`;
+
+    // Build the offers by parsing the room rates
+    roomStay._roomRates_.forEach(roomRate => {
+
+      // Build the key and offer
+      var key = hotelkey + "." + roomRate.ratePlanReference + "." + roomRate.roomTypeReference;
+      var offer = {
+        // Reference from other elements
+        ratePlanReference: roomRate.ratePlanReference,
+        roomTypeReference: roomRate.roomTypeReference,
+        accomodationReference: hotelkey,
+
+        // Build price
+        price: {
+          currency: roomRate.price.currency,
+          public: roomRate.price._afterTax_,
+          taxes: new Number(roomRate.price._afterTax_) - new Number(roomRate.price._beforeTax_)
+        }
+      };
+
+    // Add the offer item to the offers dict
+    offers[key] = offer;
+    });
+  });
+  return offers;
+});
+
+
 module.exports = {
   reduceToObjectByKey,
   roundCommissionDecimals,
@@ -77,4 +121,6 @@ module.exports = {
   reduceContactInformation,
   splitPropertyBySpace,
   reduceObjectToProperty,
+  reduceAcomodation,
+  reduceRoomStays,
 };

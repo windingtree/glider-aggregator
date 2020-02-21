@@ -1,63 +1,15 @@
-const { transform } = require('camaro');
-const axios = require('axios');
-const { basicDecorator } = require('../../decorators/basic')
-const { mapNdcRequestData } = require('../../helpers/transformInputData/searchOffers');
-const { provideAirShoppingRequestTemplate } = require('../../helpers/soapTemplates/searchOffers');
-const { provideAirShoppingTransformTemplate, ErrorsTransformTemplate } = require('../../helpers/camaroTemplates/provideAirShopping');
-const { reduceToObjectByKey,
- roundCommissionDecimals,
- splitSegments,
- reduceToProperty,
- mergeHourAndDate,
- useDictionary,
- reduceObjectToProperty,
-} = require('../../helpers/parsers');
-const { airFranceConfig } = require('../../config.js');
+const { basicDecorator } = require('../../decorators/basic');
+const { searchHotel } = require('../../helpers/resolvers/searchHotel');
+const { searchFlight } = require('../../helpers/resolvers/searchFlight');
 
 module.exports = basicDecorator(async (req, res) => {
-  const requestBody = req.body;    
-  const ndcRequestData = mapNdcRequestData(requestBody);
-  const ndcBody = provideAirShoppingRequestTemplate(ndcRequestData);
-  const response = await axios.post('https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001448v01/EXT',
-  ndcBody,
-    {
-      headers: {
-        'Content-Type': 'text/xml;charset=UTF-8',
-        'Accept-Encoding': 'gzip,deflate',
-        SOAPAction: '"http://www.af-klm.com/services/passenger/ProvideAirShopping/provideAirShopping"',
-        api_key: airFranceConfig.apiKey,
-      },
-    });
-  const { errors } = await transform(response.data, ErrorsTransformTemplate);
-  if (errors.length) throw new Error(`${errors[0].message}`);
-
-  const searchResults = await transform(response.data, provideAirShoppingTransformTemplate);
-  searchResults.itineraries.segments = 
-    mergeHourAndDate(searchResults.itineraries.segments, 'splittedDepartureDate', 'splittedDepartureTime', 'departureTime');
-  searchResults.itineraries.segments = 
-    mergeHourAndDate(searchResults.itineraries.segments, 'splittedArrivalDate', 'splittedArrivalTime', 'arrivalTime');
-  searchResults.itineraries.segments = reduceToObjectByKey(searchResults.itineraries.segments);
+  const { body } = req;
+  let resolver = () => {throw new Error('accommodation or itinerary missing in body');};
   
-  // Walk through the flight list 
-  var combinations = {};
-  searchResults.itineraries.combinations.forEach(flight => {
-    combinations[flight._id_] = flight._items_.split(' ');
-  });
-  searchResults.itineraries.combinations = combinations;
+  if(body.accommodation) resolver = searchHotel;
+  if(body.itinerary) resolver = searchFlight;
 
-  for (const offer of Object.values(searchResults.offers)) {
-    offer.offerItems = reduceToObjectByKey(offer.offerItems);
-    offer.offerItems =  reduceObjectToProperty(offer.offerItems, '_value_');
-  }
+  const result = await resolver(body);
 
-  searchResults.offers = roundCommissionDecimals(searchResults.offers);
-  searchResults.offers = reduceToObjectByKey(searchResults.offers);
-  searchResults.passengers = reduceToObjectByKey(searchResults.passengers);
-  searchResults.checkedBaggages = reduceToObjectByKey(searchResults.checkedBaggages);
-  searchResults.serviceClasses = useDictionary(searchResults.serviceClasses, searchResults.checkedBaggages, 'checkedBaggages');
-  searchResults.serviceClasses = reduceToObjectByKey(searchResults.serviceClasses);
-
-  delete searchResults.checkedBaggages;
-
-  res.status(200).json(searchResults);  
+  res.status(200).json(result);  
 });

@@ -672,10 +672,14 @@ components:
         contactInformation:
           type: object
           properties:
-            phoneNumber:
-              $ref: '#/components/schemas/PhoneNumber'
-            email:
-              $ref: '#/components/schemas/Email'
+            phoneNumbers:
+              type: array
+              items:
+                $ref: '#/components/schemas/PhoneNumber'
+            emails:
+              type: array
+              items:
+                $ref: '#/components/schemas/Email'
               
         checkinoutPolicy:
           description: The check-in and check-out time policy, format HH:MM
@@ -699,7 +703,7 @@ components:
           $ref: '#/components/schemas/Media'
           
         roomTypes:
-          description: Type of rooms available for this acomodation
+          description: Type of rooms available for this accommodation
           type: object
           additionalProperties:
             description: A room type object
