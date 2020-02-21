@@ -2,7 +2,7 @@ const format = require('date-fns/format');
 const differenceInCalendarDays = require('date-fns/differenceInCalendarDays');
 const parseISO = require('date-fns/parseISO');
 
-const mapRequestData = (hotelCodes, { accomodation: { arrival, departure }, passengers }) => {
+const mapRequestData = (hotelCodes, { acomodation: { arrival, departure }, passengers }) => {
   const duration = differenceInCalendarDays(parseISO(departure), parseISO(arrival));
   const guestCounts = passengers.map(({type, count}) => ({
     AgeQualifyingCode: type === 'ADT' ? 10 : 8,
