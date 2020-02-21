@@ -56,7 +56,6 @@ const hotelAvailTransformTemplate = {
       }],
     }],
     ratePlans: ['/soap:Envelope/soap:Body/OTA_HotelAvailRS/RoomStays/RoomStay/RatePlans/RatePlan', {
-      _provider_: '#ervmax',
       _id_: '@RatePlanCode',
       name: '@RatePlanName',
       penalties: {
