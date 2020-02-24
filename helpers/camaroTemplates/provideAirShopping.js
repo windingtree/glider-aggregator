@@ -16,8 +16,12 @@ const provideAirShoppingTransformTemplate = {
         passengerReferences: 'Service/PassengerRefs',
       },
     }],
-    itineraryCombinationReference: 'FlightsOverview/FlightRef',
-    serviceClassReference: 'FlightsOverview/FlightRef/@PriceClassRef',
+    //itineraryCombinationReference: 'FlightsOverview/FlightRef',
+    //serviceClassReference: 'FlightsOverview/FlightRef/@PriceClassRef',
+    flightsReferences: ['FlightsOverview/FlightRef', {
+      flightRef: '.',
+      priceClassRef: '@PriceClassRef',
+    }], 
   }],
   itineraries: {
     combinations: ['/S:Envelope/S:Body/AirShoppingRS/DataLists/FlightList/Flight', {
@@ -44,7 +48,7 @@ const provideAirShoppingTransformTemplate = {
       splittedArrivalDate: 'Arrival/Date',
     }],
   },
-  serviceClasses: ['/S:Envelope/S:Body/AirShoppingRS/DataLists/PriceClassList/PriceClass', {
+  pricePlans: ['/S:Envelope/S:Body/AirShoppingRS/DataLists/PriceClassList/PriceClass', {
     _id_: '@PriceClassID',
     name: 'ClassOfService/MarketingName',
     amenities: [],

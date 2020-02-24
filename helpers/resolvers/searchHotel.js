@@ -31,22 +31,82 @@ const searchHotel = async (body) => {
 
   const searchResults = await transform(response.data, hotelAvailTransformTemplate);
   
-  for (const accommodation of searchResults.accommodations) {
-    accommodation.otherPolicies = reduceToObjectByKey(accommodation.otherPolicies);
-    accommodation.otherPolicies = reduceObjectToProperty(accommodation.otherPolicies, '_value_');
- 
-    for (const roomType of accommodation.roomTypes) {
+
+  // Go through the Room Stays to build the offers and gather the room types
+  var accomodationRoomTypes = {};
+  var offers = {};
+  searchResults._roomStays_.forEach(roomStay => {
+
+    // Create the accommodation key
+    var accommodationReference = `${roomStay._provider_}.${roomStay._hotelCode_}`;
+
+    // Handle the room types
+    for (const roomType of roomStay._roomTypes_) {
+      // Reduce the policies
       roomType.policies = reduceToObjectByKey(roomType.policies);
       roomType.policies = reduceObjectToProperty(roomType.policies, '_value_');
+      
+      // Add the room type to the dict that will be used when building accomodation
+      if(!(accomodationRoomTypes[accommodationReference])) {
+        accomodationRoomTypes[accommodationReference] = {};
+      }      
+      accomodationRoomTypes[accommodationReference][roomType._id_] = roomType;
+      delete(accomodationRoomTypes[accommodationReference][roomType._id_]._id_);
     }
-    accommodation.roomTypes = reduceToObjectByKey(accommodation.roomTypes);
-    accommodation.ratePlans = reduceToObjectByKey(accommodation.ratePlans);
+
+    // Handle the Rate Plans
+    searchResults.pricePlans = reduceToObjectByKey(roomStay._ratePlans_);
+    delete(roomStay._ratePlans_);
+
+    // Build the offers by parsing the room rates
+    roomStay._roomRates_.forEach(roomRate => {
+
+      // Build the offer key
+      var offerKey = `${accommodationReference}.${roomRate.ratePlanReference}.${roomRate.roomTypeReference}`;
+
+      // Build the PricePlanReference
+      var pricePlanReference = {
+          accommodation: accommodationReference,
+          roomType: roomRate.roomTypeReference,
+      };
+      pricePlansReferences = {};
+      pricePlansReferences[roomRate.ratePlanReference] = pricePlanReference;
+
+      // Build the offer
+      var offer = {
+        // Reference from other elements
+        pricePlansReferences: pricePlansReferences,
+  
+        // Build price
+        price: {
+          currency: roomRate.price.currency,
+          public: roomRate.price._afterTax_,
+          taxes: new Number(roomRate.price._afterTax_) - new Number(roomRate.price._beforeTax_),
+        },
+      };
+
+      // Add the offer to the dict
+      offers[offerKey] = offer;
+    });
+  });
+
+  // Parse the accomodations
+  for (var accommodation of searchResults.accommodations) {
+    
+    // Build the accomodation reference key
+    var accommodationReference = `${accommodation._provider_}.${accommodation._id_}`;
+
+    // Reduce the policies
+    accommodation.otherPolicies = reduceToObjectByKey(accommodation.otherPolicies);
+    accommodation.otherPolicies = reduceObjectToProperty(accommodation.otherPolicies, '_value_');
+
+    // Add the room types gathered from Room Rates
+    accommodation.roomTypes = accomodationRoomTypes[accommodationReference];
+
   }
-
   searchResults.accommodations = reduceAcomodation(searchResults.accommodations);
-
-  // Create the offers
-  searchResults.offers = reduceRoomStays(searchResults._roomStays_);
+  
+  searchResults.offers = offers;
   delete(searchResults._roomStays_);
 
   return searchResults;

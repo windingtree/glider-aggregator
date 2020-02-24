@@ -13,7 +13,7 @@ const mapRequestData = (hotelCodes, { accommodation: { arrival, departure }, pas
     HotelRef: {
       HotelCode: hotelCode,
       StayDateRange: {
-        Start:  arrival,
+        Start:  format(new Date(arrival), 'yyyy-MM-dd'),
         Duration: duration,
         RoomStayCandidates: {
           RoomStayCandidate: {

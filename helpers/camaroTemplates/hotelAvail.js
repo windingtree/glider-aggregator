@@ -1,7 +1,7 @@
 
 const hotelAvailTransformTemplate = {
   accommodations: ['/soap:Envelope/soap:Body/OTA_HotelAvailRS/HotelStays/HotelStay', {
-    _provider_: '#ervmax',
+    _provider_: '#erevmax',
     _id_: 'BasicPropertyInfo/@HotelCode',
     name: 'BasicPropertyInfo/@HotelName',
     type: '#hotel',
@@ -31,7 +31,20 @@ const hotelAvailTransformTemplate = {
       height: '@height',
       url: '@url',      
     }],
-    roomTypes: ['/soap:Envelope/soap:Body/OTA_HotelAvailRS/RoomStays/RoomStay/RoomTypes/RoomType', {
+  }],
+  _roomStays_: ['/soap:Envelope/soap:Body/OTA_HotelAvailRS/RoomStays/RoomStay', {
+    _provider_: '#erevmax',
+    _hotelCode_: 'BasicPropertyInfo/@HotelCode',
+    _roomRates_: ['RoomRates/RoomRate',{
+      ratePlanReference: '@RatePlanCode',
+      roomTypeReference: '@RoomTypeCode',
+      price: {
+        currency: 'Total/@CurrencyCode',
+        _afterTax_: 'Total/@AmountAfterTax',
+        _beforeTax_: 'Total/@AmountBeforeTax',
+      }
+    }],
+    _roomTypes_: ['RoomTypes/RoomType', {
       _id_: '@RoomTypeCode',
       name: 'RoomDescription/@Name',
       description: 'RoomDescription/Text',
@@ -55,7 +68,7 @@ const hotelAvailTransformTemplate = {
         _value_: '@Text',
       }],
     }],
-    ratePlans: ['/soap:Envelope/soap:Body/OTA_HotelAvailRS/RoomStays/RoomStay/RatePlans/RatePlan', {
+    _ratePlans_: ['RatePlans/RatePlan', {
       _id_: '@RatePlanCode',
       name: '@RatePlanName',
       penalties: {
@@ -63,19 +76,6 @@ const hotelAvailTransformTemplate = {
           refundable: 'boolean(CancelPenalties/CancelPenalty/@NonRefundable = "false")',
         },
       },
-    }],
-  }],
-  _roomStays_: ['/soap:Envelope/soap:Body/OTA_HotelAvailRS/RoomStays/RoomStay', {
-    _provider_: '#erevmax',
-    _hotelCode_: 'BasicPropertyInfo/@HotelCode',
-    _roomRates_: ['RoomRates/RoomRate',{
-      ratePlanReference: '@RatePlanCode',
-      roomTypeReference: '@RoomTypeCode',
-      price: {
-        currency: 'Total/@CurrencyCode',
-        _afterTax_: 'Total/@AmountAfterTax',
-        _beforeTax_: 'Total/@AmountBeforeTax',
-      }
     }],
   }],
 };

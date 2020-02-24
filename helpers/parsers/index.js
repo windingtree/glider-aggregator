@@ -82,19 +82,26 @@ const reduceRoomStays = (_roomStays_ => {
   _roomStays_.forEach(roomStay => {
 
     // Create the accommodation key
-    var hotelkey = `${roomStay._provider_}.${roomStay._hotelCode_}`;
+    var accommodationReference = `${roomStay._provider_}.${roomStay._hotelCode_}`;
 
     // Build the offers by parsing the room rates
     roomStay._roomRates_.forEach(roomRate => {
 
-      // Build the key and offer
-      var key = hotelkey + "." + roomRate.ratePlanReference + "." + roomRate.roomTypeReference;
+      // Build the offer key
+      var offerKey = `${accommodationReference}.${roomRate.ratePlanReference}.${roomRate.roomTypeReference}`;
+
+      // Build the PricePlanReference
+      var pricePlanReference = {
+          accommodation: accommodationReference,
+          roomType: roomRate.roomTypeReference,
+      };
+      pricePlansReferences = {};
+      pricePlansReferences[roomRate.ratePlanReference] = pricePlanReference;
+
       var offer = {
         // Reference from other elements
-        ratePlanReference: roomRate.ratePlanReference,
-        roomTypeReference: roomRate.roomTypeReference,
-        accommodationReference: hotelkey,
-
+        pricePlansReferences: pricePlansReferences,
+  
         // Build price
         price: {
           currency: roomRate.price.currency,
@@ -104,7 +111,7 @@ const reduceRoomStays = (_roomStays_ => {
       };
 
     // Add the offer item to the offers dict
-    offers[key] = offer;
+    offers[offerKey] = offer;
     });
   });
   return offers;

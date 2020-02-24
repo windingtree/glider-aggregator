@@ -1,11 +1,30 @@
 // For documentation, https://github.com/windingtree/simard-schemas/blob/master/ndc/data-mapping.mds
 
+// The Passenger object
 const mapPassengers = (passengers) => passengers.reduce((list, {Passenger}) => {
   return `${list} 
   <edis:Passenger>
     <edis:PTC>${Passenger.PTC}</edis:PTC>
   </edis:Passenger>
 `}, '')
+
+
+// The OriginDestination object
+const mapOriginDestinations = (OriginDestinations) => OriginDestinations.reduce((list, {OriginDestination}) => {
+  return `${list} 
+  <edis:OriginDestination>
+    <edis:Departure>
+        <edis:AirportCode>${OriginDestination.Departure.AirportCode}</edis:AirportCode>
+        <edis:Date>${OriginDestination.Departure.Date}</edis:Date>
+        <edis:Time>${OriginDestination.Departure.Time}</edis:Time>
+    </edis:Departure>
+    <edis:Arrival>
+        <edis:AirportCode>${OriginDestination.Arrival.AirportCode}</edis:AirportCode>
+    </edis:Arrival>
+  </edis:OriginDestination>
+`}, '')
+
+// The Main request
 const provideAirShoppingRequestTemplate = (data) => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:edis="http://www.iata.org/IATA/EDIST/2017.1">
   <soapenv:Header>
     <trackingMessageHeader xmlns="http://www.af-klm.com/soa/xsd/MessageHeader-V1_0">
@@ -57,16 +76,7 @@ const provideAirShoppingRequestTemplate = (data) => `<soapenv:Envelope xmlns:soa
         </edis:Party>
         <edis:CoreQuery>
           <edis:OriginDestinations>
-              <edis:OriginDestination>
-                <edis:Departure>
-                    <edis:AirportCode>${data.CoreQuery.OriginDestinations.OriginDestination.Departure.AirportCode}</edis:AirportCode>
-                    <edis:Date>${data.CoreQuery.OriginDestinations.OriginDestination.Departure.Date}</edis:Date>
-                    <edis:Time>${data.CoreQuery.OriginDestinations.OriginDestination.Departure.Time}</edis:Time>
-                </edis:Departure>
-                <edis:Arrival>
-                    <edis:AirportCode>${data.CoreQuery.OriginDestinations.OriginDestination.Arrival.AirportCode}</edis:AirportCode>
-                </edis:Arrival>
-              </edis:OriginDestination>
+            ${mapOriginDestinations(data.CoreQuery.OriginDestinations)}
           </edis:OriginDestinations>
         </edis:CoreQuery>
         <edis:Preference>

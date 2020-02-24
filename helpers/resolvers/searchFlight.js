@@ -45,17 +45,34 @@ const searchFlight = async (body) => {
   });
   searchResults.itineraries.combinations = combinations;
 
+  // Create the offers
   for (const offer of Object.values(searchResults.offers)) {
+    // Add offer items
     offer.offerItems = reduceToObjectByKey(offer.offerItems);
     offer.offerItems =  reduceObjectToProperty(offer.offerItems, '_value_');
+
+    // Add the price plan references
+    var pricePlansReferences = {};
+    for(var flightsReference of offer.flightsReferences) {
+      if(!pricePlansReferences[flightsReference.priceClassRef]) {
+        pricePlansReferences[flightsReference.priceClassRef] = {'flights': [flightsReference.flightRef]};
+      }
+      else {
+        pricePlansReferences[flightsReference.priceClassRef]['flights'].push(flightsReference.flightRef);
+      }
+    }
+    offer.pricePlansReferences = pricePlansReferences;
+    delete(offer.flightsReferences);
   }
 
   searchResults.offers = roundCommissionDecimals(searchResults.offers);
   searchResults.offers = reduceToObjectByKey(searchResults.offers);
   searchResults.passengers = reduceToObjectByKey(searchResults.passengers);
   searchResults.checkedBaggages = reduceToObjectByKey(searchResults.checkedBaggages);
-  searchResults.serviceClasses = useDictionary(searchResults.serviceClasses, searchResults.checkedBaggages, 'checkedBaggages');
-  searchResults.serviceClasses = reduceToObjectByKey(searchResults.serviceClasses);
+  searchResults.pricePlans = useDictionary(searchResults.pricePlans, searchResults.checkedBaggages, 'checkedBaggages');
+  searchResults.pricePlans = reduceToObjectByKey(searchResults.pricePlans);
+
+
 
   delete searchResults.checkedBaggages;
   return searchResults;

@@ -49,7 +49,7 @@ paths:
                           "locationType": "airport",
                           "iataCode": "PRG"
                         },
-                        "departureTime": "2021-04-14T00:00:00Z"
+                        "departureTime": "2020-04-14T00:00:00Z"
                       }]
                     },
                     "passengers": [
@@ -70,8 +70,8 @@ paths:
                           "east": "14.4394467",
                         }
                       },
-                      "arrival": "2021-04-14T00:00:00Z",
-                      "departure": "2021-04-15T00:00:00Z",
+                      "arrival": "2020-07-02T00:00:00Z",
+                      "departure": "2020-07-03T00:00:00Z",
                     },
                     "passengers": [
                       {"type": "ADT", "count": 2},
@@ -590,19 +590,19 @@ components:
           format: date-time
           example: '2021-04-14T23:20:50.52Z'
           
-    ServiceClass:
-      description: Describes the attributes of the service class
+    PricePlan:
+      description: Describes the attributes of the price plan
       type: object
       properties:
       
         name:
-          description: The marketing name of this service class
+          description: The marketing name of this price plan
           type: string
           maxLength: 24
           example: "Premium Economy"
           
         amenities:
-          description: The amenities for this service class
+          description: The amenities for this price plan
           type: array
           maxItems: 99
           items:
@@ -806,19 +806,37 @@ components:
         # The price of the offer
         price:
           $ref: '#/components/schemas/Price'
-
-        # The offer itinerary reference
-        itineraryCombinationReference:
-          description: Reference to the Offer's segment combination
-          type: string
-          example: 'FL1'
-
-        # The offer class of service
-        serviceClassReference:
-          description: Reference to the Offer's service class 
-          type: string
-          example: 'PC1'
-          
+            
+        pricePlansReferences:
+          description: Maps a price plan with the associated elements
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              accommodation:
+                description: reference of the accomodation
+                type: string
+                example: 'prov.1234'
+              roomType:
+                description: reference of the room type in the accomodation
+                type: string
+                example: 'ND'
+              flights:
+                description: reference of the flights
+                type: array
+                items:
+                  type: string
+                  example: 'FL1'
+          example:
+            {
+              'BAR': {
+                'accommodation': 'prov.1234',
+                'roomType': 'ND'
+              },
+              'PC1': {
+                'flights': ['FL1', 'FL2'],
+              }
+            }
 
     # Define an Order object
     Order:
@@ -937,7 +955,7 @@ components:
 
         # The itineraries involved in the offers
         itineraries:
-          description: The itineraries possible for an offer
+          description: The possible itineraries for an offer
           type: object
           properties:
             # The possible combinations
@@ -967,12 +985,12 @@ components:
           additionalProperties:
             $ref: '#/components/schemas/Accommodation'
 
-        # The service classes involved in the offer
-        serviceClasses:
-          description: The indexed list of service Classes
+        # The price plans involved in the offer
+        pricePlans:
+          description: The indexed list of price plans
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/ServiceClass'
+            $ref: '#/components/schemas/PricePlan'
 
         # The mapping of the passenger references
         passengers:
