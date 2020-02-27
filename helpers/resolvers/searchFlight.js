@@ -15,6 +15,9 @@ const { reduceToObjectByKey,
 
 const { airFranceConfig } = require('../../config');
 
+const offer = require('../models/offer');
+
+
 const searchFlight = async (body) => {
   const ndcRequestData = mapNdcRequestData(body);
   const ndcBody = provideAirShoppingRequestTemplate(ndcRequestData);
@@ -71,6 +74,13 @@ const searchFlight = async (body) => {
   searchResults.checkedBaggages = reduceToObjectByKey(searchResults.checkedBaggages);
   searchResults.pricePlans = useDictionary(searchResults.pricePlans, searchResults.checkedBaggages, 'checkedBaggages');
   searchResults.pricePlans = reduceToObjectByKey(searchResults.pricePlans);
+
+  // Store the offers
+  var indexedOffers = {};
+  for(let offerId in searchResults.offers) {
+    indexedOffers[offerId] = new offer.FlightOffer('AF', 'AF');
+  }
+  offer.offerManager.storeOffersDict(indexedOffers);
 
 
 

@@ -34,7 +34,14 @@ const airFranceConfig = {
 
 const JWT = process.env.JWT;
 
-module.exports = {
-  airFranceConfig,
-  JWT,
-}
+const redisUrl = process.env.REDIS_URL;
+
+const erevmax = {
+  reservationUrl: process.env.EREVMAX_RESERVATION_URL,
+};
+
+
+exports.airFranceConfig = airFranceConfig;
+exports.JWT = JWT;
+exports.redisUrl = redisUrl;
+exports.erevmax = erevmax;

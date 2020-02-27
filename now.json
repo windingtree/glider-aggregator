@@ -1,5 +1,4 @@
 {
-    "name": "wt-aggregator",
     "version": 2,
     "builds": [
         {
@@ -59,6 +58,8 @@
         "AF_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SYSTEM_ID": "@af_participant_enabled_system_participant_system_id",
         "AF_PARTICIPANT_RECIPENT_AIRLINE_ID": "@af_participant_recipent_airline_id",
         "AF_PARTICIPANT_RECIPENT_NAME": "@af_participant_recipent_name",
-        "JWT": "@staging.wt-aggregator.jwt"
+        "JWT": "@staging.wt-aggregator.jwt",
+        "REDIS_URL": "@staging.wt-aggregator.redis_url",
+        "EREVMAX_RESERVATION_URL": "@staging.wt-aggregator.erevmax_reservation_url"
     }
 }

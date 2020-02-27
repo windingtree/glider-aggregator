@@ -1,4 +1,5 @@
-import { airFranceConfig } from '../../config';
+//import { airFranceConfig } from '../../config';
+const config = require('../../config');
 
 const provideAirShoppingTransformTemplate = {
   offers: ['/S:Envelope/S:Body/AirShoppingRS/OffersGroup/AirlineOffers/Offer', {
@@ -7,7 +8,7 @@ const provideAirShoppingTransformTemplate = {
     price: {
       currency: 'TotalPrice/DetailCurrencyPrice/Total/@Code',
       public: 'OfferItem/TotalPriceDetail/TotalAmount/DetailCurrencyPrice/Total',
-      commission: `number(OfferItem/TotalPriceDetail/BaseAmount) * ${airFranceConfig.commission}`,
+      commission: `number(OfferItem/TotalPriceDetail/BaseAmount) * ${config.airFranceConfig.commission}`,
       taxes: 'OfferItem/TotalPriceDetail/Taxes/Total',
     },
     offerItems: ['OfferItem', {

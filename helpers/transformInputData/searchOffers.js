@@ -1,5 +1,7 @@
 const format = require('date-fns/format');
-const { airFranceConfig } = require('../../config');
+//const { airFranceConfig } = require('../../config');
+const config = require('../../config');
+
 
 function expandPassengers(passengers) {
   var res = [];
@@ -22,7 +24,7 @@ function expandPassengers(passengers) {
 const mapNdcRequestData = ({itinerary, passengers}) => {
   //const departureTime = new Date(itinerary.segments[0].departureTime);
   const ndcRequestData = {
-    ...airFranceConfig,
+    ...config.airFranceConfig,
     PointOfSale: {
       RequestTime: (new Date(Date.now())).toISOString(),
     },

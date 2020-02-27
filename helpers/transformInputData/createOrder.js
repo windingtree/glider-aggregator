@@ -1,8 +1,8 @@
 const format = require('date-fns/format');
-const { airFranceConfig } = require('../../config');
+const config = require('../../config');
 
 const mapNdcRequestData = ({offerId, offerItems, passengers}) => ({
-  ...airFranceConfig,
+  ...config.airFranceConfig,
   trackingMessageHeader: {
     consumerRef : {
       consumerTime: (new Date(Date.now())).toISOString(),
@@ -12,7 +12,7 @@ const mapNdcRequestData = ({offerId, offerItems, passengers}) => ({
     Order: {
       Offer: {
         OfferId: offerId,
-        Owner: airFranceConfig.AirlineID,
+        Owner: config.airFranceConfig.AirlineID,
         OfferItems: offerItems,
       },
     },

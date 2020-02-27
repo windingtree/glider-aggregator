@@ -38,11 +38,22 @@ const hotelAvailTransformTemplate = {
     _roomRates_: ['RoomRates/RoomRate',{
       ratePlanReference: '@RatePlanCode',
       roomTypeReference: '@RoomTypeCode',
+      effectiveDate: '@EffectiveDate',
+      expireDate: '@ExpireDate',
+      expireDateExclusiveInd: 'boolean(@ExpireDateExclusiveInd="true")',
       price: {
         currency: 'Total/@CurrencyCode',
         _afterTax_: 'Total/@AmountAfterTax',
         _beforeTax_: 'Total/@AmountBeforeTax',
-      }
+      },
+      rates: ['Rates/Rate', {
+        rateTimeUnit: '@RateTimeUnit',
+        effectiveDate: '@EffectiveDate',
+        expireDate: '@ExpireDate',
+        amountBeforeTax: 'Base/@AmountBeforeTax',
+        amountAfterTax: 'Base/@AmountAfterTax',
+        currencyCode: 'Base/@CurrencyCode'
+      }],
     }],
     _roomTypes_: ['RoomTypes/RoomType', {
       _id_: '@RoomTypeCode',

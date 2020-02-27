@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { transform } = require('camaro');
+const { v4: uuidv4 } = require('uuid');
 
 const { basicDecorator } = require('../../decorators/basic');
 const { getHotelsInRectangle } = require('../parsers/erevmaxHotels');
@@ -10,13 +11,44 @@ const {
   reduceToObjectByKey, reduceObjectToProperty, reduceAcomodation, reduceRoomStays,
 } = require('../parsers');
 
+const offer = require('../models/offer');
+
 const searchHotel = async (body) => {
+  // Select the Hotels matching the rectangle
   const hotelCodes = getHotelsInRectangle(body.accommodation.location.rectangle);
-  if(!hotelCodes.length) throw new Error('Not matching hotels');
- 
+  if(!hotelCodes.length) {
+    throw new Error('No matching hotels');
+  }
+
+  // Get the Guest count
+  var guestCounts = [
+    new offer.GuestCount('ADT', 0),
+    new offer.GuestCount('CHD', 0),
+  ];
+  if(!body.passengers.length) {
+    throw new Error('Missing passenger types');
+  }
+  for(let p of body.passengers) {
+    let newCount = p.count === undefined ? 1 : Number(p.count);
+    if(p.type == 'ADT') {
+      guestCounts[0].count += newCount;
+    }
+    else if (p.type == 'CHD') {
+      guestCounts[1].count += newCount;
+    }
+    else {
+      throw new Error('Unsupported passenger type');
+    }
+  }
+  if(guestCounts[0].count == 0 ) {
+    throw new Error('At least one adult passenger is required to search properties');
+  }
+
+  // Build the request
   const requestData = mapRequestData(hotelCodes, body);
-  
   const requestBody = hotelAvailRequestTemplate(requestData);
+
+  // Fire the request
   const response = await axios.post('https://searchnbook.ratetiger.com/ARIShopService-WS/services/ARIShopService',
   requestBody,
     {
@@ -26,15 +58,19 @@ const searchHotel = async (body) => {
       },
     });
 
+  // Handle any errors returned from the API
   const { errors } = await transform(response.data, errorsTransformTemplate);
-  if (errors.length) throw new Error(`${errors[0].message}`);
+  if (errors.length) {
+    throw new Error(`${errors[0].message}`);
+  }
 
+  // Handle the search results
   const searchResults = await transform(response.data, hotelAvailTransformTemplate);
-  
 
   // Go through the Room Stays to build the offers and gather the room types
   var accomodationRoomTypes = {};
   var offers = {};
+  let offersToStore = {};
   searchResults._roomStays_.forEach(roomStay => {
 
     // Create the accommodation key
@@ -73,7 +109,7 @@ const searchHotel = async (body) => {
       pricePlansReferences[roomRate.ratePlanReference] = pricePlanReference;
 
       // Build the offer
-      var offer = {
+      var providerOffer = {
         // Reference from other elements
         pricePlansReferences: pricePlansReferences,
   
@@ -85,8 +121,37 @@ const searchHotel = async (body) => {
         },
       };
 
-      // Add the offer to the dict
-      offers[offerKey] = offer;
+      // Build the detailed rates
+      var rates = [];
+      for (rate of roomRate.rates) {
+        rates.push(new offer.Rate(
+          rate.effectiveDate,
+          rate.expireDate,
+          rate.rateTimeUnit,
+          rate.unitMultiplier === undefined ? '1' : rate.unitMultiplier,
+          rate.currencyCode,
+          rate.amountAfterTax,
+        ));
+      }
+
+      // Add the offer in the list of offers to store
+      let offerId = uuidv4();
+      offersToStore[offerId] = new offer.AccommodationOffer(
+        roomStay._provider_,
+        roomStay._hotelCode_,
+        roomRate.ratePlanReference,
+        roomRate.roomTypeReference,
+        rates,
+        guestCounts,
+        roomRate.effectiveDate,
+        roomRate.expireDate,
+        roomRate.price._beforeTax_,
+        roomRate.price._afterTax_,
+        roomRate.price.currency,
+      );
+
+      // Add the offer indexed by quote ID
+      offers[offerId] = providerOffer;
     });
   });
 
@@ -108,6 +173,16 @@ const searchHotel = async (body) => {
   
   searchResults.offers = offers;
   delete(searchResults._roomStays_);
+
+  // Store the offers
+  offer.offerManager.storeOffersDict(offersToStore);
+
+  // Hotels require only the main passenger
+  searchResults.passengers = {
+    PAX1: {
+        type: "ADT"
+    }
+}
 
   return searchResults;
 };

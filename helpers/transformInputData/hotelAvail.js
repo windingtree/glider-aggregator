@@ -6,7 +6,7 @@ const mapRequestData = (hotelCodes, { accommodation: { arrival, departure }, pas
   const duration = differenceInCalendarDays(parseISO(departure), parseISO(arrival));
   const guestCounts = passengers.map(({type, count}) => ({
     AgeQualifyingCode: type === 'ADT' ? 10 : 8,
-      Count: count,
+      Count: count === undefined ? 1: count,
     }));
 
   const hotelSearchCriteria = hotelCodes.map(hotelCode => ({

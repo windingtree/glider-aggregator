@@ -1,6 +1,7 @@
 const axios = require('axios');
 const { transform } = require('camaro');
-const { airFranceConfig, JWT } = require('../../../../config');
+//const { airFranceConfig, JWT } = require('../../../../config');
+const config = require('../../../../config');
 const { basicDecorator } = require('../../../../decorators/basic');
 const { mapNdcRequestData}  = require('../../../../helpers/transformInputData/fulfillOrder');
 const { fulfillOrderTemplate } = require('../../../../helpers/soapTemplates/fulfillOrder');
@@ -8,7 +9,7 @@ const { ErrorsTransformTemplate, fulfillOrderTransformTemplate } = require('../.
 const { reduceToObjectByKey, reduceToProperty } = require('../../../../helpers/parsers');
 
 const simardHeaders = {
-  Authorization: JWT,
+  Authorization: config.JWT,
 }
 
 module.exports = basicDecorator(async (req, res) => {
@@ -28,7 +29,7 @@ module.exports = basicDecorator(async (req, res) => {
         'Content-Type': 'text/xml;charset=UTF-8',
         'Accept-Encoding': 'gzip,deflate',
         SOAPAction: '"http://www.af-klm.com/services/passenger/AirDocIssue/airDocIssue"',
-        api_key: airFranceConfig.apiKey,
+        api_key: config.airFranceConfig.apiKey,
       },
     });
   

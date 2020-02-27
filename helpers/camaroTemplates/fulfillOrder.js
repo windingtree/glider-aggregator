@@ -1,4 +1,3 @@
-import { airFranceConfig } from '../../config';
 
 const fulfillOrderTransformTemplate = {
   travelDocuments: {

@@ -1006,7 +1006,7 @@ components:
       type: oauth2
       flows:
         implicit:
-          authorizationUrl: https://staging.simard.windingtree.net/oauth/authorize
+          authorizationUrl: https://simard-3efnlp9uy.now.sh/oauth/authorize
           scopes:
             write:orders: modify orders in your account
             read:orders: read your orders

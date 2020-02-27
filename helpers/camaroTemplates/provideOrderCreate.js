@@ -1,4 +1,4 @@
-import { airFranceConfig } from '../../config';
+//import { airFranceConfig } from '../../config';
 
 const provideOrderCreateTransformTemplate = {
   orderId: '/S:Envelope/S:Body/ns2:OrderViewRS/ns2:Response/ns2:Order/@OrderID',
