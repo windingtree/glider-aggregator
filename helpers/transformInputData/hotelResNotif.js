@@ -7,6 +7,9 @@ var emailValidator = require("email-validator");
   Maps an offer and passengers to an OTA HotelResNotifRQ structure
 */
 function mapFromOffer(offer, passengers ) {
+
+  const orderId = uuidv4();
+  const resId = orderId.substr(24);
   
   // Build the POS
   const pos = {
@@ -33,7 +36,7 @@ function mapFromOffer(offer, passengers ) {
     PaymentCard: {
       CardType: '1', // 1-Credit as per erevmax doc,
       CardCode: 'VI',
-      CardNumber: '123456789',
+      CardNumber: '4444333322221111',
       ExpireDate: '0420', // MMYY format,
       //CardHolderName: OPTIONAL
     },
@@ -55,7 +58,7 @@ function mapFromOffer(offer, passengers ) {
   ));
 
   // Build the Guest counts
-  const guestCounts = Object.values(offer.guestCounts).map(({type, count}) => ({
+  const guestCounts = offer.guestCounts.map(({type, count}) => ({
     AgeQualifyingCode: type === 'ADT' ? 10 : 8,
     Count: count === undefined ? 1 : count,
   }));
@@ -73,6 +76,10 @@ function mapFromOffer(offer, passengers ) {
         NumberOfUnits: '1',
         RatePlanCode: offer.rateCode,
         Rates: rates,
+        Total: {
+          CurrencyCode: offer.currency,
+          AmountAfterTax: offer.amountAfterTax,
+        },
       },
     },
     GuestCounts: guestCounts,
@@ -147,7 +154,7 @@ function mapFromOffer(offer, passengers ) {
           CreatorID: 'WindingTree',
           ResStatus: 'Commit',
           UniqueID: {
-            ID: 'WTTest123',
+            ID: resId,
             Type: '14',
           },
           RoomStays: {
@@ -175,7 +182,7 @@ function mapFromOffer(offer, passengers ) {
               HotelReservationID: {
                 ResID_Source: 'Windingtree',
                 ResID_Type: '22',
-                ResID_Value: 'WTTest123'
+                ResID_Value: resId
               },
             },
           },

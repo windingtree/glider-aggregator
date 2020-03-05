@@ -16,28 +16,33 @@ module.exports = async (offer, passengers) => {
     const otaHotelResNotifRQData = hotelResNotif.mapFromOffer(offer, passengers);
     const otaRequestBody = mapOTAHotelResNotifSoap(otaHotelResNotifRQData);
 
-    // Send the request
-    axios.post(
-      config.erevmax.reservationUrl,
-      otaRequestBody,
-      {
-        headers: {
-          'Content-Type': 'application/xml',
-          SOAPAction: 'http://www.opentravel.org/OTA/2003/05/getOTAHotelAvailability',
-        },
-      }
-    )
+    //console.log(otaRequestBody);
+    axios({
+      method: 'post',
+      url: config.erevmax.reservationUrl,
+      headers: {
+        'Content-Type': 'text/xml;charset=UTF-8',
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'SOAPAction': 'http://www.opentravel.org/OTA/2003/05/getOTAHotelAvailability',
+      },
+      data: otaRequestBody,
+      //responseType: 'stream'
+    })
 
     // Handle the response
     .then(response => {
+
       // Transform the XML answer
       transform(response.data, responseTemplate)
 
       // Build the answer according to API doc
       .then(responseData => {
+        console.log(responseData);
         // If any error, send it
         if(responseData.errors.length >0 ) {
-          reject({code:502, message: responseData.errors.join(', ')});
+          const errors = responseData.errors.map(({type, message}) => `[${type}] ${message}`);
+          reject({code:502, message: errors.join(' ,')});
         }
 
         // if no error
@@ -52,6 +57,7 @@ module.exports = async (offer, passengers) => {
         console.log(err);
         reject({code:502, message: 'Error parsing answer from reservation partner'});
       });
+      
     })
 
     // Handle an error

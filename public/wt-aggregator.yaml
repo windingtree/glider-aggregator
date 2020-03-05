@@ -54,7 +54,7 @@ paths:
                     },
                     "passengers": [
                       {"type": "ADT", "count": 2},
-                      {"type": "CHD"},
+                      {"type": "CHD"}
                     ]
                   }
               hotelSearch:
@@ -75,7 +75,7 @@ paths:
                     },
                     "passengers": [
                       {"type": "ADT", "count": 2},
-                      {"type": "CHD", "count": 1},
+                      {"type": "CHD", "count": 1}
                     ]
                   }
         required: true

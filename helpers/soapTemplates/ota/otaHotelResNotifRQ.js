@@ -3,10 +3,10 @@ const { v4: uuidv4 } = require('uuid');
 
 /* Mapping for Guest Counts */
 const mapGuestCount = OTA_GuestCount => {
-    if(OTA_GuestCount.Count = 0) return '';
+    if(OTA_GuestCount.Count == 0) return '';
     let guestCount = '';
-    guestCount += ` AgeQualifyingCode="${OTA_GuestCount.AgeQualifyingCode}`;
-    guestCount += ` Count="${OTA_GuestCount.Count}`;
+    guestCount += ` AgeQualifyingCode="${OTA_GuestCount.AgeQualifyingCode}"`;
+    guestCount += ` Count="${OTA_GuestCount.Count}"`;
     return `<GuestCount${guestCount}/>`;
 }
 
@@ -49,7 +49,9 @@ const mapRoomRate = OTA_RoomRate => `
 
 /* Mapping for Guarantee */
 const mapPaymentCard = OTA_PaymentCard => {
-    let paymentCard = '';
+    let paymentCard = '<PaymentCard';
+
+    // Add Payment Card attributes
     paymentCard += ` CardCode="${OTA_PaymentCard.CardCode}"`;
     paymentCard += ` CardNumber="${OTA_PaymentCard.CardNumber}"`;
     paymentCard += ` CardType="${OTA_PaymentCard.CardType}"`;
@@ -58,8 +60,19 @@ const mapPaymentCard = OTA_PaymentCard => {
     if(OTA_PaymentCard.SeriesCode !== undefined) {
         paymentCard += ` SeriesCode="${OTA_PaymentCard.SeriesCode}"`;
     }
+    paymentCard += '>'
 
-    return `<PaymentCard${paymentCard}/>`;
+    // Cardholder name is mandatory
+    if(OTA_PaymentCard.CardHolderName !== undefined) {
+        paymentCard += `<CardHolderName>${OTA_PaymentCard.CardHolderName}</CardHolderName>`;
+    } else {
+        paymentCard +=  '<CardHolderName/>';
+    }
+
+    // Finish the object
+    paymentCard += '</PaymentCard>'
+
+    return paymentCard;
 }
 
 const mapGuarantee = OTA_Guarantee => `
@@ -97,6 +110,9 @@ const mapRoomStay = OTA_RoomStay => `
     <Total
         AmountAfterTax="${OTA_RoomStay.Total.AmountAfterTax}"
         CurrencyCode="${OTA_RoomStay.Total.CurrencyCode}">
+        <Taxes Amount="00.00" CurrencyCode="EUR">
+            <Tax Type="Exclusive" Amount="00.00" CurrencyCode="EUR"/>
+        </Taxes>
     </Total>
     <BasicPropertyInfo
         HotelCode="${OTA_RoomStay.BasicPropertyInfo.HotelCode}"/>
@@ -104,6 +120,14 @@ const mapRoomStay = OTA_RoomStay => `
         <ResGuestRPH
             RPH="${OTA_RoomStay.ResGuestRPHs.ResGuestRPH.RPH}"/>
     </ResGuestRPHs>
+    <Comments>
+        <Comment GuestViewable="0">
+            <Text>Booked via Winding Tree</Text>
+        </Comment>
+    </Comments>
+    <SpecialRequests>
+        <SpecialRequest RequestCode="" CodeContext=""/>
+    </SpecialRequests>
 </RoomStay>
 `.trim();
 
@@ -125,7 +149,7 @@ const mapPOS = OTA_POS => `
 `.trim();
 
 const mapAddress = OTA_Address => {
-    if(OTA_Address == undefined) return '';
+    if(OTA_Address == undefined) return '<Address Type="1"><AddressLine/><CityName/><PostalCode/><StateProv StateCode=""/><CountryName Code=""/></Address>';
     return `
 <Address Type="${OTA_Address.Type}">
     <AddressLine>${OTA_Address.AddressLines[0]}</AddressLine>
@@ -251,15 +275,14 @@ const mapSoapHeader = uuid => `
 </soap:Header>
 `.trim();
 
-const mapHotelResNotifSoap = ({OTA_HotelResNotifRQ}) => `
-<?xml version="1.0" ?>
+const mapHotelResNotifSoap = ({OTA_HotelResNotifRQ}) => 
+`<?xml version="1.0" ?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
     ${mapSoapHeader(uuidv4())}
     <soap:Body>
         ${mapHotelResNotif(OTA_HotelResNotifRQ)}
     </soap:Body>
-</soap:Envelope>
-`
+</soap:Envelope>`
 .replace(/>\n/g,'>')
 .replace(/\n/g,' ')
 .replace(/(\s{4})/g,'')

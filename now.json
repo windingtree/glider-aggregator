@@ -60,6 +60,7 @@
         "AF_PARTICIPANT_RECIPENT_NAME": "@af_participant_recipent_name",
         "JWT": "@staging.wt-aggregator.jwt",
         "REDIS_URL": "@staging.wt-aggregator.redis_url",
-        "EREVMAX_RESERVATION_URL": "@staging.wt-aggregator.erevmax_reservation_url"
+        "EREVMAX_RESERVATION_URL": "@staging.wt-aggregator.erevmax_reservation_url",
+        "EREVMAX_AVAILABILITY_URL": "@staging.wt-aggregator.erevmax_availability_url"
     }
 }

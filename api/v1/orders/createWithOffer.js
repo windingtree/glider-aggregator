@@ -24,6 +24,7 @@ function returnCleanError(err, res) {
 
   // Default Error
   else {
+    console.log(err);
     res.status(500).json({message: 'A server error occured ', details: err});
   }
 }

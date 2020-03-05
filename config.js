@@ -37,6 +37,7 @@ const JWT = process.env.JWT;
 const redisUrl = process.env.REDIS_URL;
 
 const erevmax = {
+  availabilityUrl: process.env.EREVMAX_AVAILABILITY_URL,
   reservationUrl: process.env.EREVMAX_RESERVATION_URL,
 };
 

@@ -12,6 +12,7 @@ const {
 } = require('../parsers');
 
 const offer = require('../models/offer');
+const config = require('../../config');
 
 const searchHotel = async (body) => {
   // Select the Hotels matching the rectangle
@@ -49,8 +50,9 @@ const searchHotel = async (body) => {
   const requestBody = hotelAvailRequestTemplate(requestData);
 
   // Fire the request
-  const response = await axios.post('https://searchnbook.ratetiger.com/ARIShopService-WS/services/ARIShopService',
-  requestBody,
+  const response = await axios.post(
+    config.erevmax.availabilityUrl,
+    requestBody,
     {
       headers: {
         'Content-Type': 'application/xml',

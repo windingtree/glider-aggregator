@@ -29,7 +29,7 @@ const hotelAvailTransformTemplate = {
       type: '#photo',
       width: '@width',
       height: '@height',
-      url: '@url',      
+      url: '@url',
     }],
   }],
   _roomStays_: ['/soap:Envelope/soap:Body/OTA_HotelAvailRS/RoomStays/RoomStay', {
@@ -72,7 +72,7 @@ const hotelAvailTransformTemplate = {
         type: '#photo',
         width: '@width',
         height: '@height',
-        url: '@url',      
+        url: '@url',
       }],
       policies: ['TPA_Extensions/RoomPolicy/policy', {
         _id_: '@Policy_Type',
