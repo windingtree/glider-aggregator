@@ -54,7 +54,7 @@ const verifyJWT = async (type, jwt) => {
   const [ did, fragment ] = payload.iss.split('#');
   const didResult = await orgIdResolver.resolve(did);
 
-  console.log('>>>', didResult);
+  console.log('>>>', JSON.stringify(didResult, null, 2));
 
   // Organization should not be disabled
   if (!didResult.organization.state) {
