@@ -68,7 +68,7 @@ const verifyJWT = async (type, jwt) => {
       .replace('_', '/'),
     'base64')).toString('hex');
   
-  if (header.alg === 'ETH') {
+  if (!fragment) {
     // Validate signature of the organization owner or director
     const hashedMessage = ethers.utils.hashMessage(signedMessage);
     const signingAddress = ethers.utils.recoverAddress(hashedMessage, `0x${signatureB16}`);
