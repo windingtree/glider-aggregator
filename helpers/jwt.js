@@ -40,10 +40,17 @@ const verifyJWT = async (type, jwt) => {
     throw new Error('JWT Token header typ invalid');
   }
 
+  // Token must not be expired
   if (payload.exp < Date.now() / 1000) {
     throw new Error('JWT Token has Expired');
   }
 
+  // Issuer should be defined
+  if (!payload.iss || payload.iss === '') {
+    throw new Error('JWT Token is missing issuing ORG.ID');
+  }
+
+  // Resolve did to didDocument
   const [ did, fragment ] = payload.iss.split('#');
   const didResult = await orgIdResolver.resolve(did);
 
