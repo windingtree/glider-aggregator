@@ -1,11 +1,11 @@
 {
-  "name": "wt-aggregator",
+  "name": "glider-aggregator",
   "version": "0.0.1",
   "description": "Winding Tree aggregator",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/windingtree/wt-aggregator.git"
+    "url": "git+https://github.com/windingtree/glider-aggregator.git"
   },
   "keywords": [
     "Winding",
@@ -15,9 +15,9 @@
   "author": "Winding Tree devs",
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
-    "url": "https://github.com/windingtree/wt-aggregator/issues"
+    "url": "https://github.com/windingtree/glider-aggregator/issues"
   },
-  "homepage": "https://github.com/windingtree/wt-aggregator#readme",
+  "homepage": "https://github.com/windingtree/glider-aggregator#readme",
   "dependencies": {
     "axios": "0.19.2",
     "camaro": "^4.1.2",
@@ -28,7 +28,14 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "redis": "^3.0.2",
-    "uuid": "^7.0.0"
+    "uuid": "^7.0.0",
+    "web3": "1.2.6",
+    "@windingtree/org.id-resolver": "0.3.1",
+    "key-encoder": "2.0.3",
+    "elliptic": "6.5.2"
+  },
+  "devDependencies": {
+    "eslint": "6.8.0"
   },
   "engines": {
     "node": "12.x"

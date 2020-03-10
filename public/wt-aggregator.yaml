@@ -2,7 +2,7 @@ openapi: 3.0.1
 
 info:
   title: Winding Tree aggregator
-  description: 'This is the interface documentation for the REST api interface with the Winding Tree Aggregator'
+  description: "This is the interface documentation for the REST api interface with the Winding Tree Aggregator"
   contact:
     email: mathieu@windingtree.com
   license:
@@ -11,21 +11,21 @@ info:
   version: 1.0.0
 
 servers:
-- url: /api/v1
-  description: Current server
+  - url: /api/v1
+    description: Current server
 
 tags:
-- name: offers
-  description: Operations with Offers
-- name: orders
-  description: Operations with Orders
+  - name: offers
+    description: Operations with Offers
+  - name: orders
+    description: Operations with Orders
 
 paths:
   # ** Offers **
   /searchOffers:
     post:
       tags:
-      - offers
+        - offers
       summary: Search for offers matching search criterias
       operationId: offersWithSearchCriteria
       requestBody:
@@ -33,50 +33,58 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SearchCriteria'
+              $ref: "#/components/schemas/SearchCriteria"
             examples:
               flightSearch:
                 summary: A search for flights
-                value: 
+                value:
                   {
-                    "itinerary": {
-                      "segments" : [{
-                        "origin": {
-                          "locationType": "airport",
-                          "iataCode": "CDG"
-                        },
-                        "destination": {
-                          "locationType": "airport",
-                          "iataCode": "PRG"
-                        },
-                        "departureTime": "2020-04-14T00:00:00Z"
-                      }]
-                    },
-                    "passengers": [
-                      {"type": "ADT", "count": 2},
-                      {"type": "CHD"}
-                    ]
+                    "itinerary":
+                      {
+                        "segments":
+                          [
+                            {
+                              "origin":
+                                {
+                                  "locationType": "airport",
+                                  "iataCode": "CDG",
+                                },
+                              "destination":
+                                {
+                                  "locationType": "airport",
+                                  "iataCode": "PRG",
+                                },
+                              "departureTime": "2020-04-14T00:00:00Z",
+                            },
+                          ],
+                      },
+                    "passengers":
+                      [{ "type": "ADT", "count": 2 }, { "type": "CHD" }],
                   }
               hotelSearch:
                 summary: A search for hotels
-                value: 
+                value:
                   {
-                    "accommodation": {
-                      "location" : {
-                        "rectangle": {
-                          "south": "50.0929802",
-                          "west": "14.4012451",
-                          "north": "50.0812615",
-                          "east": "14.4394467",
-                        }
+                    "accommodation":
+                      {
+                        "location":
+                          {
+                            "rectangle":
+                              {
+                                "south": "50.0929802",
+                                "west": "14.4012451",
+                                "north": "50.0812615",
+                                "east": "14.4394467",
+                              },
+                          },
+                        "arrival": "2020-07-02T00:00:00Z",
+                        "departure": "2020-07-03T00:00:00Z",
                       },
-                      "arrival": "2020-07-02T00:00:00Z",
-                      "departure": "2020-07-03T00:00:00Z",
-                    },
-                    "passengers": [
-                      {"type": "ADT", "count": 2},
-                      {"type": "CHD", "count": 1}
-                    ]
+                    "passengers":
+                      [
+                        { "type": "ADT", "count": 2 },
+                        { "type": "CHD", "count": 1 },
+                      ],
                   }
         required: true
       responses:
@@ -85,7 +93,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchResults'
+                $ref: "#/components/schemas/SearchResults"
         401:
           description: Authorization required
           content: {}
@@ -105,16 +113,16 @@ paths:
           description: Internal Server error
           content: {}
       security:
-      - orgid_auth:
-        - read:orders
-      - orgid_token: []
+        - orgid_auth:
+            - read:orders
+        - orgid_token: []
       x-codegen-request-body-name: body
 
   # ** Orders **
   /orders/createWithOffer:
     post:
       tags:
-      - orders
+        - orders
       summary: Place an order using a given offer
       operationId: orderCreateWithOffer
       requestBody:
@@ -124,7 +132,7 @@ paths:
             schema:
               properties:
                 offerId:
-                  $ref: '#/components/schemas/UUID'
+                  $ref: "#/components/schemas/UUID"
                 offerItems:
                   description: The selected list of offer items
                   type: object
@@ -137,38 +145,34 @@ paths:
                         items:
                           type: string
                           example: PAX1
-                passengers: 
+                passengers:
                   description: Indexed dictionnary of the passengers
                   type: object
                   additionalProperties:
-                    $ref: '#/components/schemas/Passenger'
+                    $ref: "#/components/schemas/Passenger"
                 guaranteeId:
-                  $ref: '#/components/schemas/UUID'
+                  $ref: "#/components/schemas/UUID"
               example:
                 {
                   "offerId": "11111111-2222-3333-4444-000000000001",
-                  "offerItems": {
-                    "11111111-2222-3333-4444-000000000001": {
-                      "passengerReferences": "PAX1"
-                    }
-                  },
-                  "passengers": {
-                    "PAX1": {
-                      "type": "ADT",
-                      "civility": "MR",
-                      "lastnames": [
-                        "Marley"
-                      ],
-                      "firstnames": [
-                        "Bob"
-                      ],
-                      "birthdate": "1980-03-21T00:00:00Z",
-                      "contactInformation": [
-                        "+32123456789",
-                        "contact@org.co.uk"
-                      ]
-                    }
-                  }
+                  "offerItems":
+                    {
+                      "11111111-2222-3333-4444-000000000001":
+                        { "passengerReferences": "PAX1" },
+                    },
+                  "passengers":
+                    {
+                      "PAX1":
+                        {
+                          "type": "ADT",
+                          "civility": "MR",
+                          "lastnames": ["Marley"],
+                          "firstnames": ["Bob"],
+                          "birthdate": "1980-03-21T00:00:00Z",
+                          "contactInformation":
+                            ["+32123456789", "contact@org.co.uk"],
+                        },
+                    },
                 }
         required: true
       responses:
@@ -178,12 +182,12 @@ paths:
             application/json:
               schema:
                 properties:
-                  orderId: 
+                  orderId:
                     description: The ID of the order Created
-                    $ref: '#/components/schemas/UUID'
+                    $ref: "#/components/schemas/UUID"
                   order:
                     description: The created order
-                    $ref: '#/components/schemas/Order'
+                    $ref: "#/components/schemas/Order"
         401:
           description: Authorization required
           content: {}
@@ -203,26 +207,26 @@ paths:
           description: Internal Server error
           content: {}
       security:
-      - orgid_auth:
-        - write:orders
-      - orgid_token: []
+        - orgid_auth:
+            - write:orders
+        - orgid_token: []
       x-codegen-request-body-name: body
 
   # Fulfill an Order
   /orders/{orderId}/fulfill:
     post:
       tags:
-      - orders
+        - orders
       summary: Fulfills an order in Aggregator
       description: Confirms an order, providing travel documents if relevant
       operationId: fulfillOrder
       parameters:
-      - name: orderId
-        in: path
-        description: ID of the order to sign
-        required: true
-        schema:
-          $ref: '#/components/schemas/UUID'
+        - name: orderId
+          in: path
+          description: ID of the order to sign
+          required: true
+          schema:
+            $ref: "#/components/schemas/UUID"
       requestBody:
         content:
           application/json:
@@ -231,7 +235,7 @@ paths:
                 orderItems:
                   type: array
                   items:
-                    $ref: '#/components/schemas/UUID'
+                    $ref: "#/components/schemas/UUID"
                 passengerReferences:
                   type: array
                   items:
@@ -239,7 +243,7 @@ paths:
                     type: string
                     example: PAX1
                 guaranteeId:
-                  $ref: '#/components/schemas/UUID'
+                  $ref: "#/components/schemas/UUID"
       responses:
         200:
           description: Order sucessfully signed
@@ -247,10 +251,10 @@ paths:
             application/json:
               schema:
                 properties:
-                  orderId: 
-                    $ref: '#/components/schemas/UUID'
+                  orderId:
+                    $ref: "#/components/schemas/UUID"
                   order:
-                    $ref: '#/components/schemas/Order'
+                    $ref: "#/components/schemas/Order"
                   travelDocuments:
                     description: The travel documents provided by the supplier
                     type: object
@@ -263,7 +267,7 @@ paths:
                       etickets:
                         description: The electronic ticket references
                         type: array
-                        items: 
+                        items:
                           type: string
                           pattern: "^[0-9]{3}-[0-9]{10}$"
                           example: "057-1438027611"
@@ -286,101 +290,98 @@ paths:
           description: Too many requests, rate limit has been reached
           content: {}
       security:
-      - orgid_auth:
-        - write:orders
-      - orgid_token: []
+        - orgid_auth:
+            - write:orders
+        - orgid_token: []
 
 components:
   schemas:
-
     UUID:
       description: Unique identifier for Offers and Orders
       type: string
       format: uuid
       minLength: 36
       maxLength: 36
-      pattern: '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$'
-      example: '11111111-2222-3333-4444-000000000001'
-      
+      pattern: "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$"
+      example: "11111111-2222-3333-4444-000000000001"
+
     OrgId:
       description: ORG.ID contract address identifier
       type: string
-      pattern: '^0x[0-9a-f]{40}$'
+      pattern: "^0x[0-9a-f]{40}$"
       minLength: 42
       maxLength: 42
-      example: '0xc0fbc1348b43d50c948edf1818b0abfdd7466b9e'
+      example: "0xc0fbc1348b43d50c948edf1818b0abfdd7466b9e"
 
     Price:
       description: Price of the service
       type: object
       properties:
-      
         currency:
           description: The ISO4217 currency code
           type: string
-          pattern: '^[A-Z]{3}$'
+          pattern: "^[A-Z]{3}$"
           minLength: 3
           maxLength: 3
-          example: 'EUR'
-          
+          example: "EUR"
+
         private:
           description: The private price in currency decimals for this service that the distributor owes to the supplier.
           type: string
           pattern: '^[0-9]+(\.[0-9]+){0,1}$'
           minLength: 1
           maxLength: 99
-          example: '40.00'
-        
+          example: "40.00"
+
         public:
           description: The public price for this service. The distributor should sell the product at this price.
           type: string
           pattern: '^[0-9]+(\.[0-9]+){0,1}$'
           minLength: 1
           maxLength: 99
-          example: '50.00'
-        
+          example: "50.00"
+
         commission:
           description: The distributor commission for selling this service
           type: string
           pattern: '^[0-9]+(\.[0-9]+){0,1}$'
           minLength: 1
           maxLength: 99
-          example: '10.00'
-          
+          example: "10.00"
+
         taxes:
           description: The taxes to be collected when selling this service.
           type: string
           pattern: '^[0-9]+(\.[0-9]+){0,1}$'
           minLength: 1
           maxLength: 99
-          example: '1.20'
-          
+          example: "1.20"
+
     ServiceRestrictions:
       description: Service restrictions
       type: object
       properties:
-      
         refundable:
           description: Is the service refundable?
           type: boolean
           example: false
-          
+
         exchangeable:
           description: Is the service exchangeable?
           type: boolean
           example: false
-          
+
         refundFee:
           description: The fee charged in case a refund is requested
           type: string
           pattern: '^[0-9]+(\.[0-9]+){0,1}$'
-          example: '10.00'
-          
+          example: "10.00"
+
         exchangeFee:
           description: The fee charged in case an exchange is requested
           type: string
           pattern: '^[0-9]+(\.[0-9]+){0,1}$'
-          example: '10.00'
+          example: "10.00"
 
     Email:
       description: An email
@@ -393,7 +394,7 @@ components:
       type: string
       pattern: '^\+[0-9]+$'
       example: "+32123456789"
-          
+
     Passenger:
       description: A representation of a passenger
       type: object
@@ -404,11 +405,11 @@ components:
           minLength: 3
           maxLength: 3
           enum:
-          - ADT # Adult (12+y)
-          - CHD # Child (2-11y)
-          - INF # Infant without a seat (<2y)
+            - ADT # Adult (12+y)
+            - CHD # Child (2-11y)
+            - INF # Infant without a seat (<2y)
           example: ADT
-          
+
         count:
           description: Number of associated passengers of the same type
           type: integer
@@ -419,10 +420,10 @@ components:
           description: The civility of the passenger
           type: string
           enum:
-          - MR
-          - MRS
-          example: 'MR'
-          
+            - MR
+            - MRS
+          example: "MR"
+
         lastnames:
           description: The list of last names of this passenger
           type: array
@@ -432,8 +433,8 @@ components:
             type: string
             minLength: 1
             maxLength: 42
-            example: 'Marley'
-            
+            example: "Marley"
+
         firstnames:
           description: The list of first names of this passenger
           type: array
@@ -443,27 +444,26 @@ components:
             type: string
             minLength: 1
             maxLength: 42
-            example: 'Bob'
-        
+            example: "Bob"
+
         birthdate:
           description: The birthdate of the passenger
           type: string
           format: date-time
-          example: '1980-03-21T00:00:00Z'
+          example: "1980-03-21T00:00:00Z"
 
         contactInformation:
           description: The contact informations of the passenger
           type: array
           items:
             oneOf:
-              - $ref: '#/components/schemas/PhoneNumber'
-              - $ref: '#/components/schemas/Email'
-            
+              - $ref: "#/components/schemas/PhoneNumber"
+              - $ref: "#/components/schemas/Email"
+
     Location:
-      description: 'The location of a specific place'
+      description: "The location of a specific place"
       type: object
       properties:
-
         locationType:
           description: "The type of location, for explicit filtering"
           type: string
@@ -471,20 +471,19 @@ components:
             - airport
             - railstation
             - city
-          example: 'airport'
-          
+          example: "airport"
+
         iataCode:
-          description: 'The IATA code of the location'
+          description: "The IATA code of the location"
           type: string
-          pattern: '^[A-Z]{3}$'
+          pattern: "^[A-Z]{3}$"
           minLength: 3
           maxLength: 3
-          example: 'LHR'
-          
+          example: "LHR"
+
         coordinates:
           oneOf:
-            -
-              description: 'The coordinates of a rectangle area'
+            - description: "The coordinates of a rectangle area"
               type: object
               properties:
                 south:
@@ -500,33 +499,28 @@ components:
                   "south": "50.0929802",
                   "west": "14.4012451",
                   "north": "50.0812615",
-                  "east": "14.4394467"
+                  "east": "14.4394467",
                 }
-                
-            -
-              description: 'The coordinates of a point'
+
+            - description: "The coordinates of a point"
               type: object
               properties:
                 lat:
                   type: number
                 long:
                   type: number
-              example:
-                {
-                  "latitude": "50.0929802",
-                  "longitude": "14.4012451",
-                }
-            
+              example: { "latitude": "50.0929802", "longitude": "14.4012451" }
+
     Media:
       type: array
       items:
         type: object
         properties:
-          type: 
+          type:
             type: string
             enum:
-            - photo
-            - video
+              - photo
+              - video
           width:
             type: integer
           height:
@@ -539,68 +533,64 @@ components:
             "type": "photo",
             "width": 1024,
             "height": 683,
-            "url": "https://media.hosting.com/1234.jpg"
-          }    
+            "url": "https://media.hosting.com/1234.jpg",
+          }
 
     TravelOperator:
-      description: 'A specific travel operator'
+      description: "A specific travel operator"
       type: object
       properties:
-        
         operatorType:
           description: The type of travel operator
           type: string
           enum:
-          - airline
-          - railway
-          example: 'airline'
-          
+            - airline
+            - railway
+          example: "airline"
+
         iataCode:
           description: For airlines, the two letter IATA code
           type: string
-          pattern: '^[A-Z0-9]{2}$'
+          pattern: "^[A-Z0-9]{2}$"
           minLength: 2
           maxLength: 2
-          example: 'AF'
-          
-    
+          example: "AF"
+
     Segment:
       description: A section of a travel itinerary
       type: object
       properties:
-        
         operator:
-          $ref: '#/components/schemas/TravelOperator'
-          
+          $ref: "#/components/schemas/TravelOperator"
+
         origin:
-          $ref: '#/components/schemas/Location'
-        
-        destination: 
-          $ref: '#/components/schemas/Location'
-          
+          $ref: "#/components/schemas/Location"
+
+        destination:
+          $ref: "#/components/schemas/Location"
+
         departureTime:
           description: The departure time of the segment
           type: string
           format: date-time
-          example: '2021-04-12T23:20:50.52Z'
-        
+          example: "2021-04-12T23:20:50.52Z"
+
         arrivalTime:
           description: The arrival time of the segment
           type: string
           format: date-time
-          example: '2021-04-14T23:20:50.52Z'
-          
+          example: "2021-04-14T23:20:50.52Z"
+
     PricePlan:
       description: Describes the attributes of the price plan
       type: object
       properties:
-      
         name:
           description: The marketing name of this price plan
           type: string
           maxLength: 24
           example: "Premium Economy"
-          
+
         amenities:
           description: The amenities for this price plan
           type: array
@@ -608,79 +598,77 @@ components:
           items:
             type: string
             enum:
-            - meal
-            - wifi
-            - lounge
-            - fasttrack
-            - priorityBoarding
-            - seatSelection
+              - meal
+              - wifi
+              - lounge
+              - fasttrack
+              - priorityBoarding
+              - seatSelection
             example: meal
 
         checkedBaggages:
           description: the list of checked checkedBaggages
           type: object
           properties:
-            quantity: 
+            quantity:
               type: integer
               example: 2
 
-          
     # Defines the list of transportation types
     TransportationType:
       description: Type of transportation service
       type: string
       maxLength: 24
       enum:
-      - flight
-      - train
-      example: 'flight'
-    
+        - flight
+        - train
+      example: "flight"
+
     # Defines the list of accommodation types
     AccommodationType:
       description: Type of accommodation service
       type: string
       maxLength: 24
       enum:
-      - hotel
-      example: 'hotel'
-      
+        - hotel
+      example: "hotel"
+
     Accommodation:
       description: An accommodation object
       type: object
       properties:
-      
         name:
           description: The name of the property or accommodation
           type: string
           example: Comfort Hotel Xpress Stockholm Central
-          
+
         type:
-          $ref: '#/components/schemas/AccommodationType'
-          
+          $ref: "#/components/schemas/AccommodationType"
+
         description:
           description: The description of the property
           type: string
-          
+
         location:
-          $ref: '#/components/schemas/Location'
-          
+          $ref: "#/components/schemas/Location"
+
         rating:
           description: The award rating as per country rules
           type: integer
           example: 3
-          
+
         contactInformation:
           type: object
           properties:
             phoneNumbers:
               type: array
               items:
-                $ref: '#/components/schemas/PhoneNumber'
+                $ref: "#/components/schemas/PhoneNumber"
             emails:
               type: array
               items:
-                $ref: '#/components/schemas/Email'
-              
+                $ref: "#/components/schemas/Email"
+
         checkinoutPolicy:
           description: The check-in and check-out time policy, format HH:MM
           type: object
@@ -693,15 +681,15 @@ components:
               type: string
               pattern: "^[0-9]{2}:[0-9]{2}$"
               example: "11:00"
-              
+
         otherPolicies:
           type: object
           additionalProperties:
             type: string
-            
+
         media:
-          $ref: '#/components/schemas/Media'
-          
+          $ref: "#/components/schemas/Media"
+
         roomTypes:
           description: Type of rooms available for this accommodation
           type: object
@@ -709,11 +697,11 @@ components:
             description: A room type object
             type: object
             properties:
-              name: 
+              name:
                 description: The name of this room type
                 type: string
                 example: Twin beds
-              description: 
+              description:
                 description: A description of the room type
                 type: string
                 example: Standard twin rooms with two single beds
@@ -739,8 +727,8 @@ components:
                     description: The unit for this room size
                     type: string
                     enum:
-                    - metric
-                    - imperial
+                      - metric
+                      - imperial
                     example: metric
                     default: metric
               maximumOccupancy:
@@ -752,34 +740,31 @@ components:
                   childs:
                     type: integer
               media:
-                $ref: '#/components/schemas/Media'
-                
+                $ref: "#/components/schemas/Media"
+
               policies:
                 type: object
                 additionalProperties:
                   type: string
-
 
     # Defines an itinerary
     Itinerary:
       description: The itinerary of transportation
       type: object
       properties:
-        
         segments:
           description: An ordered list of segments
           type: array
           minItems: 1
           maxItems: 12
           items:
-            $ref: '#/components/schemas/Segment'
+            $ref: "#/components/schemas/Segment"
 
     # Define an Offer object
     Offer:
       description: An offer object
       type: object
       properties:
-
         # A list of items in the offer
         offerItems:
           description: Items included in the offer
@@ -787,26 +772,27 @@ components:
           additionalProperties:
             type: object
             properties:
-              passengerReferences: 
+              passengerReferences:
                 description: A space-separated list of passenger references.
                 type: string
                 example: "PAX1 PAX2"
-          example: {
-            "eb45c135-cc40-4131-85c1-35cc4071319f": { "passengerReferences": "PAX1" }
-          }
-            
+          example:
+            {
+              "eb45c135-cc40-4131-85c1-35cc4071319f":
+                { "passengerReferences": "PAX1" },
+            }
 
         # An offer expiration time
         expiration:
           description: The offer expiration time. Once this time is reached, the booking of the offer is not possible anymore.
           type: string
           format: date-time
-          example: '2021-04-12T23:20:50.52Z'
+          example: "2021-04-12T23:20:50.52Z"
 
         # The price of the offer
         price:
-          $ref: '#/components/schemas/Price'
-            
+          $ref: "#/components/schemas/Price"
+
         pricePlansReferences:
           description: Maps a price plan with the associated elements
           type: object
@@ -816,82 +802,77 @@ components:
               accommodation:
                 description: reference of the accomodation
                 type: string
-                example: 'prov.1234'
+                example: "prov.1234"
               roomType:
                 description: reference of the room type in the accomodation
                 type: string
-                example: 'ND'
+                example: "ND"
               flights:
                 description: reference of the flights
                 type: array
                 items:
                   type: string
-                  example: 'FL1'
+                  example: "FL1"
           example:
             {
-              'BAR': {
-                'accommodation': 'prov.1234',
-                'roomType': 'ND'
-              },
-              'PC1': {
-                'flights': ['FL1', 'FL2'],
-              }
+              "BAR": { "accommodation": "prov.1234", "roomType": "ND" },
+              "PC1": { "flights": ["FL1", "FL2"] },
             }
 
     # Define an Order object
     Order:
       description: An Order object
       required:
-      - version
-      - supplier
-      - distributor
+        - version
+        - supplier
+        - distributor
       type: object
       properties:
         # A version
-        version: 
+        version:
           description: A major/minor version pattern for forward compatibility
           type: string
           pattern: '^[0-9]+(\.[0-9]+)+$'
           minLength: 3
           maxLength: 12
-          example: '1.0.0'
-          
+          example: "1.0.0"
+
         # The ORG.ID of the supplier
         supplier:
-          $ref: '#/components/schemas/OrgId'
-        
+          $ref: "#/components/schemas/OrgId"
+
         # The ORG.ID of the distributor
         distributor:
-          $ref: '#/components/schemas/OrgId'
-        
+          $ref: "#/components/schemas/OrgId"
+
         # The type of travel service in the order
         type:
           description: Type of travel service
           type: string
           enum:
-          - transportation
-          - accommodation
-          - lounge
-          - fasttrack
-          - parking
-          example: 'transportation'
-        
+            - transportation
+            - accommodation
+            - lounge
+            - fasttrack
+            - parking
+          example: "transportation"
+
         # The sub-type of service
         subtype:
           description: The sub-type of service
           oneOf:
-          - $ref: '#/components/schemas/TransportationType'
-          - $ref: '#/components/schemas/AccommodationType'
-          example: 'flight'
-          
+            - $ref: "#/components/schemas/TransportationType"
+            - $ref: "#/components/schemas/AccommodationType"
+          example: "flight"
+
         # The price of the service
         price:
-          $ref: '#/components/schemas/Price'
-          
+          $ref: "#/components/schemas/Price"
+
         # The service restrictions
         restrictions:
-          $ref: '#/components/schemas/ServiceRestrictions'
-          
+          $ref: "#/components/schemas/ServiceRestrictions"
+
         # The passengers involved
         passengers:
           description: The passengers involved in the order
@@ -899,29 +880,28 @@ components:
           minItems: 1
           maxItems: 99
           items:
-            $ref: '#/components/schemas/Passenger'
-            
+            $ref: "#/components/schemas/Passenger"
+
         # For Transportation services
         itinerary:
-          $ref: '#/components/schemas/Itinerary'
+          $ref: "#/components/schemas/Itinerary"
 
     # Contains the parameters for a search
     SearchCriteria:
       description: An object to provide search criteria
       type: object
       properties:
-
         # The option of the itinerary being searched
         itinerary:
-          $ref: '#/components/schemas/Itinerary'
-          
+          $ref: "#/components/schemas/Itinerary"
+
         # The option of the accommodation being searched
         accommodation:
           description: Criteria for the accommodation search
           type: object
           properties:
             location:
-              $ref: '#/components/schemas/Location'
+              $ref: "#/components/schemas/Location"
             arrival:
               type: string
               description: arrival day in the accommodation
@@ -930,8 +910,7 @@ components:
               type: string
               description: departure day from the accommodation
               format: datetime
-              
-        
+
         # The passengers involved in the search
         passengers:
           description: The passengers involved in the search. Allows personalization and custom offers.
@@ -939,19 +918,18 @@ components:
           minItems: 1
           maxItems: 99
           items:
-            $ref: '#/components/schemas/Passenger'
+            $ref: "#/components/schemas/Passenger"
 
     SearchResults:
       description: An object to return search results
       type: object
       properties:
-        
         # The proposed offers
         offers:
           description: The indexed list of offers
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/Offer'
+            $ref: "#/components/schemas/Offer"
 
         # The itineraries involved in the offers
         itineraries:
@@ -977,28 +955,28 @@ components:
               description: The indexed list of segments
               type: object
               additionalProperties:
-                $ref: '#/components/schemas/Segment'
-                
+                $ref: "#/components/schemas/Segment"
+
         accommodations:
           description: The acomodations matching an search request
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/Accommodation'
+            $ref: "#/components/schemas/Accommodation"
 
         # The price plans involved in the offer
         pricePlans:
           description: The indexed list of price plans
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/PricePlan'
+            $ref: "#/components/schemas/PricePlan"
 
         # The mapping of the passenger references
         passengers:
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/Passenger'
+            $ref: "#/components/schemas/Passenger"
           example:
-          - PAX1: {"type": "ADT"}
+            - PAX1: { "type": "ADT" }
 
   # Defines the security schemes
   securitySchemes:
@@ -1006,7 +984,7 @@ components:
       type: oauth2
       flows:
         implicit:
-          authorizationUrl: https://simard-3efnlp9uy.now.sh/oauth/authorize
+          authorizationUrl: https://simard-2k2xtttxt.now.sh/oauth/authorize
           scopes:
             write:orders: modify orders in your account
             read:orders: read your orders
