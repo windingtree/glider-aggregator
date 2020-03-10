@@ -70,11 +70,12 @@ const verifyJWT = async (type, jwt) => {
   
   if (!fragment) {
     // Validate signature of the organization owner or director
+    
     const hashedMessage = ethers.utils.hashMessage(signedMessage);
     const signingAddress = ethers.utils.recoverAddress(hashedMessage, `0x${signatureB16}`);
 
     // Signer address should be an owner address or director address
-    // Director have to confirm it ownership
+    // and director have to be confirmed
     if (![
       didResult.organization.owner,
       ...(didResult.organization.director !== '0x0000000000000000000000000000000000000000'
@@ -87,6 +88,7 @@ const verifyJWT = async (type, jwt) => {
 
   } else if (fragment && didResult.didDocument.publicKey) {
     // Validate signature using publickKey
+
     let publicKey = didResult.didDocument.publicKey.filter(
       p => p.id.match(RegExp(`#${fragment}$`, 'g'))
     )[0];
@@ -124,7 +126,7 @@ const verifyJWT = async (type, jwt) => {
     const rawPub = keyEncoder.encodePublic(publicKey.publicKeyPem, 'pem', 'raw');
     const key = context.keyFromPublic(rawPub, 'hex');
 
-    // Build r-s signaure form
+    // Build r-s signature form
     const sigParts = signatureB16.match(/([a-f\d]{64})/gi);
     const sig = {
       r: sigParts[0],
