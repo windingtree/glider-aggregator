@@ -15,7 +15,6 @@ const orgIdResolver = new OrgIdResolver({
 orgIdResolver.registerFetchMethod(httpFetchMethod);
 
 const validisTyp = ['jwt', 'application/jwt'];
-const validAlg = ['ETH', 'ES256K'];
 
 const verifyJWT = async (type, jwt) => {
 
@@ -41,10 +40,6 @@ const verifyJWT = async (type, jwt) => {
     throw new Error('JWT Token header typ invalid');
   }
 
-  if (!validAlg.includes(header.alg)) {
-    throw new Error('JWT Token algorithm is invalid');
-  }
-
   if (payload.exp < Date.now() / 1000) {
     throw new Error('JWT Token has Expired');
   }
@@ -53,6 +48,16 @@ const verifyJWT = async (type, jwt) => {
   const didResult = await orgIdResolver.resolve(did);
 
   console.log('>>>', didResult);
+
+  // Organization should not be disabled
+  if (!didResult.organization.state) {
+    throw new Error(`The organization: ${didResult.organization.orgId} is disabled`);
+  }
+
+  // Lif deposit should be equal or more then configured
+  if (Number(web3.utils.fromWei(didResult.lifDeposit.deposit, 'ether')) < process.env.LIF_MIN_DEPOSIT) {
+    throw new Error(`Lif token deposit for the organization: ${didResult.organization.orgId} is less then ${process.env.LIF_MIN_DEPOSIT}`);
+  }
 
   const lastPeriod = jwt.lastIndexOf('.');
   const signedMessage = jwt.substring(0, lastPeriod);
@@ -68,11 +73,14 @@ const verifyJWT = async (type, jwt) => {
     const hashedMessage = ethers.utils.hashMessage(signedMessage);
     const signingAddress = ethers.utils.recoverAddress(hashedMessage, `0x${signatureB16}`);
 
+    // Signer address should be an owner address or director address
+    // Director have to confirm it ownership
     if (![
       didResult.organization.owner,
-      ...didResult.organization.director === '0x0000000000000000000000000000000000000000'
-        ? []
-        : [didResult.organization.director]
+      ...(didResult.organization.director !== '0x0000000000000000000000000000000000000000'
+          && didResult.organization.directorConfirmed
+        ? [didResult.organization.director]
+        : [])
     ].includes(signingAddress)) {
       throw new Error('JWT Token not authorized');
     }
@@ -88,29 +96,35 @@ const verifyJWT = async (type, jwt) => {
     }
 
     let curveType;
+    let Elc;
 
     switch (publicKey.type) {
       case 'X25519':
         curveType = 'ed25519';
+        Elc = eddsa;
         break;
 
       case 'secp256k1':
         curveType = 'secp256k1';
+        Elc = ec;
         break;
       
       default:
         throw new Error('Signature verification method not found');
     }
 
-    const context = new ec(curveType);
+    const context = new Elc(curveType);
     const keyEncoder = new KeyEncoder(curveType);
 
-    if (!publicKey.publicKeyPem.match(RegExp('BEGIN PUBLIC KEY', 'gi'))) {
+    if (!publicKey.publicKeyPem.match(RegExp('PUBLIC KEY', 'gi'))) {
       publicKey.publicKeyPem = `-----BEGIN PUBLIC KEY-----\n${publicKey.publicKeyPem}\n-----END PUBLIC KEY-----`;
     }
     
+    // Convert pem form of the public key to a raw value
     const rawPub = keyEncoder.encodePublic(publicKey.publicKeyPem, 'pem', 'raw');
     const key = context.keyFromPublic(rawPub, 'hex');
+
+    // Build r-s signaure form
     const sigParts = signatureB16.match(/([a-f\d]{64})/gi);
     const sig = {
       r: sigParts[0],
