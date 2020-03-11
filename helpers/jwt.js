@@ -1,7 +1,8 @@
 const JWT = require('jsonwebtoken');
 const ethers = require('ethers');
 const KeyEncoder = require('key-encoder').default;
-const { ec, eddsa } = require('elliptic');
+const { curves, ec, eddsa } = require('elliptic');
+const hash = require('hash.js');
 const Web3 = require('web3');
 const { OrgIdResolver, httpFetchMethod } = require('@windingtree/org.id-resolver');
 const { addresses } = require('@windingtree/org.id');
@@ -30,13 +31,9 @@ const verifyJWT = async (type, jwt) => {
     throw new Error('JWT Token format is not valid');
   };
 
-  const {
-    header,
-    payload,
-    signature
-  } = decodedToken;
+  const { header, payload, signature } = decodedToken;
 
-  if (process.env.TESTING) console.log('>>>', JSON.stringify(decodedToken, null, 2));
+  // if (process.env.TESTING) console.log('>>>', JSON.stringify(decodedToken, null, 2));
 
   if (!validisTyp.includes(header.typ.toLowerCase())) {
     throw new Error('JWT Token header typ invalid');
@@ -56,7 +53,7 @@ const verifyJWT = async (type, jwt) => {
   const [ did, fragment ] = payload.iss.split('#');
   const didResult = await orgIdResolver.resolve(did);
 
-  if (process.env.TESTING) console.log('>>>', JSON.stringify(didResult, null, 2));
+  // if (process.env.TESTING) console.log('>>>', JSON.stringify(didResult, null, 2));
 
   // Organization should not be disabled
   if (!didResult.organization.state) {
@@ -70,12 +67,29 @@ const verifyJWT = async (type, jwt) => {
 
   const lastPeriod = jwt.lastIndexOf('.');
   const jwtMessage = jwt.substring(0, lastPeriod);
-  const signatureB16 = (Buffer.from(
-    signature
-      .toString()
-      .replace('-', '+')
-      .replace('_', '/'),
-    'base64')).toString('hex');
+  let rawSign = decodedToken.signature
+    .toString()
+    .replace('-', '+')
+    .replace('_', '/');
+
+  switch (rawSign.length % 4) {
+    case 2:
+      rawSign += '==';
+      break;
+    case 3:
+      rawSign += '=';
+      break;
+    case 1:
+      throw new Error('Illegal base64url string in JWT Token');
+    default:
+  }
+
+  const signatureB16 = Buffer
+    .from(
+      rawSign,
+      'base64'
+    )
+    .toString('hex');
 
   if (!fragment) {
     // Validate signature of the organization owner or director
@@ -92,7 +106,7 @@ const verifyJWT = async (type, jwt) => {
         ? [didResult.organization.director]
         : [])
     ].includes(signingAddress)) {
-      throw new Error('JWT Token not authorized');
+      throw new Error('JWT Token is signed by unknown key');
     }
 
   } else if (fragment && didResult.didDocument.publicKey) {
@@ -124,26 +138,36 @@ const verifyJWT = async (type, jwt) => {
         throw new Error('Signature verification method not found');
     }
 
-    const context = new Elc(curveType);
-    const keyEncoder = new KeyEncoder(curveType);
+    const context = new Elc({
+      curve: curves[curveType],
+      hash: hash.sha256
+    });
+    
+    const keyEncoder = new KeyEncoder({
+      publicPEMOptions: { label: 'PUBLIC KEY' },
+      curve: context
+    });
 
     if (!publicKey.publicKeyPem.match(RegExp('PUBLIC KEY', 'gi'))) {
       publicKey.publicKeyPem = `-----BEGIN PUBLIC KEY-----\n${publicKey.publicKeyPem}\n-----END PUBLIC KEY-----`;
     }
-    
+
     // Convert pem form of the public key to a raw value
     const rawPub = keyEncoder.encodePublic(publicKey.publicKeyPem, 'pem', 'raw');
-    const key = context.keyFromPublic(rawPub, 'hex');
+    const keystore = context.keyFromPublic(rawPub, 'hex');
 
-    // Build r-s signature form
-    const sigParts = signatureB16.match(/([a-f\d]{64})/gi);
-    const sig = {
-      r: sigParts[0],
-      s: sigParts[1]
+    if (!keystore.validate().result) {
+      throw new Error('Invalid public key');
+    }
+
+    const signParts = signatureB16.match(/([a-f\d]{64})/gi);
+    const sign = {
+      r: signParts[0],
+      s: signParts[1]
     };
 
-    if (!key.verify(jwtMessage, sig)) {
-      throw new Error('JWT Token not authorized');
+    if (!context.verify(jwtMessage, sign, keystore.getPublic())) {
+      throw new Error('Invalid signature');
     }
 
   } else {

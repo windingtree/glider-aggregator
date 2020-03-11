@@ -1,6 +1,7 @@
 const JWT = require('jsonwebtoken');
+const { curves, ec, eddsa } = require('elliptic');
+const hash = require('hash.js');
 const KeyEncoder = require('key-encoder').default;
-const { ec: Ec, eddsa } = require('elliptic');
 require('dotenv').config();
 
 const { assertFailure } = require('../helpers/assertions');
@@ -14,8 +15,39 @@ describe('JWT', () => {
   const aud = '0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0';
   const iss = 'did:orgid:0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0';
   const exp = 7200;
+  let priv = privPem;
+  let pub = pubPem;
+  let secp256k1Context;
+  let secp256k1KeyEncoder;
+
+  before(async () => {
+    secp256k1Context = new ec({
+      curve: curves.secp256k1,
+      hash: hash.sha256
+    });
+    secp256k1KeyEncoder = new KeyEncoder({
+      privatePEMOptions: { label: 'PRIVATE KEY' },
+      publicPEMOptions: { label: 'PUBLIC KEY' },
+      curve: secp256k1Context
+    });
+  });
+
 
   describe('Test helpers', () => {
+
+    describe('Given key pair', () => {
+
+      it('should be a valid secp256k1 key pair', async () => {
+        const rawPub = secp256k1KeyEncoder.encodePublic(pubPem, 'pem', 'raw');
+        const keystore = secp256k1Context.keyPair({
+          priv: privPem,
+          pub: rawPub,
+          privEnc: 'hex',
+          pubEnc: 'hex'
+        });
+        (keystore.validate().result).should.be.true;
+      });
+    });
 
     describe('#createJWT', () => {
 
@@ -29,13 +61,17 @@ describe('JWT', () => {
           exp
         };
 
-        const { jwt, jwtMessage, key: keyPriv } = await createJWT({
-          priv: privPem
-        }, options);
+        const pair = secp256k1Context.genKeyPair();
+        priv = pair.getPrivate('hex');
+        pub = pair.getPublic();
+
+        const jwt = await createJWT(priv, options);
 
         const decodedToken = JWT.decode(jwt, {
           complete: true
         });
+        const lastPeriod = jwt.lastIndexOf('.');
+        const jwtMessage = jwt.substring(0, lastPeriod);
 
         (decodedToken).should.be.an('object');
         (decodedToken).should.has.property('header').to.be.an('object');
@@ -46,15 +82,39 @@ describe('JWT', () => {
         (decodedToken.payload).should.has.property('aud').to.equal(options.aud);
         (decodedToken.payload).should.has.property('exp').to.be.a('number');
         (decodedToken.payload).should.has.property('scope').to.equal('');
+        (decodedToken.signature).should.be.a('string');
 
-        const signatureB16 = Buffer.from(
-          decodedToken.signature
-            .toString()
-            .replace('-', '+')
-            .replace('_', '/'),
-          'base64').toString('hex');
+        let rawSign = decodedToken.signature
+          .toString()
+          .replace('-', '+')
+          .replace('_', '/');
 
-        (keyPriv.verify(jwtMessage, signatureB16)).should.be.true;
+        switch (rawSign.length % 4) {
+          case 2:
+            rawSign += '==';
+            break;
+          case 3:
+            rawSign += '=';
+            break;
+          case 1:
+            throw new Error('Illegal base64url string in JWT Token');
+          default:
+        }
+
+        const signatureB16 = Buffer
+          .from(
+            rawSign,
+            'base64'
+          )
+          .toString('hex');
+        
+        const rawPub = typeof pub === 'string'
+          ? secp256k1KeyEncoder.encodePublic(pub, 'pem', 'raw')
+          : pub;
+        const keystore = secp256k1Context.keyFromPublic(rawPub, 'hex');
+
+        (keystore.validate().result).should.be.true;
+        (secp256k1Context.verify(jwtMessage, signatureB16, keystore.getPublic())).should.be.true;
       });
     });
   });
@@ -71,8 +131,7 @@ describe('JWT', () => {
     let secp256k1Token;
 
     beforeEach(async () => {
-      const token = await createJWT({ priv: privPem }, secp256k1);
-      secp256k1Token = token.jwt;
+      secp256k1Token = await createJWT(privPem, secp256k1);
     });
 
     it('should verify token secp256k1', async () => {

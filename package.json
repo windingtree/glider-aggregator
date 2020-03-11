@@ -36,7 +36,8 @@
     "web3": "1.2.6",
     "@windingtree/org.id-resolver": "0.3.1",
     "key-encoder": "2.0.3",
-    "elliptic": "6.5.2"
+    "elliptic": "6.5.2",
+    "hash.js": "1.1.7"
   },
   "devDependencies": {
     "eslint": "6.8.0",

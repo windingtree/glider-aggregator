@@ -1,11 +1,12 @@
-const { ec, eddsa } = require('elliptic');
+const { curves, ec, eddsa } = require('elliptic');
+const hash = require('hash.js');
 const expect = require('./expect');
 
 module.exports.createJWT = async (
-  keystore,
+  priv,
   options
 ) => {
-  expect.all(keystore, {
+  expect.all({ priv }, {
     priv: {
       type: 'string'
     }
@@ -73,20 +74,19 @@ module.exports.createJWT = async (
       throw new Error('Signature verification method not found');
   }
 
-  const context = new Elc(curveType);
-  const key = context.keyFromPrivate(keystore.priv, 'hex');
-  const rawSignature = key.sign(jwtMessage);
+  const context = new Elc({
+    curve: curves[curveType],
+    hash: hash.sha256
+  });
+
+  const keystore = context.keyFromPrivate(priv, 'hex');
+  const rawSignature = context.sign(jwtMessage, keystore.getPrivate('hex'), 'hex');
   const sigValueB64 = Buffer
     .from(rawSignature.toDER())
     .toString('base64')
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .split('=')[0];
-  
-  return {
-    jwt: `${jwtMessage}.${sigValueB64}`,
-    jwtMessage,
-    rawSignature,
-    key
-  };
+
+  return `${jwtMessage}.${sigValueB64}`;
 };
