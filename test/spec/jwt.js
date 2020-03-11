@@ -61,6 +61,7 @@ describe('JWT', () => {
           exp
         };
 
+        // !!! success with generated keys
         const pair = secp256k1Context.genKeyPair();
         priv = pair.getPrivate('hex');
         pub = pair.getPublic();
