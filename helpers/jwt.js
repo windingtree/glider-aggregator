@@ -36,6 +36,8 @@ const verifyJWT = async (type, jwt) => {
     signature
   } = decodedToken;
 
+  if (process.env.TESTING) console.log('>>>', JSON.stringify(decodedToken, null, 2));
+
   if (!validisTyp.includes(header.typ.toLowerCase())) {
     throw new Error('JWT Token header typ invalid');
   }
@@ -54,7 +56,7 @@ const verifyJWT = async (type, jwt) => {
   const [ did, fragment ] = payload.iss.split('#');
   const didResult = await orgIdResolver.resolve(did);
 
-  console.log('>>>', JSON.stringify(didResult, null, 2));
+  if (process.env.TESTING) console.log('>>>', JSON.stringify(didResult, null, 2));
 
   // Organization should not be disabled
   if (!didResult.organization.state) {
@@ -67,18 +69,18 @@ const verifyJWT = async (type, jwt) => {
   }
 
   const lastPeriod = jwt.lastIndexOf('.');
-  const signedMessage = jwt.substring(0, lastPeriod);
+  const jwtMessage = jwt.substring(0, lastPeriod);
   const signatureB16 = (Buffer.from(
     signature
       .toString()
       .replace('-', '+')
       .replace('_', '/'),
     'base64')).toString('hex');
-  
+
   if (!fragment) {
     // Validate signature of the organization owner or director
     
-    const hashedMessage = ethers.utils.hashMessage(signedMessage);
+    const hashedMessage = ethers.utils.hashMessage(jwtMessage);
     const signingAddress = ethers.utils.recoverAddress(hashedMessage, `0x${signatureB16}`);
 
     // Signer address should be an owner address or director address
@@ -140,7 +142,7 @@ const verifyJWT = async (type, jwt) => {
       s: sigParts[1]
     };
 
-    if (!key.verify(signedMessage, sig)) {
+    if (!key.verify(jwtMessage, sig)) {
       throw new Error('JWT Token not authorized');
     }
 
