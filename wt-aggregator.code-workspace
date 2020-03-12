@@ -24,12 +24,13 @@
     ],
     "flow.pathToFlow": "${workspaceRoot}/node_modules/.bin/flow",
     "files.associations": {
-      "*.js": "javascriptreact",
+      "*.js": "javascript",
+      "*.jsx": "javascriptreact",
     },
     "flow.useNPMPackagedFlow": false,
     "javascript.validate.enable": false,
     "javascript.format.enable": false,
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "better-comments.multilineComments": true,
     "emmet.includeLanguages": {
       "postcss": "css"

@@ -41,8 +41,12 @@ const erevmax = {
   reservationUrl: process.env.EREVMAX_RESERVATION_URL,
 };
 
+const simard = {
+  apiUrl: process.env.SIMARD_API_URL
+};
 
 exports.airFranceConfig = airFranceConfig;
 exports.JWT = JWT;
 exports.redisUrl = redisUrl;
 exports.erevmax = erevmax;
+exports.simard = simard;
