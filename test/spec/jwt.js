@@ -73,14 +73,16 @@ describe('JWT', () => {
     it('should fail if wrong authorization method provided', async () => {
       await assertFailure(
         verifyJWT('Unknown', secp256k1Jwt),
-        'Unknown authorization method'
+        'Unknown authorization method',
+        403
       );
     });
 
     it('should fail if wrong JWT token provided', async () => {
       await assertFailure(
         verifyJWT('Bearer', 'wrong' + secp256k1Jwt),
-        'JWT is malformed'
+        'JWT is malformed',
+        403
       );
     });
 
@@ -90,7 +92,8 @@ describe('JWT', () => {
       );
       await assertFailure(
         verifyJWT('Bearer', token),
-        'JWT has expired'
+        'JWT has expired',
+        403
       );
     });
 
@@ -100,7 +103,8 @@ describe('JWT', () => {
       );
       await assertFailure(
         verifyJWT('Bearer', token),
-        'JWT not meant for Glider'
+        'JWT not meant for Glider',
+        403
       );
     });
 
@@ -110,14 +114,16 @@ describe('JWT', () => {
       );
       await assertFailure(
         verifyJWT('Bearer', token),
-        'JWT is missing issuing ORG.ID'
+        'JWT is missing issuing ORG.ID',
+        403
       );
     });
 
     it('should fail if signature not valid', async () => {
       await assertFailure(
         verifyJWT('Bearer', secp256k1Jwt + 'wrong=='),
-        'signature verification failed'
+        'JWT invalid signature',
+        403
       );
     });
 

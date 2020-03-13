@@ -5,7 +5,7 @@ const assert = require('assert');
  * @param {Object} promise Promise object to process
  * @param {boolean} [reason=null] Revert reason to compare
  */
-module.exports.assertFailure = async (promise, reason = false) => {
+module.exports.assertFailure = async (promise, reason = false, code = null) => {
 
   try {
     await promise;
@@ -19,6 +19,13 @@ module.exports.assertFailure = async (promise, reason = false) => {
       assert(
         reasonFoundByString,
         `Expected "error"${reason ? ' with message "'+reason+'"' : ''}, got ${error} instead`
+      );
+    }
+
+    if (code) {
+      assert(
+        error.code === code,
+        `Expected error code equal ${code}, got ${error.code}`
       );
     }
   }

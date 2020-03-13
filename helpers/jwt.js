@@ -4,6 +4,7 @@ const Web3 = require('web3');
 const { OrgIdResolver, httpFetchMethod } = require('@windingtree/org.id-resolver');
 const { addresses } = require('@windingtree/org.id');
 const redis = require('redis');
+const GliderError = require('./error');
 
 const config = require('../config');
 const web3 = new Web3(config.INFURA_ENDPOINT);
@@ -36,51 +37,62 @@ if (!process.env.TESTING) {
 module.exports.verifyJWT = async (type, jwt) => {
 
   if (type !== 'Bearer') {
-    throw new Error('Unknown authorization method');
+    throw new GliderError('Unknown authorization method', 403);
   };
 
-  const decodedToken = JWT.decode(jwt, {
-    complete: true
-  });
+  let decodedToken;
+
+  try {
+    decodedToken = JWT.decode(jwt, {
+      complete: true
+    });
+  } catch (e) {
+    switch (e.code) {
+      case 'ERR_JWT_MALFORMED':
+        e.message = 'JWT is malformed';
+        e.code = 403;
+        break;
+
+      default:
+    }
+    
+    throw new GliderError(e.message, e.code);
+  }
 
   const { payload: { exp, aud, iss } } = decodedToken;
 
-  // Token must not be expired
-  if (exp < Date.now() / 1000) {
-    throw new Error('JWT has expired');
-  }
-
-  // Token audience should be a Glider DID
-  if (aud !== config.GLIDER_DID) {
-    throw new Error('JWT not meant for Glider');
-  }
-
   // Issuer should be defined
   if (!iss || iss === '') {
-    throw new Error('JWT is missing issuing ORG.ID');
+    throw new GliderError('JWT is missing issuing ORG.ID', 403);
   }
 
   // Resolve did to didDocument
-  const [ did, fragment ] = iss.split('#');
+  const { did, fragment } = iss.match(/(?<did>did:orgid:0x\w{64})#(?<fragment>\w+)/).groups;
   
   let didResult;
-  const cachedDidResult = redisClient.get(`didResult:${did}`);
+  const cachedDidResult = redisClient.get(`didResult_${did}`);
 
   if (cachedDidResult) {
     didResult = cachedDidResult;
   } else {
     didResult = await orgIdResolver.resolve(did);
-    redisClient.set(`didResult:${did}`, didResult);
+    redisClient.set(`didResult_${did}`, didResult);
   }
 
   // Organization should not be disabled
   if (!didResult.organization.state) {
-    throw new Error(`The organization: ${didResult.organization.orgId} is disabled`);
+    throw new GliderError(
+      `The organization: ${didResult.organization.orgId} is disabled`,
+      403
+    );
   }
 
   // Lif deposit should be equal or more then configured
   if (Number(web3.utils.fromWei(didResult.lifDeposit.deposit, 'ether')) < process.env.LIF_MIN_DEPOSIT) {
-    throw new Error(`Lif token deposit for the organization: ${didResult.organization.orgId} is less then ${process.env.LIF_MIN_DEPOSIT}`);
+    throw new GliderError(
+      `Lif token deposit for the organization: ${didResult.organization.orgId} is less then ${process.env.LIF_MIN_DEPOSIT}`,
+      403
+    );
   }
 
   if (!fragment) {
@@ -112,7 +124,7 @@ module.exports.verifyJWT = async (type, jwt) => {
         ? [didResult.organization.director]
         : [])
     ].includes(signingAddress)) {
-      throw new Error('JWT Token is signed by unknown key');
+      throw new GliderError('JWT Token is signed by unknown key', 403);
     }
 
   } else if (fragment && didResult.didDocument.publicKey) {
@@ -123,22 +135,25 @@ module.exports.verifyJWT = async (type, jwt) => {
     )[0];
 
     if (!publicKey) {
-      throw new Error('Public key definition not found in the DID document');
+      throw new GliderError(
+        'Public key definition not found in the DID document',
+        403
+      );
     }
 
     let alg;
 
     switch (publicKey.type) {
-      case 'X25519':
-        throw new Error('X25519 not supported yet');
-  
       case 'ES256K':
       case 'secp256k1':
         alg = 'ES256K';
         break;
 
       default:
-        throw new Error(`'${publicKey.type}' signature not supported yet`);
+        throw new GliderError(
+          `'${publicKey.type}' signature not supported yet`,
+          403
+        );
     }
 
     if (!publicKey.publicKeyPem.match(RegExp('PUBLIC KEY', 'gi'))) {
@@ -153,18 +168,44 @@ module.exports.verifyJWT = async (type, jwt) => {
       }
     );
 
-    JWT.verify(
-      jwt,
-      pubKey,
-      {
-        typ: 'JWT',
-        audience: config.GLIDER_DID,
-        clockTolerance: '1 min'
+    try {
+      JWT.verify(
+        jwt,
+        pubKey,
+        {
+          typ: 'JWT',
+          audience: config.GLIDER_DID
+        }
+      );
+    } catch (e) {
+
+      switch (e.code) {
+        case 'ERR_JWT_EXPIRED':
+          e.message = 'JWT has expired';
+          break;
+
+        case 'ERR_JWT_CLAIM_INVALID':
+
+        if (e.claim === 'aud') {
+          e.message = 'JWT not meant for Glider';
+        }
+          break;
+
+        case 'ERR_JWS_VERIFICATION_FAILED':
+          e.message = 'JWT invalid signature';
+          break;
+
+        default:
       }
-    );
+
+      throw new GliderError(e.message, 403);
+    }
 
   } else {
-    throw new Error('Signature verification method not found');
+    throw new GliderError(
+      'Signature verification method not found',
+      403
+    );
   }
 
   return {
