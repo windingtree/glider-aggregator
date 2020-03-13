@@ -49,7 +49,7 @@ module.exports.verifyJWT = async (type, jwt) => {
   }
 
   // Resolve did to didDocument
-  const { did, fragment } = iss.match(/(?<did>did:orgid:0x\w{64})#(?<fragment>\w+)/).groups;
+  const { did, fragment } = iss.match(/(?<did>did:orgid:0x\w{64})(?:#{1})?(?<fragment>\w+)?/).groups;
   
   let didResult;
   const cachedDidResult = JSON.parse(await redisClient.asyncGet(`didResult_${did}`));
