@@ -984,7 +984,7 @@ components:
       type: oauth2
       flows:
         implicit:
-          authorizationUrl: https://simard-2k2xtttxt.now.sh/oauth/authorize
+          authorizationUrl: https://staging.api.simard.io/oauth/authorize
           scopes:
             write:orders: modify orders in your account
             read:orders: read your orders

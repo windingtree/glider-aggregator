@@ -22,6 +22,12 @@ if (!process.env.TESTING) {
   redisClient = redis.createClient();
   redisClient.on('error', (error) => {
     console.error(error);
+
+    if (error.code === 'ECONNREFUSED') {
+      // Fallback to Map
+      redisClient = new Map();
+      console.log('Fallback to Map instead of Redis');
+    }
   });
 } else {
   redisClient = new Map();
