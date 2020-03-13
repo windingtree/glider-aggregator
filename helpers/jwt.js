@@ -3,8 +3,8 @@ const ethers = require('ethers');
 const Web3 = require('web3');
 const { OrgIdResolver, httpFetchMethod } = require('@windingtree/org.id-resolver');
 const { addresses } = require('@windingtree/org.id');
-const redis = require('redis');
 const GliderError = require('./error');
+const { redisClient } = require('./redis');
 
 const config = require('../config');
 const web3 = new Web3(config.INFURA_ENDPOINT);
@@ -15,24 +15,6 @@ const orgIdResolver = new OrgIdResolver({
   orgId: addresses.ropsten // @todo Set the network type on the base of environment config
 });
 orgIdResolver.registerFetchMethod(httpFetchMethod);
-
-// Redis client configuration
-let redisClient;
-
-if (!process.env.TESTING) {
-  redisClient = redis.createClient();
-  redisClient.on('error', (error) => {
-    console.error(error);
-
-    if (error.code === 'ECONNREFUSED') {
-      // Fallback to Map
-      redisClient = new Map();
-      console.log('Fallback to Map instead of Redis');
-    }
-  });
-} else {
-  redisClient = new Map();
-}
 
 module.exports.verifyJWT = async (type, jwt) => {
 
@@ -70,13 +52,23 @@ module.exports.verifyJWT = async (type, jwt) => {
   const { did, fragment } = iss.match(/(?<did>did:orgid:0x\w{64})#(?<fragment>\w+)/).groups;
   
   let didResult;
-  const cachedDidResult = redisClient.get(`didResult_${did}`);
+  const cachedDidResult = JSON.parse(await redisClient.asyncGet(`didResult_${did}`));
 
   if (cachedDidResult) {
     didResult = cachedDidResult;
   } else {
     didResult = await orgIdResolver.resolve(did);
-    redisClient.set(`didResult_${did}`, didResult);
+    redisClient.set(
+      `didResult_${did}`,
+      JSON.stringify(didResult),
+      'EX',
+      60 * 60 * 12,// 12 hours
+      (err, res) => {
+        if (err) {
+          throw new GliderError(err.message, 500);
+        }
+      }
+    );
   }
 
   // Organization should not be disabled
