@@ -1,92 +1,69 @@
-const { curves, ec, eddsa } = require('elliptic');
-const hash = require('hash.js');
+const { JWK, JWT } = require('jose');
 const expect = require('./expect');
 
-module.exports.createJWT = async (
-  priv,
-  options
-) => {
-  expect.all({ priv }, {
+module.exports.createToken = async (options) => {
+  expect.all(options, {
     priv: {
       type: 'string'
-    }
-  });
-  expect.all(options, {
-    ctype: {
-      type: 'enum',
-      values: ['X25519', 'secp256k1']
     },
     alg: {
+      type: 'enum',
+      values: ['X25519', 'ES256K', 'secp256k1']
+    },
+    aud: {
       type: 'string'
     },
     iss: {
-      type: 'did'
+      type: 'did',
+      required: false// just for test case
     },
     fragment: {
       type: 'string',
       required: false
     },
-    aud: {
+    exp: {
       type: 'string'
     },
-    exp: {
-      type: 'number'
+    scope: {
+      type: 'string',
+      required: false
     }
   });
 
-  const header = {
-    alg: options.alg,
-    typ: 'JWT'
-  };
+  let alg;
 
-  const now = Math.floor(new Date().getTime()/1000);
-  const expiry = parseInt(options.exp, 10) + now;
-  const payload = {
-    iss: `${options.iss}${options.fragment ? '#' + options.fragment : ''}`,
-    aud: options.aud,
-    exp: expiry,
-    scope: ''
-  };
-
-  const headerString = JSON.stringify(header);
-  const payloadString = JSON.stringify(payload);
-
-  let jwtMessage = `${Buffer.from(headerString).toString('base64')}.${Buffer.from(payloadString).toString('base64')}`;
-  jwtMessage = jwtMessage.replace(/\=/g, '');
-  jwtMessage = jwtMessage.replace(/\+/g, '-');
-  jwtMessage = jwtMessage.replace(/\//g, '_');
-
-  let curveType;
-  let Elc;
-
-  switch (options.ctype) {
+  switch (options.alg) {
     case 'X25519':
-      curveType = 'ed25519';
-      Elc = eddsa;
-      break;
+      throw new Error('X25519 not supported yet');
 
+    case 'ES256K':
     case 'secp256k1':
-      curveType = 'secp256k1';
-      Elc = ec;
+      alg = 'ES256K';
       break;
     
     default:
-      throw new Error('Signature verification method not found');
+      throw new Error(`'${options.alg}' not supported yet`);
   }
 
-  const context = new Elc({
-    curve: curves[curveType],
-    hash: hash.sha256
-  });
+  const priv = JWK.asKey(
+    options.priv,
+    {
+      alg,
+      use: 'sig'
+    }
+  );
 
-  const keystore = context.keyFromPrivate(priv, 'hex');
-  const rawSignature = context.sign(jwtMessage, keystore.getPrivate('hex'), 'hex');
-  const sigValueB64 = Buffer
-    .from(rawSignature.toDER())
-    .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .split('=')[0];
-
-  return `${jwtMessage}.${sigValueB64}`;
+  return JWT.sign(
+    {
+      ...(options.scope ? { scope: options.scope } : {})
+    },
+    priv,
+    {
+      audience: options.aud,
+      ...(options.iss ? { issuer: `${options.iss}${options.fragment ? '#' + options.fragment : ''}` } : {}),
+      expiresIn: options.exp,
+      kid: false,
+      header: { typ: 'JWT' }
+    }
+  );
 };

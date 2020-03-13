@@ -1,12 +1,11 @@
-const JWT = require('jsonwebtoken');
+const { JWK, JWT } = require('jose');
 const ethers = require('ethers');
-const KeyEncoder = require('key-encoder').default;
-const { curves, ec, eddsa } = require('elliptic');
-const hash = require('hash.js');
 const Web3 = require('web3');
 const { OrgIdResolver, httpFetchMethod } = require('@windingtree/org.id-resolver');
 const { addresses } = require('@windingtree/org.id');
-const web3 = new Web3(process.env.INFURA_ENDPOINT);
+
+const config = require('../config');
+const web3 = new Web3(config.INFURA_ENDPOINT);
 
 // ORG.ID resolver configuration
 const orgIdResolver = new OrgIdResolver({
@@ -15,45 +14,36 @@ const orgIdResolver = new OrgIdResolver({
 });
 orgIdResolver.registerFetchMethod(httpFetchMethod);
 
-const validisTyp = ['jwt', 'application/jwt'];
-
-const verifyJWT = async (type, jwt) => {
+module.exports.verifyJWT = async (type, jwt) => {
 
   if (type !== 'Bearer') {
-    throw new Error('JWT Token format is not valid');
+    throw new Error('Unknown authorization method');
   };
 
   const decodedToken = JWT.decode(jwt, {
     complete: true
   });
 
-  if (!decodedToken) {
-    throw new Error('JWT Token format is not valid');
-  };
-
-  const { header, payload, signature } = decodedToken;
-
-  // if (process.env.TESTING) console.log('>>>', JSON.stringify(decodedToken, null, 2));
-
-  if (!validisTyp.includes(header.typ.toLowerCase())) {
-    throw new Error('JWT Token header typ invalid');
-  }
+  const { payload: { exp, aud, iss } } = decodedToken;
 
   // Token must not be expired
-  if (payload.exp < Date.now() / 1000) {
-    throw new Error('JWT Token has Expired');
+  if (exp < Date.now() / 1000) {
+    throw new Error('JWT has expired');
+  }
+
+  // Token audience should be a Glider DID
+  if (aud !== config.GLIDER_DID) {
+    throw new Error('JWT not meant for Glider');
   }
 
   // Issuer should be defined
-  if (!payload.iss || payload.iss === '') {
-    throw new Error('JWT Token is missing issuing ORG.ID');
+  if (!iss || iss === '') {
+    throw new Error('JWT is missing issuing ORG.ID');
   }
 
   // Resolve did to didDocument
-  const [ did, fragment ] = payload.iss.split('#');
+  const [ did, fragment ] = iss.split('#');
   const didResult = await orgIdResolver.resolve(did);
-
-  // if (process.env.TESTING) console.log('>>>', JSON.stringify(didResult, null, 2));
 
   // Organization should not be disabled
   if (!didResult.organization.state) {
@@ -65,34 +55,22 @@ const verifyJWT = async (type, jwt) => {
     throw new Error(`Lif token deposit for the organization: ${didResult.organization.orgId} is less then ${process.env.LIF_MIN_DEPOSIT}`);
   }
 
-  const lastPeriod = jwt.lastIndexOf('.');
-  const jwtMessage = jwt.substring(0, lastPeriod);
-  let rawSign = decodedToken.signature
-    .toString()
-    .replace('-', '+')
-    .replace('_', '/');
-
-  switch (rawSign.length % 4) {
-    case 2:
-      rawSign += '==';
-      break;
-    case 3:
-      rawSign += '=';
-      break;
-    case 1:
-      throw new Error('Illegal base64url string in JWT Token');
-    default:
-  }
-
-  const signatureB16 = Buffer
-    .from(
-      rawSign,
-      'base64'
-    )
-    .toString('hex');
-
   if (!fragment) {
     // Validate signature of the organization owner or director
+
+    const lastPeriod = jwt.lastIndexOf('.');
+    const jwtMessage = jwt.substring(0, lastPeriod);
+    let rawSign = decodedToken.signature
+      .toString()
+      .replace('-', '+')
+      .replace('_', '/');
+
+    const signatureB16 = Buffer
+      .from(
+        rawSign,
+        'base64'
+      )
+      .toString('hex');
     
     const hashedMessage = ethers.utils.hashMessage(jwtMessage);
     const signingAddress = ethers.utils.recoverAddress(hashedMessage, `0x${signatureB16}`);
@@ -111,7 +89,7 @@ const verifyJWT = async (type, jwt) => {
 
   } else if (fragment && didResult.didDocument.publicKey) {
     // Validate signature using publickKey
-
+    
     let publicKey = didResult.didDocument.publicKey.filter(
       p => p.id.match(RegExp(`#${fragment}$`, 'g'))
     )[0];
@@ -120,67 +98,50 @@ const verifyJWT = async (type, jwt) => {
       throw new Error('Public key definition not found in the DID document');
     }
 
-    let curveType;
-    let Elc;
+    let alg;
 
     switch (publicKey.type) {
       case 'X25519':
-        curveType = 'ed25519';
-        Elc = eddsa;
-        break;
-
+        throw new Error('X25519 not supported yet');
+  
+      case 'ES256K':
       case 'secp256k1':
-        curveType = 'secp256k1';
-        Elc = ec;
+        alg = 'ES256K';
         break;
-      
-      default:
-        throw new Error('Signature verification method not found');
-    }
 
-    const context = new Elc({
-      curve: curves[curveType],
-      hash: hash.sha256
-    });
-    
-    const keyEncoder = new KeyEncoder({
-      publicPEMOptions: { label: 'PUBLIC KEY' },
-      curve: context
-    });
+      default:
+        throw new Error(`'${publicKey.type}' signature not supported yet`);
+    }
 
     if (!publicKey.publicKeyPem.match(RegExp('PUBLIC KEY', 'gi'))) {
       publicKey.publicKeyPem = `-----BEGIN PUBLIC KEY-----\n${publicKey.publicKeyPem}\n-----END PUBLIC KEY-----`;
     }
 
-    // Convert pem form of the public key to a raw value
-    const rawPub = keyEncoder.encodePublic(publicKey.publicKeyPem, 'pem', 'raw');
-    const keystore = context.keyFromPublic(rawPub, 'hex');
+    const pubKey = JWK.asKey(
+      publicKey.publicKeyPem,
+      {
+        alg,
+        use: 'sig'
+      }
+    );
 
-    if (!keystore.validate().result) {
-      throw new Error('Invalid public key');
-    }
-
-    const signParts = signatureB16.match(/([a-f\d]{64})/gi);
-    const sign = {
-      r: signParts[0],
-      s: signParts[1]
-    };
-
-    if (!context.verify(jwtMessage, sign, keystore.getPublic())) {
-      throw new Error('Invalid signature');
-    }
+    JWT.verify(
+      jwt,
+      pubKey,
+      {
+        typ: 'JWT',
+        audience: config.GLIDER_DID,
+        clockTolerance: '1 min'
+      }
+    );
 
   } else {
     throw new Error('Signature verification method not found');
   }
 
   return {
-    header,
-    payload,
-    signature
+    aud,
+    iss,
+    exp
   };
-};
-
-module.exports = {
-  verifyJWT
 };
