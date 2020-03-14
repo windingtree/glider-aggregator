@@ -7,7 +7,9 @@ const GliderError = require('./error');
 const { redisClient } = require('./redis');
 
 const config = require('../config');
-const web3 = new Web3(config.INFURA_ENDPOINT);
+const web3 = new Web3(config.infura_uri);
+
+
 
 // ORG.ID resolver configuration
 const orgIdResolver = new OrgIdResolver({
@@ -58,6 +60,7 @@ module.exports.verifyJWT = async (type, jwt) => {
     didResult = cachedDidResult;
   } else {
     didResult = await orgIdResolver.resolve(did);
+    // @fixme Do not store in Redis if there is an error during resolution
     redisClient.set(
       `didResult_${did}`,
       JSON.stringify(didResult),

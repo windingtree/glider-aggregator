@@ -259,11 +259,13 @@ paths:
                     description: The travel documents provided by the supplier
                     type: object
                     properties:
-                      booking:
-                        description: The booking reference
-                        type: string
-                        pattern: "^[A-Z0-9]{6}$"
-                        example: "LCHTB4"
+                      bookings:
+                        description: The booking references
+                        type: array
+                        items:
+                          type: string
+                          pattern: "^[A-Z0-9]{6}$"
+                          example: "LCHTB4"
                       etickets:
                         description: The electronic ticket references
                         type: array
@@ -976,7 +978,7 @@ components:
           additionalProperties:
             $ref: "#/components/schemas/Passenger"
           example:
-            - PAX1: { "type": "ADT" }
+            PAX1: { "type": "ADT" }
 
   # Defines the security schemes
   securitySchemes:
