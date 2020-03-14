@@ -3,7 +3,7 @@ const format = require('date-fns/format');
 const config = require('../../config');
 
 
-const mapNdcRequestData = ({orderItems, passengers}, { orderId }) => ({
+const mapNdcRequestData = ({orderItems, passengerReferences}, { orderId }) => ({
   ...config.airFranceConfig,
   requestTime: (new Date(Date.now())).toISOString(),
   Query: {
@@ -17,7 +17,7 @@ const mapNdcRequestData = ({orderItems, passengers}, { orderId }) => ({
       },
     },
     DataLists: {
-      PassengerList: passengers,
+      PassengerList: passengerReferences,
     }
   },
 });

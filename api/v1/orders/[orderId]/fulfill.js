@@ -9,12 +9,12 @@ const { ErrorsTransformTemplate, fulfillOrderTransformTemplate } = require('../.
 const { reduceToObjectByKey, reduceToProperty } = require('../../../../helpers/parsers');
 
 const simardHeaders = {
-  Authorization: config.JWT,
+  Authorization: `Bearer ${config.JWT}`,
 }
 
 module.exports = basicDecorator(async (req, res) => {
   const { body, query, headers } = req;
-  const guaranteeResponse = await axios.get(`https://staging.simard.windingtree.net/api/v1/balances/guarantees/${body.guaranteeId}`,
+  const guaranteeResponse = await axios.get(`${config.SIMARD_URL}/balances/guarantees/${body.guaranteeId}`,
     {
       headers: simardHeaders,
     },
@@ -41,7 +41,7 @@ module.exports = basicDecorator(async (req, res) => {
   fulfillResults.travelDocuments.etickets = reduceToObjectByKey(fulfillResults.travelDocuments.etickets);
   fulfillResults.travelDocuments.etickets = reduceToProperty(fulfillResults.travelDocuments.etickets, '_passenger_');
 
-  const guarantreeClaim = await axios.post(`https://staging.simard.windingtree.net/api/v1/balances/guarantees/${body.guaranteeId}/claim`,
+  const guarantreeClaim = await axios.post(`${config.SIMARD_URL}/balances/guarantees/${body.guaranteeId}/claim`,
     {},
     {
       headers: simardHeaders,
