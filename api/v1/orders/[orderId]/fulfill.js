@@ -15,6 +15,7 @@ const {
 } = require('../../../../helpers/parsers');
 
 const simardHeaders = {
+<<<<<<< HEAD
   Authorization: config.JWT,
 };
 
@@ -28,6 +29,14 @@ module.exports = basicDecorator(async (req, res) => {
 
   const guaranteeResponse = await axios.get(
     `${config.simard.apiUrl}/balances/guarantees/${body.guaranteeId}`,
+=======
+  Authorization: `Bearer ${config.JWT}`,
+}
+
+module.exports = basicDecorator(async (req, res) => {
+  const { body, query, headers } = req;
+  const guaranteeResponse = await axios.get(`${config.SIMARD_URL}/balances/guarantees/${body.guaranteeId}`,
+>>>>>>> develop
     {
       headers: simardHeaders,
     }
@@ -53,6 +62,7 @@ module.exports = basicDecorator(async (req, res) => {
 
   const { errors } = await transform(response.data, ErrorsTransformTemplate);
 
+<<<<<<< HEAD
   if (errors.length) {
     throw new Error(`${errors[0].message}`);
   }
@@ -71,6 +81,9 @@ module.exports = basicDecorator(async (req, res) => {
 
   const guarantreeClaim = await axios.post(
     `${config.simard.apiUrl}/balances/guarantees/${body.guaranteeId}/claim`,
+=======
+  const guarantreeClaim = await axios.post(`${config.SIMARD_URL}/balances/guarantees/${body.guaranteeId}/claim`,
+>>>>>>> develop
     {},
     {
       headers: simardHeaders

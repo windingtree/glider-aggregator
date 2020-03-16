@@ -25,7 +25,11 @@
     "flow.pathToFlow": "${workspaceRoot}/node_modules/.bin/flow",
     "files.associations": {
       "*.js": "javascript",
+<<<<<<< HEAD
       "*.jsx": "javascriptreact",
+=======
+      "*.jsx": "javascriptreact"
+>>>>>>> develop
     },
     "flow.useNPMPackagedFlow": false,
     "javascript.validate.enable": false,

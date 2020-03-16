@@ -1,14 +1,23 @@
-# wt-aggregator
+# glider-aggregator
 
 ## Dependencies
 Requires [now-cli](https://zeit.co/download) installed globaly
 
-## Run with Now locally
-`npm install`
+## Initial setup
 
-`now dev`
+```bash
+$ npm i
+```
 
+## Run tests
 
-## Run dev mode
-`npm run dev`
+```bash
+npm test
+```
+
+## Run locally
+
+```bash
+$ npm run dev
+```
 
