@@ -15,14 +15,16 @@ const {
   reduceRoomStays,
 } = require('../parsers');
 
+const GliderError = require('../error');
 const offer = require('../models/offer');
 const config = require('../../config');
 
 const searchHotel = async (body) => {
   // Select the Hotels matching the rectangle
   const hotelCodes = getHotelsInRectangle(body.accommodation.location.rectangle);
+
   if (!hotelCodes.length) {
-    throw new Error('No matching hotels');
+    throw new GliderError('No matching hotels', 404);
   }
 
   // Get the Guest count
@@ -30,9 +32,11 @@ const searchHotel = async (body) => {
     new offer.GuestCount('ADT', 0),
     new offer.GuestCount('CHD', 0),
   ];
+
   if (!body.passengers.length) {
-    throw new Error('Missing passenger types');
+    throw new GliderError('Missing passenger types', 400);
   }
+
   for (let p of body.passengers) {
     let newCount = p.count === undefined ? 1 : Number(p.count);
     if (p.type === 'ADT') {
@@ -40,11 +44,15 @@ const searchHotel = async (body) => {
     } else if (p.type === 'CHD') {
       guestCounts[1].count += newCount;
     } else {
-      throw new Error('Unsupported passenger type');
+      throw new GliderError('Unsupported passenger type', 400);
     }
   }
+
   if (guestCounts[0].count === 0) {
-    throw new Error('At least one adult passenger is required to search properties');
+    throw new GliderError(
+      'At least one adult passenger is required to search properties',
+      400
+    );
   }
 
   // Build the request
@@ -63,8 +71,9 @@ const searchHotel = async (body) => {
 
   // Handle any errors returned from the API
   const { errors } = await transform(response.data, errorsTransformTemplate);
+
   if (errors.length) {
-    throw new Error(`${errors[0].message}`);
+    throw new GliderError(`${errors[0].message}`, 502);
   }
 
   // Handle the search results

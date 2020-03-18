@@ -8,6 +8,7 @@ const OrdersSchema = new Schema(
     },
     request: Schema.Types.Mixed,
     guarantee: Schema.Types.Mixed,
+    guaranteeClaim: Schema.Types.Mixed,
     order: Schema.Types.Mixed,
     updatedAt: {
       type: Date,

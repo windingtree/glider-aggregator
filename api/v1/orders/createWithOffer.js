@@ -1,16 +1,17 @@
-const axios = require('axios');
-const config = require('../../../config');
 const GliderError = require('../../../helpers/error');
 const { basicDecorator } = require('../../../decorators/basic');
-
-const offer = require('../../../helpers/models/offer');
+const {
+  offerManager,
+  AccommodationOffer,
+  FlightOffer
+} = require('../../../helpers/models/offer');
 const { ordersManager } = require('../../../helpers/models/order');
+const {
+  getGuarantee,
+  claimGuaranteeWithCard
+} = require('../../../helpers/guarantee');
 const hotelResolver = require('../../../helpers/resolvers/hotel/orderCreateWithOffer');
 const flightResolver = require('../../../helpers/resolvers/flight/orderCreateWithOffer');
-
-const simardHeaders = {
-  Authorization: `Bearer ${config.JWT}`,
-};
 
 module.exports = basicDecorator(async (req, res) => {
   const requestBody = req.body;
@@ -23,78 +24,32 @@ module.exports = basicDecorator(async (req, res) => {
   }
 
   // Retrieve the offer
-  const storedOffer = await offer.offerManager.getOffer(requestBody.offerId);
+  const storedOffer = await offerManager.getOffer(requestBody.offerId);
   
   if (!requestBody.guaranteeId) {
     throw new GliderError('Guarantee Id is required', 400);
   }
 
-  let guaranteeResponse;
-  let guaranteeClaimResponse;
+  // Get the guarantee
+  const guarantee = await getGuarantee(requestBody.guaranteeId, storedOffer);
 
-  try {
-    // Get the guarantee
-    guaranteeResponse = await axios.get(
-      `${config.SIMARD_URL}/balances/guarantees/${requestBody.guaranteeId}`,
-      {
-        headers: simardHeaders,
-      }
-    );
-    
-    // Check guarantee currency
-    if (guaranteeResponse.data.currency !== storedOffer.currency) {
-      throw new GliderError(
-        `The guarantee currency: ${guaranteeResponse.data.currency} is different from offer currency: ${storedOffer.currency}`,
-        400
-      );
-    }
-
-    // Check guarantee amount
-    if (Number(guaranteeResponse.data.amount) < Number(storedOffer.amountBeforeTax)) {
-      throw new GliderError(
-        `The guarantee amount: ${guaranteeResponse.data.currency} is less then offer amount: ${storedOffer.amountBeforeTax}`,
-        400
-      );
-    }
-
-    // Claim the guarantee
-    guaranteeClaimResponse = await axios.post(
-      `${config.SIMARD_URL}/balances/guarantees/${requestBody.guaranteeId}/claimWithCard`,
-      {
-        // Date.now() + 7 days
-        expiration: new Date(Date.now() + 60 * 1000 * 60 * 24 * 7).toISOString()
-      },
-      {
-        headers: simardHeaders,
-      }
-    );
-  } catch (e) {
-    let message = e.message;
-    let status = 500;
-
-    // Use the error message from the Simard response if provided
-    if (e.response && e.response.status && e.response.data.message) {
-      message = e.response.data.message;
-      status = e.response.status;
-    }
-
-    throw new GliderError(message, status);
-  }
+  // Claim the guarantee
+  const guaranteeClaim = await claimGuaranteeWithCard(requestBody.guaranteeId);
 
   let orderCreationResults;
 
   // Handle an Accomodation offer
-  if (storedOffer instanceof offer.AccommodationOffer) {
+  if (storedOffer instanceof AccommodationOffer) {
     // Resolve this query for an hotel offer
     orderCreationResults = await hotelResolver(
       storedOffer,
       requestBody.passengers,
-      guaranteeClaimResponse.data.card
+      guaranteeClaim.card
     );
   }
 
   // Handle a flight offer
-  else if (storedOffer instanceof offer.FlightOffer) {
+  else if (storedOffer instanceof FlightOffer) {
     orderCreationResults = await flightResolver(requestBody);
   }
 
@@ -110,7 +65,8 @@ module.exports = basicDecorator(async (req, res) => {
     requestBody.offerId,
     {
       request: requestBody,
-      guarantee: guaranteeClaimResponse.data,
+      guarantee: guarantee,
+      guaranteeClaim: guaranteeClaim,
       order: orderCreationResults
     }
   );

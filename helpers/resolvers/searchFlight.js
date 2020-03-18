@@ -18,6 +18,7 @@ const {
 
 const { airFranceConfig } = require('../../config');
 
+const GliderError = require('../error');
 const offer = require('../models/offer');
 
 const searchFlight = async (body) => {
@@ -38,8 +39,9 @@ const searchFlight = async (body) => {
   );
 
   const { errors } = await transform(response.data, ErrorsTransformTemplate);
+  
   if (errors.length) {
-    throw new Error(`${errors[0].message}`);
+    throw new GliderError(`${errors[0].message}`, 502);
   };
 
   const searchResults = await transform(
@@ -109,6 +111,7 @@ const searchFlight = async (body) => {
   for (let offerId in searchResults.offers) {
     indexedOffers[offerId] = new offer.FlightOffer('AF', 'AF');
   }
+
   await offer.offerManager.storeOffers(indexedOffers);
 
   delete searchResults.checkedBaggages;

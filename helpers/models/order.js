@@ -13,6 +13,7 @@ class OrdersManager {
         orderId,
         request: options.request,
         guarantee: options.request,
+        guaranteeClaim: options.request,
         order: options.order
       },
       {
