@@ -34,7 +34,8 @@ module.exports = basicDecorator(async (req, res) => {
     guaranteeResponse = await axios.post(
       `${config.SIMARD_URL}/balances/guarantees/${requestBody.guaranteeId}/claimWithCard`,
       {
-        expiration: storedOffer.expireDate
+        // Date.now() + 7 days
+        expiration: new Date(Date.now() + 60 * 1000 * 60 * 24 * 7).toISOString()
       },
       {
         headers: simardHeaders,
@@ -61,7 +62,7 @@ module.exports = basicDecorator(async (req, res) => {
     orderCreationResults = await hotelResolver(
       storedOffer,
       requestBody.passengers,
-      guaranteeResponse
+      guaranteeResponse.data.card
     );
     res.status(200).send(orderCreationResults);
   }

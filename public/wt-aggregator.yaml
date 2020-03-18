@@ -160,6 +160,7 @@ paths:
                       "11111111-2222-3333-4444-000000000001":
                         { "passengerReferences": "PAX1" },
                     },
+                  "guaranteeId": "02a1a7c0-3ff8-4e12-a3ba-65d57e1e9276",
                   "passengers":
                     {
                       "PAX1":

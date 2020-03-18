@@ -11,9 +11,9 @@ const responseTemplate = require('../../camaroTemplates/hotelResNotifRS').otaHot
 const hotelResNotif = require('../../transformInputData/hotelResNotif');
 const mapOTAHotelResNotifSoap = require('../../soapTemplates/ota/otaHotelResNotifRQ');
 
-module.exports = async (offer, passengers) => {
+module.exports = async (offer, passengers, card) => {
   // Build the request
-  const otaHotelResNotifRQData = hotelResNotif.mapFromOffer(offer, passengers);
+  const otaHotelResNotifRQData = hotelResNotif.mapFromOffer(offer, passengers, card);
   const otaRequestBody = mapOTAHotelResNotifSoap(otaHotelResNotifRQData);
 
   const response = await axios({

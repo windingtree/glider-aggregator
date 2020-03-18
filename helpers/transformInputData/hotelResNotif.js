@@ -8,7 +8,7 @@ const GliderError = require('../error');
 /*
   Maps an offer and passengers to an OTA HotelResNotifRQ structure
 */
-const mapFromOffer = (offer, passengers, guaranteeClaim) => {
+const mapFromOffer = (offer, passengers, card) => {
 
   const orderId = uuidv4();
   const resId = orderId.substr(24);
@@ -45,7 +45,7 @@ const mapFromOffer = (offer, passengers, guaranteeClaim) => {
     electron: 'VE'
   };
 
-  if (!cardCodes[guaranteeClaim.brand.toLowerCase()]) {
+  if (!cardCodes[card.brand.toLowerCase()]) {
     throw new GliderError('Unknown claimed card brand', 500);
   }
 
@@ -55,9 +55,9 @@ const mapFromOffer = (offer, passengers, guaranteeClaim) => {
     GuaranteeCode: 'GCC',
     PaymentCard: {
       CardType: '1', // 1-Credit as per erevmax doc,
-      CardCode: cardCodes[guaranteeClaim.brand.toLowerCase()],
-      CardNumber: guaranteeClaim.accountNumber,
-      ExpireDate: `${guaranteeClaim.expiryMonth}${guaranteeClaim.expiryYear.substr(-2)}`, // MMYY format,
+      CardCode: cardCodes[card.brand.toLowerCase()],
+      CardNumber: card.accountNumber,
+      ExpireDate: `${card.expiryMonth}${card.expiryYear.substr(-2)}`, // MMYY format
       //CardHolderName: OPTIONAL
     },
     GuaranteeDescription: 'Credit Card Guarantee',

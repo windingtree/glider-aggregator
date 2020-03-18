@@ -128,8 +128,8 @@ const searchHotel = async (body) => {
       var rates = [];
       for (const rate of roomRate.rates) {
         rates.push(new offer.Rate(
-          rate.effectiveDate,
-          rate.expireDate,
+          new Date(rate.effectiveDate).toISOString(),
+          new Date(rate.expireDate).toISOString(),
           rate.rateTimeUnit,
           rate.unitMultiplier === undefined ? '1' : rate.unitMultiplier,
           rate.currencyCode,
@@ -146,8 +146,8 @@ const searchHotel = async (body) => {
         roomRate.roomTypeReference,
         rates,
         guestCounts,
-        roomRate.effectiveDate,
-        roomRate.expireDate,
+        new Date(roomRate.effectiveDate).toISOString(),
+        new Date(roomRate.expireDate).toISOString(),
         roomRate.price._beforeTax_,
         roomRate.price._afterTax_,
         roomRate.price.currency,
