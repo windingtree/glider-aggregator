@@ -4,6 +4,7 @@ const GliderError = require('../../../helpers/error');
 const { basicDecorator } = require('../../../decorators/basic');
 
 const offer = require('../../../helpers/models/offer');
+const { ordersManager } = require('../../../helpers/models/order');
 const hotelResolver = require('../../../helpers/resolvers/hotel/orderCreateWithOffer');
 const flightResolver = require('../../../helpers/resolvers/flight/orderCreateWithOffer');
 
@@ -29,9 +30,35 @@ module.exports = basicDecorator(async (req, res) => {
   }
 
   let guaranteeResponse;
+  let guaranteeClaimResponse;
 
   try {
-    guaranteeResponse = await axios.post(
+    // Get the guarantee
+    guaranteeResponse = await axios.get(
+      `${config.SIMARD_URL}/balances/guarantees/${requestBody.guaranteeId}`,
+      {
+        headers: simardHeaders,
+      }
+    );
+    
+    // Check guarantee currency
+    if (guaranteeResponse.data.currency !== storedOffer.currency) {
+      throw new GliderError(
+        `The guarantee currency: ${guaranteeResponse.data.currency} is different from offer currency: ${storedOffer.currency}`,
+        400
+      );
+    }
+
+    // Check guarantee amount
+    if (Number(guaranteeResponse.data.amount) < Number(storedOffer.amountBeforeTax)) {
+      throw new GliderError(
+        `The guarantee amount: ${guaranteeResponse.data.currency} is less then offer amount: ${storedOffer.amountBeforeTax}`,
+        400
+      );
+    }
+
+    // Claim the guarantee
+    guaranteeClaimResponse = await axios.post(
       `${config.SIMARD_URL}/balances/guarantees/${requestBody.guaranteeId}/claimWithCard`,
       {
         // Date.now() + 7 days
@@ -62,15 +89,13 @@ module.exports = basicDecorator(async (req, res) => {
     orderCreationResults = await hotelResolver(
       storedOffer,
       requestBody.passengers,
-      guaranteeResponse.data.card
+      guaranteeClaimResponse.data.card
     );
-    res.status(200).send(orderCreationResults);
   }
 
   // Handle a flight offer
   else if (storedOffer instanceof offer.FlightOffer) {
     orderCreationResults = await flightResolver(requestBody);
-    res.send(orderCreationResults);
   }
 
   // Handle other types of offer
@@ -80,4 +105,15 @@ module.exports = basicDecorator(async (req, res) => {
       500
     );
   }
+
+  await ordersManager.saveOrder(
+    requestBody.offerId,
+    {
+      request: requestBody,
+      guarantee: guaranteeClaimResponse.data,
+      order: orderCreationResults
+    }
+  );
+
+  res.status(200).send(orderCreationResults);
 });

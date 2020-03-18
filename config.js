@@ -45,4 +45,5 @@ exports.erevmax = erevmax;
 exports.INFURA_URI = `${process.env.INFURA_ENDPOINT}/${process.env.INFURA_PROJECT_ID}`;
 exports.GLIDER_DID = `did:orgid:${process.env.GLIDER_ORGID}`;
 exports.SIMARD_URL = process.env.SIMARD_URL;
-exports.expirationTime = 30 * 60;// 30 min
+exports.expirationTime = 30 * 60; // 30 min in seconds
+exports.expirationLong = 60 * 60 * 24 * 365 * 7; // 7 years in seconds

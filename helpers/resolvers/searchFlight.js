@@ -80,7 +80,7 @@ const searchFlight = async (body) => {
   for(let offerId in searchResults.offers) {
     indexedOffers[offerId] = new offer.FlightOffer('AF', 'AF');
   }
-  await offer.offerManager.storeOffersDict(indexedOffers);
+  await offer.offerManager.storeOffers(indexedOffers);
 
 
 

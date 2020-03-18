@@ -178,7 +178,7 @@ const searchHotel = async (body) => {
   delete(searchResults._roomStays_);
 
   // Store the offers
-  await offer.offerManager.storeOffersDict(offersToStore);
+  await offer.offerManager.storeOffers(offersToStore);
 
   // Hotels require only the main passenger
   searchResults.passengers = {

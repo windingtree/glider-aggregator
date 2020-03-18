@@ -1,7 +1,5 @@
-const { v4: uuidv4 } = require('uuid');
 const GliderError = require('../error');
 const OffersModel = require('./mongo/offers');
-const { redisClient } = require('../redis');
 
 class GuestCount {
   // Constructor
@@ -43,8 +41,7 @@ class AccommodationOffer {
     expireDate,
     amountBeforeTax,
     amountAfterTax,
-    currency,
-    passengers
+    currency
   ) {
     this.provider = provider;
     this.hotelCode = hotelCode;
@@ -57,7 +54,6 @@ class AccommodationOffer {
     this.amountBeforeTax = amountBeforeTax;
     this.amountAfterTax = amountAfterTax;
     this.currency = currency;
-    this.passengers = passengers;
   }
 }
 
@@ -76,47 +72,30 @@ class OfferManager {
   // Start with an empty list of offers
   constructor () { }
 
-  // Store an offer as an array
-  // @todo Decide is this method is really required, if yes then rewrite to mongo
-  storeOffersArray (offers) {
-    const offerIds = [];
-    for (let offer of offers) {
-      // Create a random ID
-      let offerId = uuidv4();
-      offerIds.push(offerId);
-
-      // Store it in Redis
-      redisClient.set(
-        `offer_${offerId}`,
-        JSON.stringify(offer),
-        'EX',
-        30 * 60,
-        (err, res) => {
-          if (err) {
-            console.log(err);
-          }
-        }
-      );
-    }
-
-    // Quite nicely
-    return offerIds;
+  saveOffer (offerId, options) {
+    return OffersModel.replaceOne(
+      {
+        offerId
+      },
+      {
+        offerId: options.offerId,
+        offer: options.offer
+      },
+      {
+        multi: true,
+        upsert: true
+      }
+    );
   }
 
-  // Store indexed offers
-  storeOffersDict (offers) {
+  // Store object set of offers
+  storeOffers (offers = {}) {
     return Promise.all(
-      Object.keys(offers).map(offerId => OffersModel.replaceOne(
-        {
-          offerId
-        },
+      Object.keys(offers).map(offerId => this.saveOffer(
+        offerId,
         {
           offerId,
           offer: offers[offerId]
-        },
-        {
-          multi: true,
-          upsert: true
         }
       ))
     );
@@ -163,28 +142,12 @@ class OfferManager {
 
     return offer;
   }
-
-  async updateOffer (offerId, offer) {
-    return OffersModel.replaceOne(
-      {
-        offerId
-      },
-      {
-        offerId,
-        offer: offer
-      },
-      {
-        multi: true,
-        upsert: true
-      }
-    );
-  }
 }
 
 const offerManager = new OfferManager();
 
-exports.GuestCount = GuestCount;
-exports.Rate = Rate;
-exports.AccommodationOffer = AccommodationOffer;
-exports.FlightOffer = FlightOffer;
-exports.offerManager = offerManager;
+module.exports.GuestCount = GuestCount;
+module.exports.Rate = Rate;
+module.exports.AccommodationOffer = AccommodationOffer;
+module.exports.FlightOffer = FlightOffer;
+module.exports.offerManager = offerManager;
