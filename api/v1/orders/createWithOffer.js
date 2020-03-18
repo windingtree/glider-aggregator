@@ -34,6 +34,9 @@ module.exports = basicDecorator(async (req, res) => {
     guaranteeResponse = await axios.post(
       `${config.SIMARD_URL}/balances/guarantees/${requestBody.guaranteeId}/claimWithCard`,
       {
+        expiration: storedOffer.expireDate
+      },
+      {
         headers: simardHeaders,
       }
     );
