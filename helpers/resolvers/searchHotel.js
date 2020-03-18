@@ -1,14 +1,18 @@
 const axios = require('axios');
 const { transform } = require('camaro');
 const { v4: uuidv4 } = require('uuid');
-
-const { basicDecorator } = require('../../decorators/basic');
 const { getHotelsInRectangle } = require('../parsers/erevmaxHotels');
 const { mapRequestData } = require('../transformInputData/hotelAvail');
 const { hotelAvailRequestTemplate } = require('../soapTemplates/hotelAvail');
-const { hotelAvailTransformTemplate, errorsTransformTemplate } = require('../camaroTemplates/hotelAvail');
 const {
-  reduceToObjectByKey, reduceObjectToProperty, reduceAcomodation, reduceRoomStays,
+  hotelAvailTransformTemplate,
+  errorsTransformTemplate
+} = require('../camaroTemplates/hotelAvail');
+const {
+  reduceToObjectByKey,
+  reduceObjectToProperty,
+  reduceAcomodation,
+  reduceRoomStays,
 } = require('../parsers');
 
 const offer = require('../models/offer');
@@ -17,7 +21,7 @@ const config = require('../../config');
 const searchHotel = async (body) => {
   // Select the Hotels matching the rectangle
   const hotelCodes = getHotelsInRectangle(body.accommodation.location.rectangle);
-  if(!hotelCodes.length) {
+  if (!hotelCodes.length) {
     throw new Error('No matching hotels');
   }
 
@@ -26,22 +30,20 @@ const searchHotel = async (body) => {
     new offer.GuestCount('ADT', 0),
     new offer.GuestCount('CHD', 0),
   ];
-  if(!body.passengers.length) {
+  if (!body.passengers.length) {
     throw new Error('Missing passenger types');
   }
-  for(let p of body.passengers) {
+  for (let p of body.passengers) {
     let newCount = p.count === undefined ? 1 : Number(p.count);
-    if(p.type == 'ADT') {
+    if (p.type === 'ADT') {
       guestCounts[0].count += newCount;
-    }
-    else if (p.type == 'CHD') {
+    } else if (p.type === 'CHD') {
       guestCounts[1].count += newCount;
-    }
-    else {
+    } else {
       throw new Error('Unsupported passenger type');
     }
   }
-  if(guestCounts[0].count == 0 ) {
+  if (guestCounts[0].count === 0) {
     throw new Error('At least one adult passenger is required to search properties');
   }
 
@@ -52,8 +54,7 @@ const searchHotel = async (body) => {
   // Fire the request
   const response = await axios.post(
     config.erevmax.availabilityUrl,
-    requestBody,
-    {
+    requestBody, {
       headers: {
         'Content-Type': 'application/xml',
         SOAPAction: 'http://www.opentravel.org/OTA/2003/05/getOTAHotelAvailability',
@@ -83,11 +84,11 @@ const searchHotel = async (body) => {
       // Reduce the policies
       roomType.policies = reduceToObjectByKey(roomType.policies);
       roomType.policies = reduceObjectToProperty(roomType.policies, '_value_');
-      
+
       // Add the room type to the dict that will be used when building accomodation
-      if(!(accomodationRoomTypes[accommodationReference])) {
+      if (!(accomodationRoomTypes[accommodationReference])) {
         accomodationRoomTypes[accommodationReference] = {};
-      }      
+      }
       accomodationRoomTypes[accommodationReference][roomType._id_] = roomType;
       delete(accomodationRoomTypes[accommodationReference][roomType._id_]._id_);
     }
@@ -100,21 +101,21 @@ const searchHotel = async (body) => {
     roomStay._roomRates_.forEach(roomRate => {
 
       // Build the offer key
-      var offerKey = `${accommodationReference}.${roomRate.ratePlanReference}.${roomRate.roomTypeReference}`;
+      var offerKey = `${accommodationReference}.${roomRate.ratePlanReference}.${roomRate.roomTypeReference}`;// @todo What is it?
 
       // Build the PricePlanReference
-      var pricePlanReference = {
-          accommodation: accommodationReference,
-          roomType: roomRate.roomTypeReference,
+      const pricePlanReference = {
+        accommodation: accommodationReference,
+        roomType: roomRate.roomTypeReference,
       };
-      pricePlansReferences = {};
+      const pricePlansReferences = {};
       pricePlansReferences[roomRate.ratePlanReference] = pricePlanReference;
 
       // Build the offer
-      var providerOffer = {
+      const providerOffer = {
         // Reference from other elements
-        pricePlansReferences: pricePlansReferences,
-  
+        pricePlansReferences,
+
         // Build price
         price: {
           currency: roomRate.price.currency,
@@ -125,7 +126,7 @@ const searchHotel = async (body) => {
 
       // Build the detailed rates
       var rates = [];
-      for (rate of roomRate.rates) {
+      for (const rate of roomRate.rates) {
         rates.push(new offer.Rate(
           rate.effectiveDate,
           rate.expireDate,
@@ -159,7 +160,7 @@ const searchHotel = async (body) => {
 
   // Parse the accomodations
   for (var accommodation of searchResults.accommodations) {
-    
+
     // Build the accomodation reference key
     var accommodationReference = `${accommodation._provider_}.${accommodation._id_}`;
 
@@ -172,19 +173,19 @@ const searchHotel = async (body) => {
 
   }
   searchResults.accommodations = reduceAcomodation(searchResults.accommodations);
-  
+
   searchResults.offers = offers;
   delete(searchResults._roomStays_);
 
   // Store the offers
-  offer.offerManager.storeOffersDict(offersToStore);
+  await offer.offerManager.storeOffersDict(offersToStore);
 
   // Hotels require only the main passenger
   searchResults.passengers = {
     PAX1: {
-        type: "ADT"
+      type: 'ADT'
     }
-}
+  };
 
   return searchResults;
 };

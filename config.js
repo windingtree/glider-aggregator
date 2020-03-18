@@ -32,27 +32,17 @@ const airFranceConfig = {
   },
 };
 
-const JWT = process.env.JWT;
-
-const redisUrl = process.env.REDIS_URL;
-
 const erevmax = {
   availabilityUrl: process.env.EREVMAX_AVAILABILITY_URL,
   reservationUrl: process.env.EREVMAX_RESERVATION_URL,
 };
 
-const simard = {
-  apiUrl: process.env.SIMARD_API_URL
-};
-
 exports.airFranceConfig = airFranceConfig;
-exports.JWT = JWT;
-exports.redisUrl = redisUrl;
+exports.JWT = process.env.JWT;
+exports.redisUrl = process.env.REDIS_URL;
+exports.mongoUrl = process.env.MONGO_URL;
 exports.erevmax = erevmax;
-<<<<<<< HEAD
-exports.simard = simard;
-=======
-exports.infura_uri = `${process.env.INFURA_ENDPOINT}/${process.env.INFURA_PROJECT_ID}`;
+exports.INFURA_URI = `${process.env.INFURA_ENDPOINT}/${process.env.INFURA_PROJECT_ID}`;
 exports.GLIDER_DID = `did:orgid:${process.env.GLIDER_ORGID}`;
-exports.SIMARD_URL = process.env.SIMARD_URL
->>>>>>> develop
+exports.SIMARD_URL = process.env.SIMARD_URL;
+exports.expirationTime = 30 * 60;// 30 min

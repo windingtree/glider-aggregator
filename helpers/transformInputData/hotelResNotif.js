@@ -2,15 +2,17 @@ const format = require('date-fns/format');
 const differenceInCalendarDays = require('date-fns/differenceInCalendarDays');
 const parseISO = require('date-fns/parseISO');
 const { v4: uuidv4 } = require('uuid');
-var emailValidator = require("email-validator");
+const emailValidator = require('email-validator');
+const GliderError = require('../error');
+
 /*
   Maps an offer and passengers to an OTA HotelResNotifRQ structure
 */
-function mapFromOffer(offer, passengers ) {
+const mapFromOffer = (offer, passengers, guaranteeClaim) => {
 
   const orderId = uuidv4();
   const resId = orderId.substr(24);
-  
+
   // Build the POS
   const pos = {
     Source: {
@@ -29,36 +31,55 @@ function mapFromOffer(offer, passengers ) {
     }
   };
 
+  const cardCodes = {
+    visa: 'VI',
+    mastercard: 'MC',
+    amex: 'AX',
+    bancontact: 'BC',
+    diners: 'DN',
+    discover: 'DS',
+    jcb: 'JC',
+    maestro: 'MA',
+    uatp: 'TP',
+    unionpay: 'CU',
+    electron: 'VE'
+  };
+
+  if (!cardCodes[guaranteeClaim.brand.toLowerCase()]) {
+    throw new GliderError('Unknown claimed card brand', 500);
+  }
+
   // Build the Guarantee
   const guarantee = {
     GuaranteeType: 'GuaranteeRequired', // Check !!
     GuaranteeCode: 'GCC',
     PaymentCard: {
       CardType: '1', // 1-Credit as per erevmax doc,
-      CardCode: 'VI',
-      CardNumber: '4444333322221111',
-      ExpireDate: '0420', // MMYY format,
+      CardCode: cardCodes[guaranteeClaim.brand.toLowerCase()],
+      CardNumber: guaranteeClaim.accountNumber,
+      ExpireDate: `${guaranteeClaim.expiryMonth}${guaranteeClaim.expiryYear.substr(-2)}`, // MMYY format,
       //CardHolderName: OPTIONAL
     },
     GuaranteeDescription: 'Credit Card Guarantee',
   };
 
   // Build the rate
-  const rates = offer.rates.map(rate => (
-    {
-      RateTimeUnit: rate.timeUnit,
-      EffectiveDate: rate.effectiveDate,
-      ExpireDate: rate.expireDate,
-      UnitMultiplier: rate.unitMultiplier,
-      Base: {
-        CurrencyCode: rate.currency,
-        AmountAfterTax: rate.amountAfterTax,
-      }
+  const rates = offer.rates.map(rate => ({
+    RateTimeUnit: rate.timeUnit,
+    EffectiveDate: rate.effectiveDate,
+    ExpireDate: rate.expireDate,
+    UnitMultiplier: rate.unitMultiplier,
+    Base: {
+      CurrencyCode: rate.currency,
+      AmountAfterTax: rate.amountAfterTax,
     }
-  ));
+  }));
 
   // Build the Guest counts
-  const guestCounts = offer.guestCounts.map(({type, count}) => ({
+  const guestCounts = offer.guestCounts.map(({
+    type,
+    count
+  }) => ({
     AgeQualifyingCode: type === 'ADT' ? 10 : 8,
     Count: count === undefined ? 1 : count,
   }));
@@ -107,20 +128,19 @@ function mapFromOffer(offer, passengers ) {
 
   // Handle the Custoner Names
   customer.PersonName = {};
-  if(pax.civility !== undefined) customer.PersonName.NamePrefix = pax.civility;
-  if(pax.firstnames !== undefined) customer.PersonName.GivenName = pax.firstnames.join(' ');
-  if(pax.middlenames !== undefined) customer.PersonName.MiddleName = pax.middlenames.join(' ');
-  if(pax.lastnames !== undefined) customer.PersonName.Surname = pax.lastnames.join(' ');
+  if (pax.civility !== undefined) customer.PersonName.NamePrefix = pax.civility;
+  if (pax.firstnames !== undefined) customer.PersonName.GivenName = pax.firstnames.join(' ');
+  if (pax.middlenames !== undefined) customer.PersonName.MiddleName = pax.middlenames.join(' ');
+  if (pax.lastnames !== undefined) customer.PersonName.Surname = pax.lastnames.join(' ');
 
   // Handle the passenger contact information
-  for(let contact of pax.contactInformation) {
-    if(emailValidator.validate(contact)) {
+  for (let contact of pax.contactInformation) {
+    if (emailValidator.validate(contact)) {
       customer.Email = {
         EmailType: '1',
         email: contact,
       };
-    }
-    else if(contact.match(/^\+[0-9]+$/)){
+    } else if (contact.match(/^\+[0-9]+$/)) {
       customer.Telephone = {
         FormattedInd: false,
         PhoneNumber: contact,
@@ -130,18 +150,20 @@ function mapFromOffer(offer, passengers ) {
   }
 
   // Handle the passenger address
-  if(pax.address !== undefined) {
+  if (pax.address !== undefined) {
     customer.Address = {};
     customer.Address.Type = '1';
-    if(pax.address.lines !== undefined) customer.Address.AddressLines = pax.address.lines;
-    if(pax.address.city !== undefined) customer.Address.CityName = pax.address.city;
-    if(pax.address.postalCode !== undefined) customer.Address.PostalCode = pax.address.postalCode;
-    if(pax.address.subdivision !== undefined) customer.Address.StateProv = pax.address.subdivision;
-    if(pax.address.country !== undefined) customer.Address.CountryName = { Code: pax.address.country};
+    if (pax.address.lines !== undefined) customer.Address.AddressLines = pax.address.lines;
+    if (pax.address.city !== undefined) customer.Address.CityName = pax.address.city;
+    if (pax.address.postalCode !== undefined) customer.Address.PostalCode = pax.address.postalCode;
+    if (pax.address.subdivision !== undefined) customer.Address.StateProv = pax.address.subdivision;
+    if (pax.address.country !== undefined) customer.Address.CountryName = {
+      Code: pax.address.country
+    };
   }
 
   return {
-    OTA_HotelResNotifRQ: {
+    'OTA_HotelResNotifRQ': {
       ResStatus: 'Commit',
       Version: '2.000',
       TimeStamp: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
@@ -180,9 +202,9 @@ function mapFromOffer(offer, passengers ) {
           ResGlobalInfo: {
             HotelReservationIDs: {
               HotelReservationID: {
-                ResID_Source: 'Windingtree',
-                ResID_Type: '22',
-                ResID_Value: resId
+                'ResID_Source': 'Windingtree',
+                'ResID_Type': '22',
+                'ResID_Value': resId
               },
             },
           },
@@ -190,7 +212,6 @@ function mapFromOffer(offer, passengers ) {
       },
     },
   };
-}
-
+};
 
 module.exports.mapFromOffer = mapFromOffer;

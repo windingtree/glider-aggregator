@@ -1,4 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
+const GliderError = require('../error');
+const OffersModel = require('./mongo/offers');
 const { redisClient } = require('../redis');
 
 class GuestCount {
@@ -41,7 +43,8 @@ class AccommodationOffer {
     expireDate,
     amountBeforeTax,
     amountAfterTax,
-    currency
+    currency,
+    passengers
   ) {
     this.provider = provider;
     this.hotelCode = hotelCode;
@@ -54,6 +57,7 @@ class AccommodationOffer {
     this.amountBeforeTax = amountBeforeTax;
     this.amountAfterTax = amountAfterTax;
     this.currency = currency;
+    this.passengers = passengers;
   }
 }
 
@@ -73,6 +77,7 @@ class OfferManager {
   constructor () { }
 
   // Store an offer as an array
+  // @todo Decide is this method is really required, if yes then rewrite to mongo
   storeOffersArray (offers) {
     const offerIds = [];
     for (let offer of offers) {
@@ -100,49 +105,79 @@ class OfferManager {
 
   // Store indexed offers
   storeOffersDict (offers) {
-    for (let offerId in offers) {
-      redisClient.set(
-        `offer_${offerId}`,
-        JSON.stringify(offers[offerId]),
-        'EX',
-        30 * 60,
-        (err, res) => {
-          if (err) {
-            console.log(err);
-          }
+    return Promise.all(
+      Object.keys(offers).map(offerId => OffersModel.replaceOne(
+        {
+          offerId
+        },
+        {
+          offerId,
+          offer: offers[offerId]
+        },
+        {
+          multi: true,
+          upsert: true
         }
-      );
-    }
-    return true;
+      ))
+    );
   }
 
   // Get a specific offer
-  getOffer (offerId) {
-    return new Promise((resolve, reject) => {
-      redisClient.get(`offer_${offerId}`, (err, res) => {
-        // Handle error
-        if (err) {
-          reject(err);
-        } else if (res == null) {
-          reject({
-            message: 'Offer expired or not found',
-            code: 404
-          });
-        }
+  async getOffer (offerId) {
+    let offer;
 
-        // Cast the result and resolve
-        else {
-          let offerObject = JSON.parse(res);
-          if (offerObject.airlineCode) {
-            resolve(Object.assign(new FlightOffer(), offerObject));
-          } else if (offerObject.hotelCode) {
-            resolve(Object.assign(new AccommodationOffer(), offerObject));
-          } else {
-            reject('Unable to cast offer');
+    if (!offerId) {
+      throw new GliderError(
+        'Offer Id is required',
+        500
+      );
+    }
+
+    try {
+      offer = await OffersModel
+        .findOne(
+          {
+            offerId
           }
-        }
-      });
-    });
+        )
+        .exec();
+    } catch (e) {
+      throw new GliderError(
+        'Offer expired or not found',
+        404
+      );
+    }
+
+    offer = offer.offer;
+    
+    if (offer.airlineCode) {
+      offer = Object.assign(new FlightOffer(), offer);
+    } else if (offer.hotelCode) {
+      offer = Object.assign(new AccommodationOffer(), offer);
+    } else {
+      throw new GliderError(
+        'Unable to cast offer',
+        400
+      );
+    }
+
+    return offer;
+  }
+
+  async updateOffer (offerId, offer) {
+    return OffersModel.replaceOne(
+      {
+        offerId
+      },
+      {
+        offerId,
+        offer: offer
+      },
+      {
+        multi: true,
+        upsert: true
+      }
+    );
   }
 }
 
