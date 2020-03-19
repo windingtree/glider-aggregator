@@ -60,7 +60,7 @@
         "AF_PARTICIPANT_RECIPENT_NAME": "@af_participant_recipent_name",
         "JWT": "@staging.glider-aggregator.jwt",
         "REDIS_URL": "@staging.glider-aggregator.redis_url",
-        "MONGO_URL": "staging.glider-aggregator.mongo_url",
+        "MONGO_URL": "@staging.glider-aggregator.mongo_url",
         "EREVMAX_RESERVATION_URL": "@staging.glider-aggregator.erevmax_reservation_url",
         "EREVMAX_AVAILABILITY_URL": "@staging.glider-aggregator.erevmax_availability_url",
         "INFURA_ENDPOINT": "@infura_wss_endpoint",
