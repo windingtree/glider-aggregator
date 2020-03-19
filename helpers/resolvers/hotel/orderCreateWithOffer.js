@@ -16,6 +16,8 @@ module.exports = async (offer, passengers, card) => {
   const otaHotelResNotifRQData = hotelResNotif.mapFromOffer(offer, passengers, card);
   const otaRequestBody = mapOTAHotelResNotifSoap(otaHotelResNotifRQData);
 
+  console.log(otaRequestBody);
+
   const response = await axios({
     method: 'post',
     url: config.erevmax.reservationUrl,

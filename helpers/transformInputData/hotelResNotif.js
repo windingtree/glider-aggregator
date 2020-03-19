@@ -112,6 +112,10 @@ const mapFromOffer = (offer, passengers, card) => {
     Total: {
       CurrencyCode: offer.currency,
       AmountAfterTax: offer.amountAfterTax,
+      Taxes: {
+        Amount: (Number(offer.amountAfterTax) - Number(offer.amountBeforeTax)).toFixed(2),
+        CurrencyCode: offer.currency
+      }
     },
     BasicPropertyInfo: {
       HotelCode: offer.hotelCode,

@@ -60,7 +60,7 @@ const mapPaymentCard = OTA_PaymentCard => {
     if(OTA_PaymentCard.SeriesCode !== undefined) {
         paymentCard += ` SeriesCode="${OTA_PaymentCard.SeriesCode}"`;
     }
-    paymentCard += '>'
+    paymentCard += '>';
 
     // Cardholder name is mandatory
     if(OTA_PaymentCard.CardHolderName !== undefined) {
@@ -70,7 +70,7 @@ const mapPaymentCard = OTA_PaymentCard => {
     }
 
     // Finish the object
-    paymentCard += '</PaymentCard>'
+    paymentCard += '</PaymentCard>';
 
     return paymentCard;
 }
@@ -110,8 +110,12 @@ const mapRoomStay = OTA_RoomStay => `
     <Total
         AmountAfterTax="${OTA_RoomStay.Total.AmountAfterTax}"
         CurrencyCode="${OTA_RoomStay.Total.CurrencyCode}">
-        <Taxes Amount="00.00" CurrencyCode="EUR">
-            <Tax Type="Exclusive" Amount="00.00" CurrencyCode="EUR"/>
+        <Taxes Amount="${OTA_RoomStay.Total.Taxes.Amount}" CurrencyCode="${OTA_RoomStay.Total.CurrencyCode}">
+            <Tax
+                Type="Exclusive"
+                Amount="${OTA_RoomStay.Total.Taxes.Amount}"
+                CurrencyCode="${OTA_RoomStay.Total.CurrencyCode}"
+            />
         </Taxes>
     </Total>
     <BasicPropertyInfo
@@ -149,7 +153,7 @@ const mapPOS = OTA_POS => `
 `.trim();
 
 const mapAddress = OTA_Address => {
-    if(OTA_Address == undefined) return '<Address Type="1"><AddressLine/><CityName/><PostalCode/><StateProv StateCode=""/><CountryName Code=""/></Address>';
+    if(OTA_Address === undefined) return '<Address Type="1"><AddressLine/><CityName/><PostalCode/><StateProv StateCode=""/><CountryName Code=""/></Address>';
     return `
 <Address Type="${OTA_Address.Type}">
     <AddressLine>${OTA_Address.AddressLines[0]}</AddressLine>
@@ -172,7 +176,7 @@ const mapPersonName = OTA_PersonName => {
         personName += `<MiddleName>${OTA_PersonName.MiddleName}</MiddleName>`;
     if(OTA_PersonName.Surname  !== undefined)
         personName += `<Surname>${OTA_PersonName.Surname}</Surname>`;
-    return `<PersonName>${personName}</PersonName>`
+    return `<PersonName>${personName}</PersonName>`.trim();
 };
 
 const mapProfile = OTA_Profile => `
