@@ -12,8 +12,8 @@ class OrdersManager {
       {
         orderId,
         request: options.request,
-        guarantee: options.request,
-        guaranteeClaim: options.request,
+        guarantee: options.guarantee,
+        guaranteeClaim: options.guaranteeClaim,
         order: options.order
       },
       {

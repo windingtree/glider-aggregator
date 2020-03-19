@@ -48,6 +48,15 @@ module.exports.getGuarantee = async (id, offer) => {
         400
       );
     }
+
+    // Check guarantee expiration date
+    // Should be more than 72 hours from now
+    if (new Date(guarantee.expiration).getTime() < (Date.now() + 60 * 60 * 72 * 1000)) {
+      throw new GliderError(
+        `The guarantee expiration date: ${guarantee.expiration} is less then 72 hours from now`,
+        400
+      );
+    }
   } catch (e) {
     processSimardError(e);
   }
@@ -61,7 +70,7 @@ module.exports.claimGuarantee = async (id) => {
 
   try {
     const response = await axios.post(
-      `https://staging.simard.windingtree.net/api/v1/balances/guarantees/${id}/claim`,
+      `${config.SIMARD_URL}/balances/guarantees/${id}/claim`,
       {},
       {
         headers: simardHeaders,
