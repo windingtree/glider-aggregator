@@ -42,9 +42,9 @@ module.exports.getGuarantee = async (id, offer) => {
     }
 
     // Check guarantee amount
-    if (Number(guarantee.amount) < Number(offer.amountBeforeTax)) {
+    if (Number(guarantee.amount) < Number(offer.amountAfterTax)) {
       throw new GliderError(
-        `The guarantee amount: ${guarantee.currency} is less then offer amount: ${offer.amountBeforeTax}`,
+        `The guarantee amount: ${guarantee.currency} is less then offer amount: ${offer.amountAfterTax}`,
         400
       );
     }
