@@ -15,9 +15,9 @@ const basicDecorator = fn => async (req, res) => {
     await fn(req, res);
   } catch (e) {
     console.log(e);
-    res.status(typeof e.code === 'number' ? e.code : 500).json({
+    res.status(typeof e.status === 'number' ? e.status : 500).json({
       message: e.message,
-      code: e.code// Can contain useful textual codes
+      code: e.code ? e.code : undefined// Can contain useful textual codes
     });
   }
 };

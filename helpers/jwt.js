@@ -7,9 +7,7 @@ const GliderError = require('./error');
 const { redisClient } = require('./redis');
 
 const config = require('../config');
-const web3 = new Web3(config.infura_uri);
-
-
+const web3 = new Web3(config.INFURA_URI);
 
 // ORG.ID resolver configuration
 const orgIdResolver = new OrgIdResolver({
@@ -56,11 +54,19 @@ module.exports.verifyJWT = async (type, jwt) => {
   let didResult;
   const cachedDidResult = JSON.parse(await redisClient.asyncGet(`didResult_${did}`));
 
-  if (cachedDidResult) {
+  if (cachedDidResult && typeof cachedDidResult.didDocument === 'object') {
     didResult = cachedDidResult;
   } else {
     didResult = await orgIdResolver.resolve(did);
-    // @fixme Do not store in Redis if there is an error during resolution
+    
+    // didDocument should be resolved
+    if (!didResult.didDocument) {
+      throw new GliderError(
+        didResult.errors[0].detail,
+        403
+      );
+    }
+    
     redisClient.set(
       `didResult_${did}`,
       JSON.stringify(didResult),
@@ -73,7 +79,7 @@ module.exports.verifyJWT = async (type, jwt) => {
       }
     );
   }
-
+  
   // Organization should not be disabled
   if (!didResult.organization.state) {
     throw new GliderError(

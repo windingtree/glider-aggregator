@@ -1,5 +1,5 @@
-const { v4: uuidv4 } = require('uuid');
-const { redisClient } = require('../redis');
+const GliderError = require('../error');
+const OffersModel = require('./mongo/offers');
 
 class GuestCount {
   // Constructor
@@ -72,84 +72,82 @@ class OfferManager {
   // Start with an empty list of offers
   constructor () { }
 
-  // Store an offer as an array
-  storeOffersArray (offers) {
-    const offerIds = [];
-    for (let offer of offers) {
-      // Create a random ID
-      let offerId = uuidv4();
-      offerIds.push(offerId);
-
-      // Store it in Redis
-      redisClient.set(
-        `offer_${offerId}`,
-        JSON.stringify(offer),
-        'EX',
-        30 * 60,
-        (err, res) => {
-          if (err) {
-            console.log(err);
-          }
-        }
-      );
-    }
-
-    // Quite nicely
-    return offerIds;
+  saveOffer (offerId, options) {
+    return OffersModel.replaceOne(
+      {
+        offerId
+      },
+      {
+        offerId: options.offerId,
+        offer: options.offer
+      },
+      {
+        multi: true,
+        upsert: true
+      }
+    );
   }
 
-  // Store indexed offers
-  storeOffersDict (offers) {
-    for (let offerId in offers) {
-      redisClient.set(
-        `offer_${offerId}`,
-        JSON.stringify(offers[offerId]),
-        'EX',
-        30 * 60,
-        (err, res) => {
-          if (err) {
-            console.log(err);
-          }
+  // Store object set of offers
+  storeOffers (offers = {}) {
+    return Promise.all(
+      Object.keys(offers).map(offerId => this.saveOffer(
+        offerId,
+        {
+          offerId,
+          offer: offers[offerId]
         }
-      );
-    }
-    return true;
+      ))
+    );
   }
 
   // Get a specific offer
-  getOffer (offerId) {
-    return new Promise((resolve, reject) => {
-      redisClient.get(`offer_${offerId}`, (err, res) => {
-        // Handle error
-        if (err) {
-          reject(err);
-        } else if (res == null) {
-          reject({
-            message: 'Offer expired or not found',
-            code: 404
-          });
-        }
+  async getOffer (offerId) {
+    let offer;
 
-        // Cast the result and resolve
-        else {
-          let offerObject = JSON.parse(res);
-          if (offerObject.airlineCode) {
-            resolve(Object.assign(new FlightOffer(), offerObject));
-          } else if (offerObject.hotelCode) {
-            resolve(Object.assign(new AccommodationOffer(), offerObject));
-          } else {
-            reject('Unable to cast offer');
+    if (!offerId) {
+      throw new GliderError(
+        'Offer Id is required',
+        500
+      );
+    }
+
+    try {
+      offer = await OffersModel
+        .findOne(
+          {
+            offerId
           }
-        }
-      });
-    });
+        )
+        .exec();
+    } catch (e) {
+      throw new GliderError(
+        'Offer expired or not found',
+        404
+      );
+    }
+
+    offer = offer.offer;
+    
+    if (offer.airlineCode) {
+      offer = Object.assign(new FlightOffer(), offer);
+    } else if (offer.hotelCode) {
+      offer = Object.assign(new AccommodationOffer(), offer);
+    } else {
+      throw new GliderError(
+        'Unable to cast offer',
+        400
+      );
+    }
+
+    return offer;
   }
 }
 
 const offerManager = new OfferManager();
 
-exports.GuestCount = GuestCount;
-exports.Rate = Rate;
-exports.AccommodationOffer = AccommodationOffer;
-exports.FlightOffer = FlightOffer;
-exports.offerManager = offerManager;
+module.exports.GuestCount = GuestCount;
+module.exports.Rate = Rate;
+module.exports.AccommodationOffer = AccommodationOffer;
+module.exports.FlightOffer = FlightOffer;
+module.exports.offerManager = offerManager;
