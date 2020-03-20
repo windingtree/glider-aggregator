@@ -21,6 +21,8 @@ module.exports = basicDecorator(async (req, res) => {
     resolver = searchFlight;
   }
 
+  throw new GliderError('AAA', 500);
+
   const result = await resolver(body);
 
   res.status(200).json(result);
