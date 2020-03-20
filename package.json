@@ -19,8 +19,8 @@
   },
   "homepage": "https://github.com/windingtree/glider-aggregator#readme",
   "scripts": {
-    "localmongo": "mkdir -p ~/mongoData && docker run --rm -p 27017:27017 -v ~/mongoData:/data/db mongo",
-    "localredis": "mkdir -p ~/redisData && docker run --rm -p 6379:6379 -v ~/redisData:/data redis",
+    "localservers:start": "./scripts/localservers/start.sh",
+    "localservers:stop": "./scripts/localservers/stop.sh",
     "dev": "now dev",
     "test": "./scripts/test.sh"
   },
