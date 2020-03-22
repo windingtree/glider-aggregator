@@ -98,4 +98,6 @@ module.exports = async (requestBody) => {
   );
 
   delete createResults.order.contactList;
+
+  return createResults;
 };

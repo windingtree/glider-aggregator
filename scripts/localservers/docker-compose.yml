@@ -1,0 +1,50 @@
+version: '2.1'
+services:
+    mongodb:
+        image: mongo
+        volumes:
+            - ~/mongoData:/data/db mongo
+        ports:
+            - 27017:27017
+        networks:
+            - localdev
+            
+    redisdb:
+        image: redis
+        volumes: 
+            - ~/redisData:/data
+        ports:
+            - 6379:6379
+        networks:
+            - localdev
+
+    elasticsearch: 
+        image: elasticsearch:7.6.1
+        volumes:
+            - ~/elasticSearch:/usr/share/elasticsearch/data
+        ports:
+            - 9200:9200
+            - 9300:9300
+        environment:
+          - discovery.type=single-node
+        ulimits:
+          memlock:
+            soft: -1
+            hard: -1
+        networks:
+            - localdev
+
+    kibana:
+        image: kibana:7.6.1
+        ports:
+            - 5601:5601
+        environment:
+            ELASTICSEARCH_URL: "http://elasticsearch:9200"
+        networks:
+            - localdev
+        depends_on:
+            - elasticsearch
+
+networks:
+    localdev:
+        driver: bridge

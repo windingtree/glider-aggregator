@@ -212,6 +212,7 @@ module.exports.verifyJWT = async (type, jwt) => {
   return {
     aud,
     iss,
-    exp
+    exp,
+    didResult
   };
 };

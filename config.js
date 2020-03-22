@@ -37,13 +37,14 @@ const erevmax = {
   reservationUrl: process.env.EREVMAX_RESERVATION_URL,
 };
 
-exports.airFranceConfig = airFranceConfig;
-exports.JWT = process.env.JWT;
-exports.redisUrl = process.env.REDIS_URL;
-exports.mongoUrl = process.env.MONGO_URL;
-exports.erevmax = erevmax;
-exports.INFURA_URI = `${process.env.INFURA_ENDPOINT}/${process.env.INFURA_PROJECT_ID}`;
-exports.GLIDER_DID = `did:orgid:${process.env.GLIDER_ORGID}`;
-exports.SIMARD_URL = process.env.SIMARD_URL;
-exports.expirationTime = 30 * 60; // 30 min in seconds
-exports.expirationLong = 60 * 60 * 24 * 365 * 7; // 7 years in seconds
+module.exports.airFranceConfig = airFranceConfig;
+module.exports.JWT = process.env.JWT;
+module.exports.redisUrl = process.env.REDIS_URL;
+module.exports.mongoUrl = process.env.MONGO_URL;
+module.exports.elasticUrl = process.env.ELASTIC_URL;
+module.exports.erevmax = erevmax;
+module.exports.INFURA_URI = `${process.env.INFURA_ENDPOINT}/${process.env.INFURA_PROJECT_ID}`;
+module.exports.GLIDER_DID = `did:orgid:${process.env.GLIDER_ORGID}`;
+module.exports.SIMARD_URL = process.env.SIMARD_URL;
+module.exports.expirationTime = 30 * 60; // 30 min in seconds
+module.exports.expirationLong = 60 * 60 * 24 * 365 * 7; // 7 years in seconds
