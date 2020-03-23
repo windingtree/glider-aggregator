@@ -49,6 +49,8 @@ module.exports = async (requestBody) => {
   // Otherwise parse as a result
   const createResults = await transform(response.data, provideOrderCreateTransformTemplate);
 
+  console.log('>>>', createResults);
+
   createResults.order.itinerary.segments = mergeHourAndDate(
     createResults.order.itinerary.segments,
     'splittedDepartureDate',

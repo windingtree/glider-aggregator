@@ -105,11 +105,18 @@ const searchFlight = async (body) => {
     'checkedBaggages'
   );
   searchResults.pricePlans = reduceToObjectByKey(searchResults.pricePlans);
-
+  
   // Store the offers
   var indexedOffers = {};
   for (let offerId in searchResults.offers) {
-    indexedOffers[offerId] = new offer.FlightOffer('AF', 'AF');
+    indexedOffers[offerId] = new offer.FlightOffer(
+      'AF',
+      'AF',
+      searchResults.offers[offerId].expiration,
+      searchResults.offers[offerId].offerItems,
+      searchResults.offers[offerId].price.public,
+      searchResults.offers[offerId].price.currency
+    );
   }
 
   await offer.offerManager.storeOffers(indexedOffers);

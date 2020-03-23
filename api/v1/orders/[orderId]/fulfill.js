@@ -3,7 +3,7 @@ const { transform } = require('camaro');
 const { basicDecorator } = require('../../../../decorators/basic');
 const GliderError = require('../../../../helpers/error');
 const config = require('../../../../config');
-const { offerManager } = require('../../../..//helpers/models/offer');
+const { ordersManager } = require('../../../..//helpers/models/order');
 const { mapNdcRequestData } = require('../../../../helpers/transformInputData/fulfillOrder');
 const { fulfillOrderTemplate } = require('../../../../helpers/soapTemplates/fulfillOrder');
 const {
@@ -14,20 +14,14 @@ const {
   reduceToObjectByKey,
   reduceToProperty
 } = require('../../../../helpers/parsers');
-const {
-  getGuarantee,
-  claimGuarantee
-} = require('../../../../helpers/guarantee');
-const { ordersManager } = require('../../../../helpers/models/order');
+const { claimGuarantee } = require('../../../../helpers/guarantee');
 
 module.exports = basicDecorator(async (req, res) => {
   const { body, query } = req;
 
   // Retrieve the offer
-  const storedOffer = await offerManager.getOffer(body.orderId);
-
-  // Get the guarantee
-  const guarantee = await getGuarantee(body.guaranteeId, storedOffer);
+  const storedOrder = await ordersManager.getOrder(query.orderId);
+  const guarantee = storedOrder.guarantee;
 
   const ndcRequestData = mapNdcRequestData(body, query);
   const ndcBody = fulfillOrderTemplate(ndcRequestData);

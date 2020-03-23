@@ -52,8 +52,8 @@ class AccommodationOffer {
     this.effectiveDate = effectiveDate;
     this.expireDate = expireDate;
     this.amountBeforeTax = amountBeforeTax;
-    this.amountAfterTax = amountAfterTax;
-    this.currency = currency;
+    this.amountAfterTax = amountAfterTax; // Mandatory for AccommodationOffer and FlightOffer
+    this.currency = currency; // Mandatory for AccommodationOffer and FlightOffer
   }
 }
 
@@ -62,9 +62,17 @@ class FlightOffer {
   constructor (
     provider,
     airlineCode,
+    expiration,
+    offerItems,
+    amountAfterTax,
+    currency
   ) {
     this.provider = provider;
     this.airlineCode = airlineCode;
+    this.expiration = expiration;
+    this.offerItems = offerItems;
+    this.amountAfterTax = amountAfterTax; // Mandatory for AccommodationOffer and FlightOffer
+    this.currency = currency; // Mandatory for AccommodationOffer and FlightOffer
   }
 }
 
@@ -121,6 +129,13 @@ class OfferManager {
         )
         .exec();
     } catch (e) {
+      throw new GliderError(
+        'Offer expired or not found',
+        404
+      );
+    }
+
+    if (!offer) {
       throw new GliderError(
         'Offer expired or not found',
         404

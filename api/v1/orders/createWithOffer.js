@@ -25,9 +25,11 @@ module.exports = basicDecorator(async (req, res) => {
 
   // Retrieve the offer
   const storedOffer = await offerManager.getOffer(requestBody.offerId);
-  
+
+  // Get the guarantee
+  const guarantee = await getGuarantee(requestBody.guaranteeId, storedOffer);
+
   let orderCreationResults;
-  let guarantee;
   let guaranteeClaim;
 
   // Handle an Accomodation offer
@@ -39,9 +41,6 @@ module.exports = basicDecorator(async (req, res) => {
         400
       );
     }
-  
-    // Get the guarantee
-    guarantee = await getGuarantee(requestBody.guaranteeId, storedOffer);
   
     // Claim the guarantee
     guaranteeClaim = await claimGuaranteeWithCard(requestBody.guaranteeId);
@@ -68,7 +67,7 @@ module.exports = basicDecorator(async (req, res) => {
   }
 
   await ordersManager.saveOrder(
-    requestBody.offerId,
+    orderCreationResults.orderId,
     {
       request: requestBody,
       guarantee: guarantee,
@@ -77,5 +76,5 @@ module.exports = basicDecorator(async (req, res) => {
     }
   );
 
-  res.status(200).send(orderCreationResults);
+  res.status(200).json(orderCreationResults);
 });
