@@ -29,7 +29,7 @@ class OrdersManager {
     if (!orderId) {
       throw new GliderError(
         'Order Id is required',
-        500
+        405
       );
     }
 

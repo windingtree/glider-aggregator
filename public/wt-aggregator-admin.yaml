@@ -1,0 +1,187 @@
+openapi: 3.0.1
+
+info:
+  title: Winding Tree aggregator
+  description: "This is the interface documentation for the REST api interface with the Winding Tree Aggregator"
+  contact:
+    email: mathieu@windingtree.com
+  license:
+    name: Apache License
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+
+servers:
+  - url: /admin/v1
+    description: Administration server
+
+tags:
+  - name: hotels
+    description: Operations with hotels
+
+paths:
+  /hotels/add:
+    post:
+      tags:
+        - hotels
+      summary: Add hotel
+      operationId: addHotels
+      requestBody:
+        description: Add hotel
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Hotel"
+            examples:
+              flightSearch:
+                summary: Add hotel
+                value:
+                  {
+                    "provider": "EREVMAX",
+                    "ref": "07119",
+                    "latitude": "59.33309777",
+                    "longitude": "18.05437602",
+                    "currency": 'SEK'
+                  }
+        required: true
+      responses:
+        200:
+          description: Hotel added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HotelAddResults"
+        401:
+          description: Authorization required
+          content: {}
+        403:
+          description: Not authorized
+          content: {}
+        405:
+          description: Validation exception
+          content: {}
+        415:
+          description: Content should be application/json
+          content: {}
+        429:
+          description: Too many requests
+          content: {}
+        500:
+          description: Internal Server error
+          content: {}
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body
+
+  /hotels/{hotelId}/getById:
+    get:
+      tags:
+        - hotels
+      parameters:
+      - name: hotelId
+        in: path
+        description: Hotel Id
+        required: true
+        schema:
+          $ref: '#components/schemas/MongoId'
+      summary: Get hotel by Id
+      operationId: getHotelById
+      responses:
+        200:
+          description: The hotel details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+
+components:
+  schemas:
+
+    MongoId:
+      description: Unique Id used in the MongoDB
+      type: string
+      example: "5e7a676620778a23098581cb"
+
+    Hotel:
+      description: Hotel
+      type: object
+      required: 
+        - provider
+        - ref
+        - latitude
+        - longitude
+        - currency
+      properties:
+        provider:
+          description: Hotel provider
+          type: string
+          example: "EREVMAX"
+        ref:
+          description: Hotel reference
+          type: string
+          example: "32788"
+        latitude:
+          description: Latitude
+          type: string
+          example: "59.33309777"
+        longitude:
+          description: Longitude
+          type: string
+          example: "18.05437602"
+        currency: 
+          description: The ISO4217 currency code
+          type: string
+          pattern: "^[A-Z]{3}$"
+          minLength: 3
+          maxLength: 3
+          example: "EUR"
+    
+    HotelAddResults:
+      description: Hotel addition result
+      type: object
+      properties:
+        id: 
+          description: Id of the added hotel in the database
+          type: string
+          pattern: /^[a-f0-9]{24}$/i
+          example: 507f1f77bcf86cd799439011
+    
+    Error:
+      description: An error returned by Simard
+      type: object
+      properties:
+        message:
+          description: Information related to the error
+          type: string
+          example: "Invalid Input"
+
+  # Defines the security schemes
+  securitySchemes:
+    orgid_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://staging.api.simard.io/oauth/authorize
+
+    orgid_token:
+      type: apiKey
+      name: orgid_token
+      in: header

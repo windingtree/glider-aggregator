@@ -13,6 +13,14 @@
             }
         },
         {
+            "src": "admin/docs/index.js",
+            "use": "@now/node"
+        },
+        {
+            "src": "admin/**/*.js",
+            "use": "@now/node"
+        },
+        {
             "src": "public/**",
             "use": "@now/static"
         }
@@ -31,6 +39,18 @@
             "destination": "public/$1"
         },
         {
+            "source": "/admin/v1/hotels/(.*)/getById",
+            "destination": "/admin/v1/hotels/[hotelId]/getById.js?hotelId=$1"
+        },
+        {
+            "source": "/admin/v1/(.*)",
+            "destination": "/admin/v1/$1.js"
+        },
+        {
+            "source": "/admin/docs/(.*)",
+            "destination": "public/$1"
+        },
+        {
             "source": "/oauth2-redirect.html",
             "destination": "public/oauth2-redirect.html"
         }
@@ -43,6 +63,14 @@
         {
             "source": "/api/docs",
             "destination": "/api/docs/"
+        },
+        {
+            "source": "/admin",
+            "destination": "/admin/docs/"
+        },
+        {
+            "source": "/admin/docs",
+            "destination": "/admin/docs/"
         }
     ],
     "env": {
@@ -67,6 +95,7 @@
         "INFURA_ENDPOINT": "@infura_wss_endpoint",
         "INFURA_PROJECT_ID": "@infura_project_id",
         "GLIDER_ORGID": "@ropsten.glider-aggregator.orgid",
+        "GLIDER_ADMIN_KEY": "@staging.glider-aggregator.admin-key",
         "LIF_MIN_DEPOSIT": "@staging.glider-aggregator.lif_deposit",
         "SIMARD_URL": "@staging.glider-aggregator.simard_api_endpoint"
     }

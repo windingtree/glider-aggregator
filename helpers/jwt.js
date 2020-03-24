@@ -16,8 +16,8 @@ const orgIdResolver = new OrgIdResolver({
 });
 orgIdResolver.registerFetchMethod(httpFetchMethod);
 
-module.exports.verifyJWT = async (type, jwt) => {
-
+module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
+  
   if (type !== 'Bearer') {
     throw new GliderError('Unknown authorization method', 403);
   };
@@ -175,7 +175,8 @@ module.exports.verifyJWT = async (type, jwt) => {
         pubKey,
         {
           typ: 'JWT',
-          audience: config.GLIDER_DID
+          audience: config.GLIDER_DID,
+          ...(isAdmin ? { issuer: config.GLIDER_ADMIN_DID } : {})
         }
       );
     } catch (e) {

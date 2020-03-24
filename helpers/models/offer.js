@@ -116,7 +116,7 @@ class OfferManager {
     if (!offerId) {
       throw new GliderError(
         'Offer Id is required',
-        500
+        405
       );
     }
 

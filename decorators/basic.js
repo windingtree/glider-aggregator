@@ -2,7 +2,7 @@ const GliderError = require('../helpers/error');
 const { verifyJWT } = require('../helpers/jwt');
 const { indexException, indexEvent } = require('../helpers/elasticsearch');
 
-const basicDecorator = fn => async (req, res) => {
+const basicDecorator = (fn, isAdmin = false) => async (req, res) => {
   // start timer
   req.start = process.hrtime();
 
@@ -27,8 +27,8 @@ const basicDecorator = fn => async (req, res) => {
       throw new GliderError('Authorization missing', 403);
     }
     
-    const auth = headers.authorization.split(' ');
-    req.verificationResult = await verifyJWT(...auth);
+    const [ authType, authJwt ] = headers.authorization.split(' ');
+    req.verificationResult = await verifyJWT(authType, authJwt, isAdmin);
     await fn(req, res);
   } catch (e) {
     console.log(e);
