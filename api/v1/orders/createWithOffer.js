@@ -33,13 +33,6 @@ module.exports = basicDecorator(async (req, res) => {
   // Handle an Accomodation offer
   if (storedOffer instanceof AccommodationOffer) {
 
-    if (!requestBody.guaranteeId) {
-      throw new GliderError(
-        'Guarantee Id is required for processing accommodation offer',
-        400
-      );
-    }
-
     // Get the guarantee
     guarantee = await getGuarantee(requestBody.guaranteeId, storedOffer);
   
