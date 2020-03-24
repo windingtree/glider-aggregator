@@ -19,7 +19,7 @@ const { getGuarantee, claimGuarantee } = require('../../../../helpers/guarantee'
 module.exports = basicDecorator(async (req, res) => {
   const { body, query } = req;
 
-  // Get the offer
+  // Get the order
   const storedOrder = await ordersManager.getOrder(query.orderId);
   
   // Get the guarantee and verify
