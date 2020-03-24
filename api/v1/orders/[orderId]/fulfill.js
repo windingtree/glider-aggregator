@@ -14,14 +14,19 @@ const {
   reduceToObjectByKey,
   reduceToProperty
 } = require('../../../../helpers/parsers');
-const { claimGuarantee } = require('../../../../helpers/guarantee');
+const { getGuarantee, claimGuarantee } = require('../../../../helpers/guarantee');
 
 module.exports = basicDecorator(async (req, res) => {
   const { body, query } = req;
 
-  // Retrieve the offer
+  // Get the offer
   const storedOrder = await ordersManager.getOrder(query.orderId);
-  const guarantee = storedOrder.guarantee;
+  
+  // Get the guarantee and verify
+  const guarantee = await getGuarantee(body.guaranteeId, {
+    currency: storedOrder.order.order.price.currency,
+    amountAfterTax: storedOrder.order.order.price.public
+  });
 
   const ndcRequestData = mapNdcRequestData(body, query);
   const ndcBody = fulfillOrderTemplate(ndcRequestData);

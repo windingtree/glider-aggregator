@@ -32,8 +32,6 @@ module.exports.getGuarantee = async (id, offer) => {
     );
 
     guarantee = response.data;
-
-    console.log('!!!', guarantee);
     
     // Check guarantee currency
     if (guarantee.currency !== offer.currency) {

@@ -26,14 +26,15 @@ module.exports = basicDecorator(async (req, res) => {
   // Retrieve the offer
   const storedOffer = await offerManager.getOffer(requestBody.offerId);
 
-  // Get the guarantee
-  const guarantee = await getGuarantee(requestBody.guaranteeId, storedOffer);
-
   let orderCreationResults;
+  let guarantee;
   let guaranteeClaim;
 
   // Handle an Accomodation offer
   if (storedOffer instanceof AccommodationOffer) {
+
+    // Get the guarantee
+    guarantee = await getGuarantee(requestBody.guaranteeId, storedOffer);
 
     if (!requestBody.guaranteeId) {
       throw new GliderError(
