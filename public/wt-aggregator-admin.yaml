@@ -31,17 +31,6 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/Hotel"
-            examples:
-              flightSearch:
-                summary: Add hotel
-                value:
-                  {
-                    "provider": "EREVMAX",
-                    "ref": "07119",
-                    "latitude": "59.33309777",
-                    "longitude": "18.05437602",
-                    "currency": 'SEK'
-                  }
         required: true
       responses:
         200:
@@ -49,25 +38,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HotelAddResults"
-        401:
-          description: Authorization required
-          content: {}
+                $ref: "#/components/schemas/HotelAddResult"
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         403:
           description: Not authorized
-          content: {}
-        405:
-          description: Validation exception
-          content: {}
-        415:
-          description: Content should be application/json
-          content: {}
-        429:
-          description: Too many requests
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         500:
-          description: Internal Server error
-          content: {}
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       security:
         - orgid_auth:
             - admin
@@ -79,12 +74,12 @@ paths:
       tags:
         - hotels
       parameters:
-      - name: hotelId
-        in: path
-        description: Hotel Id
-        required: true
-        schema:
-          $ref: '#components/schemas/MongoId'
+        - name: hotelId
+          in: path
+          description: Hotel Id
+          required: true
+          schema:
+            $ref: '#components/schemas/MongoId'
       summary: Get hotel by Id
       operationId: getHotelById
       responses:
@@ -100,7 +95,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         500:
           description: The server encountered an error
           content:
@@ -111,6 +111,197 @@ paths:
         - orgid_auth:
             - admin
         - orgid_token: []
+  
+  /hotels/{hotelId}/updateById:
+    post:
+      tags:
+        - hotels
+      parameters:
+        - name: hotelId
+          in: path
+          description: Hotel Id
+          required: true
+          schema:
+            $ref: '#components/schemas/MongoId'
+      summary: Update hotel by Id
+      operationId: updateHotelById
+      requestBody:
+        description: Update the hotel
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Hotel"
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              type: string
+              example: "OK"
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+
+
+  /hotels/{hotelId}/removeById:
+    delete:
+      tags:
+        - hotels
+      parameters:
+        - name: hotelId
+          in: path
+          description: Hotel Id
+          required: true
+          schema:
+            $ref: '#components/schemas/MongoId'
+      summary: Remove hotel by Id
+      operationId: removeHotelById
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              type: string
+              example: "OK"
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+
+  /hotels/search:
+    post:
+      tags: 
+        - hotels
+      summary: Search for hotels
+      operationId: hotelsSearch
+      requestBody:
+        description: Search for hotels around matching input criteria
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HotelsSearchCriteria" 
+            examples:
+              polygonSearch:
+                summary: Search within polygon boundary
+                value:
+                  {
+                    "polygon": [
+                      [
+                        24.8963928,
+                        60.1749466
+                      ],
+                      [
+                        24.9700356,
+                        60.1763126
+                      ],
+                      [
+                        24.9720097,
+                        60.1475721
+                      ],
+                      [
+                        24.8987961,
+                        60.1442394
+                      ],
+                      [
+                        24.896307,
+                        60.1748612
+                      ]
+                    ],
+                    "sort": {
+                      "provider": "asc"
+                    },
+                    "skip": 10,
+                    "limit": 10
+                  }
+              locationSearch:
+                summary: Search by location
+                value:
+                  {
+                    "point": {
+                      "longitude": 18.05437602,
+                      "latitude": 59.33309777,
+                      "radius": 50
+                    },
+                    "sort": {
+                      "provider": "asc"
+                    },
+                    "skip": 10,
+                    "limit": 10
+                  }           
+      responses:
+        200:
+          description: The hotel details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelSearchResult'
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body
 
 components:
   schemas:
@@ -126,8 +317,8 @@ components:
       required: 
         - provider
         - ref
-        - latitude
         - longitude
+        - latitude
         - currency
       properties:
         provider:
@@ -138,14 +329,14 @@ components:
           description: Hotel reference
           type: string
           example: "32788"
-        latitude:
-          description: Latitude
-          type: string
-          example: "59.33309777"
         longitude:
           description: Longitude
-          type: string
-          example: "18.05437602"
+          type: number
+          example: 18.05437602
+        latitude:
+          description: Latitude
+          type: number
+          example: 59.33309777
         currency: 
           description: The ISO4217 currency code
           type: string
@@ -154,7 +345,44 @@ components:
           maxLength: 3
           example: "EUR"
     
-    HotelAddResults:
+    HotelsSearchCriteria:
+      description: A search criteria for hotels search around coordinates
+      type: object
+      properties:
+        polygon:
+          description: Search within polygon boundary
+          type: array
+          items: 
+            type: number           
+        point:
+          description: Search by location
+          type: object
+          required:
+            - longitude
+            - longitude
+            - radius
+          properties: 
+            longitude:
+              description: A longitude coordinate
+              type: number
+            latitude:
+              description: A latitude coordinate
+              type: number
+            radius:
+              description: A radius for search around in miles
+              type: number
+        sort:
+          $ref: '#/components/schemas/SortingCriteria'
+        skip:
+          description: A count of records to skip in result
+          type: number
+          example: 
+            10
+        limit:
+          description: A limit of records in responses
+          type: string
+    
+    HotelAddResult:
       description: Hotel addition result
       type: object
       properties:
@@ -163,7 +391,40 @@ components:
           type: string
           pattern: /^[a-f0-9]{24}$/i
           example: 507f1f77bcf86cd799439011
+
+    HotelSearchResult:
+      description: Response object for hotels search
+      type: object
+      required:
+        - records
+        - total
+        - sort
+        - skip
+        - limit
+      properties:
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hotel'
+        total:
+          description: Total number of records
+          type: number
+          example: 5
+        sort:
+          $ref: '#/components/schemas/SortingCriteria'
+        skip:
+          description: A count of records to skip in result
+          type: number
+          example: 10
+        limit:
+          description: A limit of records in responses
+          type: string
+          example: 10
     
+    SortingCriteria:
+      description: Sorting criteria
+      type: object
+                
     Error:
       description: An error returned by Simard
       type: object

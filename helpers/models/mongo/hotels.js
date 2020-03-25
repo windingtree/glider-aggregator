@@ -13,10 +13,13 @@ const HotelsSchema = new Schema(
       required: true,
       unique: true
     },
-    coordinates: {
+    location: {
       type: [Number], // [<lng>, <lat>]
-      index: '2d',
-      required: true
+      required: true,
+      index: {
+        type: '2dsphere',
+        sparse: true
+      }
     },
     currency: {
       type: String,
@@ -40,20 +43,24 @@ class HotelsManager {
 
   constructor (model) {
     this.model = model;
-    this.project = {
-      _id: 0,
-      id: '$_id',
-      provider: '$provider',
-      ref: '$ref',
-      longitude: { $arrayElemAt: ['$coordinates', 0] },
-      latitude: { $arrayElemAt: ['$coordinates', 1] },
-      currency: '$currency'
+  }
+
+  // Transform record from the database to the public form
+  static mapResult (rec) {
+    return {
+      id: rec._id,
+      provider: rec.provider,
+      ref: rec.ref,
+      longitude: rec.location[0],
+      latitude: rec.location[1],
+      currency: rec.currency
     };
   }
 
+  // Add new hotel
   async addOne (options) {
     const data = options;
-    data.coordinates = [options.longitude, options.latitude];
+    data.location = [options.longitude, options.latitude];
     delete data.latitude;
     delete data.longitude;
 
@@ -81,23 +88,19 @@ class HotelsManager {
     return hotel;
   }
 
+  // Add multiple hotels
   addBulk (hotels = []) {
     return Promise.all(hotels.map(h => this.addOne(h)));
   }
 
-  async getOne (query = {}) {
-    let hotels;
+  // Retrive hotel record by the given criteria
+  async getOne (match = {}) {
+    let hotel;
 
     try {
-      hotels = await this.model
-        .aggregate([
-          {
-            '$match': query
-          }
-        ])
-        .limit(1)
-        .project(this.project)
-        .exec();
+      hotel = await this.model
+        .findOne(match)
+        .map(HotelsManager.mapResult);
     } catch (e) {
       throw new GliderError(
         e.message,
@@ -105,45 +108,48 @@ class HotelsManager {
       );
     }
 
-    if (hotels.length === 0) {
+    if (!hotel) {
       throw new GliderError(
         'Hotel not found',
         404
       );
     }
 
-    return hotels[0];
+    return hotel;
   }
 
+  // Retrive hotel by Id
   async getById (id) {
     return this.getOne({
       _id: Types.ObjectId(id)
     });
   }
 
-  async get (match = {}, pagination = {}, sort = null) {
+  // Search for hotels using matching criteria
+  async get (match = {}, sort = null, skip = 0, limit = null) {
     let hotels;
+    let total;
 
     try {
-      let query = this.model.aggregate(
-        [
-          {
-            '$match': match
-          }
-        ]
-      );
+      total = await this.model.find(match).countDocuments();
 
-      for (const key in pagination) {
-        query = query[key].apply(query, [pagination[key]]);
-      }
+      let query = this.model.find(match);
 
       if (sort) {
         query = query.sort(sort);
       }
 
-      query = query.project(this.project);
+      if (skip) {
+        query = query.skip(skip);
+      }
 
-      hotels = await query.exec();
+      if (limit) {
+        query = query.limit(limit);
+      }
+
+      hotels = await query
+        .map(result => result.map(HotelsManager.mapResult))
+        .exec();
     } catch (e) {
       throw new GliderError(
         e.message,
@@ -153,18 +159,69 @@ class HotelsManager {
 
     return {
       records: hotels,
-      pagination,
-      sort
+      total,
+      sort,
+      skip,
+      limit
     };
   }
 
+  // Search for hotel by the given location
+  searchByLocation (location, sort = null, skip = 0, limit = null) {
+    return this.get(
+      {
+        location: {
+          '$geoWithin': {
+            '$centerSphere': [
+              [
+                location.longitude,
+                location.latitude
+              ],
+              Number(location.radius) / 3963.2
+            ]
+          }
+        }
+      },
+      sort,
+      skip,
+      limit
+    );
+  }
+
+  // Search for hotel within the given polygon of coordinates
+  searchWithin (polygon, sort = null, skip = 0, limit = null) {
+    return this.get(
+      {
+        location: {
+          '$geoWithin': {
+            '$polygon': polygon
+          }
+        }
+      },
+      sort,
+      skip,
+      limit
+    );
+  }
+
+  // Update existed hotel record by Id
   async updateOne (id, hotel) {
+    let result;
+
     try {
-      await this.model.replaceOne(
+      result = await this.model.replaceOne(
         {
           _id: id
         },
-        hotel
+        {
+          provider: hotel.provider,
+          ref: hotel.ref,
+          location: [
+            hotel.longitude,
+            hotel.latitude
+          ],
+          currency: hotel.currency
+        }
       );
     } catch (e) {
       throw new GliderError(
@@ -172,8 +229,16 @@ class HotelsManager {
         500
       );
     }
+
+    if (result.n === 0) {
+      throw new GliderError(
+        'Hotel not found',
+        404
+      );
+    }
   }
 
+  // Remove existed hotel record by Id
   async removeOne (id) {
     let result;
 
