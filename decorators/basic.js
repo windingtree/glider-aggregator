@@ -7,9 +7,15 @@ const basicDecorator = fn => async (req, res) => {
   req.start = process.hrtime();
 
   // Inject elastisearch indexer into json method
-  const resjsonOrig = res.json;
+  const resJsonOrig = res.json;
+  const resSendOrig = res.send;
   res.json = (obj) => {
-    const response = resjsonOrig(obj);
+    const response = resJsonOrig(obj);
+    indexEvent(req, res);
+    return response;
+  };
+  res.send = (obj) => {
+    const response = resSendOrig(obj);
     indexEvent(req, res);
     return response;
   };

@@ -48,6 +48,13 @@ class OrdersManager {
       );
     }
 
+    if (!order) {
+      throw new GliderError(
+        'Order not found',
+        404
+      );
+    }
+
     return order;
   }
 }

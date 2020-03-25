@@ -25,7 +25,7 @@ module.exports = basicDecorator(async (req, res) => {
 
   // Retrieve the offer
   const storedOffer = await offerManager.getOffer(requestBody.offerId);
-  
+
   let orderCreationResults;
   let guarantee;
   let guaranteeClaim;
@@ -33,13 +33,6 @@ module.exports = basicDecorator(async (req, res) => {
   // Handle an Accomodation offer
   if (storedOffer instanceof AccommodationOffer) {
 
-    if (!requestBody.guaranteeId) {
-      throw new GliderError(
-        'Guarantee Id is required for processing accommodation offer',
-        400
-      );
-    }
-  
     // Get the guarantee
     guarantee = await getGuarantee(requestBody.guaranteeId, storedOffer);
   
@@ -68,7 +61,7 @@ module.exports = basicDecorator(async (req, res) => {
   }
 
   await ordersManager.saveOrder(
-    requestBody.offerId,
+    orderCreationResults.orderId,
     {
       request: requestBody,
       guarantee: guarantee,
@@ -77,5 +70,5 @@ module.exports = basicDecorator(async (req, res) => {
     }
   );
 
-  res.status(200).send(orderCreationResults);
+  res.status(200).json(orderCreationResults);
 });

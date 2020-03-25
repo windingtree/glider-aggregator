@@ -22,6 +22,13 @@ const processSimardError = e => {
 module.exports.getGuarantee = async (id, offer) => {
   let guarantee;
 
+  if (!id) {
+    throw new GliderError(
+      'Guarantee Id is required',
+      400
+    );
+  }
+
   try {
     // Get the guarantee
     const response = await axios.get(
