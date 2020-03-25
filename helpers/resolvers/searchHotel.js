@@ -11,18 +11,37 @@ const {
 const {
   reduceToObjectByKey,
   reduceObjectToProperty,
-  reduceAcomodation,
-  reduceRoomStays,
+  reduceAcomodation
 } = require('../parsers');
+const { manager: hotelsManager } = require('../models/mongo/hotels');
 
 const GliderError = require('../error');
 const offer = require('../models/offer');
 const config = require('../../config');
 
 const searchHotel = async (body) => {
-  // Select the Hotels matching the rectangle
-  const hotelCodes = getHotelsInRectangle(body.accommodation.location.rectangle);
+  let hotels;
 
+  if (typeof body.accommodation.location.point === 'object') {
+    hotels = await hotelsManager.searchByLocation(body.accommodation.location.point);
+  } else if (Array.isArray(body.accommodation.location.polygon)) {
+    hotels = await hotelsManager.searchWithin(body.accommodation.location.polygon);
+  } else {
+    throw new GliderError(
+      'Unknown hotels search method',
+      405
+    );
+  }
+
+  if (hotels.total === 0) {
+    throw new GliderError(
+      'Hotels not found',
+      404
+    );
+  }
+
+  const hotelCodes = hotels.records.map(r => r.ref);
+  
   if (!hotelCodes.length) {
     throw new GliderError('No matching hotels', 404);
   }
