@@ -69,6 +69,56 @@ paths:
         - orgid_token: []
       x-codegen-request-body-name: body
 
+  /hotels/addBulk:
+    post:
+      tags:
+        - hotels
+      summary: Add multiple hotels at ones
+      operationId: addHotelsBulk
+      requestBody:
+        description: Array of hotels
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Hotels"
+        required: true
+      responses:
+        200:
+          description: Hotel added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HotelAddResults"
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body
+
   /hotels/{hotelId}/getById:
     get:
       tags:
@@ -344,6 +394,12 @@ components:
           minLength: 3
           maxLength: 3
           example: "EUR"
+
+    Hotels:
+      description: List of hotels
+      type: array
+      items:
+        $ref: '#/components/schemas/Hotel'
     
     HotelsSearchCriteria:
       description: A search criteria for hotels search around coordinates
@@ -420,6 +476,12 @@ components:
           description: A limit of records in responses
           type: string
           example: 10
+    
+    HotelAddResults:
+      description: List of hotel search results
+      type: array
+      items: 
+        $ref: '#/components/schemas/HotelAddResult'
     
     SortingCriteria:
       description: Sorting criteria
