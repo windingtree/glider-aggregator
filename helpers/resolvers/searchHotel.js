@@ -1,7 +1,6 @@
 const axios = require('axios');
 const { transform } = require('camaro');
 const { v4: uuidv4 } = require('uuid');
-const { getHotelsInRectangle } = require('../parsers/erevmaxHotels');
 const { mapRequestData } = require('../transformInputData/hotelAvail');
 const { hotelAvailRequestTemplate } = require('../soapTemplates/hotelAvail');
 const {
@@ -22,10 +21,30 @@ const config = require('../../config');
 const searchHotel = async (body) => {
   let hotels;
 
-  if (typeof body.accommodation.location.point === 'object') {
-    hotels = await hotelsManager.searchByLocation(body.accommodation.location.point);
+  if (typeof body.accommodation.location.cirlce === 'object') {
+    hotels = await hotelsManager.searchByLocation(body.accommodation.location.circle);
   } else if (Array.isArray(body.accommodation.location.polygon)) {
     hotels = await hotelsManager.searchWithin(body.accommodation.location.polygon);
+  } else if (typeof body.accommodation.location.rectangle === 'object') {
+    const polygon = [
+      [
+        body.accommodation.location.rectangle.north,
+        body.accommodation.location.rectangle.west
+      ],
+      [
+        body.accommodation.location.rectangle.north,
+        body.accommodation.location.rectangle.east
+      ],
+      [
+        body.accommodation.location.rectangle.south,
+        body.accommodation.location.rectangle.east
+      ],
+      [
+        body.accommodation.location.rectangle.south,
+        body.accommodation.location.rectangle.west
+      ]
+    ];
+    hotels = await hotelsManager.searchWithin(polygon);
   } else {
     throw new GliderError(
       'Unknown hotels search method',

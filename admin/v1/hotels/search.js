@@ -3,15 +3,64 @@ const { manager } = require('../../../helpers/models/mongo/hotels');
 const GliderError = require('../../../helpers/error');
 
 module.exports = basicDecorator(async (req, res) => {
+  const { query } = req;
+  let parsedQuery;
   let searchMethod;
   let searchQuery;
 
-  if (typeof req.body.point === 'object') {
+  const parsePolygon = query => query.polygon
+    .map(q => q.split(',').map(v => Number(v)));
+
+  const parseDeepObject = (query, prop) => Object.entries(query)
+    .filter(e => new RegExp(`^${prop}`).test(e[0]))
+    .reduce((a, v) => {
+      const parts = v[0].match(/^\w+\[(\w+)\]/);
+      a = a === null ? {} : a;
+      a[parts[1]] = Number(v[1]);
+      return a;
+    }, null);
+  
+  try {
+    parsedQuery = {
+      polygon: parsePolygon(query),
+      rectangle: parseDeepObject(query, 'rectangle'),
+      circle: parseDeepObject(query, 'circle'),
+      skip: Number(query.skip),
+      limit: Number(query.limit)
+    };
+  } catch (e) {
+    throw new GliderError(
+      `Query parsing error: ${e.message}`,
+      400
+    );
+  }
+  
+  if (parsedQuery.circle) {
     searchMethod = 'searchByLocation';
-    searchQuery = req.body.point;
-  } else if (Array.isArray(req.body.polygon)) {
+    searchQuery = parsedQuery.circle;
+  } else if (Array.isArray(parsedQuery.polygon)) {
     searchMethod = 'searchWithin';
-    searchQuery = req.body.polygon;
+    searchQuery = parsedQuery.polygon;
+  } else if (parsedQuery.rectangle) {
+    searchMethod = 'searchWithin';
+    searchQuery = [
+      [
+        parsedQuery.rectangle.north,
+        parsedQuery.rectangle.west
+      ],
+      [
+        parsedQuery.rectangle.north,
+        parsedQuery.rectangle.east
+      ],
+      [
+        parsedQuery.rectangle.south,
+        parsedQuery.rectangle.east
+      ],
+      [
+        parsedQuery.rectangle.south,
+        parsedQuery.rectangle.west
+      ]
+    ];
   } else {
     throw new GliderError(
       'Unknown search method',
@@ -21,9 +70,8 @@ module.exports = basicDecorator(async (req, res) => {
   
   const hotels = await manager[searchMethod](
     searchQuery,
-    req.body.sort ? req.body.sort : null,
-    req.body.skip ? req.body.skip : 0,
-    req.body.limit ? req.body.limit : null
+    parsedQuery.skip ? parsedQuery.skip : 0,
+    parsedQuery.limit ? parsedQuery.limit : null
   );
   
   res.status(200).json(hotels);

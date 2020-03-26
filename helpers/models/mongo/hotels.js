@@ -126,7 +126,7 @@ class HotelsManager {
   }
 
   // Search for hotels using matching criteria
-  async get (match = {}, sort = null, skip = 0, limit = null) {
+  async get (match = {}, skip = 0, limit = null) {
     let hotels;
     let total;
 
@@ -134,10 +134,6 @@ class HotelsManager {
       total = await this.model.find(match).countDocuments();
 
       let query = this.model.find(match);
-
-      if (sort) {
-        query = query.sort(sort);
-      }
 
       if (skip) {
         query = query.skip(skip);
@@ -160,14 +156,13 @@ class HotelsManager {
     return {
       records: hotels,
       total,
-      sort,
       skip,
       limit
     };
   }
 
   // Search for hotel by the given location
-  searchByLocation (location, sort = null, skip = 0, limit = null) {
+  searchByLocation (location, skip = 0, limit = null) {
     return this.get(
       {
         location: {
@@ -182,14 +177,13 @@ class HotelsManager {
           }
         }
       },
-      sort,
       skip,
       limit
     );
   }
 
   // Search for hotel within the given polygon of coordinates
-  searchWithin (polygon, sort = null, skip = 0, limit = null) {
+  searchWithin (polygon, skip = 0, limit = null) {
     return this.get(
       {
         location: {
@@ -198,7 +192,6 @@ class HotelsManager {
           }
         }
       },
-      sort,
       skip,
       limit
     );

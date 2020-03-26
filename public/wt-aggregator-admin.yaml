@@ -18,58 +18,8 @@ tags:
   - name: hotels
     description: Operations with hotels
 
-paths:
-  /hotels/add:
-    post:
-      tags:
-        - hotels
-      summary: Add hotel
-      operationId: addHotels
-      requestBody:
-        description: Add hotel
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Hotel"
-        required: true
-      responses:
-        200:
-          description: Hotel added
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HotelAddResult"
-        400:
-          description: The sent request is not correct
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        403:
-          description: Not authorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        404:
-          description: Not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        500:
-          description: The server encountered an error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      security:
-        - orgid_auth:
-            - admin
-        - orgid_token: []
-      x-codegen-request-body-name: body
-
-  /hotels/addBulk:
+paths:  
+  /hotels:
     post:
       tags:
         - hotels
@@ -101,12 +51,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        404:
-          description: Not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         500:
           description: The server encountered an error
           content:
@@ -119,7 +63,7 @@ paths:
         - orgid_token: []
       x-codegen-request-body-name: body
 
-  /hotels/{hotelId}/getById:
+  /hotels/{hotelId}:
     get:
       tags:
         - hotels
@@ -129,7 +73,7 @@ paths:
           description: Hotel Id
           required: true
           schema:
-            $ref: '#components/schemas/MongoId'
+            $ref: '#components/schemas/HotelId'
       summary: Get hotel by Id
       operationId: getHotelById
       responses:
@@ -161,9 +105,8 @@ paths:
         - orgid_auth:
             - admin
         - orgid_token: []
-  
-  /hotels/{hotelId}/updateById:
-    post:
+
+    put:
       tags:
         - hotels
       parameters:
@@ -172,7 +115,7 @@ paths:
           description: Hotel Id
           required: true
           schema:
-            $ref: '#components/schemas/MongoId'
+            $ref: '#components/schemas/HotelId'
       summary: Update hotel by Id
       operationId: updateHotelById
       requestBody:
@@ -207,6 +150,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        405:
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         500:
           description: The server encountered an error
           content:
@@ -218,8 +167,6 @@ paths:
             - admin
         - orgid_token: []
 
-
-  /hotels/{hotelId}/removeById:
     delete:
       tags:
         - hotels
@@ -229,7 +176,7 @@ paths:
           description: Hotel Id
           required: true
           schema:
-            $ref: '#components/schemas/MongoId'
+            $ref: '#components/schemas/HotelId'
       summary: Remove hotel by Id
       operationId: removeHotelById
       responses:
@@ -269,65 +216,37 @@ paths:
         - orgid_token: []
 
   /hotels/search:
-    post:
+    get:
       tags: 
         - hotels
       summary: Search for hotels
       operationId: hotelsSearch
-      requestBody:
-        description: Search for hotels around matching input criteria
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/HotelsSearchCriteria" 
-            examples:
-              polygonSearch:
-                summary: Search within polygon boundary
-                value:
-                  {
-                    "polygon": [
-                      [
-                        24.8963928,
-                        60.1749466
-                      ],
-                      [
-                        24.9700356,
-                        60.1763126
-                      ],
-                      [
-                        24.9720097,
-                        60.1475721
-                      ],
-                      [
-                        24.8987961,
-                        60.1442394
-                      ],
-                      [
-                        24.896307,
-                        60.1748612
-                      ]
-                    ],
-                    "sort": {
-                      "provider": "asc"
-                    },
-                    "skip": 10,
-                    "limit": 10
-                  }
-              locationSearch:
-                summary: Search by location
-                value:
-                  {
-                    "point": {
-                      "longitude": 18.05437602,
-                      "latitude": 59.33309777,
-                      "radius": 50
-                    },
-                    "sort": {
-                      "provider": "asc"
-                    },
-                    "skip": 10,
-                    "limit": 10
-                  }           
+      parameters:
+        - in: query
+          name: polygon
+          style: form
+          schema:
+            $ref: '#/components/schemas/LocationPolygon'
+        - in: query
+          name: circle
+          style: deepObject
+          schema:
+            $ref: '#/components/schemas/LocationCircle'
+        - in: query
+          name: rectangle
+          style: deepObject
+          schema:
+            $ref: '#/components/schemas/LocationRectangle'
+        - in: query
+          name: skip
+          schema:
+            $ref: '#/components/schemas/PaginationSkip'
+          default: 0
+        - in: query
+          name: limit
+          schema:
+            $ref: '#/components/schemas/PaginationLimit'
+          default: 0
       responses:
         200:
           description: The hotel details
@@ -337,6 +256,12 @@ paths:
                 $ref: '#/components/schemas/HotelSearchResult'
         400:
           description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
           content:
             application/json:
               schema:
@@ -356,7 +281,7 @@ paths:
 components:
   schemas:
 
-    MongoId:
+    HotelId:
       description: Unique Id used in the MongoDB
       type: string
       example: "5e7a676620778a23098581cb"
@@ -401,43 +326,6 @@ components:
       items:
         $ref: '#/components/schemas/Hotel'
     
-    HotelsSearchCriteria:
-      description: A search criteria for hotels search around coordinates
-      type: object
-      properties:
-        polygon:
-          description: Search within polygon boundary
-          type: array
-          items: 
-            type: number           
-        point:
-          description: Search by location
-          type: object
-          required:
-            - longitude
-            - longitude
-            - radius
-          properties: 
-            longitude:
-              description: A longitude coordinate
-              type: number
-            latitude:
-              description: A latitude coordinate
-              type: number
-            radius:
-              description: A radius for search around in miles
-              type: number
-        sort:
-          $ref: '#/components/schemas/SortingCriteria'
-        skip:
-          description: A count of records to skip in result
-          type: number
-          example: 
-            10
-        limit:
-          description: A limit of records in responses
-          type: string
-    
     HotelAddResult:
       description: Hotel addition result
       type: object
@@ -466,8 +354,6 @@ components:
           description: Total number of records
           type: number
           example: 5
-        sort:
-          $ref: '#/components/schemas/SortingCriteria'
         skip:
           description: A count of records to skip in result
           type: number
@@ -482,11 +368,88 @@ components:
       type: array
       items: 
         $ref: '#/components/schemas/HotelAddResult'
-    
-    SortingCriteria:
-      description: Sorting criteria
+
+    LocationRectangle:
+      description: "The coordinates of a rectangle area"
       type: object
-                
+      properties:
+        south:
+          type: number
+        west:
+          type: number
+        north:
+          type: number
+        east:
+          type: number
+      example:
+        {
+          "south": "50.0929802",
+          "west": "14.4012451",
+          "north": "50.0812615",
+          "east": "14.4394467",
+        }
+
+    LocationCircle:
+      description: "The coordinates of a circle"
+      type: object
+      properties:
+        lat:
+          type: number
+        long:
+          type: number
+        radius:
+          type: number
+      example:
+        {
+          "latitude": 50.0929802,
+          "longitude": 14.4012451,
+          "radius": 100
+        }
+
+    LocationPolygon:
+      description: "The coordinates of a polygon area"
+      type: array
+      items: 
+        type: array
+        items: number
+        minItems: 2
+        maxItems: 2
+      example:
+        [
+          [
+            24.8963928,
+            60.1749466
+          ],
+          [
+            24.9700356,
+            60.1763126
+          ],
+          [
+            24.9720097,
+            60.1475721
+          ],
+          [
+            24.8987961,
+            60.1442394
+          ],
+          [
+            24.896307,
+            60.1748612
+          ]
+        ]
+
+    PaginationSkip:
+      description: "Number of records to skip in query result"
+      schema:
+        type: number
+      example: 0
+
+    PaginationLimit:
+      description: "The limit of records number in the response"
+      schema:
+        type: number
+      example: 0
+    
     Error:
       description: An error returned by Simard
       type: object

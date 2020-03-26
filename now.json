@@ -39,16 +39,16 @@
             "destination": "public/$1"
         },
         {
-            "source": "/admin/v1/hotels/(.*)/getById",
-            "destination": "/admin/v1/hotels/[hotelId]/getById.js?hotelId=$1"
+            "source": "/admin/v1/hotels/search",
+            "destination": "/admin/v1/hotels/search.js"
         },
         {
-            "source": "/admin/v1/hotels/(.*)/updateById",
-            "destination": "/admin/v1/hotels/[hotelId]/update.js?hotelId=$1"
+            "source": "/admin/v1/hotels/(.*)",
+            "destination": "/admin/v1/hotels/index.js?hotelId=$1"
         },
         {
-            "source": "/admin/v1/hotels/(.*)/removeById",
-            "destination": "/admin/v1/hotels/[hotelId]/remove.js?hotelId=$1"
+            "source": "/admin/v1/hotels",
+            "destination": "/admin/v1/hotels/index.js"
         },
         {
             "source": "/admin/v1/(.*)",
