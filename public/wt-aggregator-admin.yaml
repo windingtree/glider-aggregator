@@ -297,7 +297,7 @@ components:
         - currency
       properties:
         provider:
-          description: Hotel provider
+          description: Provider reference
           type: string
           example: "EREVMAX"
         ref:
