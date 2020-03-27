@@ -62,6 +62,12 @@ class HotelsManager {
 
   // Transform record from the database to the public form
   static mapResult (rec) {
+    // Catch the case where no records are returned
+    if(!rec) {
+      return null;
+    }
+
+    // Return the formated result
     return {
       id: rec._id,
       provider: rec.provider,
@@ -135,11 +141,22 @@ class HotelsManager {
     return hotel;
   }
 
-  // Retrive hotel by Id
+  // Retrieve hotel by Id
   async getById (id) {
-    return this.getOne({
+    // Get the values
+    let res = this.getOne({
       _id: Types.ObjectId(id)
     });
+
+    // If not found, return a 404
+    if(!res) {
+      throw new GliderError(
+        'Hotel not found',
+        404
+      );
+    }
+
+    return res;
   }
 
   // Search for hotels using matching criteria
@@ -167,7 +184,7 @@ class HotelsManager {
     } catch (e) {
       throw new GliderError(
         e.message,
-        500
+        e.code || 500
       );
     }
 

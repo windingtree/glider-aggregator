@@ -188,13 +188,18 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
 
         case 'ERR_JWT_CLAIM_INVALID':
 
-        if (e.claim === 'aud') {
-          e.message = 'JWT not meant for Glider';
-        }
+          if (e.claim === 'aud') {
+            e.message = 'JWT recipient is not Glider';
+          }
+          
+          // Raised only in case of Admin
+          else if (e.claim === 'iss') {
+            e.message = 'JWT must be created by a Glider authorized agent';
+          }
           break;
 
         case 'ERR_JWS_VERIFICATION_FAILED':
-          e.message = 'JWT invalid signature';
+          e.message = 'JWT signature verification failed';
           break;
 
         default:

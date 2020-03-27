@@ -8,22 +8,37 @@ module.exports = basicDecorator(async (req, res) => {
   let result;
 
   switch (method) {
-    case 'POST':
-      result = await manager.addBulk(body);
-      res.status(200).json(result.map(h => ({ id: h._id })));
-      break;
     
     case 'GET':
-      result = await manager.getById(query.hotelId);
+      if(query.hotelId) {
+        result = await manager.getById(query.hotelId);
+      } else {
+        result = await manager.get(
+          {},
+          Number(query.skip),
+          Number(query.limit)
+        );
+      }
       res.status(200).json(result);
       break;
 
+    case 'POST':
     case 'PUT':
-      await manager.updateOne(
-        query.hotelId,
-        body
-      );
-      res.status(200).send('OK');
+      // If hotelID provided, only this one is updated
+      if(query.hotelId) {
+        await manager.updateOne(
+          query.hotelId,
+          body
+        );
+        res.status(200).send('OK');
+      }
+
+      // Otherwise it is added in bulk
+      else {
+        result = await manager.addBulk(body);
+        res.status(200).json(result.map(h => ({ id: h._id })));
+      }
+
       break;
 
     case 'DELETE':
@@ -35,8 +50,8 @@ module.exports = basicDecorator(async (req, res) => {
 
     default:
       throw new GliderError(
-        'Unknown request method',
-        400
+        'Method not allowed',
+        405
       );
   }
 }, true); // true - means administrative route

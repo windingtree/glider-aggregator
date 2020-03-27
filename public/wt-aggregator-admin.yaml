@@ -2,7 +2,7 @@ openapi: 3.0.1
 
 info:
   title: Winding Tree aggregator
-  description: "This is the interface documentation for the REST api interface with the Winding Tree Aggregator"
+  description: "This is the administration interface documentation for Glider"
   contact:
     email: mathieu@windingtree.com
   license:
@@ -20,10 +20,55 @@ tags:
 
 paths:  
   /hotels:
+    get:
+      tags:
+        - hotels
+      summary: Retrieve Hotels
+      operationId: getHotels
+      parameters:
+        - in: query
+          name: skip
+          schema:
+            $ref: '#/components/schemas/PaginationSkip'
+        - in: query
+          name: limit
+          schema:
+            $ref: '#/components/schemas/PaginationLimit'
+      responses:
+        200:
+          description: The hotel details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelSearchResult'
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body
+      
     post:
       tags:
         - hotels
-      summary: Add multiple hotels at ones
+      summary: Add multiple hotels at once
       operationId: addHotelsBulk
       requestBody:
         description: Array of hotels
@@ -73,7 +118,7 @@ paths:
           description: Hotel Id
           required: true
           schema:
-            $ref: '#components/schemas/HotelId'
+            $ref: '#/components/schemas/HotelId'
       summary: Get hotel by Id
       operationId: getHotelById
       responses:
@@ -115,7 +160,7 @@ paths:
           description: Hotel Id
           required: true
           schema:
-            $ref: '#components/schemas/HotelId'
+            $ref: '#/components/schemas/HotelId'
       summary: Update hotel by Id
       operationId: updateHotelById
       requestBody:
@@ -130,8 +175,9 @@ paths:
           description: OK
           content:
             text/plain:
-              type: string
-              example: "OK"
+              schema:
+                type: string
+                example: "OK"
         400:
           description: The sent request is not correct
           content:
@@ -176,7 +222,7 @@ paths:
           description: Hotel Id
           required: true
           schema:
-            $ref: '#components/schemas/HotelId'
+            $ref: '#/components/schemas/HotelId'
       summary: Remove hotel by Id
       operationId: removeHotelById
       responses:
@@ -184,8 +230,9 @@ paths:
           description: OK
           content:
             text/plain:
-              type: string
-              example: "OK"
+              schema:
+                type: string
+                example: "OK"
         400:
           description: The sent request is not correct
           content:
@@ -241,12 +288,10 @@ paths:
           name: skip
           schema:
             $ref: '#/components/schemas/PaginationSkip'
-          default: 0
         - in: query
           name: limit
           schema:
             $ref: '#/components/schemas/PaginationLimit'
-          default: 0
       responses:
         200:
           description: The hotel details
@@ -411,7 +456,8 @@ components:
       type: array
       items: 
         type: array
-        items: number
+        items: 
+          type: number
         minItems: 2
         maxItems: 2
       example:
@@ -440,15 +486,15 @@ components:
 
     PaginationSkip:
       description: "Number of records to skip in query result"
-      schema:
-        type: number
+      type: number
       example: 0
+      default: 0
 
     PaginationLimit:
       description: "The limit of records number in the response"
-      schema:
-        type: number
+      type: number
       example: 0
+      default: 0
     
     Error:
       description: An error returned by Simard
@@ -466,6 +512,8 @@ components:
       flows:
         implicit:
           authorizationUrl: https://staging.api.simard.io/oauth/authorize
+          scopes:
+            admin: Modify hotels
 
     orgid_token:
       type: apiKey
