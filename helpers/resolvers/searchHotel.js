@@ -21,7 +21,7 @@ const config = require('../../config');
 const searchHotel = async (body) => {
   let hotels;
 
-  if (typeof body.accommodation.location.cirlce === 'object') {
+  if (typeof body.accommodation.location.circle === 'object') {
     hotels = await hotelsManager.searchByLocation(body.accommodation.location.circle);
   } else if (Array.isArray(body.accommodation.location.polygon)) {
     hotels = await hotelsManager.searchWithin(body.accommodation.location.polygon);
@@ -47,14 +47,14 @@ const searchHotel = async (body) => {
     hotels = await hotelsManager.searchWithin(polygon);
   } else {
     throw new GliderError(
-      'Unknown hotels search method',
-      405
+      'A location area of type rectangle, circle or polygon is required',
+      400
     );
   }
 
   if (hotels.total === 0) {
     throw new GliderError(
-      'Hotels not found',
+      'No Hotels were found with the provided criteria',
       404
     );
   }
