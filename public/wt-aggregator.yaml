@@ -62,7 +62,7 @@ paths:
                       [{ "type": "ADT", "count": 2 }, { "type": "CHD" }],
                   }
               hotelSearchByRectangle:
-                summary: A search for hotels by rectangle coondinates
+                summary: A search for hotels by rectangle coordinates
                 value:
                   {
                     "accommodation":

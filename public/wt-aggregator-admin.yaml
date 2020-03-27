@@ -282,7 +282,7 @@ components:
   schemas:
 
     HotelId:
-      description: Unique Id used in the MongoDB
+      description: Unique Hotel Id
       type: string
       example: "5e7a676620778a23098581cb"
 
