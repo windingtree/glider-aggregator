@@ -1,5 +1,5 @@
 const GliderError = require('../error');
-const OffersModel = require('./mongo/offers');
+const offersModelResolver = require('./mongo/offers');
 
 class GuestCount {
   // Constructor
@@ -80,8 +80,9 @@ class OfferManager {
   // Start with an empty list of offers
   constructor () { }
 
-  saveOffer (offerId, options) {
-    return OffersModel.replaceOne(
+  async saveOffer (offerId, options) {
+    const model = await offersModelResolver();
+    const result = await model.replaceOne(
       {
         offerId
       },
@@ -94,6 +95,7 @@ class OfferManager {
         upsert: true
       }
     );
+    return result;
   }
 
   // Store object set of offers
@@ -121,7 +123,8 @@ class OfferManager {
     }
 
     try {
-      offer = await OffersModel
+      const model = await offersModelResolver();
+      offer = await model
         .findOne(
           {
             offerId

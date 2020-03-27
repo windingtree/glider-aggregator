@@ -1,4 +1,7 @@
-const { mongoose: { Schema, Types, model } } = require('../../mongo');
+const {
+  mongoose: { Schema, Types },
+  getMongoConnection
+} = require('../../mongo');
 const GliderError = require('../../error');
 
 // Hotels schema
@@ -35,14 +38,26 @@ const HotelsSchema = new Schema(
   }
 );
 
+let connectedHotelsModel;
+
 // Hotels Data model
-const hotelsModel = model('Hotels', HotelsSchema);
+const hotelsModelResolver = async () => {
+
+  if (connectedHotelsModel) {
+    return connectedHotelsModel;
+  }
+
+  const db = await getMongoConnection();
+  connectedHotelsModel = db.model('Hotels', HotelsSchema);
+
+  return connectedHotelsModel;
+};
 
 // Hotels database manager
 class HotelsManager {
 
-  constructor (model) {
-    this.model = model;
+  constructor (modelResolver) {
+    this.modelResolver = modelResolver;
   }
 
   // Transform record from the database to the public form
@@ -64,7 +79,8 @@ class HotelsManager {
     delete data.latitude;
     delete data.longitude;
 
-    const hotelModel = new this.model(data);
+    const model = await this.modelResolver();
+    const hotelModel = new model(data);
     const validation = hotelModel.validateSync();
 
     if (validation && validation.errors.length > 0) {
@@ -98,7 +114,8 @@ class HotelsManager {
     let hotel;
 
     try {
-      hotel = await this.model
+      const model = await this.modelResolver();
+      hotel = await model
         .findOne(match)
         .map(HotelsManager.mapResult);
     } catch (e) {
@@ -131,9 +148,10 @@ class HotelsManager {
     let total;
 
     try {
-      total = await this.model.find(match).countDocuments();
+      const model = await this.modelResolver();
+      total = await model.find(match).countDocuments();
 
-      let query = this.model.find(match);
+      let query = model.find(match);
 
       if (skip) {
         query = query.skip(skip);
@@ -202,7 +220,8 @@ class HotelsManager {
     let result;
 
     try {
-      result = await this.model.replaceOne(
+      const model = await this.modelResolver();
+      result = await model.replaceOne(
         {
           _id: id
         },
@@ -236,7 +255,8 @@ class HotelsManager {
     let result;
 
     try {
-      result = await this.model.remove(
+      const model = await this.modelResolver();
+      result = await model.remove(
         {
           _id: id
         }
@@ -258,6 +278,6 @@ class HotelsManager {
 }
 
 module.exports = {
-  model: hotelsModel,
-  manager: new HotelsManager(hotelsModel)
+  model: hotelsModelResolver,
+  manager: new HotelsManager(hotelsModelResolver)
 };

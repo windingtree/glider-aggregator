@@ -1,6 +1,8 @@
 const config = require('../../../config');
-const { mongoose: { Schema, model } } = require('../../mongo');
-// const { parseKeys } = require('../../parsers/responseKeys');
+const {
+  mongoose: { Schema },
+  getMongoConnection
+} = require('../../mongo');
 
 const OffersSchema = new Schema(
   {
@@ -17,4 +19,8 @@ const OffersSchema = new Schema(
   }
 );
 
-module.exports = model('Offers', OffersSchema);
+module.exports = async () => {
+  const db = await getMongoConnection();
+  return db.model('Offers', OffersSchema);
+};
+
