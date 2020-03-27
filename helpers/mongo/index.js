@@ -12,7 +12,10 @@ process.on('beforeExit', function () {
 
 const subscribeDbEvents = db => {
   db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-  db.on('disconnected', () => { db = undefined; });
+  db.on('disconnected', () => {
+    db = undefined;
+    connectionPromise = undefined;
+  });
 };
 
 const getMongoConnection = async () => {
