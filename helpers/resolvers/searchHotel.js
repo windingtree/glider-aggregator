@@ -52,13 +52,6 @@ const searchHotel = async (body) => {
     );
   }
 
-  if (hotels.total === 0) {
-    throw new GliderError(
-      'Hotels not found',
-      404
-    );
-  }
-
   const hotelCodes = hotels.records.map(r => r.ref);
   
   if (!hotelCodes.length) {
@@ -111,7 +104,10 @@ const searchHotel = async (body) => {
   const { errors } = await transform(response.data, errorsTransformTemplate);
 
   if (errors.length) {
-    throw new GliderError(`${errors[0].message}`, 502);
+    throw new GliderError(
+      errors.map((e => e.message).join('; ')),
+      502
+    );
   }
 
   // Handle the search results
