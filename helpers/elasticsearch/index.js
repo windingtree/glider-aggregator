@@ -5,11 +5,12 @@ const { indexException, indexEvent } = require('./handlers');
 
 const client = new Client({
   node: config.elasticUrl,
-  name: packageJson.name
+  name: packageJson.name,
+  maxRetries: 5
 });
 
 module.exports = {
   es: client,
-  indexException: (request, error) => indexException(client, request, error),
-  indexEvent: (request, error) => indexEvent(client, request, error)
+  indexException: (...args) => indexException(client, args),
+  indexEvent: (...args) => indexEvent(client, args)
 };

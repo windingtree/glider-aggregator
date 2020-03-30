@@ -61,8 +61,8 @@ paths:
                     "passengers":
                       [{ "type": "ADT", "count": 2 }, { "type": "CHD" }],
                   }
-              hotelSearch:
-                summary: A search for hotels
+              hotelSearchByRectangle:
+                summary: A search for hotels by rectangle coordinates
                 value:
                   {
                     "accommodation":
@@ -75,7 +75,75 @@ paths:
                                 "west": "14.4012451",
                                 "north": "50.0812615",
                                 "east": "14.4394467",
-                              },
+                              }
+                          },
+                        "arrival": "2020-07-02T00:00:00Z",
+                        "departure": "2020-07-03T00:00:00Z",
+                      },
+                    "passengers":
+                      [
+                        { "type": "ADT", "count": 2 },
+                        { "type": "CHD", "count": 1 },
+                      ],
+                  }
+              hotelSearchByCircle:
+                summary: A search for hotels by circle
+                value:
+                  {
+                    "accommodation":
+                      {
+                        "location":
+                          {
+                            "circle":
+                              {
+                                "longitude": 18.05437602,
+                                "latitude": 59.33309777,
+                                "radius": 50
+                              }
+                          },
+                        "arrival": "2020-07-02T00:00:00Z",
+                        "departure": "2020-07-03T00:00:00Z",
+                      },
+                    "passengers":
+                      [
+                        { "type": "ADT", "count": 2 },
+                        { "type": "CHD", "count": 1 },
+                      ],
+                  }
+              hotelSearchByPolygon:
+                summary: A search for hotels by polygon
+                description: > 
+                  For getting of polygon coordinates for testing purposes 
+                  can be used online visual tool 
+                  [https://www.keene.edu/campus/maps/tool/](https://www.keene.edu/campus/maps/tool/)
+                value:
+                  {
+                    "accommodation":
+                      {
+                        "location":
+                          {
+                            "polygon": [
+                              [
+                                24.8963928,
+                                60.1749466
+                              ],
+                              [
+                                24.9700356,
+                                60.1763126
+                              ],
+                              [
+                                24.9720097,
+                                60.1475721
+                              ],
+                              [
+                                24.8987961,
+                                60.1442394
+                              ],
+                              [
+                                24.896307,
+                                60.1748612
+                              ]
+                            ]
                           },
                         "arrival": "2020-07-02T00:00:00Z",
                         "departure": "2020-07-03T00:00:00Z",
@@ -475,7 +543,6 @@ components:
             - railstation
             - city
           example: "airport"
-
         iataCode:
           description: "The IATA code of the location"
           type: string
@@ -483,36 +550,78 @@ components:
           minLength: 3
           maxLength: 3
           example: "LHR"
+        rectangle:
+          $ref: "#/components/schemas/LocationRectangle"
+        circle:
+          $ref: "#/components/schemas/LocationCircle"
+        polygon:
+          $ref: "#/components/schemas/LocationPolygon"
+                
+    LocationRectangle:
+      description: "The coordinates of a rectangle area"
+      type: object
+      properties:
+        south:
+          type: number
+        west:
+          type: number
+        north:
+          type: number
+        east:
+          type: number
+      example:
+        {
+          "south": "50.0929802",
+          "west": "14.4012451",
+          "north": "50.0812615",
+          "east": "14.4394467",
+        }
 
-        coordinates:
-          oneOf:
-            - description: "The coordinates of a rectangle area"
-              type: object
-              properties:
-                south:
-                  type: number
-                west:
-                  type: number
-                north:
-                  type: number
-                east:
-                  type: number
-              example:
-                {
-                  "south": "50.0929802",
-                  "west": "14.4012451",
-                  "north": "50.0812615",
-                  "east": "14.4394467",
-                }
+    LocationCircle:
+      description: "The coordinates of a circle"
+      type: object
+      properties:
+        lat:
+          type: number
+        long:
+          type: number
+        radius:
+          type: number
+      example:
+        {
+          "latitude": 50.0929802,
+          "longitude": 14.4012451,
+          "radius": 100
+        }
 
-            - description: "The coordinates of a point"
-              type: object
-              properties:
-                lat:
-                  type: number
-                long:
-                  type: number
-              example: { "latitude": "50.0929802", "longitude": "14.4012451" }
+    LocationPolygon:
+      description: "The coordinates of a polygon area"
+      type: array
+      items: 
+        type: number 
+      example:
+        [
+          [
+            24.8963928,
+            60.1749466
+          ],
+          [
+            24.9700356,
+            60.1763126
+          ],
+          [
+            24.9720097,
+            60.1475721
+          ],
+          [
+            24.8987961,
+            60.1442394
+          ],
+          [
+            24.896307,
+            60.1748612
+          ]
+        ]
 
     Media:
       type: array

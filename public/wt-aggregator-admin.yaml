@@ -1,0 +1,521 @@
+openapi: 3.0.1
+
+info:
+  title: Winding Tree aggregator
+  description: "This is the administration interface documentation for Glider"
+  contact:
+    email: mathieu@windingtree.com
+  license:
+    name: Apache License
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+
+servers:
+  - url: /admin/v1
+    description: Administration server
+
+tags:
+  - name: hotels
+    description: Operations with hotels
+
+paths:  
+  /hotels:
+    get:
+      tags:
+        - hotels
+      summary: Retrieve Hotels
+      operationId: getHotels
+      parameters:
+        - in: query
+          name: skip
+          schema:
+            $ref: '#/components/schemas/PaginationSkip'
+        - in: query
+          name: limit
+          schema:
+            $ref: '#/components/schemas/PaginationLimit'
+      responses:
+        200:
+          description: The hotel details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelSearchResult'
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body
+      
+    post:
+      tags:
+        - hotels
+      summary: Add multiple hotels at once
+      operationId: addHotelsBulk
+      requestBody:
+        description: Array of hotels
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Hotels"
+        required: true
+      responses:
+        200:
+          description: Hotel added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HotelAddResults"
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body
+
+  /hotels/{hotelId}:
+    get:
+      tags:
+        - hotels
+      parameters:
+        - name: hotelId
+          in: path
+          description: Hotel Id
+          required: true
+          schema:
+            $ref: '#/components/schemas/HotelId'
+      summary: Get hotel by Id
+      operationId: getHotelById
+      responses:
+        200:
+          description: The hotel details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+
+    put:
+      tags:
+        - hotels
+      parameters:
+        - name: hotelId
+          in: path
+          description: Hotel Id
+          required: true
+          schema:
+            $ref: '#/components/schemas/HotelId'
+      summary: Update hotel by Id
+      operationId: updateHotelById
+      requestBody:
+        description: Update the hotel
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Hotel"
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        405:
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+
+    delete:
+      tags:
+        - hotels
+      parameters:
+        - name: hotelId
+          in: path
+          description: Hotel Id
+          required: true
+          schema:
+            $ref: '#/components/schemas/HotelId'
+      summary: Remove hotel by Id
+      operationId: removeHotelById
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+
+  /hotels/search:
+    get:
+      tags: 
+        - hotels
+      summary: Search for hotels
+      operationId: hotelsSearch
+      parameters:
+        - in: query
+          name: polygon
+          style: form
+          schema:
+            $ref: '#/components/schemas/LocationPolygon'
+        - in: query
+          name: circle
+          style: deepObject
+          schema:
+            $ref: '#/components/schemas/LocationCircle'
+        - in: query
+          name: rectangle
+          style: deepObject
+          schema:
+            $ref: '#/components/schemas/LocationRectangle'
+        - in: query
+          name: skip
+          schema:
+            $ref: '#/components/schemas/PaginationSkip'
+        - in: query
+          name: limit
+          schema:
+            $ref: '#/components/schemas/PaginationLimit'
+      responses:
+        200:
+          description: The hotel details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelSearchResult'
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body
+
+components:
+  schemas:
+
+    HotelId:
+      description: Unique Hotel Id
+      type: string
+      example: "5e7a676620778a23098581cb"
+
+    Hotel:
+      description: Hotel
+      type: object
+      required: 
+        - provider
+        - ref
+        - longitude
+        - latitude
+        - currency
+      properties:
+        provider:
+          description: Provider reference
+          type: string
+          example: "EREVMAX"
+        ref:
+          description: Hotel reference
+          type: string
+          example: "32788"
+        longitude:
+          description: Longitude
+          type: number
+          example: 18.05437602
+        latitude:
+          description: Latitude
+          type: number
+          example: 59.33309777
+        currency: 
+          description: The ISO4217 currency code
+          type: string
+          pattern: "^[A-Z]{3}$"
+          minLength: 3
+          maxLength: 3
+          example: "EUR"
+
+    Hotels:
+      description: List of hotels
+      type: array
+      items:
+        $ref: '#/components/schemas/Hotel'
+    
+    HotelAddResult:
+      description: Hotel addition result
+      type: object
+      properties:
+        id: 
+          description: Id of the added hotel in the database
+          type: string
+          pattern: /^[a-f0-9]{24}$/i
+          example: 507f1f77bcf86cd799439011
+
+    HotelSearchResult:
+      description: Response object for hotels search
+      type: object
+      required:
+        - records
+        - total
+        - sort
+        - skip
+        - limit
+      properties:
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hotel'
+        total:
+          description: Total number of records
+          type: number
+          example: 5
+        skip:
+          description: A count of records to skip in result
+          type: number
+          example: 10
+        limit:
+          description: A limit of records in responses
+          type: string
+          example: 10
+    
+    HotelAddResults:
+      description: List of hotel search results
+      type: array
+      items: 
+        $ref: '#/components/schemas/HotelAddResult'
+
+    LocationRectangle:
+      description: "The coordinates of a rectangle area"
+      type: object
+      properties:
+        south:
+          type: number
+        west:
+          type: number
+        north:
+          type: number
+        east:
+          type: number
+      example:
+        {
+          "south": "50.0929802",
+          "west": "14.4012451",
+          "north": "50.0812615",
+          "east": "14.4394467",
+        }
+
+    LocationCircle:
+      description: "The coordinates of a circle"
+      type: object
+      properties:
+        lat:
+          type: number
+        long:
+          type: number
+        radius:
+          type: number
+      example:
+        {
+          "latitude": 50.0929802,
+          "longitude": 14.4012451,
+          "radius": 100
+        }
+
+    LocationPolygon:
+      description: "The coordinates of a polygon area"
+      type: array
+      items: 
+        type: array
+        items: 
+          type: number
+        minItems: 2
+        maxItems: 2
+      example:
+        [
+          [
+            24.8963928,
+            60.1749466
+          ],
+          [
+            24.9700356,
+            60.1763126
+          ],
+          [
+            24.9720097,
+            60.1475721
+          ],
+          [
+            24.8987961,
+            60.1442394
+          ],
+          [
+            24.896307,
+            60.1748612
+          ]
+        ]
+
+    PaginationSkip:
+      description: "Number of records to skip in query result"
+      type: number
+      example: 0
+      default: 0
+
+    PaginationLimit:
+      description: "The limit of records number in the response"
+      type: number
+      example: 0
+      default: 0
+    
+    Error:
+      description: An error returned by Simard
+      type: object
+      properties:
+        message:
+          description: Information related to the error
+          type: string
+          example: "Invalid Input"
+
+  # Defines the security schemes
+  securitySchemes:
+    orgid_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://staging.api.simard.io/oauth/authorize
+          scopes:
+            admin: Modify hotels
+
+    orgid_token:
+      type: apiKey
+      name: orgid_token
+      in: header

@@ -1,27 +1,56 @@
 const mongoose = require('mongoose');
 const config = require('../../config');
 
-mongoose.set('useCreateIndex', true);
-
-mongoose.connect(config.mongoUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-
-const db = mongoose.connection;
-
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-db.once('open', () => {
-  console.log('Connected to MongoDB:', Date.now());
-});
+let connectionPromise;
+let db;
 
 // Close connetion to the MongoDB on exit
-process.on('exit', function () {
+process.on('beforeExit', function () {
   mongoose.disconnect();
-  console.log('Disconnected from MongoDB:', Date.now());
+  console.log('Disconnected from MongoDB:', new Date().toISOString());
 });
+
+const subscribeDbEvents = db => {
+  db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+  db.on('disconnected', () => {
+    db = undefined;
+    connectionPromise = undefined;
+  });
+};
+
+const getMongoConnection = async () => {
+
+  if (db) {
+    return db;
+  }
+
+  let newConnection = false;
+
+  if (!connectionPromise) {
+    newConnection = true;
+    connectionPromise = mongoose.createConnection(
+      config.mongoUrl,
+      {
+        bufferCommands: false,
+        bufferMaxEntries: 0,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+      }
+    );
+  }
+
+  db = await connectionPromise;
+
+  if (newConnection) {
+    subscribeDbEvents(db);
+    console.log('Connected to MongoDB:', new Date().toISOString());
+  }
+
+  return db;
+};
 
 module.exports = {
   mongoose,
-  db
+  getMongoConnection
 };

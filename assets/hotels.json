@@ -1,0 +1,65 @@
+[
+  {
+    "provider": "EREVMAX",
+    "ref": "07119",
+    "longitude": 18.05437602,
+    "latitude": 59.33309777,
+    "currency": "SEK"
+  },
+  {
+    "provider": "EREVMAX",
+    "ref": "32788",
+    "longitude": 14.63636847,
+    "latitude": 63.17994135,
+    "currency": "SEK"
+  },
+  {
+    "provider": "EREVMAX",
+    "ref": "568362",
+    "longitude": 15.2120792,
+    "latitude": 59.2744489,
+    "currency": "SEK"
+  },
+  {
+    "provider": "EREVMAX",
+    "ref": "02034",
+    "longitude": 11.91391245,
+    "latitude": 57.70109464,
+    "currency": "SEK"
+  },
+  {
+    "provider": "EREVMAX",
+    "ref": "568259",
+    "longitude": 24.9219572,
+    "latitude": 60.1598169,
+    "currency": "EUR"
+  },
+  {
+    "provider": "EREVMAX",
+    "ref": "04393",
+    "longitude": 10.75123385,
+    "latitude": 59.91207189,
+    "currency": "NOK"
+  },
+  {
+    "provider": "EREVMAX",
+    "ref": "08801",
+    "longitude": 13.00733216,
+    "latitude": 55.59966077,
+    "currency": "EUR"
+  },
+  {
+    "provider": "EREVMAX",
+    "ref": "209093",
+    "longitude": 5.6884671,
+    "latitude": 58.9535861,
+    "currency": "EUR"
+  },
+  {
+    "provider": "EREVMAX",
+    "ref": "537108",
+    "longitude": 18.952136,
+    "latitude": 69.647276,
+    "currency": "NOK"
+  }
+]

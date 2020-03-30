@@ -36,13 +36,13 @@ module.exports = async (requestBody) => {
     );
   
   // Attempt to parse as a an error
-  const transforErrors = await transform(response.data, ErrorsTransformTemplate);
+  const { errors } = await transform(response.data, ErrorsTransformTemplate);
 
   // If an error is found, stop here
-  if (transforErrors.length) {
+  if (errors.length) {
     throw new GliderError(
-      `${transforErrors[0].message}`,
-      500
+      errors.map(e => e.message).join('; '),
+      502
     );
   }
 

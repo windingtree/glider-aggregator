@@ -1,11 +1,12 @@
 const GliderError = require('../error');
-const OrdersModel = require('./mongo/orders');
+const ordersModelResolver = require('./mongo/orders');
 
 class OrdersManager {
   constructor () { }
 
-  saveOrder (orderId, options) {
-    return OrdersModel.replaceOne(
+  async saveOrder (orderId, options) {
+    const model = await ordersModelResolver();
+    const result = await model.replaceOne(
       {
         orderId
       },
@@ -21,6 +22,7 @@ class OrdersManager {
         upsert: true
       }
     );
+    return result;
   }
 
   async getOrder (orderId) {
@@ -29,12 +31,13 @@ class OrdersManager {
     if (!orderId) {
       throw new GliderError(
         'Order Id is required',
-        500
+        405
       );
     }
 
     try {
-      order = await OrdersModel
+      const model = await ordersModelResolver();
+      order = await model
         .findOne(
           {
             orderId

@@ -16,8 +16,8 @@ const orgIdResolver = new OrgIdResolver({
 });
 orgIdResolver.registerFetchMethod(httpFetchMethod);
 
-module.exports.verifyJWT = async (type, jwt) => {
-
+module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
+  
   if (type !== 'Bearer') {
     throw new GliderError('Unknown authorization method', 403);
   };
@@ -175,7 +175,8 @@ module.exports.verifyJWT = async (type, jwt) => {
         pubKey,
         {
           typ: 'JWT',
-          audience: config.GLIDER_DID
+          audience: config.GLIDER_DID,
+          ...(isAdmin ? { issuer: config.GLIDER_ADMIN_DID } : {})
         }
       );
     } catch (e) {
@@ -187,13 +188,18 @@ module.exports.verifyJWT = async (type, jwt) => {
 
         case 'ERR_JWT_CLAIM_INVALID':
 
-        if (e.claim === 'aud') {
-          e.message = 'JWT not meant for Glider';
-        }
+          if (e.claim === 'aud') {
+            e.message = 'JWT recipient is not Glider';
+          }
+          
+          // Raised only in case of Admin
+          else if (e.claim === 'iss') {
+            e.message = 'JWT must be created by a Glider authorized agent';
+          }
           break;
 
         case 'ERR_JWS_VERIFICATION_FAILED':
-          e.message = 'JWT invalid signature';
+          e.message = 'JWT signature verification failed';
           break;
 
         default:

@@ -1,4 +1,7 @@
-const { mongoose: { Schema, model } } = require('../../mongo');
+const {
+  mongoose: { Schema },
+  getMongoConnection
+} = require('../../mongo');
 
 const OrdersSchema = new Schema(
   {
@@ -17,4 +20,7 @@ const OrdersSchema = new Schema(
   }
 );
 
-module.exports = model('Orders', OrdersSchema);
+module.exports = async () => {
+  const db = await getMongoConnection();
+  return db.model('Orders', OrdersSchema);
+};

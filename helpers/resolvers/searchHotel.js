@@ -1,7 +1,6 @@
 const axios = require('axios');
 const { transform } = require('camaro');
 const { v4: uuidv4 } = require('uuid');
-const { getHotelsInRectangle } = require('../parsers/erevmaxHotels');
 const { mapRequestData } = require('../transformInputData/hotelAvail');
 const { hotelAvailRequestTemplate } = require('../soapTemplates/hotelAvail');
 const {
@@ -11,18 +10,57 @@ const {
 const {
   reduceToObjectByKey,
   reduceObjectToProperty,
-  reduceAcomodation,
-  reduceRoomStays,
+  reduceAcomodation
 } = require('../parsers');
+const { manager: hotelsManager } = require('../models/mongo/hotels');
 
 const GliderError = require('../error');
 const offer = require('../models/offer');
 const config = require('../../config');
 
 const searchHotel = async (body) => {
-  // Select the Hotels matching the rectangle
-  const hotelCodes = getHotelsInRectangle(body.accommodation.location.rectangle);
+  let hotels;
 
+  if (typeof body.accommodation.location.circle === 'object') {
+    hotels = await hotelsManager.searchByLocation(body.accommodation.location.circle);
+  } else if (Array.isArray(body.accommodation.location.polygon)) {
+    hotels = await hotelsManager.searchWithin(body.accommodation.location.polygon);
+  } else if (typeof body.accommodation.location.rectangle === 'object') {
+    const polygon = [
+      [
+        body.accommodation.location.rectangle.west,
+        body.accommodation.location.rectangle.north
+      ],
+      [
+        body.accommodation.location.rectangle.east,
+        body.accommodation.location.rectangle.north
+      ],
+      [
+        body.accommodation.location.rectangle.east,
+        body.accommodation.location.rectangle.south
+      ],
+      [
+        body.accommodation.location.rectangle.west,
+        body.accommodation.location.rectangle.south
+      ]
+    ].map(c => [Number(c[0]), Number(c[1])]);
+    hotels = await hotelsManager.searchWithin(polygon);
+  } else {
+    throw new GliderError(
+      'A location area of type rectangle, circle or polygon is required',
+      400
+    );
+  }
+
+  if (hotels.total === 0) {
+    throw new GliderError(
+      'No Hotels were found with the provided criteria',
+      404
+    );
+  }
+
+  const hotelCodes = hotels.records.map(r => r.ref);
+  
   if (!hotelCodes.length) {
     throw new GliderError('No matching hotels', 404);
   }
@@ -73,7 +111,10 @@ const searchHotel = async (body) => {
   const { errors } = await transform(response.data, errorsTransformTemplate);
 
   if (errors.length) {
-    throw new GliderError(`${errors[0].message}`, 502);
+    throw new GliderError(
+      errors.map(e => e.message).join('; '),
+      502
+    );
   }
 
   // Handle the search results
