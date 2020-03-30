@@ -116,7 +116,7 @@ module.exports.indexEvent = (client, args) => setImmediate(async () => {
 
       if (entity) {
         did = {
-          name: entity.name,
+          name: entity.name || entity.legalName,
           type: entity.legalType || entity.type.join(', '),
           country: entity.registeredAddress
             ? entity.registeredAddress.country
