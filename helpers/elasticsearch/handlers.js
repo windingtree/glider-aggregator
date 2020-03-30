@@ -23,7 +23,7 @@ const parseResponseCode = (response, data) => {
   let message;
 
   if (response.exception) {
-    message = typeof data === 'object' ? JSON.stringify(data) : data;
+    message = typeof data === 'object' ? data.message : data;
   } else {
     message = 'OK';
   }
