@@ -42,7 +42,7 @@ const searchFlight = async (body) => {
   
   if (errors.length) {
     throw new GliderError(
-      errors.map((e => e.message).join('; ')),
+      errors.map(e => e.message).join('; '),
       502
     );
   };

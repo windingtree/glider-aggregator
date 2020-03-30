@@ -34,7 +34,7 @@ module.exports = async (offer, passengers, card) => {
   // If any error, send it
   if(responseData.errors.length > 0) {
     throw new GliderError(
-      responseData.errors.map((e => e.message).join('; ')),
+      responseData.errors.map(e => e.message).join('; '),
       502
     );
   }
