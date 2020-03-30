@@ -8,8 +8,15 @@ module.exports = basicDecorator(async (req, res) => {
   let searchMethod;
   let searchQuery;
 
-  const parsePolygon = query => query.polygon
-    .map(q => q.split(',').map(v => Number(v)));
+  const parsePolygon = query => {
+
+    if (!query.polygon) {
+      return null;
+    }
+
+    return query.polygon
+      .map(q => q.split(',').map(v => Number(v)));
+  };
 
   const parseDeepObject = (query, prop) => Object.entries(query)
     .filter(e => new RegExp(`^${prop}`).test(e[0]))
@@ -25,8 +32,8 @@ module.exports = basicDecorator(async (req, res) => {
       polygon: parsePolygon(query),
       rectangle: parseDeepObject(query, 'rectangle'),
       circle: parseDeepObject(query, 'circle'),
-      skip: Number(query.skip),
-      limit: Number(query.limit)
+      skip: Number(query.skip || 0),
+      limit: Number(query.limit || 0)
     };
   } catch (e) {
     throw new GliderError(
@@ -34,6 +41,8 @@ module.exports = basicDecorator(async (req, res) => {
       400
     );
   }
+
+  console.log('!!!', query, parsedQuery);
   
   if (parsedQuery.circle) {
     searchMethod = 'searchByLocation';
