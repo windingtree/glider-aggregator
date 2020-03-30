@@ -42,8 +42,6 @@ module.exports = basicDecorator(async (req, res) => {
     );
   }
 
-  console.log('!!!', query, parsedQuery);
-  
   if (parsedQuery.circle) {
     searchMethod = 'searchByLocation';
     searchQuery = parsedQuery.circle;
@@ -54,20 +52,20 @@ module.exports = basicDecorator(async (req, res) => {
     searchMethod = 'searchWithin';
     searchQuery = [
       [
-        parsedQuery.rectangle.north,
-        parsedQuery.rectangle.west
+        parsedQuery.rectangle.west,
+        parsedQuery.rectangle.north
       ],
       [
-        parsedQuery.rectangle.north,
-        parsedQuery.rectangle.east
+        parsedQuery.rectangle.east,
+        parsedQuery.rectangle.north
       ],
       [
-        parsedQuery.rectangle.south,
-        parsedQuery.rectangle.east
+        parsedQuery.rectangle.east,
+        parsedQuery.rectangle.south
       ],
       [
-        parsedQuery.rectangle.south,
-        parsedQuery.rectangle.west
+        parsedQuery.rectangle.west,
+        parsedQuery.rectangle.south
       ]
     ];
   } else {
@@ -76,7 +74,7 @@ module.exports = basicDecorator(async (req, res) => {
       405
     );
   }
-  
+
   const hotels = await manager[searchMethod](
     searchQuery,
     parsedQuery.skip ? parsedQuery.skip : 0,

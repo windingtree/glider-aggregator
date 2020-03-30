@@ -28,20 +28,20 @@ const searchHotel = async (body) => {
   } else if (typeof body.accommodation.location.rectangle === 'object') {
     const polygon = [
       [
-        body.accommodation.location.rectangle.north,
-        body.accommodation.location.rectangle.west
+        body.accommodation.location.rectangle.west,
+        body.accommodation.location.rectangle.north
       ],
       [
-        body.accommodation.location.rectangle.north,
-        body.accommodation.location.rectangle.east
+        body.accommodation.location.rectangle.east,
+        body.accommodation.location.rectangle.north
       ],
       [
-        body.accommodation.location.rectangle.south,
-        body.accommodation.location.rectangle.east
+        body.accommodation.location.rectangle.east,
+        body.accommodation.location.rectangle.south
       ],
       [
-        body.accommodation.location.rectangle.south,
-        body.accommodation.location.rectangle.west
+        body.accommodation.location.rectangle.west,
+        body.accommodation.location.rectangle.south
       ]
     ].map(c => [Number(c[0]), Number(c[1])]);
     hotels = await hotelsManager.searchWithin(polygon);
