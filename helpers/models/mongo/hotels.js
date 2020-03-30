@@ -219,6 +219,7 @@ class HotelsManager {
 
   // Search for hotel within the given polygon of coordinates
   searchWithin (polygon, skip = 0, limit = null) {
+    console.log('!!!', polygon);
     return this.get(
       {
         location: {

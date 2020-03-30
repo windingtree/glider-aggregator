@@ -43,7 +43,7 @@ const searchHotel = async (body) => {
         body.accommodation.location.rectangle.south,
         body.accommodation.location.rectangle.west
       ]
-    ];
+    ].map(c => [Number(c[0]), Number(c[1])]);
     hotels = await hotelsManager.searchWithin(polygon);
   } else {
     throw new GliderError(
