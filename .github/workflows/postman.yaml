@@ -6,6 +6,7 @@ on:
       - '!refs/tags/*'
     branches:
       - develop
+      - feature/cicd
   pull_request:
     branches:
       - develop
