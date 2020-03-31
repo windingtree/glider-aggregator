@@ -29,6 +29,7 @@ ELASTIC_URL = http://localhost:9200
 
 ```bash
 npm test
+npm run test:newman
 ```
 
 ## Run locally
