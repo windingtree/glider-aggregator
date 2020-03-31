@@ -16,6 +16,8 @@ jobs:
     steps:
 
       - uses: actions/checkout@develop
+        with:
+          ref: ${{ github.ref }}
 
       - name: Install Dependencies
         run: |
