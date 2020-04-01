@@ -66,6 +66,7 @@ jobs:
           SIMARD_URL: https://staging.api.simard.io/api/v1
 
       - name: Assignee to Reviewer
+        run: npx ./scripts/actions/assignReviewer.js
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PULL_REVIEWERS: kostysh
