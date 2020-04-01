@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - '!refs/tags/*'
+    branches:
+      - '**'
   pull_request:
     types: [assigned, unassigned]
     branches:
