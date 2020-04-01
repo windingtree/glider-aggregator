@@ -1,4 +1,4 @@
-name: Automated Intagration Tests
+name: Automated Integration Tests
 
 on:
   pull_request:
@@ -37,8 +37,7 @@ jobs:
       #     discovery type: 'single-node'
 
       - name: Run test suite
-        run: |
-          npm run test:newman
+        run: npm run test:newman
         env:
           AF_API_KEY: ${{ secrets.AF_API_KEY }}
           AF_COMISSION: 0
