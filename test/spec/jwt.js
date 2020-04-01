@@ -87,6 +87,7 @@ describe('JWT', () => {
     });
 
     it('should fail if expired token provided', async () => {
+      console.log('@@@', Object.assign({}, secp256k1Options, { exp: '0 s' }));
       const token = await createToken(
         Object.assign({}, secp256k1Options, { exp: '0 s' })
       );
