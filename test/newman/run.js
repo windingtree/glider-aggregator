@@ -20,6 +20,10 @@ newman
   })
   .on('start', () => {
     console.log('Running tests...');
+
+    if (testsToSkip.length > 0) {
+      console.log('Skipped tests:', testsToSkip);
+    }
   })
   .on('done', (err) => {
 

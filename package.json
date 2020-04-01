@@ -23,7 +23,8 @@
     "localservers:stop": "./scripts/localservers/stop.sh",
     "dev": "now dev",
     "test": "./scripts/test.sh",
-    "test:newman": "npx ./test/newman/run.js"
+    "test:newman": "npx ./test/newman/run.js",
+    "lint": "npx eslint test admin api decorators helpers"
   },
   "dependencies": {
     "axios": "0.19.2",
@@ -46,7 +47,9 @@
     "mocha": "7.1.1",
     "chai": "4.2.0",
     "dotenv": "8.2.0",
-    "newman": "4.6.0"
+    "newman": "4.6.0",
+    "@actions/core": "1.2.3",
+    "@actions/github": "2.1.1"
   },
   "engines": {
     "node": "12.x"

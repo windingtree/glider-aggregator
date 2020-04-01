@@ -1,13 +1,8 @@
-name: Automated Tests
+name: Automated Intagration Tests
 
 on:
-  push:
-    tags:
-      - '!refs/tags/*'
-    branches:
-      - develop
-      - feature/cicd
   pull_request:
+    types: [assigned, unassigned]
     branches:
       - develop
 
@@ -16,13 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/checkout@master
-        with:
-          ref: ${{ github.ref }}
+      - uses: actions/checkout@v2
 
       - name: Install Dependencies
-        run: |
-          npm ci
+        run: npm ci
 
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.1.0
@@ -72,3 +64,8 @@ jobs:
           GLIDER_ADMIN_KEY: secondkey
           LIF_MIN_DEPOSIT: 0
           SIMARD_URL: https://staging.api.simard.io/api/v1
+
+      - name: Assignee to Reviewer
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PULL_REVIEWERS: kostysh

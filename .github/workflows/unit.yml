@@ -1,0 +1,25 @@
+name: Automated Linting and Unit Tests
+
+on:
+  push:
+    tags:
+      - '!refs/tags/*'
+  pull_request:
+    types: [assigned, unassigned]
+    branches:
+      - develop
+
+jobs:
+  unittests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Code Linting
+        run: npm run lint
+
+      - name: Unit testing
+        run: npm test
