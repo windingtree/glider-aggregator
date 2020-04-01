@@ -31,6 +31,7 @@ jobs:
       - name: Unit testing
         run: npm test
         env:
+          GLIDER_ORGID: 0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0
           INFURA_ENDPOINT: wss://ropsten.infura.io/ws/v3
           INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
           REDIS_URL: redis://localhost:6379 
