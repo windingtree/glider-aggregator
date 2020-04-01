@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [assigned, unassigned]
     branches:
-      - develop
+      - '**'
 
 jobs:
   postman:
