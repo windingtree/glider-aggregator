@@ -16,6 +16,7 @@ const run = async () => {
   const number = context.payload.pull_request.number;
 
   core.debug(`Context: ${stringifyCircular(context, 2)}`);
+  core.debug(`Repo: ${context.repo}`);
   core.debug(`Owner: ${number}\n Repo: ${repo}`);
   core.debug(`PR Number: ${number}`);
 
@@ -30,13 +31,13 @@ const run = async () => {
 
     core.debug(`listReviewRequests: ${stringifyCircular(requestsList.data, 2)}`);
 
-    if (!requestsList || requestsList.data) {
+    if (!requestsList || !requestsList.data) {
       core.setFailed('Cannot get list of review requests');
       return;
     }
 
-    if (requestsList.data.users.length > 0) {
-      core.setFailed('Reviews are not assigned');
+    if (requestsList.data.users.length === 0) {
+      core.setFailed('Reviews are not assigned yet');
       return;
     }
 
@@ -49,11 +50,12 @@ const run = async () => {
 
     core.debug(`listReviews: ${stringifyCircular(reviewsList.data, 2)}`);
 
-    if (!reviewsList || reviewsList.data) {
-      core.setFailed('Cannot get list of reviews');
+    if (!reviewsList || !reviewsList.data) {
+      core.setFailed('Cannot get list of submitted reviews');
       return;
     }
 
+    // Build reviewers list
     const users = reviewsList.data.reduce((a, v) => {
 
       if (!a.includes(v.user.login)) {
