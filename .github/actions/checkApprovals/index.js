@@ -80,7 +80,6 @@ const run = async () => {
   core.debug(`Repo: ${stringifyCircular(context.repo, 2)}`);
   core.debug(`PR Number: ${number}`);
   core.debug(`Ref: ${ref}`);
-  core.debug(`Requested Reviewers: ${requestedReviewers}`);
 
   if (number) {
     
