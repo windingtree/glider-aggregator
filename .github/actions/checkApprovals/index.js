@@ -120,10 +120,10 @@ const run = async () => {
       return;
     }
 
-    for (let [key, value] of Object.entries(this.reviews)) {
+    for (let [key, value] of Object.entries(reviews)) {
       
       if (String(value.state).toLocaleLowerCase() !== 'approved') {
-        core.setFailed('Not reviewed yet');
+        core.setFailed('Not approved yet');
         return;
       }
     }
