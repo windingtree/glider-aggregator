@@ -37,7 +37,7 @@ jobs:
           EREVMAX_AVAILABILITY_URL: https://ota-simulator.now.sh/api?ota=getOTAHotelAvailability
           INFURA_ENDPOINT: https://ropsten.infura.io/v3
           INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-          GLIDER_ORGID: 0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0
+          GLIDER_ORGID: '0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0'
           GLIDER_ADMIN_KEY: secondkey
           LIF_MIN_DEPOSIT: 0
           SIMARD_URL: https://staging.api.simard.io/api/v1
