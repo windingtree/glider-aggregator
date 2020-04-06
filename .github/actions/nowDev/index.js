@@ -40,7 +40,8 @@ const run = async () => {
     .exec(
       'npx',
       [
-        'now dev &'
+        'now',
+        'dev &'
       ],
       options
     );
