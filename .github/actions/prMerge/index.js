@@ -24,7 +24,7 @@ const run = async () => {
       'commit_message': `Pull request #${number} has been automatically merged`
     });
 
-    if (!merge || merge.data) {
+    if (!merge || !merge.data) {
       core.setFailed('Cannot get merge result data');
       return;
     }
