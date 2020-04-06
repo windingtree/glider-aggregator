@@ -17,7 +17,7 @@ const run = async () => {
 
   core.debug(`Context: ${stringifyCircular(context, 2)}`);
   core.debug(`Repo: ${stringifyCircular(context.repo, 2)}`);
-  core.debug(`Owner: ${number}\n Repo: ${repo}`);
+  core.debug(`Owner: ${owner}\n Repo: ${repo}`);
   core.debug(`PR Number: ${number}`);
 
   if (number) {

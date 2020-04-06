@@ -38,9 +38,7 @@ const run = async () => {
 
   // Create new branch from the base ref
   await git([
-    'checkout',
-    '-b'
-    'localmerge'
+    'checkout -b localmerge'
   ]);
 
   // Merge head ref into the created branch
