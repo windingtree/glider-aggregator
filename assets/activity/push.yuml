@@ -1,0 +1,21 @@
+// {type:activity}
+// {generate:true}
+
+(note: Push event\nactivity {bg:beige})
+
+(start)->(Push event)-><a>
+(Push event)-(note: Every branch)
+<a>[Commit\ncontains\ntags]->(Normal action exit)
+<a>[Commit\nnot contains\ntags]->(Checkout)
+(Checkout)->(Install dependencies)->(Run code linting tests)
+(Run code linting tests)-(note: Skipped for now\nuntil linting errors\nnot fixed)
+(Run code linting tests)-><b>
+<b>[Linting tests\nfailed]->(Failed action)
+<b>[Linling tests\n succeeded]->(Setup environment\nfor unit tests)
+(Setup environment\nfor unit tests)->(Run unit tests)-><c>
+<c>[Unit tests\nfailed]->(Failed action)
+<c>[Unit tests\nsucceeded]->(Normal action exit)
+(Failed action)-(note: Failure\nGitHub notification)
+(Normal action exit)-(note: Success\nGitHub notification)
+(Failed action)->(end)
+(Normal action exit)->(end)

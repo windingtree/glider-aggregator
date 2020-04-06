@@ -1,0 +1,30 @@
+// {type:activity}
+// {generate:true}
+
+(note: PR Reviews\nactivity {bg:beige})
+
+(start)->(Review submitted event)
+(Review submitted event)-(note: Branches:\n- develop\n- master)
+(Review submitted event)->(Checkout)->(Install\ndependencies)
+(Install\ndependencies)->(Get review requests)-><a>
+(Get review requests)-(note: Configured with\nGithub API token)
+<a>[List is empty]->(Normal action exit)
+<a>[List obtained]-><b>
+<b>[Review requests\nlist is empty]->(Normal action exit)
+<b>[Review requests\nassigned]->(Get reviews)-><c>
+(Get reviews)-(note: Configured with\nGithub API token.)
+<c>[PR not been\nreviewed]->(Normal action exit)
+<c>[Exists reviews]->(Check approval status)-><d>
+<d>[Not approved yet]->(Normal action exit)
+<d>[Approved]->(Create local merge)->(Deploy merged branch)
+(Deploy merged branch)->(Run integration tests\nagainst deployment)-><f>
+<f>[Integration tests\nfiled]->(Failed action)
+<f>[Integration test\nsucceeded]->(Initiate PR merge)-><e>
+(Initiate PR merge)-(note: Configured with\nGithub API token\.)
+<e>[Merge\nfailed]->(Failed action)
+<e>[Merge\nsucceeded]->(Normal action exit)
+(Normal action exit)-(note: Success\nGitHub\nnotification)
+(Normal action exit)-(note: Merge\nGitHub\nnotification)
+(Normal action exit)->(end)
+(Failed action)-(note: Failure\nGitHub\nnotification)
+(Failed action)->(end)

@@ -1,0 +1,11 @@
+name: Check PR Reviews Approvals
+description: Check if current PR is completely approved by reviewers
+
+inputs:
+  GITHUB_TOKEN:
+    description: GitHub API token
+    required: true
+
+runs:
+  using: 'node12'
+  main: 'index.js'
