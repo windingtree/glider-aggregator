@@ -9,10 +9,10 @@ const { repo: { owner, repo } } = context;
 const number = context.payload.pull_request.number;
 
 // Head Ref
-const ref = `heads/${payload.pull_request.head.ref}`;
+const ref = `heads/${context.payload.pull_request.head.ref}`;
 
 // Reviewers
-const requestedReviewers = payload.pull_request.requested_reviewers;
+const requestedReviewers = context.payload.pull_request.requested_reviewers;
 
 // Action info
 const githubToken = core.getInput('GITHUB_TOKEN', { required: true });
