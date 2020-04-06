@@ -41,6 +41,8 @@ const run = async () => {
       'npx',
       [
         'now',
+        '-t',
+        nowToken,
         'dev &'
       ],
       options
