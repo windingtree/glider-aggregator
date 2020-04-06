@@ -3,11 +3,8 @@ const core = require('@actions/core');
 const exec = require('@actions/exec');
 
 // Action Info
-const nowToken = core.getInput('NOW_TOKEN', { required: true });
 const projectId = core.getInput('NOW_PROJECT_ID', { required: true });
 const orgId = core.getInput('NOW_ORG_ID', { required: true });
-
-core.exportVariable('NOW_TOKEN', nowToken);
 
 // Now dir path
 const nowDir = './.now'
@@ -45,7 +42,7 @@ const run = async () => {
       options
     );
 
-  core.ingo(`Output: ${output}`);
+  core.info(`Output: ${output}`);
 };
 
 run()
