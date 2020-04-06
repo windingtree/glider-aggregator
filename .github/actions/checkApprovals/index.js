@@ -11,9 +11,6 @@ const number = context.payload.pull_request.number;
 // Head Ref
 const ref = `heads/${context.payload.pull_request.head.ref}`;
 
-// Reviewers
-const requestedReviewers = context.payload.pull_request.requested_reviewers;
-
 // Action info
 const githubToken = core.getInput('GITHUB_TOKEN', { required: true });
 
@@ -84,11 +81,6 @@ const run = async () => {
   core.debug(`PR Number: ${number}`);
   core.debug(`Ref: ${ref}`);
   core.debug(`Requested Reviewers: ${requestedReviewers}`);
-
-  if (requestedReviewers.length == 0) {
-    core.setFailed('Reviewers not assigned');
-    return;
-  }
 
   if (number) {
     
