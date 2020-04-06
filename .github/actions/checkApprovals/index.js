@@ -1,5 +1,6 @@
 const { GitHub, context } = require('@actions/github');
 const core = require('@actions/core');
+const { stringifyCircular } = require('../../../helpers/json');
 
 // Repository info
 const { repo: { owner, repo } } = context;
@@ -14,6 +15,9 @@ const run = async () => {
   // Pull request number
   const number = context.payload.pull_request.number;
 
+  core.debug(`Repo:\n Owner: ${number}\n repo: ${repo}`);
+  core.debug(`PR Number: ${number}`);
+
   if (number) {
     
     // Get list of all review requests
@@ -22,6 +26,8 @@ const run = async () => {
       repo,
       'pull_number': number
     });
+
+    core.debug(`listReviewRequests: ${stringifyCircular(requestsList.data, 2)}`);
 
     if (!requestsList || requestsList.data) {
       core.setFailed('Cannot get list of review requests');
@@ -40,6 +46,8 @@ const run = async () => {
       'pull_number': number
     });
 
+    core.debug(`listReviews: ${stringifyCircular(reviewsList.data, 2)}`);
+
     if (!reviewsList || reviewsList.data) {
       core.setFailed('Cannot get list of reviews');
       return;
@@ -53,6 +61,8 @@ const run = async () => {
   
       return a;
     }, []);
+
+    core.debug(`Reviewers: ${stringifyCircular(users)}`);
   
     let approvals = [];
     for (const user of users) {
@@ -64,6 +74,8 @@ const run = async () => {
         );
       approvals.push(String(userReviews[0].state).toLocaleLowerCase() === 'approved');
     }
+
+    core.debug(`Approvals: ${stringifyCircular(approvals)}`);
   
     if (approvals.includes(false)) {
       core.setFailed('PR not yet reviewed');
