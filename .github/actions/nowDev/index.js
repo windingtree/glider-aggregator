@@ -7,6 +7,8 @@ const nowToken = core.getInput('NOW_TOKEN', { required: true });
 const projectId = core.getInput('NOW_PROJECT_ID', { required: true });
 const orgId = core.getInput('NOW_ORG_ID', { required: true });
 
+core.exportVariable('NOW_TOKEN', nowToken);
+
 // Now dir path
 const nowDir = './.now'
 
@@ -38,13 +40,8 @@ const run = async () => {
 
   await exec
     .exec(
-      'npx',
-      [
-        'now',
-        '-t',
-        nowToken,
-        'dev &'
-      ],
+      './scripts/now.sh',
+      [],
       options
     );
 
