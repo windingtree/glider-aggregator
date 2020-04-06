@@ -1,3 +1,4 @@
+const { context } = require('@actions/github');
 const exec = require('@actions/exec');
 
 // Repository info
