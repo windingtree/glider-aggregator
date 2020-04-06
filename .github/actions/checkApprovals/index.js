@@ -50,10 +50,11 @@ const parseReviews = async (data) => {
 
 // Parse checks result
 const parseChecks = async (data) => {
+  const total = data.total_count;
   data = data.check_runs;
 
   let compiled = {
-    total: data.total_count,
+    total,
     completed: 0,
     success: 0
   };
@@ -90,12 +91,12 @@ const run = async () => {
       'pull_number': number
     });
 
-    core.debug(`listReviews: ${stringifyCircular(reviewsList.data, 2)}`);
-
     if (!reviewsList || !reviewsList.data) {
       core.setFailed('Cannot get list of submitted reviews');
       return;
     }
+
+    core.debug(`listReviews: ${stringifyCircular(reviewsList.data, 2)}`);
 
     // Get list of all checks
     const checksList = await github.checks.listForRef({
@@ -108,6 +109,8 @@ const run = async () => {
       core.setFailed('Cannot get list of checks');
       return;
     }
+
+    core.debug(`listForRef: ${stringifyCircular(checksList.data, 2)}`);
 
     const reviews = await parseReviews(reviewsList.data);
     const checks = await parseChecks(checksList.data);
