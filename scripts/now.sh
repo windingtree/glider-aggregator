@@ -26,5 +26,4 @@ npx now \
   -e GLIDER_ADMIN_KEY=$GLIDER_ADMIN_KEY \
   -e LIF_MIN_DEPOSIT=$LIF_MIN_DEPOSIT \
   -e SIMARD_URL=$SIMARD_URL \
-  -t $NOW_TOKEN \
-  dev &
+  -t $NOW_TOKEN dev &
