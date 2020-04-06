@@ -4,6 +4,9 @@ const core = require('@actions/core');
 // Repository info
 const { repo: { owner, repo } } = context;
 
+// Pull request number
+const number = context.payload.pull_request.number;
+
 // Action info
 const githubToken = core.getInput('GITHUB_TOKEN', { required: true });
 const pullReviewers = core.getInput('PULL_REVIEWERS', { required: true });
@@ -12,9 +15,7 @@ const pullReviewers = core.getInput('PULL_REVIEWERS', { required: true });
 const github = new GitHub(githubToken);
 
 const run = async () => {
-  // Pull request number
-  const number = context.payload.pull_request.number;
-
+  
   if (number) {
     // Assign reviewers to the pull request
     await github.pulls.createReviewRequest({

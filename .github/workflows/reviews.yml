@@ -2,7 +2,9 @@ name: Pull Request Reviews Handling
 
 on: 
   pull_request_review:
-    types: [submitted]
+    types: 
+      - submitted
+      - dismissed
 
 jobs:
   check_reviews:

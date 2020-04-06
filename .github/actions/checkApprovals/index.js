@@ -5,42 +5,93 @@ const { stringifyCircular } = require('../../../helpers/json');
 // Repository info
 const { repo: { owner, repo } } = context;
 
+// Pull request number
+const number = context.payload.pull_request.number;
+
+// Head Ref
+const ref = `heads/${payload.pull_request.head.ref}`;
+
+// Reviewers
+const requestedReviewers = payload.pull_request.requested_reviewers;
+
 // Action info
 const githubToken = core.getInput('GITHUB_TOKEN', { required: true });
 
 // Create GitHub client
 const github = new GitHub(githubToken);
 
-const run = async () => {
-  // Pull request number
-  const number = context.payload.pull_request.number;
+// Parse reviews list
+const parseReviews = async (data) => {
+  let compiled = {};
 
+  if (data && Object.keys(data).length > 0) {
+
+    data.forEach(element => {
+      const user = element.user.login;
+      const date = element.submitted_at;
+      const state = element.state;
+
+      if (typeof (compiled[user]) !== 'undefined') {
+        
+        if (date > compiled[user].date) {
+          compiled[user] = {
+            date: date,
+            state: state
+          };
+        }
+      } else {
+        compiled[user] = {
+          date: date,
+          state: state
+        };
+      }
+    });
+  }
+
+  return compiled;
+};
+
+// Parse checks result
+const parseChecks = async (data) => {
+  data = data.check_runs;
+
+  let compiled = {
+    total: checks.data.total_count,
+    completed: 0,
+    success: 0
+  };
+
+  if (data && Object.keys(data).length > 0) {
+    
+    data.forEach(element => {
+
+      if (String(element.status).toLocaleLowerCase() === 'completed') {
+          compiled.completed++;
+      }
+
+      if (String(element.conclusion).toLocaleLowerCase() === 'success') {
+          compiled.success++;
+      }
+    });
+  }
+
+  return compiled;
+};
+
+const run = async () => {
   core.debug(`Context: ${stringifyCircular(context, 2)}`);
   core.debug(`Repo: ${stringifyCircular(context.repo, 2)}`);
-  core.debug(`Owner: ${owner}\n Repo: ${repo}`);
   core.debug(`PR Number: ${number}`);
+  core.debug(`Ref: ${ref}`);
+  core.debug(`Requested Reviewers: ${requestedReviewers}`);
+
+  if (requestedReviewers.length == 0) {
+    core.setFailed('Reviewers not assigned');
+    return;
+  }
 
   if (number) {
     
-    // Get list of all review requests
-    const requestsList = await github.pulls.listReviewRequests({
-      owner,
-      repo,
-      'pull_number': number
-    });
-
-    core.debug(`listReviewRequests: ${stringifyCircular(requestsList.data, 2)}`);
-
-    if (!requestsList || !requestsList.data) {
-      core.setFailed('Cannot get list of review requests');
-      return;
-    }
-
-    if (requestsList.data.users.length === 0) {
-      core.setFailed('Reviews are not assigned yet');
-      return;
-    }
-
     // Get list of reviews
     const reviewsList = await github.pulls.listReviews({
       owner,
@@ -55,37 +106,45 @@ const run = async () => {
       return;
     }
 
-    // Build reviewers list
-    const users = reviewsList.data.reduce((a, v) => {
+    // Get list of all checks
+    const checksList = await github.checks.listForRef({
+      owner,
+      repo,
+      ref 
+    });
 
-      if (!a.includes(v.user.login)) {
-        a.push(v.user.login);
-      }
-  
-      return a;
-    }, []);
-
-    core.debug(`Reviewers: ${stringifyCircular(users)}`);
-  
-    let approvals = [];
-    for (const user of users) {
-      const userReviews = reviewsList
-        .data
-        .filter(r => r.user.login === user)
-        .sort(
-          (r, o) => (new Date(o.submitted_at)).getTime() - (new Date(r.submitted_at)).getTime()
-        );
-      approvals.push(String(userReviews[0].state).toLocaleLowerCase() === 'approved');
-    }
-
-    core.debug(`Approvals: ${stringifyCircular(approvals)}`);
-  
-    if (approvals.includes(false)) {
-      core.setFailed('PR not yet reviewed');
+    if (!checksList || !checksList.data) {
+      core.setFailed('Cannot get list of checks');
       return;
     }
 
-    core.info(`Pull request #${number} approved`);
+    const reviews = await parseReviews(reviewsList.data);
+    const checks = await parseChecks(checksList.data);
+
+    core.debug(`Reviews: ${stringifyCircular(reviews, 2)}`);
+    core.debug(`Checks: ${stringifyCircular(checks, 2)}`);
+
+    if (Object.keys(reviews).length === 0) {
+      core.setFailed('Not reviewed yet');
+      return;
+    }
+
+    for (let [key, value] of Object.entries(this.reviews)) {
+      
+      if (String(value.state).toLocaleLowerCase() !== 'approved') {
+        core.setFailed('Not reviewed yet');
+        return;
+      }
+    }
+
+    if ((checks.completed >= (checks.total - 1)) &&
+        (checks.success >= (checks.total - 1))) {
+      
+      core.info(`Pull request #${number} approved`);
+    } else {
+      core.setFailed('Some checks not succeeded');
+    }
+    
   } else {
     core.setFailed('Pull request not found');
   }
