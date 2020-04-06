@@ -33,7 +33,8 @@ const run = async () => {
       core.info(merge.data.message);
     } else {
       await github.issues.createComment({
-        ...context.repo,
+        owner,
+        repo,
         'issue_number': context.issue.number,
         body: `Automatic merge of the PR is failed\n${merge.data.message}\n[${merge.data.documentation_url}](${merge.data.documentation_url})`
       });

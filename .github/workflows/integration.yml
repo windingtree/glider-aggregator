@@ -11,19 +11,26 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Deploy PR to Zeit
-        uses: ./.github/actions/deployNow
+      - name: Now Dev
+        uses: ./.github/actions/nowDev
         with:
           NOW_TOKEN: ${{ secrets.NOW_TOKEN }}
           NOW_PROJECT_ID: ${{ secrets.NOW_PROJECT_ID }}
           NOW_ORG_ID: ${{ secrets.NOW_ORG_ID }}
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_EXT }}
 
-      - name: Run test suite
-        run: npm run test:newman
+      # - name: Deploy PR to Zeit
+      #   uses: ./.github/actions/deployNow
+      #   with:
+      #     NOW_TOKEN: ${{ secrets.NOW_TOKEN }}
+      #     NOW_PROJECT_ID: ${{ secrets.NOW_PROJECT_ID }}
+      #     NOW_ORG_ID: ${{ secrets.NOW_ORG_ID }}
+      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN_EXT }}
 
-      - name: Assign to Reviewer
-        uses: ./.github/actions/assignReviewers
-        with: 
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_EXT }}
-          PULL_REVIEWERS: winkostysh
+      # - name: Run test suite
+      #   run: npm run test:newman
+
+      # - name: Assign to Reviewer
+      #   uses: ./.github/actions/assignReviewers
+      #   with: 
+      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN_EXT }}
+      #     PULL_REVIEWERS: winkostysh
