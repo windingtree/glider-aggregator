@@ -1,9 +1,13 @@
-name: Automated Integration Tests
+name: Pull Request Reviews Handling
 
-on: [pull_request]
+on: 
+  pull_request_review:
+    types: 
+      - submitted
+      - dismissed
 
 jobs:
-  postman:
+  check_reviews:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -11,7 +15,15 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Deploy PR to Zeit
+      - name: Check PR Reviews Approvals
+        uses: ./.github/actions/checkApprovals
+        with: 
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_EXT }}
+
+      - name: Local merge
+        uses: ./.github/actions/localMerge
+
+      - name: Deploy localy merged branch
         uses: ./.github/actions/deployNow
         with:
           NOW_TOKEN: ${{ secrets.NOW_TOKEN }}
@@ -22,8 +34,7 @@ jobs:
       - name: Run test suite
         run: npm run test:newman
 
-      - name: Assign to Reviewer
-        uses: ./.github/actions/assignReviewers
+      - name: Run PR merge
+        uses: ./.github/actions/prMerge
         with: 
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_EXT }}
-          PULL_REVIEWERS: winkostysh

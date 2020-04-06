@@ -2223,7 +2223,7 @@
 		{
 			"id": "99591fdd-5843-4695-8a7c-e3f52ffe1d8a",
 			"key": "GLIDER_ADMIN_URL",
-			"value": "https://staging.aggregator.windingtree.net/admin/v1",
+			"value": "http://localhost:3000/admin/v1",
 			"type": "string"
 		},
 		{

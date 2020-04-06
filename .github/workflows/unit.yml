@@ -1,15 +1,6 @@
 name: Automated Linting and Unit Tests
 
-on:
-  push:
-    tags:
-      - '!refs/tags/*'
-    branches:
-      - '**'
-  pull_request:
-    types: [assigned, unassigned]
-    branches:
-      - develop
+on: [push, pull_request]
 
 jobs:
   unittests:
