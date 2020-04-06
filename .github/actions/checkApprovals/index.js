@@ -16,7 +16,7 @@ const run = async () => {
   const number = context.payload.pull_request.number;
 
   core.debug(`Context: ${stringifyCircular(context, 2)}`);
-  core.debug(`Repo: ${context.repo}`);
+  core.debug(`Repo: ${stringifyCircular(context.repo, 2)}`);
   core.debug(`Owner: ${number}\n Repo: ${repo}`);
   core.debug(`PR Number: ${number}`);
 
