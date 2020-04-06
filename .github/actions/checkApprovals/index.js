@@ -53,7 +53,7 @@ const parseChecks = async (data) => {
   data = data.check_runs;
 
   let compiled = {
-    total: checks.data.total_count,
+    total: data.total_count,
     completed: 0,
     success: 0
   };
