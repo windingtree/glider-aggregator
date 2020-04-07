@@ -11,7 +11,7 @@ CI/CD framework for the Glider aggreagator is based on the [GitHub actions](http
 
 (*) note: Workflow configuration should include `PULL_REVIEWERS` configuration (semicolon-separated list of usernames) that can be the only chosen from the collaborators
 
-## GitGub Actions Secrets
+## GitHub Actions Secrets
 
 These [secrets have to be defined](https://github.com/windingtree/glider-aggregator/settings/secrets) in the repository environment:
 
