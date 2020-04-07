@@ -38,3 +38,6 @@ npm run test:newman
 $ npm run dev
 ```
 
+## CI/CD
+
+Documentation for continuous integration and delivery framework is available by [the link](./docs/cicd.md).
