@@ -57,4 +57,4 @@ jobs:
         uses: ./.github/actions/assignReviewers
         with: 
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_EXT }}
-          PULL_REVIEWERS: winkostysh
+          PULL_REVIEWERS: mtahon
