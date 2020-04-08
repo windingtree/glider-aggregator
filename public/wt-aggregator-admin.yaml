@@ -17,8 +17,241 @@ servers:
 tags:
   - name: hotels
     description: Operations with hotels
+  - name: config/limits
+    description: Operations with API calls limits configuration
 
-paths:  
+paths:
+  /config/limits/{apiEndpoint}:
+    post:
+      tags:
+        - config/limits
+      summary: Create a limit tiers for the API endpoint
+      operationId: createApiLimitTiers
+      parameters:
+        - name: apiEndpoint
+          in: path
+          description: The name of the API endpoint
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApiEndpointName'
+      requestBody:
+        description: Array of limit tiers
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiCallsLimitTiers"
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body
+    put:
+      tags:
+        - config/limits
+      summary: Update a limit tiers for the API endpoint
+      operationId: createApiLimitTiers
+      parameters:
+        - name: apiEndpoint
+          in: path
+          description: The name of the API endpoint
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApiEndpointName'
+      requestBody:
+        description: Array of limit tiers
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiCallsLimitTiers"
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body
+
+    delete:
+      tags:
+        - config/limits
+      parameters:
+        - name: apiEndpoint
+          in: path
+          description: API endpoint name
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApiEndpointName'
+      summary: Remove API calls limit
+      operationId: removeApiCallsLimit
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+
+    get:
+      tags:
+        - config/limits
+      summary: Retrive the limits tiers for selected API endpoint
+      operationId: getConfigApiCallsLimit
+      parameters:
+        - name: apiEndpoint
+          in: path
+          description: The sort of the limit is dedicated for
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApiEndpointName'
+      responses:
+        200:
+          description: The list of limits tiers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCallsLimitTiers'
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body
+    
+  /config/limits:
+    get:
+      tags:
+        - config/limits
+      summary: Retrive all API calls limits
+      operationId: getConfigApiCallsLimits
+      responses:
+        200:
+          description: The list of limits tiers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCallsLimitTiers'
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body
+
   /hotels:
     get:
       tags:
@@ -118,7 +351,7 @@ paths:
           description: Hotel Id
           required: true
           schema:
-            $ref: '#/components/schemas/HotelId'
+            $ref: '#/components/schemas/UniqueId'
       summary: Get hotel by Id
       operationId: getHotelById
       responses:
@@ -160,7 +393,7 @@ paths:
           description: Hotel Id
           required: true
           schema:
-            $ref: '#/components/schemas/HotelId'
+            $ref: '#/components/schemas/UniqueId'
       summary: Update hotel by Id
       operationId: updateHotelById
       requestBody:
@@ -222,7 +455,7 @@ paths:
           description: Hotel Id
           required: true
           schema:
-            $ref: '#/components/schemas/HotelId'
+            $ref: '#/components/schemas/UniqueId'
       summary: Remove hotel by Id
       operationId: removeHotelById
       responses:
@@ -326,10 +559,73 @@ paths:
 components:
   schemas:
 
-    HotelId:
-      description: Unique Hotel Id
+    UniqueId:
+      description: Unique Id
       type: string
       example: "5e7a676620778a23098581cb"
+
+    ApiEndpointName:
+      description: Unique API endpoint name
+      type: string
+      example: "searchOffers"
+
+    ApiCallsLimitTier:
+      description: API calls per day limit tier
+      type: object
+      required:
+        - type
+        - min
+        - max
+        - sec
+        - day
+      properties:
+        id:
+          description: Unique tier Id
+          ref: '#/components/schemas/UniqueId'
+        type:
+          description: The limit criterion
+          type: string
+          enum:
+            - lif
+          example: "lif"
+        min:
+          description: LIF token deposit rate
+          type: string
+          example: "1000"
+        max:
+          description: LIF token deposit rate
+          type: string
+          example: "1000"
+        sec:
+          description: The number of allowed calls per second
+          type: number
+          example: 1
+        day:
+          description: The number of allowed calls per day
+          type: number
+          example: 1000
+
+    ApiCallsLimitTiers:
+      description: The list of limits tiers
+      type: array
+      items:
+        $ref: '#/components/schemas/ApiCallsLimitTier'
+
+    ApiCallsLimitTiersResult:
+      description: API calls limit result
+      type: object
+      properties:
+        id: 
+          description: Id of the added limit in the database
+          type: string
+          pattern: /^[a-f0-9]{24}$/i
+          example: 507f1f77bcf86cd799439011
+
+    ApiCallsLimitTiersResults:
+      description: List of limits addition results
+      type: array
+      items: 
+        $ref: '#/components/schemas/ApiCallsLimitTiersResult'
 
     Hotel:
       description: Hotel
@@ -503,7 +799,7 @@ components:
         message:
           description: Information related to the error
           type: string
-          example: "Invalid Input"
+          example: "Error message"
 
   # Defines the security schemes
   securitySchemes:
