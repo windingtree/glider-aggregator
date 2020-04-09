@@ -43,6 +43,10 @@
             "destination": "/admin/v1/config/limits.js?apiEndpoint=$1"
         },
         {
+            "source": "/admin/v1/orglist/(.*)",
+            "destination": "/admin/v1/orglist/index.js?listName=$1"
+        },
+        {
             "source": "/admin/v1/hotels/search",
             "destination": "/admin/v1/hotels/search.js"
         },

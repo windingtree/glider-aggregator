@@ -6,10 +6,16 @@ module.exports = basicDecorator(async (req, res) => {
   const { method, query, body } = req;
   let result;
 
+  if (method !== 'GET' && !query.apiEndpoint) {
+    throw new GliderError(
+      'apiEndpoint parameter is required',
+      400
+    );
+  }
+
   switch (method) {
     case 'GET':
-      console.log('###', query);
-
+      
       if (query.apiEndpoint) {
         result = await manager.get(query.apiEndpoint);
         res.status(200).json(result.tiers);
@@ -21,6 +27,7 @@ module.exports = basicDecorator(async (req, res) => {
       break;
 
     case 'POST':
+
       await manager.add(
         query.apiEndpoint,
         body

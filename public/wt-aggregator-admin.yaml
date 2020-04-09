@@ -17,10 +17,158 @@ servers:
 tags:
   - name: hotels
     description: Operations with hotels
+  - name: orglist
+    description: Various OrgId lists
   - name: config/limits
     description: Operations with API calls limits configuration
 
 paths:
+  /orglist/{listName}:
+    post:
+      tags:
+        - orglist
+      summary: Create a record in the Org.Id lists
+      operationId: createOrglistRecords
+      parameters:
+        - name: listName
+          in: path
+          description: The name of the API endpoint
+          required: true
+          schema:
+            $ref: '#/components/schemas/OrgIdsListName'
+      requestBody:
+        description: Array of OrgIds
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrgIdsList"
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body
+
+    delete:
+      tags:
+        - orglist
+      summary: Remove a record from the Org.Id lists
+      operationId: removeOrglistRecords
+      parameters:
+        - name: listName
+          in: path
+          description: The name of the API endpoint
+          required: true
+          schema:
+            $ref: '#/components/schemas/OrgIdsListName'
+      requestBody:
+        description: Array of OrgIds
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrgIdsList"
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body
+
+    get:
+      tags:
+        - orglist
+      summary: Retrive the list of OrgIds
+      operationId: getOrglist
+      parameters:
+        - name: listName
+          in: path
+          description: The name of the API endpoint
+          required: true
+          schema:
+            $ref: '#/components/schemas/OrgIdsListName'
+      responses:
+        200:
+          description: The list of OrgIds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgIdsList'
+        400:
+          description: The sent request is not correct
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: The server encountered an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - orgid_auth:
+            - admin
+        - orgid_token: []
+      x-codegen-request-body-name: body      
+
   /config/limits/{apiEndpoint}:
     post:
       tags:
@@ -563,6 +711,28 @@ components:
       description: Unique Id
       type: string
       example: "5e7a676620778a23098581cb"
+
+    OrgIdsListName:
+      description: Unique OrgId list name
+      type: string
+      enum:
+        - white
+        - black
+      example: "black"
+
+    OrgId:
+      description: ORG.ID identifier
+      type: string
+      pattern: "^0x[a-fA-F0-9]{64}$"
+      minLength: 64
+      maxLength: 64
+      example: "0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0"
+
+    OrgIdsList:
+      description: List of OrgIds
+      type: array
+      items:
+        $ref: "#/components/schemas/OrgId"
 
     ApiEndpointName:
       description: Unique API endpoint name

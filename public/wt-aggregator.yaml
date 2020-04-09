@@ -377,11 +377,11 @@ components:
       example: "11111111-2222-3333-4444-000000000001"
 
     OrgId:
-      description: ORG.ID contract address identifier
+      description: ORG.ID identifier
       type: string
-      pattern: "^0x[0-9a-f]{40}$"
-      minLength: 42
-      maxLength: 42
+      pattern: "^0x[a-fA-F0-9]{64}$"
+      minLength: 64
+      maxLength: 64
       example: "0xc0fbc1348b43d50c948edf1818b0abfdd7466b9e"
 
     Price:

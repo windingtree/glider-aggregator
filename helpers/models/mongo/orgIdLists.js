@@ -4,51 +4,40 @@ const {
 } = require('../../mongo');
 const GliderError = require('../../error');
 
-// Limit Tier schema
-const LimitTierSchema = new Schema(
+// OrgId List schema
+const OrgIdListSchema = new Schema(
   {
     type: {
       type: String,
-      enum: ['lif'],
+      enum: [
+        'white',
+        'black'
+      ],
+      lowercase: true,
       required: true
     },
-    min: {
+    orgId: {
       type: String,
-      required: true
-    },
-    max: {
-      type: String,
-      required: true
-    },
-    sec: {
-      type: Number,
-      required: true
-    },
-    day: {
-      type: Number,
+      match: /^0x[a-fA-F0-9]{64}$/,
       required: true
     }
   }
 );
 
-// Limits schema
-const ApiCallsLimitsSchema = new Schema(
+// Create unique index to prevent Ids dups
+OrgIdListSchema.index(
   {
-    api: {
-      type: String,
-      unique: true,
-      required: true
-    },
-    tiers: {
-      type: [LimitTierSchema],
-      default: []
-    }
+    type: 1,
+    orgId: 1
+  },
+  {
+    unique: true
   }
 );
 
 let connectedModel;
 
-// API calls limits model
+// ORG.ID list model
 const modelResolver = async () => {
 
   if (connectedModel) {
@@ -56,28 +45,28 @@ const modelResolver = async () => {
   }
 
   const db = await getMongoConnection();
-  connectedModel = db.model('ApiCallsLimits', ApiCallsLimitsSchema);
+  connectedModel = db.model('OrgIdList', OrgIdListSchema);
 
   return connectedModel;
 };
 
-class LimitsManager {
+class OrgIdListManager {
 
   constructor (modelResolver) {
     this.modelResolver = modelResolver;
   }
 
-  // Get the limit
-  async get (api) {
+  // Check is OrgId is included into list
+  async includes (type, orgId) {
     let record;
 
     try {
       const model = await this.modelResolver();
       record = await model
         .findOne({
-          api
-        })
-        .select('-_id -tiers._id -__v');
+          type,
+          orgId
+        });
     } catch (e) {
       throw new GliderError(
         e.message,
@@ -85,25 +74,20 @@ class LimitsManager {
       );
     }
 
-    if (!record) {
-      throw new GliderError(
-        'Limit not found',
-        404
-      );
-    }
-
-    return record;
+    return !!record;
   }
 
-  // Get the limit
-  async getAll () {
-    let record;
+  // Get the list
+  async get (type) {
+    let records;
 
     try {
       const model = await this.modelResolver();
-      record = await model
-        .find()
-        .select('-_id -__v -tiers._id');
+      records = await model
+        .find({
+          type
+        })
+        .map(r => r.map(o => o.orgId));
     } catch (e) {
       throw new GliderError(
         e.message,
@@ -111,22 +95,22 @@ class LimitsManager {
       );
     }
 
-    if (!record) {
+    if (!records || records.length === 0) {
       throw new GliderError(
-        'Limits not found',
+        'List not found',
         404
       );
     }
 
-    return record;
+    return records;
   }
 
-  // Add tiers
-  async add (api, tiers) {
+  // Add one orgId to the list
+  async addOne (type, orgId) {
     const model = await this.modelResolver();
     const record = new model({
-      api,
-      tiers
+      type,
+      orgId
     });
     const validation = record.validateSync();
 
@@ -151,44 +135,21 @@ class LimitsManager {
     return savedRecord;
   }
 
-  async update (api, tiers) {
-    let result;
-
-    try {
-      const model = await this.modelResolver();
-      result = await model.replaceOne(
-        {
-          api
-        },
-        {
-          api,
-          tiers
-        }
-      );
-    } catch (e) {
-      throw new GliderError(
-        e.message,
-        500
-      );
-    }
-
-    if (result.n === 0) {
-      throw new GliderError(
-        'Limit not found',
-        404
-      );
-    }
+  // Add multiple records
+  addBulk (type, orgIds = []) {
+    return Promise.all(orgIds.map(o => this.addOne(type, o)));
   }
 
-  // Remove the limit
-  async remove (api) {
+  // Remove one record from the list
+  async removeOne (type, orgId) {
     let result;
 
     try {
       const model = await this.modelResolver();
       result = await model.remove(
         {
-          api
+          type,
+          orgId
         }
       );
     } catch (e) {
@@ -200,14 +161,19 @@ class LimitsManager {
 
     if (result.n === 0 || result.deletedCount === 0) {
       throw new GliderError(
-        'Limit not found',
+        'OrgId not found',
         404
       );
     }
+  }
+
+  // Remove multiple records
+  removeBulk (type, orgIds = []) {
+    return Promise.all(orgIds.map(o => this.removeOne(type, o)));
   }
 }
 
 module.exports = {
   model: modelResolver,
-  manager: new LimitsManager(modelResolver)
+  manager: new OrgIdListManager(modelResolver)
 };
