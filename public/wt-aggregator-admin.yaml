@@ -224,7 +224,7 @@ paths:
       tags:
         - config/limits
       summary: Update a limit tiers for the API endpoint
-      operationId: createApiLimitTiers
+      operationId: updateApiLimitTiers
       parameters:
         - name: apiEndpoint
           in: path
@@ -743,29 +743,19 @@ components:
       description: API calls per day limit tier
       type: object
       required:
-        - type
         - min
         - max
         - sec
         - day
       properties:
-        id:
-          description: Unique tier Id
-          ref: '#/components/schemas/UniqueId'
-        type:
-          description: The limit criterion
-          type: string
-          enum:
-            - lif
-          example: "lif"
         min:
           description: LIF token deposit rate
-          type: string
-          example: "1000"
+          type: number
+          example: 500
         max:
           description: LIF token deposit rate
-          type: string
-          example: "1000"
+          type: number
+          example: 1000
         sec:
           description: The number of allowed calls per second
           type: number

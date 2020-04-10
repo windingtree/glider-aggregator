@@ -56,9 +56,11 @@ module.exports.checkCallsTrustRequirements = async (apiUrl, orgId, lifDeposit) =
 
     if (limits) {
       selectedLimit = limits.tiers.filter(t => (
-        t.type === 'lif' &&
-        lifDeposit >= Number(t.min) &&
-        lifDeposit <= Number(t.max)
+        t.min <= lifDeposit &&
+        (
+          (t.min !== 0 && t.max === 0) ||
+          lifDeposit <= t.max
+        )
       ));
     }
 
@@ -68,57 +70,65 @@ module.exports.checkCallsTrustRequirements = async (apiUrl, orgId, lifDeposit) =
       let usageDay;
 
       try {
-        usageSec = await getCallsUsage(
-          'glider-events',
-          [
-            {
-              range: {
-                time: {
-                  gte: 'now-1s',
-                  lte: 'now'
+
+        if (tier.sec !== 0) {
+
+          usageSec = await getCallsUsage(
+            'glider-events',
+            [
+              {
+                range: {
+                  time: {
+                    gte: 'now-1s',
+                    lte: 'now'
+                  }
+                }
+              },
+              {
+                match: {
+                  orgid: orgId
+                }
+              },
+              {
+                match: {
+                  url: `${apiUrl}*`
                 }
               }
-            },
-            {
-              match: {
-                orgid: orgId
-              }
-            },
-            {
-              match: {
-                url: `${apiUrl}*`
-              }
-            }
-          ]
-        );
+            ]
+          );
 
-        //console.log('Calls per sec:', usageSec.body.hits.total.value);
+          //console.log('Calls per sec:', usageSec.body.hits.total.value);
+        }
+        
+        if (tier.day !== 0) {
 
-        usageDay = await getCallsUsage(
-          'glider-events',
-          [
-            {
-              range: {
-                time: {
-                  gte: 'now/d',
-                  lte: 'now+1d/d'
+          usageDay = await getCallsUsage(
+            'glider-events',
+            [
+              {
+                range: {
+                  time: {
+                    gte: 'now/d',
+                    lte: 'now+1d/d'
+                  }
+                }
+              },
+              {
+                match: {
+                  orgid: orgId
+                }
+              },
+              {
+                match: {
+                  url: `${apiUrl}*`
                 }
               }
-            },
-            {
-              match: {
-                orgid: orgId
-              }
-            },
-            {
-              match: {
-                url: `${apiUrl}*`
-              }
-            }
-          ]
-        );
+            ]
+          );
 
-        //console.log('Calls per day:', usageDay.body.hits.total.value);
+          //console.log('Calls per day:', usageDay.body.hits.total.value);
+        }
+        
       } catch (e) {
         // Possible elasticsearch API errors should not break normal call flow
         console.error(e);

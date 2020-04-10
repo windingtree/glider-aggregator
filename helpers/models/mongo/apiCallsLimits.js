@@ -7,17 +7,12 @@ const GliderError = require('../../error');
 // Limit Tier schema
 const LimitTierSchema = new Schema(
   {
-    type: {
-      type: String,
-      enum: ['lif'],
-      required: true
-    },
     min: {
-      type: String,
+      type: Number,
       required: true
     },
     max: {
-      type: String,
+      type: Number,
       required: true
     },
     sec: {
