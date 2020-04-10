@@ -735,9 +735,9 @@ components:
         $ref: "#/components/schemas/OrgId"
 
     ApiEndpointName:
-      description: Unique API endpoint name
+      description: Unique API endpoint
       type: string
-      example: "searchOffers"
+      example: "/api/v1/searchOffers"
 
     ApiCallsLimitTier:
       description: API calls per day limit tier
