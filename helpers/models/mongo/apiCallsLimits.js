@@ -68,7 +68,7 @@ class LimitsManager {
   }
 
   // Get the limit
-  async get (api) {
+  async get (api, silent = false) {
     let record;
 
     try {
@@ -85,11 +85,13 @@ class LimitsManager {
       );
     }
 
-    if (!record) {
+    if (!record && !silent) {
       throw new GliderError(
         'Limit not found',
         404
       );
+    } else if (!record) {
+      record = null;
     }
 
     return record;
