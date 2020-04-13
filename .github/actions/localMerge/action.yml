@@ -1,0 +1,11 @@
+name: Local merge
+description: Create localy merged branch
+
+inputs:
+  GITHUB_TOKEN:
+    description: GitHub API token
+    required: true
+
+runs:
+  using: 'node12'
+  main: 'index.js'

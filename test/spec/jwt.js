@@ -103,7 +103,7 @@ describe('JWT', () => {
       );
       await assertFailure(
         verifyJWT('Bearer', token),
-        'JWT not meant for Glider',
+        'JWT recipient is not Glider',
         403
       );
     });
@@ -122,7 +122,7 @@ describe('JWT', () => {
     it('should fail if signature not valid', async () => {
       await assertFailure(
         verifyJWT('Bearer', secp256k1Jwt + 'wrong=='),
-        'JWT invalid signature',
+        'JWT signature verification failed',
         403
       );
     });

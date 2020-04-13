@@ -1,0 +1,11 @@
+name: Merge PR
+description: Merge PR into target branch
+
+inputs:
+  GITHUB_TOKEN:
+    description: GitHub API token
+    required: true
+
+runs:
+  using: 'node12'
+  main: 'index.js'

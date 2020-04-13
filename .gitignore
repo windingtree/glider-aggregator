@@ -105,4 +105,5 @@ dist
 .tern-port
 
 .now
-package-lock.json
+
+temp

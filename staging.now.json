@@ -1,5 +1,9 @@
 {
+  "name": "staging-aggregator",
   "version": 2,
+  "alias": [
+    "staging.aggregator.windingtree.net"
+  ],
   "builds": [
     {
       "src": "api/docs/index.js",

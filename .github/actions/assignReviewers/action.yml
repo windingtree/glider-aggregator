@@ -1,0 +1,14 @@
+name: Assign Reviewers to the PR
+description: Deploying of the current commit to the Zeit
+
+inputs:
+  GITHUB_TOKEN:
+    description: GitHub API token
+    required: true
+  PULL_REVIEWERS: 
+    description: List of reviewers
+    required: true
+
+runs:
+  using: 'node12'
+  main: 'index.js'

@@ -1,0 +1,24 @@
+name: Deploy PR to Zeit
+description: Deploying of the current commit to the Zeit
+
+inputs:
+  NOW_TOKEN: 
+    description: Zeit token
+    required: true
+  NOW_PROJECT_ID: 
+    description: Zeit Project Id
+    required: true
+  NOW_ORG_ID:
+    description: Zeit Organization Id
+    required: true
+  GITHUB_TOKEN:
+    description: GitHub API token
+    required: true
+  NOW_ARGS:
+    description: Additional now command arguments
+    required: false
+    default: ''
+
+runs:
+  using: 'node12'
+  main: 'index.js'

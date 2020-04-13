@@ -1,0 +1,17 @@
+name: Now Dev
+description: Run now dev server
+
+inputs:
+  NOW_TOKEN: 
+    description: Zeit token
+    required: true
+  NOW_PROJECT_ID: 
+    description: Zeit Project Id
+    required: true
+  NOW_ORG_ID:
+    description: Zeit Organization Id
+    required: true
+
+runs:
+  using: 'node12'
+  main: 'index.js'

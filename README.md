@@ -29,6 +29,7 @@ ELASTIC_URL = http://localhost:9200
 
 ```bash
 npm test
+npm run test:newman
 ```
 
 ## Run locally
@@ -37,3 +38,6 @@ npm test
 $ npm run dev
 ```
 
+## CI/CD
+
+Documentation for continuous integration and delivery framework is available by [the link](./docs/cicd.md).

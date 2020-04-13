@@ -1,0 +1,40 @@
+name: Pull Request Reviews Handling
+
+on: 
+  pull_request_review:
+    types: 
+      - submitted
+      - dismissed
+
+jobs:
+  check_reviews:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Check PR Reviews Approvals
+        uses: ./.github/actions/checkApprovals
+        with: 
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_EXT }}
+
+      - name: Local merge
+        uses: ./.github/actions/localMerge
+
+      - name: Deploy localy merged branch
+        uses: ./.github/actions/deployNow
+        with:
+          NOW_TOKEN: ${{ secrets.NOW_TOKEN }}
+          NOW_PROJECT_ID: ${{ secrets.NOW_PROJECT_ID }}
+          NOW_ORG_ID: ${{ secrets.NOW_ORG_ID }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_EXT }}
+
+      - name: Run test suite
+        run: npm run test:newman
+
+      - name: Run PR merge
+        uses: ./.github/actions/prMerge
+        with: 
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_EXT }}
