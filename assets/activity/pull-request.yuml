@@ -1,0 +1,29 @@
+// {type:activity}
+// {generate:true}
+
+(note: Pull request\nactivity {bg:beige})
+
+(start)->(Pull request event)
+(Pull request event)-(note: Branches:\n- develop\n- master)
+(Pull request event)->(Checkout)->(Install\ndependencies)
+(Install\ndependencies)->(Deploy PR code\nto the dedicated\nZeit project)
+(Deploy PR code\nto the dedicated\nZeit project)-(note: Configured with:\n- API token\n- TeamId\n- ProjectId)
+(Deploy PR code\nto the dedicated\nZeit project)-(note: Maybe this action\nwill require\ndedicated DB\nand DB migration\nHow to solve this?)
+(Deploy PR code\nto the dedicated\nZeit project)-><a>
+<a>[Deployment\nfailed]->(Failed action)
+<a>[Deployment\nsucceeded]->(Write a comment\nabout the deployment)
+(Write a comment\nabout the deployment)-(note: Configured with\nGithub API token)
+(Write a comment\nabout the deployment)->(Run integration tests)-><b>
+(Run integration tests)-(note: Tests are running\nagainst\nthe deployed\ninstance)
+<b>[Integration tests\nfailed]->(Failed action)
+<b>[Integration tests\nsucceeded]->(Create review requests)
+(Create review requests)-(note: Configured with\n- Github API token\n- reviewers list)
+(Create review requests)-><c>
+<c>[Review request\ncreation\nfailed]->(Failed action)
+<c>[Review request\ncreation\nsucceeded]->(Normal action exit)
+
+(Normal action exit)-(note: Review request\nGitHub notifications\nare sent to reviewers)
+(Normal action exit)-(note: Success\nGitHub\nnotification)
+(Normal action exit)->(end)
+(Failed action)-(note: Failure\nGitHub\nnotification)
+(Failed action)->(end)
