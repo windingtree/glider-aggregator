@@ -11,7 +11,7 @@ module.exports.assertFailure = async (promise, reason = false, code = null) => {
     await promise;
     assert.fail('The assertion is fulfilled although failure was expected');
   } catch (error) {
-
+    
     if (reason) {
       const reasonFoundByString = error.message
         .toLowerCase().search(reason.toLowerCase()) >= 0;
@@ -24,7 +24,7 @@ module.exports.assertFailure = async (promise, reason = false, code = null) => {
 
     if (code) {
       assert(
-        error.code === code,
+        error.status === code,
         `Expected error code equal ${code}, got ${error.code}`
       );
     }

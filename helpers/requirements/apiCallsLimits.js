@@ -4,6 +4,7 @@ const { manager: orgIdListsManager } = require('../models/mongo/orgIdLists');
 const { manager: apiCallsLimitsManager } = require('../models/mongo/apiCallsLimits');
 const { es } = require('../elasticsearch');
 
+// Send calls usage request to the elasticsearch
 const getCallsUsage = (index, queries = []) => es.search(
   {
     index,
@@ -21,6 +22,22 @@ const getCallsUsage = (index, queries = []) => es.search(
     ignore: [404]
   }
 );
+
+// Select proper tier according to the given LIF token deposit rate
+const selectTierByDepositRate = (tiers, deposit) => {
+  const selectedTiers = tiers.filter(t => (
+    t.min <= deposit &&
+      (
+        (t.min !== 0 && t.max === 0) ||
+        deposit <= t.max
+      )
+  ));
+
+  return Array.isArray(selectedTiers) && selectedTiers.length === 1
+    ? selectedTiers[0]
+    : undefined;
+};
+module.exports.selectTierByDepositRate = selectTierByDepositRate;
 
 module.exports.checkCallsTrustRequirements = async (apiUrl, orgId, lifDeposit) => {
   lifDeposit = Number(web3.utils.fromWei(
@@ -52,20 +69,14 @@ module.exports.checkCallsTrustRequirements = async (apiUrl, orgId, lifDeposit) =
       apiUrl.split('?')[0],
       true
     );
-    let selectedLimit;
+    
+    let tier;
 
     if (limits) {
-      selectedLimit = limits.tiers.filter(t => (
-        t.min <= lifDeposit &&
-        (
-          (t.min !== 0 && t.max === 0) ||
-          lifDeposit <= t.max
-        )
-      ));
+      tier = selectTierByDepositRate(limits.tiers, lifDeposit);
     }
 
-    if (Array.isArray(selectedLimit) && selectedLimit.length !== 0) {
-      const tier = selectedLimit[0];
+    if (tier) {
       let usageSec;
       let usageDay;
 
