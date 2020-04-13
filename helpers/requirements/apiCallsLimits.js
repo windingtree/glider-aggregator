@@ -43,7 +43,7 @@ module.exports.checkCallsTrustRequirements = async (apiUrl, orgId, lifDeposit) =
 
   // Check is organization is in the white list
   const isWhitelisted = await orgIdListsManager.includes(
-    'black',
+    'white',
     orgId
   );
 
