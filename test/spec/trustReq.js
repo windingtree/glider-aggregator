@@ -1,6 +1,5 @@
 require('chai').should();
-const { assertFailure } = require('../helpers/assertions');
-const { selectTierByDepositRate } = require('../../helpers/requirements/apiCallsLimits');
+const { selectTierByDepositRate } = require('../../helpers/requirements/apiCallsLimitsHelpers');
 
 describe('Trust Requirements', () => {
   const tiers = [
