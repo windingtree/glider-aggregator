@@ -33,7 +33,36 @@ const airFranceConfig = {
 };
 
 const airCanadaConfig = {
-  apiKey: process.env.AC_API_KEY
+  apiKey: process.env.AC_API_KEY,
+  AirlineID: process.env.AC_PARTICIPANT_RECIPENT_AIRLINE_ID,
+  PointOfSale: {
+    TouchPoint: {
+      Device: {
+        Code: process.env.AC_POINT_OF_SALE_DEVICE_CODE,
+        TableName: {}
+      }
+    }
+  },
+  Document: {
+    '@id': process.env.AC_DOCUMENT_ID,
+    Name: process.env.AC_DOCUMENT_NAME,
+    ReferenceVersion: process.env.AC_DOCUMENT_REFERENCE_VERSION
+  },
+  Party: {
+    Participants: {
+      Participant: {
+        EnabledSystemParticipant: {
+          '@SequenceNumber': process.env.AC_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SEQUENCE_NUMBER,
+          Name: process.env.AC_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_NAME,
+          Category: process.env.AC_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_CATEGORY,
+          SystemID: {
+            '@Owner': process.env.AC_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SYSTEM_ID_OWNER,
+            '@value': process.env.AC_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SYSTEM_ID
+          }
+        }
+      }
+    }
+  }
 };
 
 const erevmax = {

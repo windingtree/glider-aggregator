@@ -1,7 +1,13 @@
 const { transform } = require('camaro');
 const axios = require('axios');
-const { mapNdcRequestData } = require('../transformInputData/searchOffers');
-const { provideAirShoppingRequestTemplate } = require('../soapTemplates/searchOffers');
+const {
+  mapNdcRequestData_AF,
+  mapNdcRequestData_AC
+} = require('../transformInputData/searchOffers');
+const {
+  provideShoppingRequestTemplate_AF,
+  provideShoppingRequestTemplate_AC
+} = require('../soapTemplates/searchOffers');
 const {
   provideAirShoppingTransformTemplate,
   ErrorsTransformTemplate
@@ -21,202 +27,31 @@ const {
 
 const GliderError = require('../error');
 const offer = require('../models/offer');
+const { selectProvider } = require('./utils/flightUtils');
 
-const selectResolver = (origin, destination) => {
-  const sdMapping = [
-    {
-      air: 'ac',
-      origin: ['YQQ'],
-      destination: ['YXU'],
-      area: 'CA'
-    },
-    {
-      air: 'ac',
-      origin: ['YTO'],
-      destination: ['YVR'],
-      area: 'CA'
-    },
-    {
-      air: 'ac',
-      origin: ['YMM'],
-      destination: ['YXU', 'YYT'],
-      area: 'CA'
-    },
-    {
-      air: 'ac',
-      origin: ['YHZ'],
-      destination: ['YQR', 'YYJ'],
-      area: 'CA'
-    },
-    {
-      air: 'ac',
-      origin: ['YEA'],
-      destination: ['YXE', 'YYC', 'YZR'],
-      area: 'CA'
-    },
-    {
-      air: 'ac',
-      origin: ['YYC'],
-      destination: ['YVR', 'YWG', 'YYT', 'YTO'],
-      area: 'CA'
-    },
-    {
-      air: 'ac',
-      origin: ['YMQ'],
-      destination: ['YVR', 'YWG', 'YYT', 'YTO'],
-      area: 'CA'
-    },
-    {
-      air: 'ac',
-      origin: ['YOB'],
-      destination: ['LAS'],
-      area: 'US'
-    },
-    {
-      air: 'ac',
-      origin: ['YWG'],
-      destination: ['DEN', 'STL'],
-      area: 'US'
-    },
-    {
-      air: 'ac',
-      origin: ['YVR'],
-      destination: ['CHI', 'LAS', 'LAX'],
-      area: 'US'
-    },
-    {
-      air: 'ac',
-      origin: ['YTO'],
-      destination: ['CHI', 'DFW', 'FLL', 'LAX'],
-      area: 'US'
-    },
-    {
-      air: 'ac',
-      origin: ['YMQ'],
-      destination: ['BOS', 'CHI', 'DEN', 'LAS', 'LAX', 'SFO'],
-      area: 'US'
-    },
-    {
-      air: 'ac',
-      origin: ['YVR'],
-      destination: ['SIN'],
-      area: 'PA'
-    },
-    {
-      air: 'ac',
-      origin: ['YVR'],
-      destination: ['BKK'],
-      area: 'PA'
-    },
-    {
-      air: 'ac',
-      origin: ['YVR'],
-      destination: ['SYD'],
-      area: 'PA'
-    },
-    {
-      air: 'ac',
-      origin: ['YVR'],
-      destination: ['TYO'],
-      area: 'PA'
-    },
-    {
-      air: 'ac',
-      origin: ['YWG', 'YTO'],
-      destination: ['LON'],
-      area: 'AT'
-    },
-    {
-      air: 'ac',
-      origin: ['YWG', 'YTO'],
-      destination: ['PAR'],
-      area: 'AT'
-    },
-    {
-      air: 'ac',
-      origin: ['YWG', 'YTO'],
-      destination: ['FRA'],
-      area: 'AT'
-    },
-    {
-      air: 'ac',
-      origin: ['YWG', 'YTO'],
-      destination: ['FCO'],
-      area: 'AT'
-    },
-    {
-      air: 'ac',
-      origin: ['YWG', 'YTO'],
-      destination: ['MUC'],
-      area: 'AT'
-    },
-    {
-      air: 'ac',
-      origin: ['YTO'],
-      destination: ['BGI'],
-      area: 'WH'
-    },
-    {
-      air: 'ac',
-      origin: ['YTO'],
-      destination: ['CUN'],
-      area: 'WH'
-    },
-    {
-      air: 'ac',
-      origin: ['YTO'],
-      destination: ['POS'],
-      area: 'WH'
-    },
-    {
-      air: 'ac',
-      origin: ['YTO'],
-      destination: ['SKB'],
-      area: 'WH'
-    },
-    {
-      air: 'ac',
-      origin: ['YTO'],
-      destination: ['SVD'],
-      area: 'WH'
-    },
-    {
-      air: 'ac',
-      origin: ['YTO'],
-      destination: ['PTY'],
-      area: 'WH'
-    }
-  ];
-
-  const filteredMapping = sdMapping.filter();
-};
-
-const searchFlight = async (body) => {
-  const ndcRequestData = mapNdcRequestData(body);
-  const ndcBody = provideAirShoppingRequestTemplate(ndcRequestData);
-
+// Make a call of the provider API
+// @todo Add connection and response timeouts handling
+const callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOAPAction) => {
   const response = await axios.post(
-    'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001448v01/EXT',
+    apiEndpoint,
     ndcBody,
     {
       headers: {
         'Content-Type': 'text/xml;charset=UTF-8',
         'Accept-Encoding': 'gzip,deflate',
-        SOAPAction: '"http://www.af-klm.com/services/passenger/ProvideAirShopping/provideAirShopping"',
-        'api_key': airFranceConfig.apiKey,
+        'api_key': apiKey,
+        ...(SOAPAction ? { SOAPAction } : {})
       },
     }
-  );
+  )
 
-  const { errors } = await transform(response.data, ErrorsTransformTemplate);
-  
-  if (errors.length) {
-    throw new GliderError(
-      errors.map(e => e.message).join('; '),
-      502
-    );
-  };
+  return {
+    provider,
+    response
+  }
+};
 
+const transformResponse = async ({provider, response}) => {
   const searchResults = await transform(
     response.data,
     provideAirShoppingTransformTemplate
@@ -283,8 +118,8 @@ const searchFlight = async (body) => {
   var indexedOffers = {};
   for (let offerId in searchResults.offers) {
     indexedOffers[offerId] = new offer.FlightOffer(
-      'AF',
-      'AF',
+      provider,
+      provider,
       searchResults.offers[offerId].expiration,
       searchResults.offers[offerId].offerItems,
       searchResults.offers[offerId].price.public,
@@ -296,6 +131,119 @@ const searchFlight = async (body) => {
 
   delete searchResults.checkedBaggages;
   return searchResults;
+};
+
+const searchFlight = async (body) => {
+
+  // Fetching of the flight providers
+  // associated with the given origin and destination
+  const providers = selectProvider(
+    body.itinerary.segments[0].origin.iataCode,
+    body.itinerary.segments[0].destination.iataCode
+  );
+
+  if (providers.length === 0) {
+    throw new GliderError(
+      'Flight providers not found for the given origin and destination',
+      404
+    );
+  };
+
+  // Request all providers
+  const responses = await Promise.all(providers.map(provider => {
+    let ndcRequestData;
+    let providerUrl;
+    let apiKey;
+    let SOAPAction;
+    let ndcBody;
+
+    switch (provider) {
+      case 'AF':
+        ndcRequestData = mapNdcRequestData_AF(airFranceConfig, body);
+        providerUrl = 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001448v01/EXT';
+        apiKey = airFranceConfig.apiKey;
+        SOAPAction = '"http://www.af-klm.com/services/passenger/ProvideAirShopping/provideAirShopping"';
+        ndcBody = provideShoppingRequestTemplate_AF(ndcRequestData);
+        break;
+      case 'AC':
+        ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, body);
+        providerUrl = 'https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/AirShopping';
+        apiKey = airCanadaConfig.apiKey;
+        ndcBody = provideShoppingRequestTemplate_AC(ndcRequestData);
+        break;
+      default:
+        Promise.reject('Unsupported flight operator');
+    }
+
+    console.log(ndcBody);
+
+    return callProvider(provider, providerUrl, apiKey, ndcBody, SOAPAction);
+  }));
+
+  // Check responses for errors
+  const responseErrors = await Promise.all(
+    responses
+      .map(async (r) => {
+
+        if (r.response instanceof Error) {
+
+          // Request error
+          return {
+            provider: r.provider,
+            error: r.message
+          };
+        }
+
+        try {
+          const { errors } = await transform(r.response.data, ErrorsTransformTemplate);
+
+          if (errors.length) {
+
+            // Response errors
+            return {
+              provider: r.provider,
+              error: errors.map(e => e.message).join('; ')
+            };
+          } else {
+            return null;
+          }
+        } catch (e) {
+
+          // Transformation error
+          return {
+            provider: r.provider,
+            error: e.message
+          };
+        }
+      })
+  )
+    .filter(e => e !== null);
+  
+  let searchResult = {};
+
+  if (responseErrors.length === providers.length) {
+    // If all providers returned errors
+    // then send error with API response
+    throw new GliderError(
+      responseErrors.map(e => `Provider "${e.provider}": ${e.error}`).join('; '),
+      502
+    );
+  } else if (responseErrors.length > 0) {
+    // If at least one provider returned offers
+    // then pul all errors to the warnings section
+    searchResult.warnings = responseErrors;
+  }
+
+  const transformedResponses = await Promise.all(
+    responses
+      .filter(r => !r.error)// Exclude errors
+      .map(
+        r => transformResponse(r)
+      )
+  );
+
+  console.log('Responses:', JSON.stringify(transformedResponses, null, 2));
+  
 };
 
 module.exports = {

@@ -1,31 +1,87 @@
 // For documentation, https://github.com/windingtree/simard-schemas/blob/master/ndc/data-mapping.mds
 
-// The Passenger object
-const mapPassengers = (passengers) => passengers.reduce((list, {Passenger}) => {
-  return `${list} 
-  <edis:Passenger>
-    <edis:PTC>${Passenger.PTC}</edis:PTC>
-  </edis:Passenger>
-`}, '')
+// Convert the given formatted object to the XML form
+const convertObjectToXML = data => Object.entries(data).map(p => {
+  const props = [];
+  let value;
 
+  // Assign value defined as property to the tag
+  if (p[0] === '@value') {
+    return p[1];
+  }
+
+  if (Array.isArray(p[1])) {
+    // Converting the array
+    const values = p[1].map(
+      a => typeof a === 'string'
+        ? a
+        : convertObjectToXML(a).join('\n')
+    );
+    value = values.join('\n');
+  } else if (typeof p[1] === 'object') {
+    let propValue;
+    const nextLevel = Object.entries(p[1]);
+
+    // Looking for tag properties on the next level
+    nextLevel.forEach(v => {
+      if (v[0].match(/^@{1}/) && !v[0].match(/^@value/)) {
+        props.push(`${v[0].split('@')[1]}="${v[1]}"`);
+        delete p[1][v[0]];// remove the property from the next level
+      }
+      if (v[0].match(/^@value/)) {
+        propValue = true;
+      }
+    });
+
+    // Converting the next level
+    value = propValue
+      ? convertObjectToXML(p[1]).join('\n')
+      : '\n' + convertObjectToXML(p[1]).join('\n') + '\n';
+  } else {
+    value = p[1];
+  }
+
+  // Create tag with propeties
+  const tag = `${p[0]}${props.length > 0 ? ' ' + props.join(' ') : ''}`;
+
+  return value.trim()
+    ? `<${tag}>${value}</${p[0]}>`
+    : `<${tag} />`;
+});
+
+// The Passenger object
+const mapPassengers = (passengers) => passengers.reduce(
+  (list, { Passenger }) => {
+    return `${list} 
+    <edis:Passenger>
+      <edis:PTC>${Passenger.PTC}</edis:PTC>
+    </edis:Passenger>
+    `;
+  },
+  ''
+);
 
 // The OriginDestination object
-const mapOriginDestinations = (OriginDestinations) => OriginDestinations.reduce((list, {OriginDestination}) => {
-  return `${list} 
-  <edis:OriginDestination>
-    <edis:Departure>
-        <edis:AirportCode>${OriginDestination.Departure.AirportCode}</edis:AirportCode>
-        <edis:Date>${OriginDestination.Departure.Date}</edis:Date>
-        <edis:Time>${OriginDestination.Departure.Time}</edis:Time>
-    </edis:Departure>
-    <edis:Arrival>
-        <edis:AirportCode>${OriginDestination.Arrival.AirportCode}</edis:AirportCode>
-    </edis:Arrival>
-  </edis:OriginDestination>
-`}, '')
+const mapOriginDestinations = (OriginDestinations) => OriginDestinations.reduce(
+  (list, { OriginDestination }) => {
+    return `${list} 
+    <edis:OriginDestination>
+      <edis:Departure>
+          <edis:AirportCode>${OriginDestination.Departure.AirportCode}</edis:AirportCode>
+          <edis:Date>${OriginDestination.Departure.Date}</edis:Date>
+          <edis:Time>${OriginDestination.Departure.Time}</edis:Time>
+      </edis:Departure>
+      <edis:Arrival>
+          <edis:AirportCode>${OriginDestination.Arrival.AirportCode}</edis:AirportCode>
+      </edis:Arrival>
+    </edis:OriginDestination>
+    `;
+  },
+  ''
+);
 
-// The Main request
-const provideAirShoppingRequestTemplate = (data) => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:edis="http://www.iata.org/IATA/EDIST/2017.1">
+// The AirFrance request template
+const provideShoppingRequestTemplate_AF = data => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:edis="http://www.iata.org/IATA/EDIST/2017.1">
   <soapenv:Header>
     <trackingMessageHeader xmlns="http://www.af-klm.com/soa/xsd/MessageHeader-V1_0">
         <consumerRef>
@@ -94,7 +150,36 @@ const provideAirShoppingRequestTemplate = (data) => `<soapenv:Envelope xmlns:soa
     </edis:AirShoppingRQ>
   </soapenv:Body>
 </soapenv:Envelope>`;
+module.exports.provideShoppingRequestTemplate_AF = provideShoppingRequestTemplate_AF;
 
-module.exports = {
-  provideAirShoppingRequestTemplate,
-};
+const provideShoppingRequestTemplate_AC = data => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v2="http://sita.aero/NDC/NDCUtility/v2">
+<soapenv:Header/>
+<soapenv:Body>
+  <v2:NDCMSG_Envelope>
+      <NDCMSG_Header>
+          <Function>AirShoppingRQ</Function>
+          <SchemaType>NDC</SchemaType>
+          <SchemaVersion>YY.2017.2</SchemaVersion>
+          <RichMedia>true</RichMedia>
+          <Sender>
+            <Address>
+                <Company>WindingTree</Company>
+                <NDCSystemId>DEV</NDCSystemId>
+            </Address>
+          </Sender>
+          <Recipient>
+            <Address>
+              <Company>AC</Company>
+              <NDCSystemId>DEV</NDCSystemId>
+            </Address>
+          </Recipient>
+      </NDCMSG_Header>
+      <NDCMSG_Body>
+          <NDCMSG_Payload>
+            ${convertObjectToXML(data)}
+          </NDCMSG_Payload>
+      </NDCMSG_Body>
+  </v2:NDCMSG_Envelope>
+</soapenv:Body>
+</soapenv:Envelope>`;
+module.exports.provideShoppingRequestTemplate_AC = provideShoppingRequestTemplate_AC;
