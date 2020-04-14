@@ -32,12 +32,17 @@ const airFranceConfig = {
   },
 };
 
+const airCanadaConfig = {
+  apiKey: process.env.AC_API_KEY
+};
+
 const erevmax = {
   availabilityUrl: process.env.EREVMAX_AVAILABILITY_URL,
   reservationUrl: process.env.EREVMAX_RESERVATION_URL,
 };
 
 module.exports.airFranceConfig = airFranceConfig;
+module.exports.airCanadaConfig = airCanadaConfig;
 module.exports.JWT = process.env.JWT;
 module.exports.redisUrl = process.env.REDIS_URL;
 module.exports.mongoUrl = process.env.MONGO_URL;

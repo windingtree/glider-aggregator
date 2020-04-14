@@ -9,17 +9,187 @@ const {
 const {
   reduceToObjectByKey,
   roundCommissionDecimals,
-  splitSegments,
-  reduceToProperty,
   mergeHourAndDate,
   useDictionary,
   reduceObjectToProperty,
 } = require('../parsers');
 
-const { airFranceConfig } = require('../../config');
+const {
+  airFranceConfig,
+  airCanadaConfig
+} = require('../../config');
 
 const GliderError = require('../error');
 const offer = require('../models/offer');
+
+const selectResolver = (origin, destination) => {
+  const sdMapping = [
+    {
+      air: 'ac',
+      origin: ['YQQ'],
+      destination: ['YXU'],
+      area: 'CA'
+    },
+    {
+      air: 'ac',
+      origin: ['YTO'],
+      destination: ['YVR'],
+      area: 'CA'
+    },
+    {
+      air: 'ac',
+      origin: ['YMM'],
+      destination: ['YXU', 'YYT'],
+      area: 'CA'
+    },
+    {
+      air: 'ac',
+      origin: ['YHZ'],
+      destination: ['YQR', 'YYJ'],
+      area: 'CA'
+    },
+    {
+      air: 'ac',
+      origin: ['YEA'],
+      destination: ['YXE', 'YYC', 'YZR'],
+      area: 'CA'
+    },
+    {
+      air: 'ac',
+      origin: ['YYC'],
+      destination: ['YVR', 'YWG', 'YYT', 'YTO'],
+      area: 'CA'
+    },
+    {
+      air: 'ac',
+      origin: ['YMQ'],
+      destination: ['YVR', 'YWG', 'YYT', 'YTO'],
+      area: 'CA'
+    },
+    {
+      air: 'ac',
+      origin: ['YOB'],
+      destination: ['LAS'],
+      area: 'US'
+    },
+    {
+      air: 'ac',
+      origin: ['YWG'],
+      destination: ['DEN', 'STL'],
+      area: 'US'
+    },
+    {
+      air: 'ac',
+      origin: ['YVR'],
+      destination: ['CHI', 'LAS', 'LAX'],
+      area: 'US'
+    },
+    {
+      air: 'ac',
+      origin: ['YTO'],
+      destination: ['CHI', 'DFW', 'FLL', 'LAX'],
+      area: 'US'
+    },
+    {
+      air: 'ac',
+      origin: ['YMQ'],
+      destination: ['BOS', 'CHI', 'DEN', 'LAS', 'LAX', 'SFO'],
+      area: 'US'
+    },
+    {
+      air: 'ac',
+      origin: ['YVR'],
+      destination: ['SIN'],
+      area: 'PA'
+    },
+    {
+      air: 'ac',
+      origin: ['YVR'],
+      destination: ['BKK'],
+      area: 'PA'
+    },
+    {
+      air: 'ac',
+      origin: ['YVR'],
+      destination: ['SYD'],
+      area: 'PA'
+    },
+    {
+      air: 'ac',
+      origin: ['YVR'],
+      destination: ['TYO'],
+      area: 'PA'
+    },
+    {
+      air: 'ac',
+      origin: ['YWG', 'YTO'],
+      destination: ['LON'],
+      area: 'AT'
+    },
+    {
+      air: 'ac',
+      origin: ['YWG', 'YTO'],
+      destination: ['PAR'],
+      area: 'AT'
+    },
+    {
+      air: 'ac',
+      origin: ['YWG', 'YTO'],
+      destination: ['FRA'],
+      area: 'AT'
+    },
+    {
+      air: 'ac',
+      origin: ['YWG', 'YTO'],
+      destination: ['FCO'],
+      area: 'AT'
+    },
+    {
+      air: 'ac',
+      origin: ['YWG', 'YTO'],
+      destination: ['MUC'],
+      area: 'AT'
+    },
+    {
+      air: 'ac',
+      origin: ['YTO'],
+      destination: ['BGI'],
+      area: 'WH'
+    },
+    {
+      air: 'ac',
+      origin: ['YTO'],
+      destination: ['CUN'],
+      area: 'WH'
+    },
+    {
+      air: 'ac',
+      origin: ['YTO'],
+      destination: ['POS'],
+      area: 'WH'
+    },
+    {
+      air: 'ac',
+      origin: ['YTO'],
+      destination: ['SKB'],
+      area: 'WH'
+    },
+    {
+      air: 'ac',
+      origin: ['YTO'],
+      destination: ['SVD'],
+      area: 'WH'
+    },
+    {
+      air: 'ac',
+      origin: ['YTO'],
+      destination: ['PTY'],
+      area: 'WH'
+    }
+  ];
+
+  const filteredMapping = sdMapping.filter();
+};
 
 const searchFlight = async (body) => {
   const ndcRequestData = mapNdcRequestData(body);
