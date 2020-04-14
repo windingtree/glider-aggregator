@@ -20,4 +20,4 @@ else
     testDir="$@"
 fi
 
-npx mocha --exit -R spec --timeout 70000 "$testDir"
+npx mocha --exit -R spec --timeout 70000 --recursive "$testDir"
