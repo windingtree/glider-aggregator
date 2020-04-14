@@ -24,7 +24,7 @@ const run = async () => {
       'commit_message': `Pull request #${number} has been automatically merged`
     });
 
-    if (!merge || merge.data) {
+    if (!merge || !merge.data) {
       core.setFailed('Cannot get merge result data');
       return;
     }
@@ -33,7 +33,8 @@ const run = async () => {
       core.info(merge.data.message);
     } else {
       await github.issues.createComment({
-        ...context.repo,
+        owner,
+        repo,
         'issue_number': context.issue.number,
         body: `Automatic merge of the PR is failed\n${merge.data.message}\n[${merge.data.documentation_url}](${merge.data.documentation_url})`
       });

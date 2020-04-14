@@ -79,7 +79,7 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
       }
     );
   }
-  
+
   // Organization should not be disabled
   if (!didResult.organization.state) {
     throw new GliderError(

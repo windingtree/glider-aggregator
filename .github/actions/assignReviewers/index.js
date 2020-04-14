@@ -7,6 +7,8 @@ const { repo: { owner, repo } } = context;
 // Pull request number
 const number = context.payload.pull_request.number;
 
+core.debug(`PR number: ${number}`);
+
 // Action info
 const githubToken = core.getInput('GITHUB_TOKEN', { required: true });
 const pullReviewers = core.getInput('PULL_REVIEWERS', { required: true });

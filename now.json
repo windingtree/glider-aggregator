@@ -2,8 +2,12 @@
     "version": 2,
     "builds": [
         {
-            "src": "api/docs/index.js",
-            "use": "@now/node"
+            "src": "api/docs/index.html",
+            "use": "@now/static"
+        },
+        {
+            "src": "admin/docs/index.html",
+            "use": "@now/static"
         },
         {
             "src": "api/**/*.js",
@@ -11,10 +15,6 @@
             "config": {
                 "includeFiles": "node_modules/camaro/dist/camaro.wasm"
             }
-        },
-        {
-            "src": "admin/docs/index.js",
-            "use": "@now/node"
         },
         {
             "src": "admin/**/*.js",
@@ -37,6 +37,14 @@
         {
             "source": "/api/docs/(.*)",
             "destination": "public/$1"
+        },
+        {
+            "source": "/admin/v1/config/limits/(.*)",
+            "destination": "/admin/v1/config/limits.js?apiEndpoint=$1"
+        },
+        {
+            "source": "/admin/v1/orglist/(.*)",
+            "destination": "/admin/v1/orglist/index.js?listName=$1"
         },
         {
             "source": "/admin/v1/hotels/search",

@@ -11,6 +11,37 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      # - name: Now Dev
+      #   uses: ./.github/actions/nowDev
+      #   with:
+      #     NOW_PROJECT_ID: ${{ secrets.NOW_PROJECT_ID }}
+      #     NOW_ORG_ID: ${{ secrets.NOW_ORG_ID }}
+      #   env:
+      #     NOW_TOKEN: ${{ secrets.NOW_TOKEN }}
+      #     AF_API_KEY: ${{ secrets.AF_API_KEY }}
+      #     AF_COMISSION: 0
+      #     AF_SENDER_NAME: Test
+      #     AF_SENDER_PSEUDOCITY: PARMM211L
+      #     AF_SENDER_IATA_NUMBER: 12345675
+      #     AF_SENDER_AGENCY_ID: id
+      #     AF_SENDER_AGENT_USER_ID: 1234
+      #     AF_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SEQUENCE_NUMBER: 12
+      #     AF_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_NAME: MASHERY
+      #     AF_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SYSTEM_ID: MAS
+      #     AF_PARTICIPANT_RECIPENT_AIRLINE_ID: AF
+      #     AF_PARTICIPANT_RECIPENT_NAME: AIRFRANCE
+      #     REDIS_URL: ${{ secrets.REDIS_URL }}
+      #     MONGO_URL: ${{ secrets.MONGO_URL }}
+      #     ELASTIC_URL: ${{ secrets.ELASTIC_SEARCH_URL }}
+      #     EREVMAX_RESERVATION_URL: https://ota-simulator.now.sh/api?ota=getOTAHotelReservation
+      #     EREVMAX_AVAILABILITY_URL: https://ota-simulator.now.sh/api?ota=getOTAHotelAvailability
+      #     INFURA_ENDPOINT: https://ropsten.infura.io/v3
+      #     INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      #     GLIDER_ORGID: '0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0'
+      #     GLIDER_ADMIN_KEY: secondkey
+      #     LIF_MIN_DEPOSIT: 0
+      #     SIMARD_URL: https://staging.api.simard.io/api/v1
+
       - name: Deploy PR to Zeit
         uses: ./.github/actions/deployNow
         with:
@@ -26,4 +57,4 @@ jobs:
         uses: ./.github/actions/assignReviewers
         with: 
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_EXT }}
-          PULL_REVIEWERS: winkostysh
+          PULL_REVIEWERS: mtahon
