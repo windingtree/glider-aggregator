@@ -15,9 +15,9 @@ const convertObjectToXML = data => Object.entries(data).map(p => {
     const values = p[1].map(
       a => typeof a === 'string'
         ? a
-        : convertObjectToXML(a).join('\n')
+        : convertObjectToXML(a).join('')
     );
-    value = values.join('\n');
+    value = values.join('');
   } else if (typeof p[1] === 'object') {
     let propValue;
     const nextLevel = Object.entries(p[1]);
@@ -35,8 +35,8 @@ const convertObjectToXML = data => Object.entries(data).map(p => {
 
     // Converting the next level
     value = propValue
-      ? convertObjectToXML(p[1]).join('\n')
-      : '\n' + convertObjectToXML(p[1]).join('\n') + '\n';
+      ? convertObjectToXML(p[1]).join('')
+      : convertObjectToXML(p[1]).join('');
   } else {
     value = p[1];
   }
@@ -176,7 +176,9 @@ const provideShoppingRequestTemplate_AC = data => `<soapenv:Envelope xmlns:soape
       </NDCMSG_Header>
       <NDCMSG_Body>
           <NDCMSG_Payload>
-            ${convertObjectToXML(data)}
+            <AirShoppingRQ Version="2017.2" xmlns="http://www.iata.org/IATA/EDIST/2017.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              ${convertObjectToXML(data).join('')}
+            </AirShoppingRQ>
           </NDCMSG_Payload>
       </NDCMSG_Body>
   </v2:NDCMSG_Envelope>

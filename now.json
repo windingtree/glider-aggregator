@@ -104,6 +104,7 @@
         "AF_PARTICIPANT_RECIPENT_NAME": "@af_participant_recipent_name",
         
         "AC_API_KEY": "@ac_api_key",
+        "AC_COMISSION": "@ac_comission",
         "AC_PARTICIPANT_RECIPENT_AIRLINE_ID": "@ac_participant_recipent_airline_id",
         "AC_POINT_OF_SALE_DEVICE_CODE": "@ac_participant_recipent_name",
         "AC_DOCUMENT_ID": "@ac_document_id",

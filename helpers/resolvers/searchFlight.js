@@ -9,7 +9,8 @@ const {
   provideShoppingRequestTemplate_AC
 } = require('../soapTemplates/searchOffers');
 const {
-  provideAirShoppingTransformTemplate,
+  provideAirShoppingTransformTemplate_AF,
+  provideAirShoppingTransformTemplate_AC,
   ErrorsTransformTemplate
 } = require('../camaroTemplates/provideAirShopping');
 const {
@@ -18,6 +19,7 @@ const {
   mergeHourAndDate,
   useDictionary,
   reduceObjectToProperty,
+  deepMerge
 } = require('../parsers');
 
 const {
@@ -32,18 +34,29 @@ const { selectProvider } = require('./utils/flightUtils');
 // Make a call of the provider API
 // @todo Add connection and response timeouts handling
 const callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOAPAction) => {
-  const response = await axios.post(
-    apiEndpoint,
-    ndcBody,
-    {
-      headers: {
-        'Content-Type': 'text/xml;charset=UTF-8',
-        'Accept-Encoding': 'gzip,deflate',
-        'api_key': apiKey,
-        ...(SOAPAction ? { SOAPAction } : {})
-      },
-    }
-  )
+  let response;
+
+  try {
+    response = await axios.post(
+      apiEndpoint,
+      ndcBody,
+      {
+        headers: {
+          'Content-Type': 'application/xml;charset=UTF-8',
+          'Accept-Encoding': 'gzip,deflate',
+          'Cache-Control': 'no-cache',
+          'api_key': apiKey,
+          'X-apiKey': apiKey,
+          ...(SOAPAction ? { SOAPAction } : {})
+        },
+      }
+    );
+  } catch (error) {
+    return {
+      provider,
+      error
+    };
+  }
 
   return {
     provider,
@@ -51,10 +64,11 @@ const callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOAPAction) 
   }
 };
 
-const transformResponse = async ({provider, response}) => {
+const transformResponse = async ({provider, response}, transformTemplate) => {
+  
   const searchResults = await transform(
     response.data,
-    provideAirShoppingTransformTemplate
+    transformTemplate
   );
 
   searchResults.itineraries.segments = mergeHourAndDate(
@@ -87,36 +101,71 @@ const transformResponse = async ({provider, response}) => {
     offer.offerItems = reduceObjectToProperty(offer.offerItems, '_value_');
 
     // Add the price plan references
-    var pricePlansReferences = {};
-    for (var flightsReference of offer.flightsReferences) {
-      if (!pricePlansReferences[flightsReference.priceClassRef]) {
-        pricePlansReferences[flightsReference.priceClassRef] = {
-          'flights': [flightsReference.flightRef]
-        };
-      } else {
-        pricePlansReferences[flightsReference.priceClassRef]
-          .flights
-          .push(flightsReference.flightRef);
+    if (offer.flightsReferences) {
+      var pricePlansReferences = {};
+      for (var flightsReference of offer.flightsReferences) {
+        if (!pricePlansReferences[flightsReference.priceClassRef]) {
+          pricePlansReferences[flightsReference.priceClassRef] = {
+            'flights': [flightsReference.flightRef]
+          };
+        } else {
+          pricePlansReferences[flightsReference.priceClassRef]
+            .flights
+            .push(flightsReference.flightRef);
+        }
       }
-    }
-    offer.pricePlansReferences = pricePlansReferences;
-    delete(offer.flightsReferences);
+      offer.pricePlansReferences = pricePlansReferences;
+      delete(offer.flightsReferences);
+    } else if (offer.pricePlansReferences) {
+      
+      for (const priceRef of offer.pricePlansReferences) {
+        priceRef.flights = priceRef.flights.split(' ');
+      }
+
+      offer.pricePlansReferences = reduceToObjectByKey(offer.pricePlansReferences);
+    }    
   }
 
   searchResults.offers = roundCommissionDecimals(searchResults.offers);
   searchResults.offers = reduceToObjectByKey(searchResults.offers);
   searchResults.passengers = reduceToObjectByKey(searchResults.passengers);
-  searchResults.checkedBaggages = reduceToObjectByKey(searchResults.checkedBaggages);
-  searchResults.pricePlans = useDictionary(
-    searchResults.pricePlans,
-    searchResults.checkedBaggages,
-    'checkedBaggages'
-  );
+  
+  if (searchResults.checkedBaggages) {
+    searchResults.checkedBaggages = reduceToObjectByKey(searchResults.checkedBaggages);
+    searchResults.pricePlans = useDictionary(
+      searchResults.pricePlans,
+      searchResults.checkedBaggages,
+      'checkedBaggages'
+    );  
+  }
+
   searchResults.pricePlans = reduceToObjectByKey(searchResults.pricePlans);
+
+  for (const plan in searchResults.pricePlans) {
+
+    if (!searchResults.pricePlans[plan].checkedBaggages &&
+        searchResults.pricePlans[plan].amenities) {
+      
+      if (searchResults.pricePlans[plan].amenities.includes('Checked bags for a fee')) {
+        searchResults.pricePlans[plan].checkedBaggages = 0;
+      } else if (searchResults.pricePlans[plan].amenities.includes('1st checked bag free')) {
+        searchResults.pricePlans[plan].checkedBaggages = 1;
+      } else if (searchResults.pricePlans[plan].amenities.includes('2 checked bags free')) {
+        searchResults.pricePlans[plan].checkedBaggages = 2;
+      }
+    }
+  }
   
   // Store the offers
-  var indexedOffers = {};
+  let indexedOffers = {};
+  let expirationDate = new Date(Date.now() + 60 * 30 * 1000).toISOString();// now + 30 min
+  
   for (let offerId in searchResults.offers) {
+
+    if (searchResults.offers[offerId].expiration === '') {
+      searchResults.offers[offerId].expiration = expirationDate; 
+    }
+
     indexedOffers[offerId] = new offer.FlightOffer(
       provider,
       provider,
@@ -134,6 +183,8 @@ const transformResponse = async ({provider, response}) => {
 };
 
 const searchFlight = async (body) => {
+
+  let responseTransformTemplate;
 
   // Fetching of the flight providers
   // associated with the given origin and destination
@@ -164,33 +215,33 @@ const searchFlight = async (body) => {
         apiKey = airFranceConfig.apiKey;
         SOAPAction = '"http://www.af-klm.com/services/passenger/ProvideAirShopping/provideAirShopping"';
         ndcBody = provideShoppingRequestTemplate_AF(ndcRequestData);
+        responseTransformTemplate = provideAirShoppingTransformTemplate_AF;
         break;
       case 'AC':
         ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, body);
         providerUrl = 'https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/AirShopping';
         apiKey = airCanadaConfig.apiKey;
         ndcBody = provideShoppingRequestTemplate_AC(ndcRequestData);
+        responseTransformTemplate = provideAirShoppingTransformTemplate_AC;
         break;
       default:
         Promise.reject('Unsupported flight operator');
     }
 
-    console.log(ndcBody);
-
     return callProvider(provider, providerUrl, apiKey, ndcBody, SOAPAction);
   }));
 
   // Check responses for errors
-  const responseErrors = await Promise.all(
+  const responseErrors = (await Promise.all(
     responses
       .map(async (r) => {
 
-        if (r.response instanceof Error) {
+        if (r.error) {
 
           // Request error
           return {
             provider: r.provider,
-            error: r.message
+            error: r.error instanceof Error ? r.error.message : r.error
           };
         }
 
@@ -216,7 +267,7 @@ const searchFlight = async (body) => {
           };
         }
       })
-  )
+  ))
     .filter(e => e !== null);
   
   let searchResult = {};
@@ -238,14 +289,11 @@ const searchFlight = async (body) => {
     responses
       .filter(r => !r.error)// Exclude errors
       .map(
-        r => transformResponse(r)
+        r => transformResponse(r, responseTransformTemplate)
       )
   );
 
-  console.log('Responses:', JSON.stringify(transformedResponses, null, 2));
-  
+  return transformedResponses.reduce((a, v) => deepMerge(a, v), searchResult);
 };
 
-module.exports = {
-  searchFlight,
-};
+module.exports.searchFlight = searchFlight;

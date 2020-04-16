@@ -34,6 +34,7 @@ const airFranceConfig = {
 
 const airCanadaConfig = {
   apiKey: process.env.AC_API_KEY,
+  commission: process.env.AC_COMISSION,
   AirlineID: process.env.AC_PARTICIPANT_RECIPENT_AIRLINE_ID,
   PointOfSale: {
     TouchPoint: {

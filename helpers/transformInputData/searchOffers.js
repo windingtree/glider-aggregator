@@ -89,14 +89,14 @@ const mapNdcRequestData_AC = (config, {itinerary, passengers}) => ({
             : undefined,
         }
       }
-    })),
-    DataLists: {
-      PassengerList: expandPassengers(passengers).map(p => ({
-        Passenger: {
-          PTC: p.type,
-        }
-      }))
-    }
+    }))
+  },
+  DataLists: {
+    PassengerList: expandPassengers(passengers).map(p => ({
+      Passenger: {
+        PTC: p.type,
+      }
+    }))
   }
 });
 module.exports.mapNdcRequestData_AC = mapNdcRequestData_AC;

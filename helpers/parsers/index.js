@@ -117,6 +117,21 @@ const reduceRoomStays = (_roomStays_ => {
   return offers;
 });
 
+// Deep merge of two objects
+const deepMerge = (target, source) => {
+  
+  for (const key of Object.keys(source)) {
+    
+    if (source[key].constructor === Object && target[key]) {
+      Object.assign(source[key], deepMerge(target[key], source[key]))
+    } else {
+      target[key] = source[key];
+    }
+  }
+
+  return Object.assign(target || {}, source);
+}
+
 
 module.exports = {
   reduceToObjectByKey,
@@ -130,4 +145,5 @@ module.exports = {
   reduceObjectToProperty,
   reduceAcomodation,
   reduceRoomStays,
+  deepMerge
 };
