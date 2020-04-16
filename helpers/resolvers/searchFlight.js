@@ -32,11 +32,17 @@ const offer = require('../models/offer');
 const { selectProvider } = require('./utils/flightUtils');
 
 // Make a call of the provider API
-// @todo Add connection and response timeouts handling
 const callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOAPAction) => {
   let response;
 
   try {
+    // Request timeouts can be handled via CancelToken only
+    const timeout = 60 * 1000; // 60 sec
+    const source = axios.CancelToken.source();
+    const connectionTimeout = setTimeout(() => source.cancel(
+        `Cannot connect to the source: ${uri}`
+    ), timeout);// connection timeout
+    
     response = await axios.post(
       apiEndpoint,
       ndcBody,
@@ -49,8 +55,12 @@ const callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOAPAction) 
           'X-apiKey': apiKey,
           ...(SOAPAction ? { SOAPAction } : {})
         },
+        cancelToken: source.token, // Request timeout
+        timeout // Response timeout
       }
     );
+
+    clearTimeout(connectionTimeout);
   } catch (error) {
     return {
       provider,
