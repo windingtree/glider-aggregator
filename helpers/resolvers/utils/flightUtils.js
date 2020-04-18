@@ -6,7 +6,7 @@ module.exports.callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOA
   let response;
 
   try {
-    // Request timeouts can be handled via CancelToken only
+    // Request connection timeouts can be handled via CancelToken only
     const timeout = 60 * 1000; // 60 sec
     const source = axios.CancelToken.source();
     const connectionTimeout = setTimeout(() => source.cancel(
@@ -34,6 +34,7 @@ module.exports.callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOA
   } catch (error) {
     return {
       provider,
+      response: error.response,
       error
     };
   }

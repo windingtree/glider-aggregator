@@ -10,7 +10,8 @@ const {
 const {
   provideAirShoppingTransformTemplate_AF,
   provideAirShoppingTransformTemplate_AC,
-  ErrorsTransformTemplate
+  ErrorsTransformTemplate_AF,
+  ErrorsTransformTemplate_AC
 } = require('../camaroTemplates/provideAirShopping');
 const {
   reduceToObjectByKey,
@@ -204,6 +205,7 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
 const searchFlight = async (body) => {
 
   let responseTransformTemplate;
+  let errorsTransformTemplate;
 
   // Fetching of the flight providers
   // associated with the given origin and destination
@@ -235,6 +237,7 @@ const searchFlight = async (body) => {
         SOAPAction = '"http://www.af-klm.com/services/passenger/ProvideAirShopping/provideAirShopping"';
         ndcBody = provideShoppingRequestTemplate_AF(ndcRequestData);
         responseTransformTemplate = provideAirShoppingTransformTemplate_AF;
+        errorsTransformTemplate = ErrorsTransformTemplate_AF;
         break;
       case 'AC':
         ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, body);
@@ -242,9 +245,10 @@ const searchFlight = async (body) => {
         apiKey = airCanadaConfig.apiKey;
         ndcBody = provideShoppingRequestTemplate_AC(ndcRequestData);
         responseTransformTemplate = provideAirShoppingTransformTemplate_AC;
+        errorsTransformTemplate = ErrorsTransformTemplate_AC;
         break;
       default:
-        Promise.reject('Unsupported flight operator');
+        return Promise.reject('Unsupported flight operator');
     }
 
     return callProvider(provider, providerUrl, apiKey, ndcBody, SOAPAction);
@@ -254,8 +258,8 @@ const searchFlight = async (body) => {
   const responseErrors = (await Promise.all(
     responses
       .map(async (r) => {
-
-        if (r.error) {
+        
+        if (r.error && !r.error.isAxiosError) {
 
           // Request error
           return {
@@ -265,7 +269,7 @@ const searchFlight = async (body) => {
         }
 
         try {
-          const { errors } = await transform(r.response.data, ErrorsTransformTemplate);
+          const { errors } = await transform(r.response.data, errorsTransformTemplate);
 
           if (errors.length) {
 

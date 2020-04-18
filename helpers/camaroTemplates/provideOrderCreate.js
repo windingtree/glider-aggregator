@@ -148,15 +148,24 @@ const provideOrderCreateTransformTemplate_AC = {
   }
 };
 
-const ErrorsTransformTemplate = {
+const ErrorsTransformTemplate_AF = {
   errors: ['/S:Envelope/S:Body/ns2:OrderViewRS/ns2:Errors/ns2:Error', {
     message: '@ShortText',
     code: '@Code',
   }]
 };
 
+const ErrorsTransformTemplate_AC = {
+  errors: ['//NDCMSG_Fault', {
+    message: 'Description',
+    code: 'ErrorCode',
+    date: 'Timestamp'
+  }]
+};
+
 module.exports = {
   provideOrderCreateTransformTemplate_AF,
   provideOrderCreateTransformTemplate_AC,
-  ErrorsTransformTemplate,
+  ErrorsTransformTemplate_AF,
+  ErrorsTransformTemplate_AC
 };

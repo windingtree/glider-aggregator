@@ -197,13 +197,22 @@ const provideAirShoppingTransformTemplate_AF = {
   }]
 };
 
-const ErrorsTransformTemplate = {
+const ErrorsTransformTemplate_AF = {
   errors: ['/S:Envelope/S:Body/AirShoppingRS/Errors/Error', {
     message: '@ShortText',
     code: '@Code',
   }]
 };
 
+const ErrorsTransformTemplate_AC = {
+  errors: ['//NDCMSG_Fault', {
+    message: 'Description',
+    code: 'ErrorCode',
+    date: 'Timestamp'
+  }]
+};
+
 module.exports.provideAirShoppingTransformTemplate_AF = provideAirShoppingTransformTemplate_AF;
 module.exports.provideAirShoppingTransformTemplate_AC = provideAirShoppingTransformTemplate_AC;
-module.exports.ErrorsTransformTemplate = ErrorsTransformTemplate;
+module.exports.ErrorsTransformTemplate_AF = ErrorsTransformTemplate_AF;
+module.exports.ErrorsTransformTemplate_AC = ErrorsTransformTemplate_AC;

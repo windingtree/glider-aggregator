@@ -13,7 +13,8 @@ const {
 const {
   provideOrderCreateTransformTemplate_AF,
   provideOrderCreateTransformTemplate_AC,
-  ErrorsTransformTemplate
+  ErrorsTransformTemplate_AF,
+  ErrorsTransformTemplate_AC
 } = require('../../camaroTemplates/provideOrderCreate');
 
 const {
@@ -33,9 +34,8 @@ module.exports = async (offer, requestBody) => {
   let SOAPAction;
   let ndcBody;
   let responseTransformTemplate;
+  let errorsTransformTemplate;
 
-  console.log('Offer:', JSON.stringify(offer, null, 2));
-  
   switch (offer.provider) {
     case 'AF':
       ndcRequestData = mapNdcRequestData_AF(airFranceConfig, requestBody);
@@ -44,28 +44,30 @@ module.exports = async (offer, requestBody) => {
       SOAPAction = '"http://www.af-klm.com/services/passenger/ProvideOrderCreate/provideOrderCreate"';
       ndcBody = orderCreateRequestTemplate_AF(ndcRequestData);
       responseTransformTemplate = provideOrderCreateTransformTemplate_AF;
+      errorsTransformTemplate = ErrorsTransformTemplate_AF;
       break;
     case 'AC':
       ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offer, requestBody);
-
-      console.log('NdcData:', JSON.stringify(ndcRequestData, null, 2));
-      
       providerUrl = 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/OrderCreate';
       apiKey = airCanadaConfig.apiKey;
       ndcBody = orderCreateRequestTemplate_AC(ndcRequestData);
-
-      console.log('NdcBody:', ndcBody);
-      
       responseTransformTemplate = provideOrderCreateTransformTemplate_AC;
+      errorsTransformTemplate = ErrorsTransformTemplate_AC;
       break;
     default:
-      Promise.reject('Unsupported flight operator');
+      return Promise.reject('Unsupported flight operator');
   }
 
-  const { response, error } = await callProvider(offer.provider, providerUrl, apiKey, ndcBody, SOAPAction);
+  const { response, error } = await callProvider(
+    offer.provider,
+    providerUrl,
+    apiKey,
+    ndcBody,
+    SOAPAction
+  );
 
-  if (error) {
-    console.log(response.error);
+  if (error && !error.isAxiosError) {
+    
     throw new GliderError(
       response.error.message,
       502
@@ -73,7 +75,7 @@ module.exports = async (offer, requestBody) => {
   }
 
   // Attempt to parse as a an error
-  const { errors } = await transform(response.data, ErrorsTransformTemplate);
+  const { errors } = await transform(response.data, errorsTransformTemplate);
 
   // If an error is found, stop here
   if (errors.length) {
