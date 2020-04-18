@@ -47,7 +47,10 @@ module.exports = basicDecorator(async (req, res) => {
   const { errors } = await transform(response.data, ErrorsTransformTemplate);
 
   if (errors.length) {
-    throw new GliderError(`${errors[0].message}`, 502);
+    throw new GliderError(
+      errors.map(e => e.message).join('; '),
+      502
+    );
   }
 
   const fulfillResults = await transform(response.data, fulfillOrderTransformTemplate);

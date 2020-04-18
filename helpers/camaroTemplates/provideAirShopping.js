@@ -204,7 +204,7 @@ const ErrorsTransformTemplate_AF = {
   }]
 };
 
-const ErrorsTransformTemplate_AC = {
+const FaultsTransformTemplate_AC = {
   errors: ['//NDCMSG_Fault', {
     message: 'Description',
     code: 'ErrorCode',
@@ -212,7 +212,16 @@ const ErrorsTransformTemplate_AC = {
   }]
 };
 
+const ErrorsTransformTemplate_AC = {
+  errors: ['//Errors', {
+    message: 'Error',
+    code: 'Error/@Code',
+    type: 'Error/@Type'
+  }]
+};
+
 module.exports.provideAirShoppingTransformTemplate_AF = provideAirShoppingTransformTemplate_AF;
 module.exports.provideAirShoppingTransformTemplate_AC = provideAirShoppingTransformTemplate_AC;
 module.exports.ErrorsTransformTemplate_AF = ErrorsTransformTemplate_AF;
 module.exports.ErrorsTransformTemplate_AC = ErrorsTransformTemplate_AC;
+module.exports.FaultsTransformTemplate_AC = FaultsTransformTemplate_AC;

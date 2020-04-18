@@ -155,7 +155,7 @@ const ErrorsTransformTemplate_AF = {
   }]
 };
 
-const ErrorsTransformTemplate_AC = {
+const FaultsTransformTemplate_AC = {
   errors: ['//NDCMSG_Fault', {
     message: 'Description',
     code: 'ErrorCode',
@@ -163,9 +163,18 @@ const ErrorsTransformTemplate_AC = {
   }]
 };
 
+const ErrorsTransformTemplate_AC = {
+  errors: ['//Errors', {
+    message: 'Error',
+    code: 'Error/@Code',
+    type: 'Error/@Type'
+  }]
+};
+
 module.exports = {
   provideOrderCreateTransformTemplate_AF,
   provideOrderCreateTransformTemplate_AC,
   ErrorsTransformTemplate_AF,
-  ErrorsTransformTemplate_AC
+  ErrorsTransformTemplate_AC,
+  FaultsTransformTemplate_AC
 };

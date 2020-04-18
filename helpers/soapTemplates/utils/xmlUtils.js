@@ -48,11 +48,11 @@ const convertObjectToXML = data => Object.entries(JSON.parse(JSON.stringify(data
   let result;
 
   if (Array.isArray(p[1])) {
-    result = value;
+    result = String(value);
   } else {
-    // Create tag with propeties
+    // Create tag with properties
     const tag = `${p[0]}${props.length > 0 ? ' ' + props.join(' ') : ''}`;
-    result = (value ? value : '').trim()
+    result = String(value ? value : '').trim()
       ? `<${tag}>${value}</${p[0]}>`
       : `<${tag} />`;
   }

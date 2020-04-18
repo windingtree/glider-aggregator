@@ -11,7 +11,8 @@ const {
   provideAirShoppingTransformTemplate_AF,
   provideAirShoppingTransformTemplate_AC,
   ErrorsTransformTemplate_AF,
-  ErrorsTransformTemplate_AC
+  ErrorsTransformTemplate_AC,
+  FaultsTransformTemplate_AC
 } = require('../camaroTemplates/provideAirShopping');
 const {
   reduceToObjectByKey,
@@ -238,6 +239,7 @@ const searchFlight = async (body) => {
         ndcBody = provideShoppingRequestTemplate_AF(ndcRequestData);
         responseTransformTemplate = provideAirShoppingTransformTemplate_AF;
         errorsTransformTemplate = ErrorsTransformTemplate_AF;
+        faultsTransformTemplate = null;
         break;
       case 'AC':
         ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, body);
@@ -246,6 +248,7 @@ const searchFlight = async (body) => {
         ndcBody = provideShoppingRequestTemplate_AC(ndcRequestData);
         responseTransformTemplate = provideAirShoppingTransformTemplate_AC;
         errorsTransformTemplate = ErrorsTransformTemplate_AC;
+        faultsTransformTemplate = FaultsTransformTemplate_AC;
         break;
       default:
         return Promise.reject('Unsupported flight operator');
@@ -269,15 +272,25 @@ const searchFlight = async (body) => {
         }
 
         try {
-          const { errors } = await transform(r.response.data, errorsTransformTemplate);
+          let faultsResult;
 
-          if (errors.length) {
+          if (faultsTransformTemplate) {
+            faultsResult = await transform(r.response.data, faultsTransformTemplate);
+          }
 
-            // Response errors
-            return {
-              provider: r.provider,
-              error: errors.map(e => e.message).join('; ')
-            };
+          const errorsResult = await transform(r.response.data, errorsTransformTemplate);
+
+          // Because of two types of errors can be returned: NDCMSG_Fault and Errors
+          const combinedErrors = [
+            ...(faultsResult ? faultsResult.errors : []),
+            ...errorsResult.errors
+          ];
+
+          if (combinedErrors.length) {
+            throw new GliderError(
+              combinedErrors.map(e => e.message).join('; '),
+              502
+            );
           } else {
             return null;
           }

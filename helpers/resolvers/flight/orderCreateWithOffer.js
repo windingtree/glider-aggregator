@@ -14,7 +14,8 @@ const {
   provideOrderCreateTransformTemplate_AF,
   provideOrderCreateTransformTemplate_AC,
   ErrorsTransformTemplate_AF,
-  ErrorsTransformTemplate_AC
+  ErrorsTransformTemplate_AC,
+  FaultsTransformTemplate_AC
 } = require('../../camaroTemplates/provideOrderCreate');
 
 const {
@@ -27,7 +28,7 @@ const {
 
 const { callProvider } = require('../utils/flightUtils');
 
-module.exports = async (offer, requestBody) => {
+module.exports = async (offer, requestBody, guaranteeClaim) => {
   let ndcRequestData;
   let providerUrl;
   let apiKey;
@@ -35,6 +36,7 @@ module.exports = async (offer, requestBody) => {
   let ndcBody;
   let responseTransformTemplate;
   let errorsTransformTemplate;
+  let faultsTransformTemplate;
 
   switch (offer.provider) {
     case 'AF':
@@ -45,14 +47,16 @@ module.exports = async (offer, requestBody) => {
       ndcBody = orderCreateRequestTemplate_AF(ndcRequestData);
       responseTransformTemplate = provideOrderCreateTransformTemplate_AF;
       errorsTransformTemplate = ErrorsTransformTemplate_AF;
+      faultsTransformTemplate = null;
       break;
     case 'AC':
-      ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offer, requestBody);
+      ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offer, requestBody, guaranteeClaim);
       providerUrl = 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/OrderCreate';
       apiKey = airCanadaConfig.apiKey;
       ndcBody = orderCreateRequestTemplate_AC(ndcRequestData);
       responseTransformTemplate = provideOrderCreateTransformTemplate_AC;
       errorsTransformTemplate = ErrorsTransformTemplate_AC;
+      faultsTransformTemplate = FaultsTransformTemplate_AC;
       break;
     default:
       return Promise.reject('Unsupported flight operator');
@@ -74,13 +78,25 @@ module.exports = async (offer, requestBody) => {
     );
   }
 
+  let faultsResult;
+
+  if (faultsTransformTemplate) {
+    faultsResult = await transform(response.data, faultsTransformTemplate);
+  }
+
   // Attempt to parse as a an error
-  const { errors } = await transform(response.data, errorsTransformTemplate);
+  const errorsResult = await transform(response.data, errorsTransformTemplate);
+
+  // Because of two types of errors can be returned: NDCMSG_Fault and Errors
+  const combinedErrors = [
+    ...(faultsResult ? faultsResult.errors : []),
+    ...errorsResult.errors
+  ];
 
   // If an error is found, stop here
-  if (errors.length) {
+  if (combinedErrors.length) {
     throw new GliderError(
-      errors.map(e => e.message).join('; '),
+      combinedErrors.map(e => e.message).join('; '),
       502
     );
   }

@@ -30,14 +30,23 @@ module.exports = basicDecorator(async (req, res) => {
   let guarantee;
   let guaranteeClaim;
 
-  // Handle an Accomodation offer
-  if (storedOffer instanceof AccommodationOffer) {
-
+  if (requestBody.guaranteeId) {
     // Get the guarantee
     guarantee = await getGuarantee(requestBody.guaranteeId, storedOffer);
   
     // Claim the guarantee
     guaranteeClaim = await claimGuaranteeWithCard(requestBody.guaranteeId);
+  }
+
+  // Handle an Accomodation offer
+  if (storedOffer instanceof AccommodationOffer) {
+
+    if (!guaranteeClaim) {
+      throw new GliderError(
+        'Claimed guarantee is required',
+        400
+      );
+    }
 
     // Resolve this query for an hotel offer
     orderCreationResults = await hotelResolver(
@@ -49,7 +58,11 @@ module.exports = basicDecorator(async (req, res) => {
 
   // Handle a flight offer
   else if (storedOffer instanceof FlightOffer) {
-    orderCreationResults = await flightResolver(storedOffer, requestBody);
+    orderCreationResults = await flightResolver(
+      storedOffer,
+      requestBody,
+      guaranteeClaim
+    );
   }
 
   // Handle other types of offer

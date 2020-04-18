@@ -1,4 +1,5 @@
 const format = require('date-fns/format');
+const { getCardCode } = require('./utils/cardUtils');
 
 const mapNdcRequestData_AF = (config, { offerId, offerItems, passengers }) => ({
   ...(JSON.parse(JSON.stringify(config))),
@@ -22,7 +23,7 @@ const mapNdcRequestData_AF = (config, { offerId, offerItems, passengers }) => ({
 });
 module.exports.mapNdcRequestData_AF = mapNdcRequestData_AF;
 
-const mapNdcRequestData_AC = (config, offer, body) => ({
+const mapNdcRequestData_AC = (config, offer, body, guaranteeClaim) => ({
   ...(JSON.parse(JSON.stringify(config))),
   Query: {
     Order: {
@@ -41,7 +42,26 @@ const mapNdcRequestData_AC = (config, offer, body) => ({
       }
     },
     ...(body.guaranteeId ? {
-      Payment: {}
+      Payment: {
+        Type: 'CC',
+        Method: {
+          PaymentCard: {
+            CardType: 1,
+            CardCode: getCardCode(guaranteeClaim.card),
+            CardNumber: guaranteeClaim.card.accountNumber,
+            ...(guaranteeClaim.card.cvv ? {
+              SeriesCode: guaranteeClaim.card.cvv
+            } : {}),
+            EffectiveExpireDate: {
+              Expiration: `${guaranteeClaim.card.expiryMonth}${guaranteeClaim.card.expiryYear.substr(-2)}`
+            }
+          }
+        },
+        Amount: {
+          '@Code': offer.currency,
+          '@value': offer.amountAfterTax
+        }
+      }
     } : {}),
     DataLists: {
       PassengerList: {
