@@ -49,7 +49,7 @@ module.exports = basicDecorator(async (req, res) => {
 
   // Handle a flight offer
   else if (storedOffer instanceof FlightOffer) {
-    orderCreationResults = await flightResolver(requestBody);
+    orderCreationResults = await flightResolver(storedOffer, requestBody);
   }
 
   // Handle other types of offer

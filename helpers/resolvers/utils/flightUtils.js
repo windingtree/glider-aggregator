@@ -1,7 +1,51 @@
+const axios = require('axios');
 const caDestinations = require('./cadest.json');
 
+// Send a request to the provider
+module.exports.callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOAPAction) => {
+  let response;
+
+  try {
+    // Request timeouts can be handled via CancelToken only
+    const timeout = 60 * 1000; // 60 sec
+    const source = axios.CancelToken.source();
+    const connectionTimeout = setTimeout(() => source.cancel(
+        `Cannot connect to the source: ${uri}`
+    ), timeout);// connection timeout
+    
+    response = await axios.post(
+      apiEndpoint,
+      ndcBody,
+      {
+        headers: {
+          'Content-Type': 'application/xml;charset=UTF-8',
+          'Accept-Encoding': 'gzip,deflate',
+          'Cache-Control': 'no-cache',
+          'api_key': apiKey,
+          'X-apiKey': apiKey,
+          ...(SOAPAction ? { SOAPAction } : {})
+        },
+        cancelToken: source.token, // Request timeout
+        timeout // Response timeout
+      }
+    );
+
+    clearTimeout(connectionTimeout);
+  } catch (error) {
+    return {
+      provider,
+      error
+    };
+  }
+
+  return {
+    provider,
+    response
+  }
+};
+
 // Fetching of the flight operators associated with the given origin and destination
-const selectProvider = (origin, destination) => {
+module.exports.selectProvider = (origin, destination) => {
   origin = Array.isArray(origin) ? origin : [origin];
   destination = Array.isArray(destination) ? destination : [destination];
 
@@ -198,4 +242,3 @@ const selectProvider = (origin, destination) => {
       return a;
     }, []);
 };
-module.exports.selectProvider = selectProvider;

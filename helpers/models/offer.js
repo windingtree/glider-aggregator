@@ -65,7 +65,8 @@ class FlightOffer {
     expiration,
     offerItems,
     amountAfterTax,
-    currency
+    currency,
+    extraData
   ) {
     this.provider = provider;
     this.airlineCode = airlineCode;
@@ -73,6 +74,7 @@ class FlightOffer {
     this.offerItems = offerItems;
     this.amountAfterTax = amountAfterTax; // Mandatory for AccommodationOffer and FlightOffer
     this.currency = currency; // Mandatory for AccommodationOffer and FlightOffer
+    this.extraData = extraData;
   }
 }
 

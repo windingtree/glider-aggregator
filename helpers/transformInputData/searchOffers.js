@@ -22,7 +22,7 @@ const expandPassengers = (passengers) => {
 
 // Build request data for the request to the AirFrance provider
 const mapNdcRequestData_AF = (config, {itinerary, passengers}) => ({
-  ...config,
+  ...(JSON.parse(JSON.stringify(config))),
   PointOfSale: {
     RequestTime: (new Date(Date.now())).toISOString(),
   },
@@ -69,7 +69,7 @@ module.exports.mapNdcRequestData_AF = mapNdcRequestData_AF;
 
 // Build request data for the request to the AirCanada provider
 const mapNdcRequestData_AC = (config, {itinerary, passengers}) => ({
-  ...config,
+  ...(JSON.parse(JSON.stringify(config))),
   CoreQuery: {
     OriginDestinations: itinerary.segments.map(segment => ({
       OriginDestination: {

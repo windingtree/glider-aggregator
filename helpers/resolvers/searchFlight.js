@@ -1,5 +1,4 @@
 const { transform } = require('camaro');
-const axios = require('axios');
 const {
   mapNdcRequestData_AF,
   mapNdcRequestData_AC
@@ -29,58 +28,15 @@ const {
 
 const GliderError = require('../error');
 const offer = require('../models/offer');
-const { selectProvider } = require('./utils/flightUtils');
+const { selectProvider, callProvider } = require('./utils/flightUtils');
 
-// Make a call of the provider API
-const callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOAPAction) => {
-  let response;
-
-  try {
-    // Request timeouts can be handled via CancelToken only
-    const timeout = 60 * 1000; // 60 sec
-    const source = axios.CancelToken.source();
-    const connectionTimeout = setTimeout(() => source.cancel(
-        `Cannot connect to the source: ${uri}`
-    ), timeout);// connection timeout
-    
-    response = await axios.post(
-      apiEndpoint,
-      ndcBody,
-      {
-        headers: {
-          'Content-Type': 'application/xml;charset=UTF-8',
-          'Accept-Encoding': 'gzip,deflate',
-          'Cache-Control': 'no-cache',
-          'api_key': apiKey,
-          'X-apiKey': apiKey,
-          ...(SOAPAction ? { SOAPAction } : {})
-        },
-        cancelToken: source.token, // Request timeout
-        timeout // Response timeout
-      }
-    );
-
-    clearTimeout(connectionTimeout);
-  } catch (error) {
-    return {
-      provider,
-      error
-    };
-  }
-
-  return {
-    provider,
-    response
-  }
-};
-
-const transformResponse = async ({provider, response}, transformTemplate) => {
+const transformResponse = async ({ provider, response }, transformTemplate) => {
   
   const searchResults = await transform(
     response.data,
     transformTemplate
   );
-
+  
   searchResults.itineraries.segments = mergeHourAndDate(
     searchResults.itineraries.segments,
     'splittedDepartureDate',
@@ -133,7 +89,7 @@ const transformResponse = async ({provider, response}, transformTemplate) => {
       }
 
       offer.pricePlansReferences = reduceToObjectByKey(offer.pricePlansReferences);
-    }    
+    }
   }
 
   searchResults.offers = roundCommissionDecimals(searchResults.offers);
@@ -146,7 +102,7 @@ const transformResponse = async ({provider, response}, transformTemplate) => {
       searchResults.pricePlans,
       searchResults.checkedBaggages,
       'checkedBaggages'
-    );  
+    );
   }
 
   searchResults.pricePlans = reduceToObjectByKey(searchResults.pricePlans);
@@ -160,10 +116,16 @@ const transformResponse = async ({provider, response}, transformTemplate) => {
         searchResults.pricePlans[plan].checkedBaggages = 0;
       } else if (searchResults.pricePlans[plan].amenities.includes('1st checked bag free')) {
         searchResults.pricePlans[plan].checkedBaggages = 1;
-      } else if (searchResults.pricePlans[plan].amenities.includes('2 checked bags free')) {
+      } else if (
+        searchResults.pricePlans[plan].amenities.includes('2 checked bags free') ||
+        searchResults.pricePlans[plan].amenities.includes('2 checked bags for a fee')) {
         searchResults.pricePlans[plan].checkedBaggages = 2;
       }
     }
+  }
+
+  if (searchResults.destinations) {
+    searchResults.destinations = reduceToObjectByKey(searchResults.destinations);
   }
   
   // Store the offers
@@ -173,7 +135,52 @@ const transformResponse = async ({provider, response}, transformTemplate) => {
   for (let offerId in searchResults.offers) {
 
     if (searchResults.offers[offerId].expiration === '') {
-      searchResults.offers[offerId].expiration = expirationDate; 
+      searchResults.offers[offerId].expiration = expirationDate;
+    }
+
+    let extraData = {};
+
+    if (provider === 'AC') {
+      let segments;
+      let destinations;
+
+      // Extract proper segments associated with the offer
+      for (const pricePlanId in searchResults.offers[offerId].pricePlansReferences) {
+        const pricePlan = searchResults.offers[offerId].pricePlansReferences[pricePlanId];
+        segments = pricePlan.flights.map(f => {
+          // Get the associated combinations
+          const combinations = searchResults.itineraries.combinations[f];
+          return combinations.map(c => {
+            if (searchResults.itineraries.segments[c].Departure.Terminal.Name === '') {
+              delete searchResults.itineraries.segments[c].Departure.Terminal;
+            }
+            if (searchResults.itineraries.segments[c].Arrival.Terminal.Name === '') {
+              delete searchResults.itineraries.segments[c].Arrival.Terminal;
+            }
+            const segment = {
+              id: c,
+              ...searchResults.itineraries.segments[c]
+            };
+            delete searchResults.itineraries.segments[c].Departure;
+            delete searchResults.itineraries.segments[c].Arrival;
+            delete searchResults.itineraries.segments[c].MarketingCarrier;
+            delete searchResults.itineraries.segments[c].OperatingCarrier;
+            delete searchResults.itineraries.segments[c].Equipment;
+            delete searchResults.itineraries.segments[c].ClassOfService;
+            delete searchResults.itineraries.segments[c].FlightDetail;
+            return segment;
+          });
+        }).reduce((a, v) => ([...a, ...v]), []);
+        destinations = pricePlan.flights.map(f => ({
+          id: f,
+          ...searchResults.destinations[f]
+        }));
+      }
+
+      extraData = {
+        segments,
+        destinations
+      };
     }
 
     indexedOffers[offerId] = new offer.FlightOffer(
@@ -182,13 +189,15 @@ const transformResponse = async ({provider, response}, transformTemplate) => {
       searchResults.offers[offerId].expiration,
       searchResults.offers[offerId].offerItems,
       searchResults.offers[offerId].price.public,
-      searchResults.offers[offerId].price.currency
+      searchResults.offers[offerId].price.currency,
+      extraData
     );
   }
 
   await offer.offerManager.storeOffers(indexedOffers);
 
   delete searchResults.checkedBaggages;
+  delete searchResults.destinations;
   return searchResults;
 };
 

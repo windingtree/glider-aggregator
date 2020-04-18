@@ -1,3337 +1,2946 @@
-[
-  {
-    "offers": {
-      "HMPT4A4XW3-OfferID-1": {
-        "offerItems": {
-          "EWJEGHLP4A-OfferItemID-1": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "ZHU41CGZ6X-OfferItemID-2": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "3047.67",
-          "commission": "0.00",
-          "taxes": "52.16"
+{
+  "offers": {
+    "UC2MF8OXAE-OfferID-1": {
+      "offerItems": {
+        "C2OXCYA1VX-OfferItemID-1": {
+          "passengerReferences": "LER0A75VIY-T1"
         }
       },
-      "SM8E1HZXVA-OfferID-2": {
-        "offerItems": {
-          "CZV8TLUO57-OfferItemID-3": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "HDV9CB8ZC3-OfferItemID-4": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "3061.23",
-          "commission": "0.00",
-          "taxes": "56.68"
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "PLI9V1CDTR-Latitude": {
+          "flights": [
+            "FO9P4UVCJJ-OD1"
+          ]
         }
       },
-      "VEY5EKDWWF-OfferID-3": {
-        "offerItems": {
-          "HLMBCRDQ14-OfferItemID-5": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "HCO4FF48ZY-OfferItemID-6": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "4920.41",
-          "commission": "0.00",
-          "taxes": "52.16"
-        }
-      },
-      "Z3URLXHBNS-OfferID-4": {
-        "offerItems": {
-          "HIRI57X9L8-OfferItemID-7": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "FVYQ4TVZ04-OfferItemID-8": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "4933.97",
-          "commission": "0.00",
-          "taxes": "56.68"
-        }
-      },
-      "PP54TO5HRW-OfferID-5": {
-        "offerItems": {
-          "HYGRPVZGP1-OfferItemID-9": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "HSEWV1FG63-OfferItemID-10": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "11943.95",
-          "commission": "0.00",
-          "taxes": "52.16"
-        }
-      },
-      "NL4YE536YJ-OfferID-6": {
-        "offerItems": {
-          "LWH8MOLRL2-OfferItemID-11": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "DK7GYP6PPU-OfferItemID-12": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "12056.66",
-          "commission": "0.00",
-          "taxes": "89.73"
-        }
-      },
-      "OZ4O7AXTQ3-OfferID-7": {
-        "offerItems": {
-          "DFOB6DHYJ6-OfferItemID-13": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "XEKSF7QASM-OfferItemID-14": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "3874.45",
-          "commission": "0.00",
-          "taxes": "52.16"
-        }
-      },
-      "GO6GJQPMFK-OfferID-8": {
-        "offerItems": {
-          "H3YQ8MY6R5-OfferItemID-15": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "E9PJBOTHRH-OfferItemID-16": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "3888.01",
-          "commission": "0.00",
-          "taxes": "56.68"
-        }
-      },
-      "TR28MTNZBW-OfferID-9": {
-        "offerItems": {
-          "A6TGO9MYUF-OfferItemID-17": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "DV1VK0C4XA-OfferItemID-18": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "5386.91",
-          "commission": "0.00",
-          "taxes": "52.16"
-        }
-      },
-      "HLET8Q3ZRB-OfferID-10": {
-        "offerItems": {
-          "B6A0234FSB-OfferItemID-19": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "ZZZ9MNKYHY-OfferItemID-20": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "5400.47",
-          "commission": "0.00",
-          "taxes": "56.68"
-        }
-      },
-      "HTHKSZ24TN-OfferID-11": {
-        "offerItems": {
-          "NIWE4S949I-OfferItemID-21": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "CU98HN65NS-OfferItemID-22": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "12105.17",
-          "commission": "0.00",
-          "taxes": "52.16"
-        }
-      },
-      "YTEK1456AH-OfferID-12": {
-        "offerItems": {
-          "BAE8A8NVJ0-OfferItemID-23": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "N6ZIPW1Y55-OfferItemID-24": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "19926.45",
-          "commission": "0.00",
-          "taxes": "52.16"
-        }
-      },
-      "RI61941QWW-OfferID-13": {
-        "offerItems": {
-          "DGZO1EBYIH-OfferItemID-25": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "H1TCSCETVU-OfferItemID-26": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "19940.01",
-          "commission": "0.00",
-          "taxes": "56.68"
-        }
-      },
-      "CQ0XEUJDVO-OfferID-14": {
-        "offerItems": {
-          "AXB675UH8P-OfferItemID-27": {
-            "passengerReferences": "J6XMD8KDHY-T1 HBQD85NECV-T2"
-          },
-          "HJBP1YHVH2-OfferItemID-28": {
-            "passengerReferences": "HUGPYBFGPJ-T3"
-          }
-        },
-        "expiration": "",
-        "pricePlansReferences": {},
-        "price": {
-          "currency": "CAD",
-          "public": "20039.16",
-          "commission": "0.00",
-          "taxes": "89.73"
-        }
+      "price": {
+        "currency": "CAD",
+        "public": "4272.53",
+        "commission": "0.00",
+        "taxes": "244.55"
       }
     },
-    "itineraries": {
-      "combinations": {
-        "RGO6SJNQY2-OD1": [
-          "IG29A6BIGA-SEG1",
-          "BC210IMQF3-SEG2"
-        ],
-        "N0D5XL58H5-OD2": [
-          "QYWOJ63UBT-SEG3",
-          "HQ9ZQT7EZ8-SEG4"
-        ],
-        "HFGKM50TLD-OD3": [
-          "NHDAI36YLD-SEG5",
-          "HDIWM9Q3EV-SEG6"
-        ],
-        "SQCBC39SO7-OD4": [
-          "HY2VCJQMP1-SEG7",
-          "E0ARWPK3TG-SEG8"
-        ],
-        "JFURDOUWAN-OD5": [
-          "LCKDUONC6O-SEG9",
-          "HI0WN2M90P-SEG10"
-        ],
-        "HRXSKFTBI9-OD6": [
-          "PDZL69AIGM-SEG11",
-          "U8T9FQ056M-SEG12"
-        ],
-        "Z6ZZCHP9W4-OD7": [
-          "ZANVK0CSAP-SEG13",
-          "H6Z2PT6AZ6-SEG14"
-        ],
-        "IZHNX7F0BD-OD8": [
-          "FMNG5KTVV3-SEG15",
-          "WQZHFFSEGC-SEG16"
-        ],
-        "ORCG6LTBV1-OD9": [
-          "HGDXZYGY1K-SEG17",
-          "UAWERDM9K7-SEG18"
-        ],
-        "B0UMSI95VW-OD10": [
-          "OGHQXQKK71-SEG19",
-          "K2989JYM1E-SEG20"
-        ],
-        "BU2DI6EDMX-OD11": [
-          "HI6WECLUJ3-SEG21",
-          "ALC4COF785-SEG22"
-        ],
-        "UORH09VTIN-OD12": [
-          "HXS174MHJ7-SEG23",
-          "HR613L4ONK-SEG24"
-        ],
-        "HA0HBF37UO-OD13": [
-          "B3HAQF9UPS-SEG25",
-          "HH7RAI5QEP-SEG26"
-        ],
-        "FTYLVFTGRL-OD14": [
-          "PMCPLS6BMT-SEG27",
-          "DM7MIN8YSX-SEG28"
-        ],
-        "HSKTVEBWEH-OD15": [
-          "T6G0LL4G7T-SEG29",
-          "PMVCLKRG6L-SEG30"
-        ],
-        "UT85VZ59X8-OD16": [
-          "F8W359OHM6-SEG31",
-          "QGYJA0W84Y-SEG32"
-        ],
-        "PNFRJYMRGK-OD17": [
-          "H8V1DVC28S-SEG33",
-          "DFJYS9535T-SEG34"
-        ],
-        "L1ML5PWKH6-OD18": [
-          "VZC9W9V1XQ-SEG35",
-          "J6MRRPGDB3-SEG36"
-        ],
-        "HCQ5MVY44N-OD19": [
-          "LZ8B2YZ1MH-SEG37",
-          "AG4NHGI0ZY-SEG38"
-        ],
-        "V33O1M0H33-OD20": [
-          "HCR9PJW3G8-SEG39",
-          "L5SW7SD4EP-SEG40"
-        ],
-        "BNYL37F7AQ-OD21": [
-          "ZMZEM7SO2Q-SEG41",
-          "HKTFIBO69V-SEG42"
-        ],
-        "HATOITOZ9A-OD22": [
-          "FW1RW89I6I-SEG43",
-          "CTLJ2U34D0-SEG44"
-        ],
-        "H6HIWH8OX4-OD23": [
-          "OX14U85GHD-SEG45",
-          "U7S6QEEBTM-SEG46"
-        ],
-        "HZGZTGL9OU-OD24": [
-          "K0E3INB4UP-SEG47",
-          "P2RTR43W1O-SEG48"
-        ],
-        "RRP3RPU6IL-OD25": [
-          "QEZAUQGP36-SEG49",
-          "SBBAFGFJAO-SEG50"
-        ],
-        "C7PPYJR8RM-OD26": [
-          "GPQR3G6J9O-SEG51",
-          "X9XQXK816T-SEG52"
-        ],
-        "H5U4SW45SK-OD27": [
-          "V84RVBSRNV-SEG53",
-          "H8HLTUR7WC-SEG54"
-        ],
-        "HNS8184MUV-OD28": [
-          "VZM7C5T66S-SEG55",
-          "WCSB8ZRZDO-SEG56"
-        ],
-        "L6RC9PD6PL-OD29": [
-          "BN77HY85UI-SEG57",
-          "Q3KDMKQOIO-SEG58"
-        ],
-        "HKLAWRPLQT-OD30": [
-          "H55J7AWXJU-SEG59",
-          "H2XTR9HIV6-SEG60"
-        ],
-        "HD4NR5EU4O-OD31": [
-          "JEV3D15408-SEG61",
-          "QMCNJVQVUA-SEG62"
-        ],
-        "N6DTRNBUVH-OD32": [
-          "E97NBWMZ4M-SEG63",
-          "TIB1ITY1GI-SEG64"
-        ],
-        "R5ZGGL4PNV-OD33": [
-          "MU1MV6LMQU-SEG65",
-          "HRB1I0B790-SEG66"
-        ],
-        "FUVMO2RQIW-OD34": [
-          "HJF0TUYCC5-SEG67",
-          "W6VUS43051-SEG68"
-        ],
-        "M1CX4PS3ZB-OD35": [
-          "AF7LMFCC8F-SEG69",
-          "J5AO3F8ZSE-SEG70"
-        ],
-        "U575JVM1YL-OD36": [
-          "LQG7O52VKM-SEG71",
-          "C96NPA0JT3-SEG72"
-        ],
-        "HN0NA8PTY3-OD37": [
-          "BX59TGOFNL-SEG73",
-          "CXD1PTU8BR-SEG74"
-        ],
-        "X104W18NGX-OD38": [
-          "EH1RXCA68Z-SEG75",
-          "HYYPW3XOUR-SEG76"
-        ],
-        "IV5Q2RSOGE-OD39": [
-          "C7BIJ8GQOJ-SEG77",
-          "RFVAICFHMC-SEG78"
-        ],
-        "BU4W10KIBM-OD40": [
-          "F2JOTWK2QG-SEG79",
-          "EO78ZCB5J5-SEG80"
-        ],
-        "H05UQHQ5MX-OD41": [
-          "HBV9R9V4SX-SEG81",
-          "HAGZ7GGTTI-SEG82"
-        ],
-        "ZVB4E11YGX-OD42": [
-          "HNKHKAH81U-SEG83",
-          "TGHUJDZYL8-SEG84"
-        ],
-        "HWX365CLJ9-OD43": [
-          "I6O594T9NQ-SEG85",
-          "HYTHNRP2ZR-SEG86"
-        ],
-        "GH293FVXQ6-OD44": [
-          "HQWG5CTNZ6-SEG87",
-          "H0AXB4XI8E-SEG88"
-        ],
-        "HRAY9NZ1UZ-OD45": [
-          "EP03FM0XHE-SEG89",
-          "HHHTX12FQC-SEG90"
-        ],
-        "QOOTPV1NMC-OD46": [
-          "TRINT4N3ZG-SEG91",
-          "X7O1UYGRA1-SEG92"
-        ],
-        "MQ18ELN2KR-OD47": [
-          "AH5VO8D14S-SEG93",
-          "M8GOVFGH0Z-SEG94"
-        ],
-        "H5J9Z7ZCFW-OD48": [
-          "J3YBOOYPWI-SEG95",
-          "S8R6I3ZEMQ-SEG96"
-        ],
-        "HT5C5ZQPQ9-OD49": [
-          "AEX4CVKUFG-SEG97",
-          "IORPI1FTA7-SEG98"
-        ],
-        "L01RXAAT02-OD50": [
-          "WHQ39ZKLLC-SEG99",
-          "MI6BG0VFX5-SEG100"
-        ],
-        "ULGCA8FW2Q-OD51": [
-          "ULQDBPP1KS-SEG101",
-          "HQA9WQZF7O-SEG102"
-        ],
-        "YB7PFNN60C-OD52": [
-          "H772CD8G1I-SEG103",
-          "HMY1MR9NO8-SEG104"
-        ],
-        "EH8FR33Q6O-OD53": [
-          "HY77N02HCR-SEG105",
-          "HNRAMBUCWV-SEG106"
-        ],
-        "EW7SQGMYV6-OD54": [
-          "IGLC88MHI6-SEG107",
-          "GZ31CDK02B-SEG108"
-        ],
-        "H0YZOJHMLT-OD55": [
-          "L0Q2LTSEUO-SEG109",
-          "RHSITALI22-SEG110"
-        ],
-        "HJW0MXIWGU-OD56": [
-          "N2BPJ01IL3-SEG111",
-          "QI1Z1ULIFK-SEG112"
-        ],
-        "HWZAO4UXBK-OD57": [
-          "IWPDDVFGWZ-SEG113",
-          "HKZNDZQR9E-SEG114"
-        ],
-        "LHD0FNBLIK-OD58": [
-          "L55ANYF2MK-SEG115",
-          "OQEDRKANQP-SEG116"
-        ],
-        "P4LUGZWKC0-OD59": [
-          "BO1FGSSS70-SEG117",
-          "X0IZA4DR1I-SEG118"
-        ],
-        "ZCAI41L2J3-OD60": [
-          "G814DJ6J3V-SEG119",
-          "VEVWE8MSLQ-SEG120"
-        ],
-        "GK1H7I5OQS-OD61": [
-          "O3KI7U3ZQR-SEG121",
-          "FKJJYW94Q2-SEG122"
-        ],
-        "B8S9NJSLYW-OD62": [
-          "AIC5K4BICM-SEG123",
-          "H4HCIT3C0G-SEG124"
-        ],
-        "H1BT44SQPS-OD63": [
-          "FZIBZ2ES5G-SEG125",
-          "HG83QB1FXR-SEG126"
-        ],
-        "MHARTM52K9-OD64": [
-          "GIR6AVMYJH-SEG127",
-          "WEX5CYI3VL-SEG128"
-        ],
-        "UY5T38XWZV-OD65": [
-          "KKR4CL521X-SEG129",
-          "GH1V8H8GW7-SEG130"
-        ],
-        "LNDT4JZK4U-OD66": [
-          "WTZRSFPOZL-SEG131",
-          "ANLQ6WX2IA-SEG132"
-        ],
-        "WZVN26C41G-OD67": [
-          "J38KYF5NZF-SEG133",
-          "HJPQPP4P6B-SEG134"
-        ],
-        "WWG6YQN0OY-OD68": [
-          "IR14JK3ZLF-SEG135",
-          "J0DRO0BYS0-SEG136"
-        ],
-        "IAE557LNII-OD69": [
-          "EAX75IRHFF-SEG137",
-          "DBETHRIV4F-SEG138"
-        ],
-        "HSPCKP5FFV-OD70": [
-          "KPY091H7TA-SEG139",
-          "P45HO9EYSS-SEG140"
-        ],
-        "P34N1BANT6-OD71": [
-          "PLKJFMJCHC-SEG141",
-          "FHMBAUUEMM-SEG142"
-        ],
-        "BWKHMFPS4C-OD72": [
-          "HXTNYEUJQH-SEG143",
-          "NRHSJF5J8V-SEG144"
-        ],
-        "CXCW60AQK0-OD73": [
-          "HPWGNQTZPL-SEG145",
-          "HQY82KTTWN-SEG146"
-        ],
-        "TUZRW28N27-OD74": [
-          "WYGKGP3D9U-SEG147",
-          "U0HF1DS25Z-SEG148"
-        ],
-        "D7R6UJGT17-OD75": [
-          "D4KN8IT845-SEG149",
-          "H154K0J5RE-SEG150"
-        ],
-        "H4OC1NSTM6-OD76": [
-          "HQ8FGZ92JU-SEG151",
-          "E248JQDBP4-SEG152"
-        ],
-        "H3CW68VD2C-OD77": [
-          "GWNC2Q474W-SEG153",
-          "PL9NMM60N7-SEG154"
-        ],
-        "HF87Z3WXYH-OD78": [
-          "H1UGNGC92U-SEG155",
-          "NZ3NE6BGZ9-SEG156"
-        ],
-        "HBJ1FONBJF-OD79": [
-          "CT9SYFZ7JI-SEG157",
-          "H49ISU881C-SEG158"
-        ],
-        "KZCPQHAHTX-OD80": [
-          "HEOG89NX9X-SEG159",
-          "U82F58HGC5-SEG160"
-        ],
-        "PJYUZGRH1W-OD81": [
-          "UVX86A39JB-SEG161",
-          "VWFQP4BR68-SEG162"
-        ],
-        "MJPCBZU6ER-OD82": [
-          "WY81KOBRST-SEG163",
-          "FH2VJWY7DE-SEG164"
-        ],
-        "ODLRQBWDPT-OD83": [
-          "KKID1MAAXF-SEG165",
-          "UF8TE20Q7K-SEG166"
-        ]
-      },
-      "segments": {
-        "IG29A6BIGA-SEG1": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T10:30:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YOW"
-          },
-          "arrivalTime": "2020-06-14T13:52:00.000Z"
-        },
-        "BC210IMQF3-SEG2": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YOW"
-          },
-          "departureTime": "2020-06-14T21:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T09:00:00.000Z"
-        },
-        "QYWOJ63UBT-SEG3": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:08:00.000Z"
-        },
-        "HQ9ZQT7EZ8-SEG4": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "NHDAI36YLD-SEG5": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:08:00.000Z"
-        },
-        "HDIWM9Q3EV-SEG6": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "HY2VCJQMP1-SEG7": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:08:00.000Z"
-        },
-        "E0ARWPK3TG-SEG8": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T21:05:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T08:35:00.000Z"
-        },
-        "LCKDUONC6O-SEG9": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:30:00.000Z"
-        },
-        "HI0WN2M90P-SEG10": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "PDZL69AIGM-SEG11": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:30:00.000Z"
-        },
-        "U8T9FQ056M-SEG12": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "ZANVK0CSAP-SEG13": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:30:00.000Z"
-        },
-        "H6Z2PT6AZ6-SEG14": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T21:05:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T08:35:00.000Z"
-        },
-        "FMNG5KTVV3-SEG15": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:10:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T21:47:00.000Z"
-        },
-        "WQZHFFSEGC-SEG16": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T21:05:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T08:35:00.000Z"
-        },
-        "HGDXZYGY1K-SEG17": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T11:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T15:11:00.000Z"
-        },
-        "UAWERDM9K7-SEG18": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "OGHQXQKK71-SEG19": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T14:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T17:21:00.000Z"
-        },
-        "K2989JYM1E-SEG20": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "HI6WECLUJ3-SEG21": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T14:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T17:21:00.000Z"
-        },
-        "ALC4COF785-SEG22": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "HXS174MHJ7-SEG23": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T15:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T19:19:00.000Z"
-        },
-        "HR613L4ONK-SEG24": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "B3HAQF9UPS-SEG25": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T15:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T19:19:00.000Z"
-        },
-        "HH7RAI5QEP-SEG26": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "PMCPLS6BMT-SEG27": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T22:06:00.000Z"
-        },
-        "DM7MIN8YSX-SEG28": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "T6G0LL4G7T-SEG29": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T22:06:00.000Z"
-        },
-        "PMVCLKRG6L-SEG30": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T22:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:50:00.000Z"
-        },
-        "F8W359OHM6-SEG31": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T21:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-15T00:46:00.000Z"
-        },
-        "QGYJA0W84Y-SEG32": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T22:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:50:00.000Z"
-        },
-        "H8V1DVC28S-SEG33": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-15T00:15:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-15T03:36:00.000Z"
-        },
-        "DFJYS9535T-SEG34": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T22:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:50:00.000Z"
-        },
-        "VZC9W9V1XQ-SEG35": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T10:30:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YOW"
-          },
-          "arrivalTime": "2020-06-14T13:52:00.000Z"
-        },
-        "J6MRRPGDB3-SEG36": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YOW"
-          },
-          "departureTime": "2020-06-14T21:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T09:00:00.000Z"
-        },
-        "LZ8B2YZ1MH-SEG37": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:08:00.000Z"
-        },
-        "AG4NHGI0ZY-SEG38": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "HCR9PJW3G8-SEG39": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:08:00.000Z"
-        },
-        "L5SW7SD4EP-SEG40": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "ZMZEM7SO2Q-SEG41": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:08:00.000Z"
-        },
-        "HKTFIBO69V-SEG42": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T21:05:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T08:35:00.000Z"
-        },
-        "FW1RW89I6I-SEG43": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:30:00.000Z"
-        },
-        "CTLJ2U34D0-SEG44": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "OX14U85GHD-SEG45": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:30:00.000Z"
-        },
-        "U7S6QEEBTM-SEG46": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "K0E3INB4UP-SEG47": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:30:00.000Z"
-        },
-        "P2RTR43W1O-SEG48": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T21:05:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T08:35:00.000Z"
-        },
-        "QEZAUQGP36-SEG49": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:10:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T21:47:00.000Z"
-        },
-        "SBBAFGFJAO-SEG50": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T21:05:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T08:35:00.000Z"
-        },
-        "GPQR3G6J9O-SEG51": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T11:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T15:11:00.000Z"
-        },
-        "X9XQXK816T-SEG52": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "V84RVBSRNV-SEG53": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T14:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T17:21:00.000Z"
-        },
-        "H8HLTUR7WC-SEG54": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "VZM7C5T66S-SEG55": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T14:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T17:21:00.000Z"
-        },
-        "WCSB8ZRZDO-SEG56": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "BN77HY85UI-SEG57": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T15:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T19:19:00.000Z"
-        },
-        "Q3KDMKQOIO-SEG58": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "H55J7AWXJU-SEG59": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T15:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T19:19:00.000Z"
-        },
-        "H2XTR9HIV6-SEG60": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "JEV3D15408-SEG61": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T22:06:00.000Z"
-        },
-        "QMCNJVQVUA-SEG62": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "E97NBWMZ4M-SEG63": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T22:06:00.000Z"
-        },
-        "TIB1ITY1GI-SEG64": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T22:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:50:00.000Z"
-        },
-        "MU1MV6LMQU-SEG65": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T21:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-15T00:46:00.000Z"
-        },
-        "HRB1I0B790-SEG66": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T22:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:50:00.000Z"
-        },
-        "HJF0TUYCC5-SEG67": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-15T00:15:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-15T03:36:00.000Z"
-        },
-        "W6VUS43051-SEG68": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T22:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:50:00.000Z"
-        },
-        "AF7LMFCC8F-SEG69": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T13:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYC"
-          },
-          "arrivalTime": "2020-06-14T14:50:00.000Z"
-        },
-        "J5AO3F8ZSE-SEG70": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYC"
-          },
-          "departureTime": "2020-06-14T18:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:05:00.000Z"
-        },
-        "LQG7O52VKM-SEG71": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYC"
-          },
-          "arrivalTime": "2020-06-14T19:48:00.000Z"
-        },
-        "C96NPA0JT3-SEG72": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYC"
-          },
-          "departureTime": "2020-06-14T18:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:05:00.000Z"
-        },
-        "BX59TGOFNL-SEG73": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T15:51:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "ORD"
-          },
-          "arrivalTime": "2020-06-14T18:20:00.000Z"
-        },
-        "CXD1PTU8BR-SEG74": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "ORD"
-          },
-          "departureTime": "2020-06-14T20:15:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:20:00.000Z"
-        },
-        "EH1RXCA68Z-SEG75": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:08:00.000Z"
-        },
-        "HYYPW3XOUR-SEG76": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "C7BIJ8GQOJ-SEG77": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:08:00.000Z"
-        },
-        "RFVAICFHMC-SEG78": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "F2JOTWK2QG-SEG79": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:30:00.000Z"
-        },
-        "EO78ZCB5J5-SEG80": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "HBV9R9V4SX-SEG81": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:30:00.000Z"
-        },
-        "HAGZ7GGTTI-SEG82": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "HNKHKAH81U-SEG83": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T11:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T15:11:00.000Z"
-        },
-        "TGHUJDZYL8-SEG84": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "I6O594T9NQ-SEG85": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T14:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T17:21:00.000Z"
-        },
-        "HYTHNRP2ZR-SEG86": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "HQWG5CTNZ6-SEG87": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T14:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T17:21:00.000Z"
-        },
-        "H0AXB4XI8E-SEG88": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "EP03FM0XHE-SEG89": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T15:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T19:19:00.000Z"
-        },
-        "HHHTX12FQC-SEG90": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "TRINT4N3ZG-SEG91": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T15:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T19:19:00.000Z"
-        },
-        "X7O1UYGRA1-SEG92": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "AH5VO8D14S-SEG93": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T22:06:00.000Z"
-        },
-        "M8GOVFGH0Z-SEG94": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "J3YBOOYPWI-SEG95": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T10:30:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YOW"
-          },
-          "arrivalTime": "2020-06-14T13:52:00.000Z"
-        },
-        "S8R6I3ZEMQ-SEG96": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YOW"
-          },
-          "departureTime": "2020-06-14T21:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T09:00:00.000Z"
-        },
-        "AEX4CVKUFG-SEG97": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:08:00.000Z"
-        },
-        "IORPI1FTA7-SEG98": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "WHQ39ZKLLC-SEG99": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:08:00.000Z"
-        },
-        "MI6BG0VFX5-SEG100": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "ULQDBPP1KS-SEG101": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:08:00.000Z"
-        },
-        "HQA9WQZF7O-SEG102": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T21:05:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T08:35:00.000Z"
-        },
-        "H772CD8G1I-SEG103": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:30:00.000Z"
-        },
-        "HMY1MR9NO8-SEG104": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "HY77N02HCR-SEG105": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:30:00.000Z"
-        },
-        "HNRAMBUCWV-SEG106": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "IGLC88MHI6-SEG107": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:30:00.000Z"
-        },
-        "GZ31CDK02B-SEG108": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T21:05:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T08:35:00.000Z"
-        },
-        "L0Q2LTSEUO-SEG109": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:10:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T21:47:00.000Z"
-        },
-        "RHSITALI22-SEG110": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T21:05:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T08:35:00.000Z"
-        },
-        "N2BPJ01IL3-SEG111": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T11:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T15:11:00.000Z"
-        },
-        "QI1Z1ULIFK-SEG112": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "IWPDDVFGWZ-SEG113": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T14:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T17:21:00.000Z"
-        },
-        "HKZNDZQR9E-SEG114": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "L55ANYF2MK-SEG115": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T14:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T17:21:00.000Z"
-        },
-        "OQEDRKANQP-SEG116": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "BO1FGSSS70-SEG117": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T15:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T19:19:00.000Z"
-        },
-        "X0IZA4DR1I-SEG118": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "G814DJ6J3V-SEG119": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T15:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T19:19:00.000Z"
-        },
-        "VEVWE8MSLQ-SEG120": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "O3KI7U3ZQR-SEG121": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T22:06:00.000Z"
-        },
-        "FKJJYW94Q2-SEG122": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "AIC5K4BICM-SEG123": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T22:06:00.000Z"
-        },
-        "H4HCIT3C0G-SEG124": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T22:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:50:00.000Z"
-        },
-        "FZIBZ2ES5G-SEG125": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T21:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-15T00:46:00.000Z"
-        },
-        "HG83QB1FXR-SEG126": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T22:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:50:00.000Z"
-        },
-        "GIR6AVMYJH-SEG127": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-15T00:15:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-15T03:36:00.000Z"
-        },
-        "WEX5CYI3VL-SEG128": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T22:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:50:00.000Z"
-        },
-        "KKR4CL521X-SEG129": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T13:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYC"
-          },
-          "arrivalTime": "2020-06-14T14:50:00.000Z"
-        },
-        "GH1V8H8GW7-SEG130": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYC"
-          },
-          "departureTime": "2020-06-14T18:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:05:00.000Z"
-        },
-        "WTZRSFPOZL-SEG131": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYC"
-          },
-          "arrivalTime": "2020-06-14T19:48:00.000Z"
-        },
-        "ANLQ6WX2IA-SEG132": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYC"
-          },
-          "departureTime": "2020-06-14T18:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:05:00.000Z"
-        },
-        "J38KYF5NZF-SEG133": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T10:30:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YOW"
-          },
-          "arrivalTime": "2020-06-14T13:52:00.000Z"
-        },
-        "HJPQPP4P6B-SEG134": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YOW"
-          },
-          "departureTime": "2020-06-14T21:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T09:00:00.000Z"
-        },
-        "IR14JK3ZLF-SEG135": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T13:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYC"
-          },
-          "arrivalTime": "2020-06-14T14:50:00.000Z"
-        },
-        "J0DRO0BYS0-SEG136": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYC"
-          },
-          "departureTime": "2020-06-14T18:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:05:00.000Z"
-        },
-        "EAX75IRHFF-SEG137": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:08:00.000Z"
-        },
-        "DBETHRIV4F-SEG138": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "KPY091H7TA-SEG139": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:08:00.000Z"
-        },
-        "P45HO9EYSS-SEG140": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "PLKJFMJCHC-SEG141": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:30:00.000Z"
-        },
-        "FHMBAUUEMM-SEG142": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "HXTNYEUJQH-SEG143": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T12:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "arrivalTime": "2020-06-14T16:30:00.000Z"
-        },
-        "NRHSJF5J8V-SEG144": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YUL"
-          },
-          "departureTime": "2020-06-14T16:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T04:25:00.000Z"
-        },
-        "HPWGNQTZPL-SEG145": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYC"
-          },
-          "arrivalTime": "2020-06-14T19:48:00.000Z"
-        },
-        "HQY82KTTWN-SEG146": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYC"
-          },
-          "departureTime": "2020-06-14T18:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:05:00.000Z"
-        },
-        "WYGKGP3D9U-SEG147": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T11:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T15:11:00.000Z"
-        },
-        "U0HF1DS25Z-SEG148": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "D4KN8IT845-SEG149": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T14:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T17:21:00.000Z"
-        },
-        "H154K0J5RE-SEG150": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "HQ8FGZ92JU-SEG151": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T14:00:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T17:21:00.000Z"
-        },
-        "E248JQDBP4-SEG152": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "GWNC2Q474W-SEG153": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T15:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T19:19:00.000Z"
-        },
-        "PL9NMM60N7-SEG154": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T17:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T05:35:00.000Z"
-        },
-        "H1UGNGC92U-SEG155": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T15:55:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T19:19:00.000Z"
-        },
-        "NZ3NE6BGZ9-SEG156": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "CT9SYFZ7JI-SEG157": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T22:06:00.000Z"
-        },
-        "H49ISU881C-SEG158": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T19:35:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T07:35:00.000Z"
-        },
-        "HEOG89NX9X-SEG159": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T18:45:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-14T22:06:00.000Z"
-        },
-        "U82F58HGC5-SEG160": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T22:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:50:00.000Z"
-        },
-        "UVX86A39JB-SEG161": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T21:25:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-15T00:46:00.000Z"
-        },
-        "VWFQP4BR68-SEG162": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T22:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:50:00.000Z"
-        },
-        "WY81KOBRST-SEG163": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-15T00:15:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "arrivalTime": "2020-06-15T03:36:00.000Z"
-        },
-        "FH2VJWY7DE-SEG164": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YYZ"
-          },
-          "departureTime": "2020-06-14T22:50:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:50:00.000Z"
-        },
-        "KKID1MAAXF-SEG165": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "YWG"
-          },
-          "departureTime": "2020-06-14T15:51:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "ORD"
-          },
-          "arrivalTime": "2020-06-14T18:20:00.000Z"
-        },
-        "UF8TE20Q7K-SEG166": {
-          "operator": {
-            "operatorType": "airline",
-            "iataCode": "AC"
-          },
-          "origin": {
-            "locationType": "airport",
-            "iataCode": "ORD"
-          },
-          "departureTime": "2020-06-14T20:15:00.000Z",
-          "destination": {
-            "locationType": "airport",
-            "iataCode": "LHR"
-          },
-          "arrivalTime": "2020-06-15T10:20:00.000Z"
+    "XM2WSC7S79-OfferID-2": {
+      "offerItems": {
+        "ZZGSMWVVWL-OfferItemID-2": {
+          "passengerReferences": "LER0A75VIY-T1"
         }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "PLI9V1CDTR-Latitude": {
+          "flights": [
+            "HI9469LNT2-OD2",
+            "HTY5VXS1YP-OD3",
+            "H8TBV3IW8M-OD4",
+            "B9B9369TXS-OD5",
+            "HTWDORKC8Q-OD6",
+            "HMR1T9J6JP-OD7"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "4277.05",
+        "commission": "0.00",
+        "taxes": "249.07"
       }
     },
-    "pricePlans": {
-      "H0GY86HKTK-Standard": {
-        "name": "Standard",
-        "amenities": [
-          "1st checked bag free",
-          "Changes for a fee",
-          "Up to 50% Aeroplan Miles"
-        ]
+    "H0KGEP9CXU-OfferID-3": {
+      "offerItems": {
+        "DMG4C5HFNR-OfferItemID-3": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
       },
-      "HEGS0FJTM8-Flex": {
-        "name": "Flex",
-        "amenities": [
-          "1st checked bag free",
-          "Changes for a discounted fee",
-          "100% Aeroplan Miles",
-          "Free standard seat selection"
-        ]
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "PLI9V1CDTR-Latitude": {
+          "flights": [
+            "OOF9KJ47H2-OD8"
+          ]
+        }
       },
-      "E1GDZBSO2V-Latitude": {
-        "name": "Latitude",
-        "amenities": [
-          "1st checked bag free",
-          "Free changes and cancellations",
-          "125% Aeroplan Miles",
-          "Free extra legroom and standard seat selection",
-          "Free same-day standby",
-          "Priority check-in, baggage and boarding"
-        ]
-      },
-      "SDGQGI6XTR-PremiumEconomylowest": {
-        "name": "Premium Economy (lowest)",
-        "amenities": [
-          "2 checked bags free",
-          "Dedicated cabin, larger seat, more legroom",
-          "Premium meal service",
-          "Priority check-in, baggage and boarding",
-          "125% Aeroplan Miles"
-        ]
-      },
-      "BALELH75GR-PremiumEconomyflexible": {
-        "name": "Premium Economy (flexible)",
-        "amenities": [
-          "2 checked bags free",
-          "Dedicated cabin, larger seat, more legroom",
-          "Premium meal service",
-          "Priority check-in, baggage and boarding",
-          "125% Aeroplan Miles",
-          "Free changes, cancellations and standby"
-        ]
-      },
-      "TTIUMLGLEJ-BusinessClasslowest": {
-        "name": "Business Class (lowest)",
-        "amenities": [
-          "2 checked bags free",
-          "Maple Leaf Lounge access",
-          "Exclusive cabin with fully lie-flat seats",
-          "Inspired cuisine, selected wines and spirits",
-          "Priority check-in, security, baggage and boarding",
-          "150% Aeroplan Miles"
-        ]
-      },
-      "V70A5YKHCY-BusinessClassflexible": {
-        "name": "Business Class (flexible)",
-        "amenities": [
-          "2 checked bags free",
-          "Maple Leaf Lounge access",
-          "Exclusive cabin with fully lie-flat seats",
-          "Inspired cuisine, selected wines and spirits",
-          "Priority check-in, security, baggage and boarding",
-          "150% Aeroplan Miles",
-          "Free changes, cancellations and standby"
-        ]
+      "price": {
+        "currency": "CAD",
+        "public": "4471.47",
+        "commission": "0.00",
+        "taxes": "252.23"
       }
     },
-    "passengers": {
-      "J6XMD8KDHY-T1": {
-        "type": "ADT"
+    "HFNKFAKJ9G-OfferID-4": {
+      "offerItems": {
+        "KLWRUHQ1L3-OfferItemID-4": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
       },
-      "HBQD85NECV-T2": {
-        "type": "ADT"
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "PLI9V1CDTR-Latitude": {
+          "flights": [
+            "SLV2491XO8-OD9",
+            "ZRBP1Y51Q3-OD10",
+            "SQVRAJRNJO-OD11"
+          ]
+        }
       },
-      "HUGPYBFGPJ-T3": {
-        "type": "CHD"
+      "price": {
+        "currency": "CAD",
+        "public": "4320.20",
+        "commission": "0.00",
+        "taxes": "292.22"
+      }
+    },
+    "W4IOANA5W9-OfferID-5": {
+      "offerItems": {
+        "HDXLSITBVQ-OfferItemID-5": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "PLI9V1CDTR-Latitude": {
+          "flights": [
+            "FX4GPPUMCN-OD12",
+            "BBGLGQ29OE-OD13",
+            "KVBNVODWL7-OD14"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "4324.72",
+        "commission": "0.00",
+        "taxes": "296.74"
+      }
+    },
+    "YZZ16HDLXJ-OfferID-6": {
+      "offerItems": {
+        "HFMYQE8YDX-OfferItemID-6": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "HNP9IVU8QC-PremiumEconomyflexible": {
+          "flights": [
+            "O0AOXNPPK8-OD15"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "4772.51",
+        "commission": "0.00",
+        "taxes": "263.78"
+      }
+    },
+    "DI2I5UNJSP-OfferID-7": {
+      "offerItems": {
+        "EHRTLTFPSY-OfferItemID-7": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "HNP9IVU8QC-PremiumEconomyflexible": {
+          "flights": [
+            "QEOH0UNCG3-OD16",
+            "E191X4TKPZ-OD17",
+            "MBY2CJS0XE-OD18",
+            "HXJM8D696V-OD19",
+            "OD4N0DH45V-OD20",
+            "LK2XIF7PP2-OD21"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "4777.03",
+        "commission": "0.00",
+        "taxes": "268.30"
+      }
+    },
+    "HJJP7U5KTO-OfferID-8": {
+      "offerItems": {
+        "HCHLGK6ILS-OfferItemID-8": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "HNP9IVU8QC-PremiumEconomyflexible": {
+          "flights": [
+            "OA2GIJ9CRA-OD22"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "4992.56",
+        "commission": "0.00",
+        "taxes": "272.22"
+      }
+    },
+    "PK5FQILR60-OfferID-9": {
+      "offerItems": {
+        "PDNP8H9FTV-OfferItemID-9": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "HNP9IVU8QC-PremiumEconomyflexible": {
+          "flights": [
+            "CFWYDC0OF5-OD23",
+            "UJI9FE9DPN-OD24",
+            "O5F18XNNYP-OD25"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "4820.18",
+        "commission": "0.00",
+        "taxes": "311.45"
+      }
+    },
+    "JVVH3UMFTX-OfferID-10": {
+      "offerItems": {
+        "HPN0YB0MHB-OfferItemID-10": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "HNP9IVU8QC-PremiumEconomyflexible": {
+          "flights": [
+            "Y5XXVAJJBL-OD26",
+            "XC0UL7MQ1D-OD27",
+            "MBBZNV819H-OD28"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "4824.70",
+        "commission": "0.00",
+        "taxes": "315.97"
+      }
+    },
+    "D7V3NRB1YK-OfferID-11": {
+      "offerItems": {
+        "HZUZK0LT8Q-OfferItemID-11": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "QE2IIUQAFO-BusinessClasslowest": {
+          "flights": [
+            "H5HWWVHJCD-OD29",
+            "H8DE4KAEQK-OD30"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "7619.21",
+        "commission": "0.00",
+        "taxes": "373.29"
+      }
+    },
+    "ZLPU8N0POO-OfferID-12": {
+      "offerItems": {
+        "HOOSC61SEE-OfferItemID-12": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "QE2IIUQAFO-BusinessClasslowest": {
+          "flights": [
+            "GBHF0YEJYZ-OD31",
+            "IN4CQOCVW3-OD32",
+            "HCU8HVXGNY-OD33",
+            "DZRWYSYFGX-OD34",
+            "X9JAVGLLS5-OD35",
+            "DYTLAMH8OE-OD36"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "7623.73",
+        "commission": "0.00",
+        "taxes": "377.81"
+      }
+    },
+    "HHVSH5LFJX-OfferID-13": {
+      "offerItems": {
+        "J9MPFQ61MT-OfferItemID-13": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "QE2IIUQAFO-BusinessClasslowest": {
+          "flights": [
+            "HLQ1U7XQ8Y-OD37",
+            "L9WLKKXDL8-OD38",
+            "HF4XW0FBQM-OD39"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "7666.88",
+        "commission": "0.00",
+        "taxes": "420.96"
+      }
+    },
+    "BF4C9CLRUN-OfferID-14": {
+      "offerItems": {
+        "HOV4M9LZGN-OfferItemID-14": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "QE2IIUQAFO-BusinessClasslowest": {
+          "flights": [
+            "H3TNEFKZ85-OD40",
+            "HOTV73QEB9-OD41",
+            "GFMV7VDKCJ-OD42"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "7671.40",
+        "commission": "0.00",
+        "taxes": "425.48"
+      }
+    },
+    "A5YKLS89U1-OfferID-15": {
+      "offerItems": {
+        "NO5LAOZO2N-OfferItemID-15": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "J9TKL6B32U-BusinessClassflexible": {
+          "flights": [
+            "UN4X73KFKD-OD43"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "8713.05",
+        "commission": "0.00",
+        "taxes": "415.33"
+      }
+    },
+    "HS462GCJW4-OfferID-16": {
+      "offerItems": {
+        "XWNS51I8MX-OfferItemID-16": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "J9TKL6B32U-BusinessClassflexible": {
+          "flights": [
+            "ZABNOHPG9Y-OD44",
+            "NT1P24CBSB-OD45",
+            "IFORJPPZD4-OD46",
+            "F8JAK7I13R-OD47",
+            "HT929ZIGSB-OD48",
+            "BDACOZ4K3E-OD49"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "8717.57",
+        "commission": "0.00",
+        "taxes": "419.85"
+      }
+    },
+    "YSUPXVR6TH-OfferID-17": {
+      "offerItems": {
+        "HGCKUN0B17-OfferItemID-17": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "J9TKL6B32U-BusinessClassflexible": {
+          "flights": [
+            "HI5Z0ZYS29-OD50"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "9129.11",
+        "commission": "0.00",
+        "taxes": "431.37"
+      }
+    },
+    "JVRTZ88LJC-OfferID-18": {
+      "offerItems": {
+        "HE1EKGK4JN-OfferItemID-18": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "J9TKL6B32U-BusinessClassflexible": {
+          "flights": [
+            "O378MYD42A-OD51",
+            "KGJDQKM4X8-OD52",
+            "M631SCEVEH-OD53"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "8760.72",
+        "commission": "0.00",
+        "taxes": "463.00"
+      }
+    },
+    "H3TW9JA3RM-OfferID-19": {
+      "offerItems": {
+        "XDYSNIE5UH-OfferItemID-19": {
+          "passengerReferences": "LER0A75VIY-T1"
+        }
+      },
+      "expiration": "2020-04-17T14:59:17.395Z",
+      "pricePlansReferences": {
+        "J9TKL6B32U-BusinessClassflexible": {
+          "flights": [
+            "ITWDTKMM4R-OD54",
+            "T0A7LQJ4M1-OD55",
+            "IGP5MS0WB3-OD56"
+          ]
+        }
+      },
+      "price": {
+        "currency": "CAD",
+        "public": "8765.24",
+        "commission": "0.00",
+        "taxes": "467.52"
       }
     }
+  },
+  "itineraries": {
+    "combinations": {
+      "FO9P4UVCJJ-OD1": [
+        "HPXV6G6PYZ-SEG1",
+        "BONVHBK50H-SEG2"
+      ],
+      "HI9469LNT2-OD2": [
+        "H5YOQ3AZ40-SEG3",
+        "KT2966PN4S-SEG4"
+      ],
+      "HTY5VXS1YP-OD3": [
+        "HW1S2IENZ7-SEG5",
+        "H9ZNCKRS9O-SEG6"
+      ],
+      "H8TBV3IW8M-OD4": [
+        "JFMCYQBM5S-SEG7",
+        "HKPVBUIMSQ-SEG8"
+      ],
+      "B9B9369TXS-OD5": [
+        "EOLJ4I7WCK-SEG9",
+        "TOQEGBVJSQ-SEG10"
+      ],
+      "HTWDORKC8Q-OD6": [
+        "DC9FZZM8F2-SEG11",
+        "F7CTQSHK8G-SEG12"
+      ],
+      "HMR1T9J6JP-OD7": [
+        "HSQ68PQEL6-SEG13",
+        "HZZ22LMGNW-SEG14"
+      ],
+      "OOF9KJ47H2-OD8": [
+        "BO7CDRUFT5-SEG15",
+        "EKAC6TA9BW-SEG16"
+      ],
+      "SLV2491XO8-OD9": [
+        "PJ3XTF4H0J-SEG17",
+        "IB6TG5M3GT-SEG18",
+        "ERRP36NPJ4-SEG19"
+      ],
+      "ZRBP1Y51Q3-OD10": [
+        "HGFJ1A63VM-SEG20",
+        "WQD7RH7JO9-SEG21",
+        "TPHCLKXMTT-SEG22"
+      ],
+      "SQVRAJRNJO-OD11": [
+        "HB16GTYEXP-SEG23",
+        "H0MRD4N7VD-SEG24",
+        "A0F4VCBVV3-SEG25"
+      ],
+      "FX4GPPUMCN-OD12": [
+        "HHIEREHTSL-SEG26",
+        "YEGA31CMVN-SEG27",
+        "MQFTLZH48N-SEG28"
+      ],
+      "BBGLGQ29OE-OD13": [
+        "H65AV1K51D-SEG29",
+        "DKZUMUSTCJ-SEG30",
+        "T4CT2TL0J9-SEG31"
+      ],
+      "KVBNVODWL7-OD14": [
+        "TM1981O6EN-SEG32",
+        "TCCYRNODVW-SEG33",
+        "HYY8P1V0KA-SEG34"
+      ],
+      "O0AOXNPPK8-OD15": [
+        "HMIGKI9AWU-SEG35",
+        "HOAEWLGD6N-SEG36"
+      ],
+      "QEOH0UNCG3-OD16": [
+        "C61USQXRA1-SEG37",
+        "XEKCBFINHL-SEG38"
+      ],
+      "E191X4TKPZ-OD17": [
+        "HIYNJY29BG-SEG39",
+        "EUZRGJPBJ7-SEG40"
+      ],
+      "MBY2CJS0XE-OD18": [
+        "FKN7SWZESX-SEG41",
+        "H28433IKKK-SEG42"
+      ],
+      "HXJM8D696V-OD19": [
+        "SJE6BVPNAK-SEG43",
+        "MLO2GOPQ2A-SEG44"
+      ],
+      "OD4N0DH45V-OD20": [
+        "DJKIXB45BU-SEG45",
+        "ZAPU7VI7QT-SEG46"
+      ],
+      "LK2XIF7PP2-OD21": [
+        "JCG2JQ7KTM-SEG47",
+        "D3O7UB8M8G-SEG48"
+      ],
+      "OA2GIJ9CRA-OD22": [
+        "H3GM01S0HU-SEG49",
+        "V5Q9L5ZF6K-SEG50"
+      ],
+      "CFWYDC0OF5-OD23": [
+        "H5VRMYFSO5-SEG51",
+        "HV1DBD11KB-SEG52",
+        "NQ6MCYUMI1-SEG53"
+      ],
+      "UJI9FE9DPN-OD24": [
+        "KE5PZEUSD3-SEG54",
+        "NEFVNEFGEA-SEG55",
+        "TZ6N9SI9XJ-SEG56"
+      ],
+      "O5F18XNNYP-OD25": [
+        "NN372KFN12-SEG57",
+        "AXGWIJ6WBS-SEG58",
+        "ZO2NJSF5R6-SEG59"
+      ],
+      "Y5XXVAJJBL-OD26": [
+        "EHITV6XF1M-SEG60",
+        "ILNFKUCMAQ-SEG61",
+        "X31XMIGDYF-SEG62"
+      ],
+      "XC0UL7MQ1D-OD27": [
+        "YLGVIMWY1M-SEG63",
+        "DSRKEB3HEP-SEG64",
+        "WGO37EFZ5V-SEG65"
+      ],
+      "MBBZNV819H-OD28": [
+        "JR8JRBMAYK-SEG66",
+        "X3UA0ZTB73-SEG67",
+        "ST0BL0A1FI-SEG68"
+      ],
+      "H5HWWVHJCD-OD29": [
+        "SZJTCD2UZS-SEG69",
+        "K9TIC9Q71P-SEG70"
+      ],
+      "H8DE4KAEQK-OD30": [
+        "QPQNS1FIOZ-SEG71",
+        "MY722WB2UB-SEG72"
+      ],
+      "GBHF0YEJYZ-OD31": [
+        "ZGZQCAV10Q-SEG73",
+        "DPGEFK76XZ-SEG74"
+      ],
+      "IN4CQOCVW3-OD32": [
+        "HK0P5LIGY1-SEG75",
+        "R3E2XU8N9E-SEG76"
+      ],
+      "HCU8HVXGNY-OD33": [
+        "JYT6925ANL-SEG77",
+        "EB3CE4OCSV-SEG78"
+      ],
+      "DZRWYSYFGX-OD34": [
+        "QI89RBCFHZ-SEG79",
+        "RXKX6XQV3O-SEG80"
+      ],
+      "X9JAVGLLS5-OD35": [
+        "H7MP0ZYAAZ-SEG81",
+        "SHFWSG7WN2-SEG82"
+      ],
+      "DYTLAMH8OE-OD36": [
+        "X1C2ZYBD5K-SEG83",
+        "HPUKB0X6L0-SEG84"
+      ],
+      "HLQ1U7XQ8Y-OD37": [
+        "HCJR3IR5V9-SEG85",
+        "ADDY45I6Y3-SEG86",
+        "G6240NA15P-SEG87"
+      ],
+      "L9WLKKXDL8-OD38": [
+        "AONMLPFZDA-SEG88",
+        "LB9YVHFG86-SEG89",
+        "MWOZATJP2N-SEG90"
+      ],
+      "HF4XW0FBQM-OD39": [
+        "HSZZKCTYYI-SEG91",
+        "H7E65QIJ9Z-SEG92",
+        "D3WJ9K5E1X-SEG93"
+      ],
+      "H3TNEFKZ85-OD40": [
+        "Q2DHZJ4RCO-SEG94",
+        "HV3XJJ4527-SEG95",
+        "H4RKG9WFWQ-SEG96"
+      ],
+      "HOTV73QEB9-OD41": [
+        "OL2B4L9PM9-SEG97",
+        "HJ7WP04Q4S-SEG98",
+        "LANQZMRHMS-SEG99"
+      ],
+      "GFMV7VDKCJ-OD42": [
+        "H97G2BHVTZ-SEG100",
+        "K7LQ9VTU0D-SEG101",
+        "HC2EHU0PB7-SEG102"
+      ],
+      "UN4X73KFKD-OD43": [
+        "AIT325IYJ4-SEG103",
+        "LVVHR10BWW-SEG104"
+      ],
+      "ZABNOHPG9Y-OD44": [
+        "HYWDXUNYT4-SEG105",
+        "HYX1N4H2BC-SEG106"
+      ],
+      "NT1P24CBSB-OD45": [
+        "U5SGAMZTHR-SEG107",
+        "DXZYXSUUH8-SEG108"
+      ],
+      "IFORJPPZD4-OD46": [
+        "DTEKQ6SO8H-SEG109",
+        "KPS9QU4JZY-SEG110"
+      ],
+      "F8JAK7I13R-OD47": [
+        "KXHJPQ7WCL-SEG111",
+        "LGOOZKOU7K-SEG112"
+      ],
+      "HT929ZIGSB-OD48": [
+        "NZ7U2DYDUO-SEG113",
+        "SB6G6MGWW2-SEG114"
+      ],
+      "BDACOZ4K3E-OD49": [
+        "VD223WLS04-SEG115",
+        "HPB6TCP68Q-SEG116"
+      ],
+      "HI5Z0ZYS29-OD50": [
+        "XCZQ55IO62-SEG117",
+        "NMGB7MNSXE-SEG118"
+      ],
+      "O378MYD42A-OD51": [
+        "ABEWZ1A4AE-SEG119",
+        "GZL2TCQVSR-SEG120",
+        "E1L566ZUFC-SEG121"
+      ],
+      "KGJDQKM4X8-OD52": [
+        "AWYDFLXACP-SEG122",
+        "YSQ2BVOGYJ-SEG123",
+        "HXCV0F06XP-SEG124"
+      ],
+      "M631SCEVEH-OD53": [
+        "NC713HAZ50-SEG125",
+        "MT0PPLKJOF-SEG126",
+        "KUXVJPMOKE-SEG127"
+      ],
+      "ITWDTKMM4R-OD54": [
+        "HYJ0BFKFFD-SEG128",
+        "XVSAD2UK5N-SEG129",
+        "HYT853T5EO-SEG130"
+      ],
+      "T0A7LQJ4M1-OD55": [
+        "R88ETMGWK3-SEG131",
+        "HC06IBHP29-SEG132",
+        "JGHX67WETT-SEG133"
+      ],
+      "IGP5MS0WB3-OD56": [
+        "H4PA2CCU60-SEG134",
+        "H9K71DZRMR-SEG135",
+        "X9A71KXNM8-SEG136"
+      ]
+    },
+    "segments": {
+      "HPXV6G6PYZ-SEG1": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "BONVHBK50H-SEG2": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T18:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T07:55:00.000Z"
+      },
+      "H5YOQ3AZ40-SEG3": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T04:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T09:35:00.000Z"
+      },
+      "KT2966PN4S-SEG4": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T15:30:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T05:20:00.000Z"
+      },
+      "HW1S2IENZ7-SEG5": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T04:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T09:35:00.000Z"
+      },
+      "H9ZNCKRS9O-SEG6": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:20:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "JFMCYQBM5S-SEG7": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T04:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T09:35:00.000Z"
+      },
+      "HKPVBUIMSQ-SEG8": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:15:00.000Z"
+      },
+      "EOLJ4I7WCK-SEG9": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "TOQEGBVJSQ-SEG10": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:20:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "DC9FZZM8F2-SEG11": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "F7CTQSHK8G-SEG12": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:15:00.000Z"
+      },
+      "HSQ68PQEL6-SEG13": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "HZZ22LMGNW-SEG14": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-15T15:30:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-16T05:20:00.000Z"
+      },
+      "BO7CDRUFT5-SEG15": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T13:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YVR"
+        },
+        "arrivalTime": "2020-07-14T16:50:00.000Z"
+      },
+      "EKAC6TA9BW-SEG16": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YVR"
+        },
+        "departureTime": "2020-07-14T16:25:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T11:15:00.000Z"
+      },
+      "PJ3XTF4H0J-SEG17": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "IB6TG5M3GT-SEG18": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T15:50:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T05:05:00.000Z"
+      },
+      "ERRP36NPJ4-SEG19": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T06:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T07:10:00.000Z"
+      },
+      "HGFJ1A63VM-SEG20": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "WQD7RH7JO9-SEG21": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T15:50:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T05:05:00.000Z"
+      },
+      "TPHCLKXMTT-SEG22": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T07:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "HB16GTYEXP-SEG23": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "H0MRD4N7VD-SEG24": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T17:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T06:10:00.000Z"
+      },
+      "A0F4VCBVV3-SEG25": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T07:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "HHIEREHTSL-SEG26": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "YEGA31CMVN-SEG27": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T19:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T09:10:00.000Z"
+      },
+      "MQFTLZH48N-SEG28": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T10:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T11:10:00.000Z"
+      },
+      "H65AV1K51D-SEG29": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "DKZUMUSTCJ-SEG30": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T19:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T09:10:00.000Z"
+      },
+      "T4CT2TL0J9-SEG31": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T11:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T12:10:00.000Z"
+      },
+      "TM1981O6EN-SEG32": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "TCCYRNODVW-SEG33": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T19:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T09:10:00.000Z"
+      },
+      "HYY8P1V0KA-SEG34": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T12:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T13:10:00.000Z"
+      },
+      "HMIGKI9AWU-SEG35": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "HOAEWLGD6N-SEG36": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T18:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T07:55:00.000Z"
+      },
+      "C61USQXRA1-SEG37": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T04:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T09:35:00.000Z"
+      },
+      "XEKCBFINHL-SEG38": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T15:30:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T05:20:00.000Z"
+      },
+      "HIYNJY29BG-SEG39": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T04:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T09:35:00.000Z"
+      },
+      "EUZRGJPBJ7-SEG40": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:20:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "FKN7SWZESX-SEG41": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T04:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T09:35:00.000Z"
+      },
+      "H28433IKKK-SEG42": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:15:00.000Z"
+      },
+      "SJE6BVPNAK-SEG43": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "MLO2GOPQ2A-SEG44": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:20:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "DJKIXB45BU-SEG45": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "ZAPU7VI7QT-SEG46": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:15:00.000Z"
+      },
+      "JCG2JQ7KTM-SEG47": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "D3O7UB8M8G-SEG48": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-15T15:30:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-16T05:20:00.000Z"
+      },
+      "H3GM01S0HU-SEG49": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T13:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YVR"
+        },
+        "arrivalTime": "2020-07-14T16:50:00.000Z"
+      },
+      "V5Q9L5ZF6K-SEG50": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YVR"
+        },
+        "departureTime": "2020-07-14T16:25:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T11:15:00.000Z"
+      },
+      "H5VRMYFSO5-SEG51": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "HV1DBD11KB-SEG52": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T15:50:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T05:05:00.000Z"
+      },
+      "NQ6MCYUMI1-SEG53": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T06:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T07:10:00.000Z"
+      },
+      "KE5PZEUSD3-SEG54": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "NEFVNEFGEA-SEG55": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T15:50:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T05:05:00.000Z"
+      },
+      "TZ6N9SI9XJ-SEG56": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T07:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "NN372KFN12-SEG57": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "AXGWIJ6WBS-SEG58": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T17:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T06:10:00.000Z"
+      },
+      "ZO2NJSF5R6-SEG59": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T07:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "EHITV6XF1M-SEG60": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "ILNFKUCMAQ-SEG61": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T19:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T09:10:00.000Z"
+      },
+      "X31XMIGDYF-SEG62": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T10:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T11:10:00.000Z"
+      },
+      "YLGVIMWY1M-SEG63": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "DSRKEB3HEP-SEG64": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T19:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T09:10:00.000Z"
+      },
+      "WGO37EFZ5V-SEG65": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T11:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T12:10:00.000Z"
+      },
+      "JR8JRBMAYK-SEG66": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "X3UA0ZTB73-SEG67": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T19:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T09:10:00.000Z"
+      },
+      "ST0BL0A1FI-SEG68": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T12:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T13:10:00.000Z"
+      },
+      "SZJTCD2UZS-SEG69": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T13:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YVR"
+        },
+        "arrivalTime": "2020-07-14T16:50:00.000Z"
+      },
+      "K9TIC9Q71P-SEG70": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YVR"
+        },
+        "departureTime": "2020-07-14T16:25:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T11:15:00.000Z"
+      },
+      "QPQNS1FIOZ-SEG71": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "MY722WB2UB-SEG72": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T18:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T07:55:00.000Z"
+      },
+      "ZGZQCAV10Q-SEG73": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T04:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T09:35:00.000Z"
+      },
+      "DPGEFK76XZ-SEG74": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T15:30:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T05:20:00.000Z"
+      },
+      "HK0P5LIGY1-SEG75": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T04:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T09:35:00.000Z"
+      },
+      "R3E2XU8N9E-SEG76": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:20:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "JYT6925ANL-SEG77": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T04:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T09:35:00.000Z"
+      },
+      "EB3CE4OCSV-SEG78": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:15:00.000Z"
+      },
+      "QI89RBCFHZ-SEG79": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "RXKX6XQV3O-SEG80": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:20:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "H7MP0ZYAAZ-SEG81": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "SHFWSG7WN2-SEG82": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:15:00.000Z"
+      },
+      "X1C2ZYBD5K-SEG83": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "HPUKB0X6L0-SEG84": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-15T15:30:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-16T05:20:00.000Z"
+      },
+      "HCJR3IR5V9-SEG85": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "ADDY45I6Y3-SEG86": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T15:50:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T05:05:00.000Z"
+      },
+      "G6240NA15P-SEG87": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T06:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T07:10:00.000Z"
+      },
+      "AONMLPFZDA-SEG88": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "LB9YVHFG86-SEG89": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T15:50:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T05:05:00.000Z"
+      },
+      "MWOZATJP2N-SEG90": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T07:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "HSZZKCTYYI-SEG91": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "H7E65QIJ9Z-SEG92": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T17:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T06:10:00.000Z"
+      },
+      "D3WJ9K5E1X-SEG93": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T07:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "Q2DHZJ4RCO-SEG94": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "HV3XJJ4527-SEG95": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T19:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T09:10:00.000Z"
+      },
+      "H4RKG9WFWQ-SEG96": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T10:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T11:10:00.000Z"
+      },
+      "OL2B4L9PM9-SEG97": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "HJ7WP04Q4S-SEG98": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T19:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T09:10:00.000Z"
+      },
+      "LANQZMRHMS-SEG99": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T11:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T12:10:00.000Z"
+      },
+      "H97G2BHVTZ-SEG100": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "K7LQ9VTU0D-SEG101": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T19:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T09:10:00.000Z"
+      },
+      "HC2EHU0PB7-SEG102": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T12:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T13:10:00.000Z"
+      },
+      "AIT325IYJ4-SEG103": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "LVVHR10BWW-SEG104": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T18:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T07:55:00.000Z"
+      },
+      "HYWDXUNYT4-SEG105": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T04:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T09:35:00.000Z"
+      },
+      "HYX1N4H2BC-SEG106": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T15:30:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T05:20:00.000Z"
+      },
+      "U5SGAMZTHR-SEG107": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T04:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T09:35:00.000Z"
+      },
+      "DXZYXSUUH8-SEG108": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:20:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "DTEKQ6SO8H-SEG109": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T04:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T09:35:00.000Z"
+      },
+      "KPS9QU4JZY-SEG110": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:15:00.000Z"
+      },
+      "KXHJPQ7WCL-SEG111": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "LGOOZKOU7K-SEG112": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:20:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "NZ7U2DYDUO-SEG113": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "SB6G6MGWW2-SEG114": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T18:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:15:00.000Z"
+      },
+      "VD223WLS04-SEG115": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "HPB6TCP68Q-SEG116": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-15T15:30:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-16T05:20:00.000Z"
+      },
+      "XCZQ55IO62-SEG117": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T13:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YVR"
+        },
+        "arrivalTime": "2020-07-14T16:50:00.000Z"
+      },
+      "NMGB7MNSXE-SEG118": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YVR"
+        },
+        "departureTime": "2020-07-14T16:25:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T11:15:00.000Z"
+      },
+      "ABEWZ1A4AE-SEG119": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "GZL2TCQVSR-SEG120": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T15:50:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T05:05:00.000Z"
+      },
+      "E1L566ZUFC-SEG121": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T06:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T07:10:00.000Z"
+      },
+      "AWYDFLXACP-SEG122": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "YSQ2BVOGYJ-SEG123": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T15:50:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T05:05:00.000Z"
+      },
+      "HXCV0F06XP-SEG124": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T07:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "NC713HAZ50-SEG125": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T12:00:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "arrivalTime": "2020-07-14T18:15:00.000Z"
+      },
+      "MT0PPLKJOF-SEG126": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2020-07-14T17:05:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T06:10:00.000Z"
+      },
+      "KUXVJPMOKE-SEG127": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T07:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T08:10:00.000Z"
+      },
+      "HYJ0BFKFFD-SEG128": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "XVSAD2UK5N-SEG129": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T19:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T09:10:00.000Z"
+      },
+      "HYT853T5EO-SEG130": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T10:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T11:10:00.000Z"
+      },
+      "R88ETMGWK3-SEG131": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "HC06IBHP29-SEG132": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T19:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T09:10:00.000Z"
+      },
+      "JGHX67WETT-SEG133": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T11:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T12:10:00.000Z"
+      },
+      "H4PA2CCU60-SEG134": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "MEX"
+        },
+        "departureTime": "2020-07-14T17:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "arrivalTime": "2020-07-14T22:45:00.000Z"
+      },
+      "H9K71DZRMR-SEG135": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2020-07-14T19:35:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "arrivalTime": "2020-07-15T09:10:00.000Z"
+      },
+      "X9A71KXNM8-SEG136": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "FRA"
+        },
+        "departureTime": "2020-07-15T12:15:00.000Z",
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "MUC"
+        },
+        "arrivalTime": "2020-07-15T13:10:00.000Z"
+      }
+    }
+  },
+  "pricePlans": {
+    "W6AMEE98O4-Standard": {
+      "name": "Standard",
+      "amenities": [
+        "Checked bags for a fee",
+        "Changes for a fee",
+        "Up to 50% Aeroplan Miles"
+      ],
+      "checkedBaggages": 0
+    },
+    "HFP1VPYGHC-Flex": {
+      "name": "Flex",
+      "amenities": [
+        "1st checked bag free",
+        "Changes for a discounted fee",
+        "100% Aeroplan Miles",
+        "Free standard seat selection"
+      ],
+      "checkedBaggages": 1
+    },
+    "PLI9V1CDTR-Latitude": {
+      "name": "Latitude",
+      "amenities": [
+        "2 checked bags free",
+        "Free changes and cancellations",
+        "125% Aeroplan Miles",
+        "Free extra legroom and standard seat selection",
+        "Free meal or premium beverage and snack",
+        "Free same-day standby",
+        "Priority check-in, baggage and boarding"
+      ],
+      "checkedBaggages": 2
+    },
+    "HNP9IVU8QC-PremiumEconomyflexible": {
+      "name": "Premium Economy (flexible)",
+      "amenities": [
+        "2 checked bags free",
+        "Dedicated cabin, larger seat, more legroom",
+        "Premium meal service",
+        "Priority check-in, baggage and boarding",
+        "125% Aeroplan Miles",
+        "Free changes, cancellations and standby"
+      ],
+      "checkedBaggages": 2
+    },
+    "QE2IIUQAFO-BusinessClasslowest": {
+      "name": "Business Class (lowest)",
+      "amenities": [
+        "2 checked bags free",
+        "Maple Leaf Lounge access",
+        "Exclusive cabin, superior comfort and space",
+        "Inspired cuisine, selected wines and spirits",
+        "Priority check-in, security, baggage and boarding",
+        "150% Aeroplan Miles"
+      ],
+      "checkedBaggages": 2
+    },
+    "J9TKL6B32U-BusinessClassflexible": {
+      "name": "Business Class (flexible)",
+      "amenities": [
+        "2 checked bags free",
+        "Maple Leaf Lounge access",
+        "Exclusive cabin, superior comfort and space",
+        "Inspired cuisine, selected wines and spirits",
+        "Priority check-in, security, baggage and boarding",
+        "150% Aeroplan Miles",
+        "Free changes, cancellations and standby"
+      ],
+      "checkedBaggages": 2
+    }
+  },
+  "passengers": {
+    "LER0A75VIY-T1": {
+      "type": "ADT"
+    }
   }
-]
+}

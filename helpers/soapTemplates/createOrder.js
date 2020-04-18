@@ -1,9 +1,11 @@
+const { convertObjectToXML } = require('./utils/xmlUtils');
+
 const EMAIL_REGEXP =
   /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
   const isEmail = (value) => EMAIL_REGEXP.test(value);
 
 const mapOfferItems = (offerItems) => Object.entries(offerItems)
-  .reduce((items, [key, {passengerReferences}]) => `${items}
+  .reduce((items, [key, { passengerReferences }]) => `${items}
         <iata:OfferItem OfferItemID="${key}">
           <iata:PassengerRefs>${passengerReferences}</iata:PassengerRefs>
         </iata:OfferItem>`, '');
@@ -21,9 +23,8 @@ const mapPassengerList = (passengers) => Object.keys(passengers)
           <iata:Surname>${passenger.lastnames.join(' ')}</iata:Surname>
         </iata:Individual>
         <iata:ContactInfoRef>CTC${index + 1}</iata:ContactInfoRef>
-      </iata:Passenger>`
+      </iata:Passenger>`;
   }, '');
-
 
 const emailTemplate = (value) => `<iata:EmailAddress>
     <iata:EmailAddressValue>${value}</iata:EmailAddressValue>
@@ -36,12 +37,12 @@ const phoneTemplate = (value) => `<iata:Phone>
 const mapEmails = (passenger) => passenger.contactInformation.reduce((list, value) => {
   if (!isEmail(value)) return list;
   return `${list}${emailTemplate(value)}`;
-}, '')
+}, '');
 
 const mapPhones = (passenger) => passenger.contactInformation.reduce((list, value) => {
   if (isEmail(value)) return list;
   return `${list}${phoneTemplate(value)}`;
-}, '')
+}, '');
 
 const mapContacList = (passengers) => Object.keys(passengers)
   .reduce((list, key, index) => {
@@ -53,7 +54,7 @@ const mapContacList = (passengers) => Object.keys(passengers)
       </iata:ContactInformation>`;
   }, '');
 
-const orderCreateRequestTemplate = (data) => `<soapenv:Envelope xmlns:iata="http://www.iata.org/IATA/EDIST/2017.1" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+const orderCreateRequestTemplate_AF = data => `<soapenv:Envelope xmlns:iata="http://www.iata.org/IATA/EDIST/2017.1" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
   <soapenv:Header>
     <trackingMessageHeader xmlns="http://www.af-klm.com/soa/xsd/MessageHeader-V1_0">
       <consumerRef>
@@ -118,7 +119,37 @@ const orderCreateRequestTemplate = (data) => `<soapenv:Envelope xmlns:iata="http
     </iata:OrderCreateRQ>
   </soapenv:Body>
 </soapenv:Envelope>`;
+module.exports.orderCreateRequestTemplate_AF = orderCreateRequestTemplate_AF;
 
-module.exports = {
-  orderCreateRequestTemplate,
-}
+const orderCreateRequestTemplate_AC = data => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v2="http://sita.aero/NDC/NDCUtility/v2">
+<soapenv:Header/>
+<soapenv:Body>
+  <v2:NDCMSG_Envelope>
+      <NDCMSG_Header>
+          <Function>OrderCreateRQ</Function>
+          <SchemaType>NDC</SchemaType>
+          <SchemaVersion>YY.2017.2</SchemaVersion>
+          <Sender>
+            <Address>
+                <Company>WindingTree</Company>
+                <NDCSystemId>DEV</NDCSystemId>
+            </Address>
+          </Sender>
+          <Recipient>
+            <Address>
+              <Company>AC</Company>
+              <NDCSystemId>DEV</NDCSystemId>
+            </Address>
+          </Recipient>
+      </NDCMSG_Header>
+      <NDCMSG_Body>
+          <NDCMSG_Payload>
+          <OrderCreateRQ Version="2017.2" PrimaryLangID="EN" xmlns="http://www.iata.org/IATA/EDIST/2017.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" ">
+              ${convertObjectToXML(data).join('')}
+            </OrderCreateRQ>
+          </NDCMSG_Payload>
+      </NDCMSG_Body>
+  </v2:NDCMSG_Envelope>
+</soapenv:Body>
+</soapenv:Envelope>`;
+module.exports.orderCreateRequestTemplate_AC = orderCreateRequestTemplate_AC;

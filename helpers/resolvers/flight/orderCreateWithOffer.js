@@ -1,12 +1,18 @@
-const axios = require('axios');
 const { transform } = require('camaro');
-const config = require('../../../config');
+const { airFranceConfig, airCanadaConfig } = require('../../../config');
 const GliderError = require('../../error');
 
-const { mapNdcRequestData } = require('../../transformInputData/createOrder');
-const { orderCreateRequestTemplate } = require('../../soapTemplates/createOrder');
 const {
-  provideOrderCreateTransformTemplate,
+  mapNdcRequestData_AF,
+  mapNdcRequestData_AC
+} = require('../../transformInputData/createOrder');
+const {
+  orderCreateRequestTemplate_AF,
+  orderCreateRequestTemplate_AC
+} = require('../../soapTemplates/createOrder');
+const {
+  provideOrderCreateTransformTemplate_AF,
+  provideOrderCreateTransformTemplate_AC,
   ErrorsTransformTemplate
 } = require('../../camaroTemplates/provideOrderCreate');
 
@@ -18,23 +24,54 @@ const {
   splitPropertyBySpace
 } = require('../../parsers');
 
-module.exports = async (requestBody) => {
+const { callProvider } = require('../utils/flightUtils');
 
-  const ndcRequestData = mapNdcRequestData(requestBody);
-  const ndcBody = orderCreateRequestTemplate(ndcRequestData);
-  const response = await axios
-    .post(
-      'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001451v01/EXT',
-      ndcBody, {
-        headers: {
-          'Content-Type': 'text/xml;charset=UTF-8',
-          'Accept-Encoding': 'gzip,deflate',
-          SOAPAction: '"http://www.af-klm.com/services/passenger/ProvideOrderCreate/provideOrderCreate"',
-          'api_key': config.airFranceConfig.apiKey,
-        },
-      }
-    );
+module.exports = async (offer, requestBody) => {
+  let ndcRequestData;
+  let providerUrl;
+  let apiKey;
+  let SOAPAction;
+  let ndcBody;
+  let responseTransformTemplate;
+
+  console.log('Offer:', JSON.stringify(offer, null, 2));
   
+  switch (offer.provider) {
+    case 'AF':
+      ndcRequestData = mapNdcRequestData_AF(airFranceConfig, requestBody);
+      providerUrl = 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001451v01/EXT';
+      apiKey = airFranceConfig.apiKey;
+      SOAPAction = '"http://www.af-klm.com/services/passenger/ProvideOrderCreate/provideOrderCreate"';
+      ndcBody = orderCreateRequestTemplate_AF(ndcRequestData);
+      responseTransformTemplate = provideOrderCreateTransformTemplate_AF;
+      break;
+    case 'AC':
+      ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offer, requestBody);
+
+      console.log('NdcData:', JSON.stringify(ndcRequestData, null, 2));
+      
+      providerUrl = 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/OrderCreate';
+      apiKey = airCanadaConfig.apiKey;
+      ndcBody = orderCreateRequestTemplate_AC(ndcRequestData);
+
+      console.log('NdcBody:', ndcBody);
+      
+      responseTransformTemplate = provideOrderCreateTransformTemplate_AC;
+      break;
+    default:
+      Promise.reject('Unsupported flight operator');
+  }
+
+  const { response, error } = await callProvider(offer.provider, providerUrl, apiKey, ndcBody, SOAPAction);
+
+  if (error) {
+    console.log(response.error);
+    throw new GliderError(
+      response.error.message,
+      502
+    );
+  }
+
   // Attempt to parse as a an error
   const { errors } = await transform(response.data, ErrorsTransformTemplate);
 
@@ -47,7 +84,7 @@ module.exports = async (requestBody) => {
   }
 
   // Otherwise parse as a result
-  const createResults = await transform(response.data, provideOrderCreateTransformTemplate);
+  const createResults = await transform(response.data, responseTransformTemplate);
 
   createResults.order.itinerary.segments = mergeHourAndDate(
     createResults.order.itinerary.segments,

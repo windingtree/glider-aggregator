@@ -23,7 +23,7 @@ const provideAirShoppingTransformTemplate_AC = {
         taxes: 'OfferItem/TotalPriceDetail/Taxes/Total'
       },
       pricePlansReferences: [
-        '//AirShoppingRS/OffersGroup/AirlineOffers/Offer/OfferItem/Service',
+        'OfferItem/Service',
         {
           _id_: 'ServiceRef',
           flights: 'FlightRefs'
@@ -49,16 +49,59 @@ const provideAirShoppingTransformTemplate_AC = {
         },
         origin: {
           locationType: '#airport',
-          iataCode: 'Departure/AirportCode',
+          iataCode: 'Departure/AirportCode'
         },
         destination: {
           locationType: '#airport',
-          iataCode: 'Arrival/AirportCode',
+          iataCode: 'Arrival/AirportCode'
         },
         splittedDepartureTime: 'Departure/Time',
         splittedDepartureDate: 'Departure/Date',
         splittedArrivalTime: 'Arrival/Time',
         splittedArrivalDate: 'Arrival/Date',
+        Departure: {
+          AirportCode: 'Departure/AirportCode',
+          Date: 'Departure/Date',
+          Time: 'Departure/Time',
+          Terminal: {
+            Name: 'Departure/Terminal/Name'
+          }
+        },
+        Arrival: {
+          AirportCode: 'Arrival/AirportCode',
+          Date: 'Arrival/Date',
+          Time: 'Arrival/Time',
+          Terminal: {
+            Name: 'Arrival/Terminal/Name'
+          }
+        },
+        MarketingCarrier: {
+          AirlineID: 'MarketingCarrier/AirlineID',
+          Name: 'MarketingCarrier/Name',
+          FlightNumber: 'MarketingCarrier/FlightNumber',
+          ResBookDesigCode: 'MarketingCarrier/ResBookDesigCode'
+        },
+        OperatingCarrier: {
+          Disclosures: {
+            Description: {
+              Text: 'OperatingCarrier/Disclosures/Description/Text'
+            }
+          }
+        },
+        Equipment: {
+          AircraftCode: 'Equipment/AircraftCode'
+        },
+        ClassOfService: {
+          Code: 'ClassOfService/Code'
+        },
+        FlightDetail: {
+          FlightDuration: {
+            Value: 'FlightDetail/FlightDuration/Value'
+          },
+          Stops: {
+            StopQuantity: 'FlightDetail/Stops/StopQuantity'
+          }
+        }
       }
     ]
   },
@@ -71,14 +114,23 @@ const provideAirShoppingTransformTemplate_AC = {
         'Descriptions/Description',
         'Text'
       ],
-      checkedBaggages: 'ClassOfService/@refs',
+      checkedBaggages: ''
     }
   ],
   passengers: [
     '//AirShoppingRS/DataLists/PassengerList/Passenger',
     {
       _id_: '@PassengerID',
-      type: 'PTC',
+      type: 'PTC'
+    }
+  ],
+  destinations: [
+    '//AirShoppingRS/DataLists/OriginDestinationList/OriginDestination',
+    {
+      _id_: '@OriginDestinationKey',
+      DepartureCode: 'DepartureCode',
+      ArrivalCode: 'ArrivalCode',
+      FlightReferences: 'FlightReferences'
     }
   ]
 };
@@ -99,8 +151,6 @@ const provideAirShoppingTransformTemplate_AF = {
         passengerReferences: 'Service/PassengerRefs',
       },
     }],
-    //itineraryCombinationReference: 'FlightsOverview/FlightRef',
-    //serviceClassReference: 'FlightsOverview/FlightRef/@PriceClassRef',
     flightsReferences: ['FlightsOverview/FlightRef', {
       flightRef: '.',
       priceClassRef: '@PriceClassRef',
