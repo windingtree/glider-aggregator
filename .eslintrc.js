@@ -45,9 +45,7 @@ module.exports = {
             "before": false,
             "after": true
         }],
-        "camelcase": [2, {
-            "properties": "always"
-        }],
+        "camelcase": 0,
         "no-mixed-spaces-and-tabs": [2, "smart-tabs"],
         "comma-dangle": [1, "only-multiline"],
         "no-dupe-args": 2,

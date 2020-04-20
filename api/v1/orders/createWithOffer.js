@@ -76,10 +76,12 @@ module.exports = basicDecorator(async (req, res) => {
   await ordersManager.saveOrder(
     orderCreationResults.orderId,
     {
+      provider: storedOffer.provider,
       request: requestBody,
       guarantee: guarantee,
       guaranteeClaim: guaranteeClaim,
-      order: orderCreationResults
+      order: orderCreationResults,
+      offer: storedOffer
     }
   );
 
