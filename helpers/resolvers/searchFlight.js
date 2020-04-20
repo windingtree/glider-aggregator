@@ -1,4 +1,5 @@
 const { transform } = require('camaro');
+const { v4: uuidv4 } = require('uuid');
 const {
   mapNdcRequestData_AF,
   mapNdcRequestData_AC
@@ -132,6 +133,7 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
   
   // Store the offers
   let indexedOffers = {};
+  let overriddenOffers = {};
   let expirationDate = new Date(Date.now() + 60 * 30 * 1000).toISOString();// now + 30 min
   
   for (let offerId in searchResults.offers) {
@@ -140,19 +142,18 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
       searchResults.offers[offerId].expiration = expirationDate;
     }
 
-    let extraData = {};
-
     if (provider === 'AC') {
       let segments;
       let destinations;
-
+      let extraData = {};
+      
       // Extract proper segments associated with the offer
       for (const pricePlanId in searchResults.offers[offerId].pricePlansReferences) {
         const pricePlan = searchResults.offers[offerId].pricePlansReferences[pricePlanId];
-        segments = pricePlan.flights.map(f => {
+        
+        pricePlan.flights.forEach(f => {
           // Get the associated combinations
-          const combinations = searchResults.itineraries.combinations[f];
-          return combinations.map(c => {
+          segments = searchResults.itineraries.combinations[f].map(c => {
             if (searchResults.itineraries.segments[c].Departure.Terminal.Name === '') {
               delete searchResults.itineraries.segments[c].Departure.Terminal;
             }
@@ -172,30 +173,57 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
             delete searchResults.itineraries.segments[c].FlightDetail;
             return segment;
           });
-        }).reduce((a, v) => ([...a, ...v]), []);
-        destinations = pricePlan.flights.map(f => ({
-          id: f,
-          ...searchResults.destinations[f]
-        }));
+
+          destinations = [
+            {
+              id: f,
+              ...searchResults.destinations[f]
+            }
+          ];
+
+          const splittedOfferId = uuidv4();
+          indexedOffers[splittedOfferId] = new offer.FlightOffer(
+            provider,
+            provider,
+            searchResults.offers[offerId].expiration,
+            searchResults.offers[offerId].offerItems,
+            searchResults.offers[offerId].price.public,
+            searchResults.offers[offerId].price.currency,
+            {
+              offerId,
+              segments,
+              destinations
+            }
+          );
+
+          overriddenOffers[splittedOfferId] = searchResults.offers[offerId];
+        });
+        
+        // .reduce((a, v) => ([...a, ...v]), []);
+        // destinations = pricePlan.flights.map(f => ({
+        //   id: f,
+        //   ...searchResults.destinations[f]
+        // }));
       }
+      
+    } else {
 
-      extraData = {
-        segments,
-        destinations
-      };
+      indexedOffers[offerId] = new offer.FlightOffer(
+        provider,
+        provider,
+        searchResults.offers[offerId].expiration,
+        searchResults.offers[offerId].offerItems,
+        searchResults.offers[offerId].price.public,
+        searchResults.offers[offerId].price.currency
+      );
     }
-
-    indexedOffers[offerId] = new offer.FlightOffer(
-      provider,
-      provider,
-      searchResults.offers[offerId].expiration,
-      searchResults.offers[offerId].offerItems,
-      searchResults.offers[offerId].price.public,
-      searchResults.offers[offerId].price.currency,
-      extraData
-    );
   }
 
+  // Rewrite whole search results object by adding splitted offers
+  if (overriddenOffers) {
+    searchResults.offers = overriddenOffers;
+  }
+  
   await offer.offerManager.storeOffers(indexedOffers);
 
   delete searchResults.checkedBaggages;

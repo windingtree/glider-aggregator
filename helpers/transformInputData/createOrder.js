@@ -29,7 +29,9 @@ const mapNdcRequestData_AC = (config, offer, body, guaranteeClaim) => ({
     Order: {
       Offer: {
         '@Owner': config.AirlineID,
-        '@OfferID': body.offerId,
+        '@OfferID': offer.extraData && offer.extraData.offerId
+          ? offer.extraData.offerId
+          : body.offerId,
         '@ResponseID': '',
         TotalOfferPrice: {
           '@Code': offer.currency,
