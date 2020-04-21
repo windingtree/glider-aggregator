@@ -102,7 +102,10 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   }
 
   // Otherwise parse as a result
-  const createResults = await transform(response.data, responseTransformTemplate);
+  const createResults = await transform(
+    response.data,
+    responseTransformTemplate
+  );
 
   createResults.order.itinerary.segments = mergeHourAndDate(
     createResults.order.itinerary.segments,
@@ -153,6 +156,5 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   );
 
   delete createResults.order.contactList;
-
   return createResults;
 };

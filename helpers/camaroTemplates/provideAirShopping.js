@@ -1,7 +1,6 @@
-//import { airFranceConfig } from '../../config';
 const config = require('../../config');
 
-const provideAirShoppingTransformTemplate_AC = {
+module.exports.provideAirShoppingTransformTemplate_AC = {
   offers: [
     '//AirShoppingRS/OffersGroup/AirlineOffers/Offer',
     {
@@ -135,7 +134,7 @@ const provideAirShoppingTransformTemplate_AC = {
   ]
 };
 
-const provideAirShoppingTransformTemplate_AF = {
+module.exports.provideAirShoppingTransformTemplate_AF = {
   offers: ['/S:Envelope/S:Body/AirShoppingRS/OffersGroup/AirlineOffers/Offer', {
     _id_: '@OfferID',
     expiration: 'TimeLimits/OfferExpiration/@DateTime',
@@ -197,14 +196,14 @@ const provideAirShoppingTransformTemplate_AF = {
   }]
 };
 
-const ErrorsTransformTemplate_AF = {
+module.exports.ErrorsTransformTemplate_AF = {
   errors: ['/S:Envelope/S:Body/AirShoppingRS/Errors/Error', {
     message: '@ShortText',
     code: '@Code',
   }]
 };
 
-const FaultsTransformTemplate_AC = {
+module.exports.FaultsTransformTemplate_AC = {
   errors: ['//NDCMSG_Fault', {
     message: 'Description',
     code: 'ErrorCode',
@@ -212,16 +211,10 @@ const FaultsTransformTemplate_AC = {
   }]
 };
 
-const ErrorsTransformTemplate_AC = {
+module.exports.ErrorsTransformTemplate_AC = {
   errors: ['//Errors', {
     message: 'Error',
     code: 'Error/@Code',
     type: 'Error/@Type'
   }]
 };
-
-module.exports.provideAirShoppingTransformTemplate_AF = provideAirShoppingTransformTemplate_AF;
-module.exports.provideAirShoppingTransformTemplate_AC = provideAirShoppingTransformTemplate_AC;
-module.exports.ErrorsTransformTemplate_AF = ErrorsTransformTemplate_AF;
-module.exports.ErrorsTransformTemplate_AC = ErrorsTransformTemplate_AC;
-module.exports.FaultsTransformTemplate_AC = FaultsTransformTemplate_AC;

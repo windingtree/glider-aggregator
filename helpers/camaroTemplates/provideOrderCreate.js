@@ -1,6 +1,4 @@
-//import { airFranceConfig } from '../../config';
-
-const provideOrderCreateTransformTemplate_AF = {
+module.exports.provideOrderCreateTransformTemplate_AF = {
   orderId: '/S:Envelope/S:Body/ns2:OrderViewRS/ns2:Response/ns2:Order/@OrderID',
   order: {
     version: '#1.0.0',
@@ -63,7 +61,7 @@ const provideOrderCreateTransformTemplate_AF = {
   },
 };
 
-const provideOrderCreateTransformTemplate_AC = {
+module.exports.provideOrderCreateTransformTemplate_AC = {
   orderId: '//OrderViewRS/Response/Order/@OrderID',
   order: {
     version: '#1.0.0',
@@ -148,14 +146,14 @@ const provideOrderCreateTransformTemplate_AC = {
   }
 };
 
-const ErrorsTransformTemplate_AF = {
+module.exports.ErrorsTransformTemplate_AF = {
   errors: ['/S:Envelope/S:Body/ns2:OrderViewRS/ns2:Errors/ns2:Error', {
     message: '@ShortText',
     code: '@Code',
   }]
 };
 
-const FaultsTransformTemplate_AC = {
+module.exports.FaultsTransformTemplate_AC = {
   errors: ['//NDCMSG_Fault', {
     message: 'Description',
     code: 'ErrorCode',
@@ -163,18 +161,10 @@ const FaultsTransformTemplate_AC = {
   }]
 };
 
-const ErrorsTransformTemplate_AC = {
+module.exports.ErrorsTransformTemplate_AC = {
   errors: ['//Errors', {
     message: 'Error',
     code: 'Error/@Code',
     type: 'Error/@Type'
   }]
-};
-
-module.exports = {
-  provideOrderCreateTransformTemplate_AF,
-  provideOrderCreateTransformTemplate_AC,
-  ErrorsTransformTemplate_AF,
-  ErrorsTransformTemplate_AC,
-  FaultsTransformTemplate_AC
 };

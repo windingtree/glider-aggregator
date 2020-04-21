@@ -91,8 +91,6 @@ module.exports = basicDecorator(async (req, res) => {
     SOAPAction
   );
 
-  // console.log('###', response.data);
-
   if (error && !error.isAxiosError) {
     
     throw new GliderError(
@@ -124,7 +122,10 @@ module.exports = basicDecorator(async (req, res) => {
     );
   }
 
-  const fulfillResults = await transform(response.data, responseTransformTemplate);
+  const fulfillResults = await transform(
+    response.data,
+    responseTransformTemplate
+  );
 
   fulfillResults.travelDocuments.etickets = reduceToObjectByKey(
     fulfillResults.travelDocuments.etickets

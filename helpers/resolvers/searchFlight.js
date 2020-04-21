@@ -152,7 +152,8 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
         const pricePlan = searchResults.offers[offerId].pricePlansReferences[pricePlanId];
         
         pricePlan.flights.forEach(f => {
-          // Get the associated combinations
+          
+          // Get the associated combinations associated with the flight
           segments = searchResults.itineraries.combinations[f].map(c => {
             if (searchResults.itineraries.segments[c].Departure.Terminal.Name === '') {
               delete searchResults.itineraries.segments[c].Departure.Terminal;
@@ -174,6 +175,7 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
             return segment;
           });
 
+          // Get associated destination associated with the flight
           destinations = [
             {
               id: f,
@@ -181,6 +183,7 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
             }
           ];
 
+          // Save each flight offer (from the set of flights) as separate offer
           const splittedOfferId = uuidv4();
           indexedOffers[splittedOfferId] = new offer.FlightOffer(
             provider,
@@ -198,12 +201,6 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
 
           overriddenOffers[splittedOfferId] = searchResults.offers[offerId];
         });
-        
-        // .reduce((a, v) => ([...a, ...v]), []);
-        // destinations = pricePlan.flights.map(f => ({
-        //   id: f,
-        //   ...searchResults.destinations[f]
-        // }));
       }
       
     } else {
@@ -231,7 +228,7 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
   return searchResults;
 };
 
-const searchFlight = async (body) => {
+module.exports.searchFlight = async (body) => {
 
   let responseTransformTemplate;
   let errorsTransformTemplate;
@@ -303,10 +300,15 @@ const searchFlight = async (body) => {
           let faultsResult;
 
           if (faultsTransformTemplate) {
-            faultsResult = await transform(r.response.data, faultsTransformTemplate);
+            faultsResult = await transform(
+              r.response.data,
+              faultsTransformTemplate
+            );
           }
 
-          const errorsResult = await transform(r.response.data, errorsTransformTemplate);
+          const errorsResult = await transform(
+            r.response.data,errorsTransformTemplate
+          );
 
           // Because of two types of errors can be returned: NDCMSG_Fault and Errors
           const combinedErrors = [
@@ -359,5 +361,3 @@ const searchFlight = async (body) => {
 
   return transformedResponses.reduce((a, v) => deepMerge(a, v), searchResult);
 };
-
-module.exports.searchFlight = searchFlight;

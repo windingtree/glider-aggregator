@@ -54,7 +54,7 @@ const mapContacList = (passengers) => Object.keys(passengers)
       </iata:ContactInformation>`;
   }, '');
 
-const orderCreateRequestTemplate_AF = data => `<soapenv:Envelope xmlns:iata="http://www.iata.org/IATA/EDIST/2017.1" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  module.exports.orderCreateRequestTemplate_AF = data => `<soapenv:Envelope xmlns:iata="http://www.iata.org/IATA/EDIST/2017.1" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
   <soapenv:Header>
     <trackingMessageHeader xmlns="http://www.af-klm.com/soa/xsd/MessageHeader-V1_0">
       <consumerRef>
@@ -119,9 +119,8 @@ const orderCreateRequestTemplate_AF = data => `<soapenv:Envelope xmlns:iata="htt
     </iata:OrderCreateRQ>
   </soapenv:Body>
 </soapenv:Envelope>`;
-module.exports.orderCreateRequestTemplate_AF = orderCreateRequestTemplate_AF;
 
-const orderCreateRequestTemplate_AC = data => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v2="http://sita.aero/NDC/NDCUtility/v2">
+module.exports.orderCreateRequestTemplate_AC = data => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v2="http://sita.aero/NDC/NDCUtility/v2">
 <soapenv:Header/>
 <soapenv:Body>
   <v2:NDCMSG_Envelope>
@@ -152,4 +151,3 @@ const orderCreateRequestTemplate_AC = data => `<soapenv:Envelope xmlns:soapenv="
   </v2:NDCMSG_Envelope>
 </soapenv:Body>
 </soapenv:Envelope>`;
-module.exports.orderCreateRequestTemplate_AC = orderCreateRequestTemplate_AC;

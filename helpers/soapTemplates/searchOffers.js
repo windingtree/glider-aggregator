@@ -1,5 +1,6 @@
-// For documentation, https://github.com/windingtree/simard-schemas/blob/master/ndc/data-mapping.mds
 const { convertObjectToXML } = require('./utils/xmlUtils');
+
+// For documentation, https://github.com/windingtree/simard-schemas/blob/master/ndc/data-mapping.mds
 
 // The Passenger object
 const mapPassengers = (passengers) => passengers.reduce(
@@ -33,7 +34,7 @@ const mapOriginDestinations = (OriginDestinations) => OriginDestinations.reduce(
 );
 
 // The AirFrance request template
-const provideShoppingRequestTemplate_AF = data => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:edis="http://www.iata.org/IATA/EDIST/2017.1">
+module.exports.provideShoppingRequestTemplate_AF = data => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:edis="http://www.iata.org/IATA/EDIST/2017.1">
   <soapenv:Header>
     <trackingMessageHeader xmlns="http://www.af-klm.com/soa/xsd/MessageHeader-V1_0">
         <consumerRef>
@@ -102,9 +103,8 @@ const provideShoppingRequestTemplate_AF = data => `<soapenv:Envelope xmlns:soape
     </edis:AirShoppingRQ>
   </soapenv:Body>
 </soapenv:Envelope>`;
-module.exports.provideShoppingRequestTemplate_AF = provideShoppingRequestTemplate_AF;
 
-const provideShoppingRequestTemplate_AC = data => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v2="http://sita.aero/NDC/NDCUtility/v2">
+module.exports.provideShoppingRequestTemplate_AC = data => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v2="http://sita.aero/NDC/NDCUtility/v2">
 <soapenv:Header/>
 <soapenv:Body>
   <v2:NDCMSG_Envelope>
@@ -136,4 +136,3 @@ const provideShoppingRequestTemplate_AC = data => `<soapenv:Envelope xmlns:soape
   </v2:NDCMSG_Envelope>
 </soapenv:Body>
 </soapenv:Envelope>`;
-module.exports.provideShoppingRequestTemplate_AC = provideShoppingRequestTemplate_AC;

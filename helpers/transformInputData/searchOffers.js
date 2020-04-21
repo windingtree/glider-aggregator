@@ -21,7 +21,7 @@ const expandPassengers = (passengers) => {
 }
 
 // Build request data for the request to the AirFrance provider
-const mapNdcRequestData_AF = (config, {itinerary, passengers}) => ({
+module.exports.mapNdcRequestData_AF = (config, {itinerary, passengers}) => ({
   ...(JSON.parse(JSON.stringify(config))),
   PointOfSale: {
     RequestTime: (new Date(Date.now())).toISOString(),
@@ -65,10 +65,12 @@ const mapNdcRequestData_AF = (config, {itinerary, passengers}) => ({
     }
   }
 });
-module.exports.mapNdcRequestData_AF = mapNdcRequestData_AF;
 
 // Build request data for the request to the AirCanada provider
-const mapNdcRequestData_AC = (config, {itinerary, passengers}) => ({
+module.exports.mapNdcRequestData_AC = (
+  { apiKey, commission, AirlineID, ...config },// extract the only needed part of config
+  { itinerary, passengers }
+) => ({
   ...(JSON.parse(JSON.stringify(config))),
   CoreQuery: {
     OriginDestinations: itinerary.segments.map(segment => ({
@@ -99,4 +101,3 @@ const mapNdcRequestData_AC = (config, {itinerary, passengers}) => ({
     }))
   }
 });
-module.exports.mapNdcRequestData_AC = mapNdcRequestData_AC;

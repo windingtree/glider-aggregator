@@ -1,7 +1,7 @@
 const format = require('date-fns/format');
 const { getCardCode } = require('./utils/cardUtils');
 
-const mapNdcRequestData_AF = (config, { offerId, offerItems, passengers }) => ({
+module.exports.mapNdcRequestData_AF = (config, { offerId, offerItems, passengers }) => ({
   ...(JSON.parse(JSON.stringify(config))),
   trackingMessageHeader: {
     consumerRef : {
@@ -21,9 +21,13 @@ const mapNdcRequestData_AF = (config, { offerId, offerItems, passengers }) => ({
     },
   },
 });
-module.exports.mapNdcRequestData_AF = mapNdcRequestData_AF;
 
-const mapNdcRequestData_AC = (config, offer, body, guaranteeClaim) => ({
+module.exports.mapNdcRequestData_AC = (
+  { apiKey, commission, AirlineID, ...config },// extract the only needed part of config
+  offer,
+  body,
+  guaranteeClaim
+) => ({
   ...(JSON.parse(JSON.stringify(config))),
   Query: {
     Order: {
@@ -139,4 +143,3 @@ const mapNdcRequestData_AC = (config, offer, body, guaranteeClaim) => ({
     }
   }
 });
-module.exports.mapNdcRequestData_AC = mapNdcRequestData_AC;
