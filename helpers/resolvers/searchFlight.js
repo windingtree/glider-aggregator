@@ -172,13 +172,6 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
               id: c,
               ...searchResults.itineraries.segments[c]
             };
-            delete searchResults.itineraries.segments[c].Departure;
-            delete searchResults.itineraries.segments[c].Arrival;
-            delete searchResults.itineraries.segments[c].MarketingCarrier;
-            delete searchResults.itineraries.segments[c].OperatingCarrier;
-            delete searchResults.itineraries.segments[c].Equipment;
-            delete searchResults.itineraries.segments[c].ClassOfService;
-            delete searchResults.itineraries.segments[c].FlightDetail;
             return segment;
           });
 
@@ -231,6 +224,17 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
   }
   
   await offer.offerManager.storeOffers(indexedOffers);
+
+  // Remove helpers segments information from results
+  for (const segment in searchResults.itineraries.segments) {
+    delete searchResults.itineraries.segments[segment].Departure;
+    delete searchResults.itineraries.segments[segment].Arrival;
+    delete searchResults.itineraries.segments[segment].MarketingCarrier;
+    delete searchResults.itineraries.segments[segment].OperatingCarrier;
+    delete searchResults.itineraries.segments[segment].Equipment;
+    delete searchResults.itineraries.segments[segment].ClassOfService;
+    delete searchResults.itineraries.segments[segment].FlightDetail;
+  }
 
   delete searchResults.checkedBaggages;
   delete searchResults.destinations;
