@@ -99,6 +99,11 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
       combinedErrors.map(e => e.message).join('; '),
       502
     );
+  } else if (error) {
+    throw new GliderError(
+      error.message,
+      502
+    );
   }
 
   // Otherwise parse as a result

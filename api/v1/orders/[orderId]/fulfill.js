@@ -120,6 +120,11 @@ module.exports = basicDecorator(async (req, res) => {
       combinedErrors.map(e => e.message).join('; '),
       502
     );
+  } else if (error) {
+    throw new GliderError(
+      error.message,
+      502
+    );
   }
 
   const fulfillResults = await transform(

@@ -145,6 +145,7 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
     if (provider === 'AC') {
       let segments;
       let destinations;
+      let pricePlansRefsOverride;
       let extraData = {};
       
       // Extract proper segments associated with the offer
@@ -152,6 +153,11 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
         const pricePlan = searchResults.offers[offerId].pricePlansReferences[pricePlanId];
         
         pricePlan.flights.forEach(f => {
+          pricePlansRefsOverride = {
+            [pricePlanId]: {
+              flights: [f]
+            }
+          };
           
           // Get the associated combinations associated with the flight
           segments = searchResults.itineraries.combinations[f].map(c => {
@@ -200,6 +206,7 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
           );
 
           overriddenOffers[splittedOfferId] = searchResults.offers[offerId];
+          overriddenOffers[splittedOfferId].pricePlansReferences = pricePlansRefsOverride;
         });
       }
       
@@ -317,13 +324,19 @@ module.exports.searchFlight = async (body) => {
           ];
 
           if (combinedErrors.length) {
-            throw new GliderError(
-              combinedErrors.map(e => e.message).join('; '),
-              502
-            );
+            return {
+              provider: r.provider,
+              error: combinedErrors.map(e => e.message).join('; ')
+            };
+          } else if (r.error) {
+            return {
+              provider: r.provider,
+              error: r.error.message
+            };
           } else {
             return null;
           }
+
         } catch (e) {
 
           // Transformation error
