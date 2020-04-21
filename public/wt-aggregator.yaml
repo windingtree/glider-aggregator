@@ -237,6 +237,7 @@ paths:
                           "civility": "MR",
                           "lastnames": ["Marley"],
                           "firstnames": ["Bob"],
+                          "gender": "Male",
                           "birthdate": "1980-03-21T00:00:00Z",
                           "contactInformation":
                             ["+32123456789", "contact@org.co.uk"],

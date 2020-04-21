@@ -143,6 +143,19 @@ module.exports.provideOrderCreateTransformTemplate_AC = {
       agent: '#0xc0fbc1348b43d50c948edf1818b0abfdd7466b9e',
       signature: '#0xa3f20717a250c2b0b729b7e5becbff67fdaef7e0699da4de7ca5895b02a170a12d887fd3b17bfdce3481f10bea41f45ba9f709d39ce8325427b57afcfc994cee1b'
     }
+  },
+  travelDocuments: {
+    bookings: [
+      '//OrderViewRS/Response/Order/BookingReferences/BookingReference',
+      'ID'
+    ],
+    etickets: [
+      '//OrderViewRS/Response/TicketDocInfos/TicketDocInfo',
+      {
+        _id_: 'TicketDocument/TicketDocNbr',
+        _passenger_: 'PassengerReference'
+      }
+    ]
   }
 };
 

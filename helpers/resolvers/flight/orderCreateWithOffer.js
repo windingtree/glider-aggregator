@@ -23,7 +23,8 @@ const {
   reduceToObjectByKey,
   useDictionary,
   reduceContactInformation,
-  splitPropertyBySpace
+  splitPropertyBySpace,
+  reduceToProperty
 } = require('../../parsers');
 
 const { callProvider } = require('../utils/flightUtils');
@@ -159,6 +160,21 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   createResults.order.passengers = reduceToObjectByKey(
     createResults.order.passengers
   );
+
+  if (Array.isArray(createResults.travelDocuments.bookings) &&
+      createResults.travelDocuments.bookings.length > 0) {
+    
+    createResults.travelDocuments.etickets = reduceToObjectByKey(
+      createResults.travelDocuments.etickets
+    );
+  
+    createResults.travelDocuments.etickets = reduceToProperty(
+      createResults.travelDocuments.etickets,
+      '_passenger_'
+    );
+  } else {
+    delete createResults.travelDocuments;
+  }
 
   delete createResults.order.contactList;
   return createResults;

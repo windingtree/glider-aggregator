@@ -238,6 +238,7 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
 
   delete searchResults.checkedBaggages;
   delete searchResults.destinations;
+  
   return searchResults;
 };
 
