@@ -10,7 +10,7 @@ module.exports.callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOA
     const timeout = 60 * 1000; // 60 sec
     const source = axios.CancelToken.source();
     const connectionTimeout = setTimeout(() => source.cancel(
-        `Cannot connect to the source: ${uri}`
+        `Cannot connect to the source: ${apiEndpoint}`
     ), timeout);// connection timeout
     
     response = await axios.post(
