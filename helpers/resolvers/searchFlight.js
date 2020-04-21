@@ -145,22 +145,23 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
     if (provider === 'AC') {
       let segments;
       let destinations;
-      let pricePlansRefsOverride;
       let extraData = {};
       
       // Extract proper segments associated with the offer
       for (const pricePlanId in searchResults.offers[offerId].pricePlansReferences) {
         const pricePlan = searchResults.offers[offerId].pricePlansReferences[pricePlanId];
-        
-        pricePlan.flights.forEach(f => {
-          pricePlansRefsOverride = {
+
+        for (const flight of pricePlan.flights) {
+
+          // Build plans refs with deduplicated flights
+          const pricePlansRefsOverride = {
             [pricePlanId]: {
-              flights: [f]
+              flights: [flight]
             }
           };
-          
+
           // Get the associated combinations associated with the flight
-          segments = searchResults.itineraries.combinations[f].map(c => {
+          segments = searchResults.itineraries.combinations[flight].map(c => {
             if (searchResults.itineraries.segments[c].Departure.Terminal.Name === '') {
               delete searchResults.itineraries.segments[c].Departure.Terminal;
             }
@@ -184,8 +185,8 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
           // Get associated destination associated with the flight
           destinations = [
             {
-              id: f,
-              ...searchResults.destinations[f]
+              id: flight,
+              ...searchResults.destinations[flight]
             }
           ];
 
@@ -204,10 +205,11 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
               destinations
             }
           );
-
-          overriddenOffers[splittedOfferId] = searchResults.offers[offerId];
+          
+          // Assign cloned offer to avoid offer mutability
+          overriddenOffers[splittedOfferId] = JSON.parse(JSON.stringify(searchResults.offers[offerId]));
           overriddenOffers[splittedOfferId].pricePlansReferences = pricePlansRefsOverride;
-        });
+        }
       }
       
     } else {
