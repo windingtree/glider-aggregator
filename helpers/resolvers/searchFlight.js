@@ -149,6 +149,11 @@ const transformResponse = async ({ provider, response, templates }) => {
       searchResults.offers[offerId].expiration = expirationDate;
     }
 
+    // Fix Date ISO string format if missed (actual for AF offers)
+    if (!searchResults.offers[offerId].expiration.match(/Z$/)) {
+      searchResults.offers[offerId].expiration = searchResults.offers[offerId].expiration + 'Z';
+    }
+
     if (provider === 'AC') {
       let segments;
       let destinations;
