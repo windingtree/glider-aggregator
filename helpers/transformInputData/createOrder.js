@@ -136,7 +136,7 @@ module.exports.mapNdcRequestData_AC = (
         Instruction: {
           '@ListKey': 'eTicket',
           FreeFormTextInstruction: {
-            Remark: '1.TST'
+            Remark: body.guaranteeId ? '3.TST' : '1.TST'
           }
         }
       }
