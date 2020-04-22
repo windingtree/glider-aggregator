@@ -71,10 +71,12 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
     SOAPAction
   );
 
+  console.log('@@@', ndcBody);
+
   if (error && !error.isAxiosError) {
     
     throw new GliderError(
-      response.error.message,
+      error.message,
       502
     );
   }

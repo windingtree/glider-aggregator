@@ -48,24 +48,26 @@ module.exports.mapNdcRequestData_AC = (
       }
     },
     ...(body.guaranteeId ? {
-      Payment: {
-        Type: 'CC',
-        Method: {
-          PaymentCard: {
-            CardType: 1,
-            CardCode: getCardCode(guaranteeClaim.card),
-            CardNumber: guaranteeClaim.card.accountNumber,
-            ...(guaranteeClaim.card.cvv ? {
-              SeriesCode: guaranteeClaim.card.cvv
-            } : {}),
-            EffectiveExpireDate: {
-              Expiration: `${guaranteeClaim.card.expiryMonth}${guaranteeClaim.card.expiryYear.substr(-2)}`
+      Payments: {
+        Payment: {
+          Type: 'CC',
+          Method: {
+            PaymentCard: {
+              CardType: 1,
+              CardCode: getCardCode(guaranteeClaim.card),
+              CardNumber: guaranteeClaim.card.accountNumber,
+              ...(guaranteeClaim.card.cvv ? {
+                SeriesCode: guaranteeClaim.card.cvv
+              } : {}),
+              EffectiveExpireDate: {
+                Expiration: `${guaranteeClaim.card.expiryMonth}${guaranteeClaim.card.expiryYear.substr(-2)}`
+              }
             }
+          },
+          Amount: {
+            '@Code': offer.currency,
+            '@value': offer.amountAfterTax
           }
-        },
-        Amount: {
-          '@Code': offer.currency,
-          '@value': offer.amountAfterTax
         }
       }
     } : {}),
@@ -132,14 +134,14 @@ module.exports.mapNdcRequestData_AC = (
           FlightReferences: d.FlightReferences
         }))
       },
-      InstructionsList: {
-        Instruction: {
-          '@ListKey': 'eTicket',
-          FreeFormTextInstruction: {
-            Remark: body.guaranteeId ? '3.TST' : '1.TST'
-          }
-        }
-      }
+      // InstructionsList: {
+      //   Instruction: {
+      //     '@ListKey': 'eTicket',
+      //     FreeFormTextInstruction: {
+      //       Remark: body.guaranteeId ? '3.TST' : '1.TST'
+      //     }
+      //   }
+      // }
     }
   }
 });
