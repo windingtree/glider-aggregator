@@ -135,7 +135,7 @@ module.exports.provideAirShoppingTransformTemplate_AC = {
 };
 
 module.exports.provideAirShoppingTransformTemplate_AF = {
-  offers: ['/S:Envelope/S:Body/AirShoppingRS/OffersGroup/AirlineOffers/Offer', {
+  offers: ['//AirShoppingRS/OffersGroup/AirlineOffers/Offer', {
     _id_: '@OfferID',
     expiration: 'TimeLimits/OfferExpiration/@DateTime',
     price: {
@@ -153,14 +153,14 @@ module.exports.provideAirShoppingTransformTemplate_AF = {
     flightsReferences: ['FlightsOverview/FlightRef', {
       flightRef: '.',
       priceClassRef: '@PriceClassRef',
-    }],
+    }]
   }],
   itineraries: {
-    combinations: ['/S:Envelope/S:Body/AirShoppingRS/DataLists/FlightList/Flight', {
+    combinations: ['//AirShoppingRS/DataLists/FlightList/Flight', {
       _id_: '@FlightKey',
       _items_: 'SegmentReferences',
     }],
-    segments: ['/S:Envelope/S:Body/AirShoppingRS/DataLists/FlightSegmentList/FlightSegment', {
+    segments: ['//AirShoppingRS/DataLists/FlightSegmentList/FlightSegment', {
       _id_: '@SegmentKey',
       operator: {
         operatorType: '#airline',
@@ -180,24 +180,24 @@ module.exports.provideAirShoppingTransformTemplate_AF = {
       splittedArrivalDate: 'Arrival/Date',
     }],
   },
-  pricePlans: ['/S:Envelope/S:Body/AirShoppingRS/DataLists/PriceClassList/PriceClass', {
+  pricePlans: ['//AirShoppingRS/DataLists/PriceClassList/PriceClass', {
     _id_: '@PriceClassID',
     name: 'ClassOfService/MarketingName',
     amenities: [],
     checkedBaggages: 'ClassOfService/@refs',
   }],
-  passengers: ['/S:Envelope/S:Body/AirShoppingRS/DataLists/PassengerList/Passenger', {
+  passengers: ['//AirShoppingRS/DataLists/PassengerList/Passenger', {
     _id_: '@PassengerID',
     type: 'PTC',
   }],
-  checkedBaggages: ['/S:Envelope/S:Body/AirShoppingRS/DataLists/CheckedBagAllowanceList/CheckedBagAllowance', {
+  checkedBaggages: ['//AirShoppingRS/DataLists/CheckedBagAllowanceList/CheckedBagAllowance', {
     _id_: '@ListKey',
-    quantity: 'PieceAllowance/TotalQuantity'
+    quantity: 'number(PieceAllowance/TotalQuantity)'
   }]
 };
 
 module.exports.ErrorsTransformTemplate_AF = {
-  errors: ['/S:Envelope/S:Body/AirShoppingRS/Errors/Error', {
+  errors: ['//AirShoppingRS/Errors/Error', {
     message: '@ShortText',
     code: '@Code',
   }]

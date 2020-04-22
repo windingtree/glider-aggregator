@@ -33,13 +33,13 @@ const GliderError = require('../error');
 const offer = require('../models/offer');
 const { selectProvider, callProvider } = require('./utils/flightUtils');
 
-const transformResponse = async ({ provider, response }, transformTemplate) => {
-  
+const transformResponse = async ({ provider, response, templates }) => {
+
   const searchResults = await transform(
     response.data,
-    transformTemplate
+    templates.response
   );
-  
+
   searchResults.itineraries.segments = mergeHourAndDate(
     searchResults.itineraries.segments,
     'splittedDepartureDate',
@@ -73,6 +73,7 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
     if (offer.flightsReferences) {
       var pricePlansReferences = {};
       for (var flightsReference of offer.flightsReferences) {
+
         if (!pricePlansReferences[flightsReference.priceClassRef]) {
           pricePlansReferences[flightsReference.priceClassRef] = {
             'flights': [flightsReference.flightRef]
@@ -116,13 +117,19 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
         searchResults.pricePlans[plan].amenities) {
       
       if (searchResults.pricePlans[plan].amenities.includes('Checked bags for a fee')) {
-        searchResults.pricePlans[plan].checkedBaggages = 0;
+        searchResults.pricePlans[plan].checkedBaggages = {
+          quantity: 0
+        };
       } else if (searchResults.pricePlans[plan].amenities.includes('1st checked bag free')) {
-        searchResults.pricePlans[plan].checkedBaggages = 1;
+        searchResults.pricePlans[plan].checkedBaggages = {
+          quantity: 1
+        };
       } else if (
         searchResults.pricePlans[plan].amenities.includes('2 checked bags free') ||
         searchResults.pricePlans[plan].amenities.includes('2 checked bags for a fee')) {
-        searchResults.pricePlans[plan].checkedBaggages = 2;
+        searchResults.pricePlans[plan].checkedBaggages = {
+          quantity: 2
+        };
       }
     }
   }
@@ -219,7 +226,7 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
   }
 
   // Rewrite whole search results object by adding splitted offers
-  if (overriddenOffers) {
+  if (Object.keys(overriddenOffers).length > 0) {
     searchResults.offers = overriddenOffers;
   }
   
@@ -238,14 +245,11 @@ const transformResponse = async ({ provider, response }, transformTemplate) => {
 
   delete searchResults.checkedBaggages;
   delete searchResults.destinations;
-  
+
   return searchResults;
 };
 
 module.exports.searchFlight = async (body) => {
-
-  let responseTransformTemplate;
-  let errorsTransformTemplate;
 
   // Fetching of the flight providers
   // associated with the given origin and destination
@@ -268,6 +272,7 @@ module.exports.searchFlight = async (body) => {
     let apiKey;
     let SOAPAction;
     let ndcBody;
+    let templates;
 
     switch (provider) {
       case 'AF':
@@ -276,52 +281,87 @@ module.exports.searchFlight = async (body) => {
         apiKey = airFranceConfig.apiKey;
         SOAPAction = '"http://www.af-klm.com/services/passenger/ProvideAirShopping/provideAirShopping"';
         ndcBody = provideShoppingRequestTemplate_AF(ndcRequestData);
-        responseTransformTemplate = provideAirShoppingTransformTemplate_AF;
-        errorsTransformTemplate = ErrorsTransformTemplate_AF;
-        faultsTransformTemplate = null;
+        templates = {
+          response: provideAirShoppingTransformTemplate_AF,
+          faults: null,
+          errors: ErrorsTransformTemplate_AF
+        };
         break;
       case 'AC':
         ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, body);
         providerUrl = 'https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/AirShopping';
         apiKey = airCanadaConfig.apiKey;
         ndcBody = provideShoppingRequestTemplate_AC(ndcRequestData);
-        responseTransformTemplate = provideAirShoppingTransformTemplate_AC;
-        errorsTransformTemplate = ErrorsTransformTemplate_AC;
-        faultsTransformTemplate = FaultsTransformTemplate_AC;
+        templates = {
+          response: provideAirShoppingTransformTemplate_AC,
+          faults: ErrorsTransformTemplate_AC,
+          errors: ErrorsTransformTemplate_AC
+        };
         break;
       default:
         return Promise.reject('Unsupported flight operator');
     }
 
-    return callProvider(provider, providerUrl, apiKey, ndcBody, SOAPAction);
+    // Fake AirFrance response
+    // if (provider === 'AF') {
+    //   const fs = require('fs');
+    //   const path = require('path');
+    //   const data = fs.readFileSync(
+    //     path.resolve(__dirname, '../../temp/afkl-AirShoppingRS.xml'),
+    //     'utf8'
+    //   );
+    //   return {
+    //     provider,
+    //     templates,
+    //     response: {
+    //       data
+    //     }
+    //   }
+    // } else {
+    //   return {
+    //     provider,
+    //     templates,
+    //     error: new Error('Skiped')
+    //   }
+    // }
+
+    return callProvider(
+      provider,
+      providerUrl,
+      apiKey,
+      ndcBody,
+      SOAPAction,
+      templates
+    );
   }));
 
   // Check responses for errors
   const responseErrors = (await Promise.all(
     responses
-      .map(async (r) => {
-        
-        if (r.error && !r.error.isAxiosError) {
+      .map(async ({ provider, response, error, templates }) => {
+
+        if (error && !error.isAxiosError) {
 
           // Request error
           return {
-            provider: r.provider,
-            error: r.error instanceof Error ? r.error.message : r.error
+            provider,
+            error: error instanceof Error ? error.message : error
           };
         }
 
         try {
           let faultsResult;
 
-          if (faultsTransformTemplate) {
+          if (templates.faults) {
             faultsResult = await transform(
-              r.response.data,
-              faultsTransformTemplate
+              response.data,
+              templates.faults
             );
           }
 
           const errorsResult = await transform(
-            r.response.data,errorsTransformTemplate
+            response.data,
+            templates.errors
           );
 
           // Because of two types of errors can be returned: NDCMSG_Fault and Errors
@@ -332,13 +372,13 @@ module.exports.searchFlight = async (body) => {
 
           if (combinedErrors.length) {
             return {
-              provider: r.provider,
+              provider,
               error: combinedErrors.map(e => e.message).join('; ')
             };
-          } else if (r.error) {
+          } else if (error) {
             return {
-              provider: r.provider,
-              error: r.error.message
+              provider,
+              error: error.message
             };
           } else {
             return null;
@@ -348,7 +388,7 @@ module.exports.searchFlight = async (body) => {
 
           // Transformation error
           return {
-            provider: r.provider,
+            provider: provider,
             error: e.message
           };
         }
@@ -375,7 +415,7 @@ module.exports.searchFlight = async (body) => {
     responses
       .filter(r => !r.error)// Exclude errors
       .map(
-        r => transformResponse(r, responseTransformTemplate)
+        r => transformResponse(r)
       )
   );
 

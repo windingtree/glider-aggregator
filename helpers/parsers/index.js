@@ -26,7 +26,7 @@ const reduceContactInformation = (passengers) => passengers
 const useDictionary = (array, object, keyToReplace) => array
   .map((element) =>({
     ...element,
-    [keyToReplace]: object[element[keyToReplace]],
+    [keyToReplace]: object[element[keyToReplace]]
   }));
 
 const mergeHourAndDate = (array, dateName, timeName, finalName) => array

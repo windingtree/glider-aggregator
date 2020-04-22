@@ -2,7 +2,14 @@ const axios = require('axios');
 const caDestinations = require('./cadest.json');
 
 // Send a request to the provider
-module.exports.callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOAPAction) => {
+module.exports.callProvider = async (
+  provider,
+  apiEndpoint,
+  apiKey,
+  ndcBody,
+  SOAPAction,
+  templates
+) => {
   let response;
 
   try {
@@ -12,7 +19,7 @@ module.exports.callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOA
     const connectionTimeout = setTimeout(() => source.cancel(
         `Cannot connect to the source: ${apiEndpoint}`
     ), timeout);// connection timeout
-    
+
     response = await axios.post(
       apiEndpoint,
       ndcBody,
@@ -34,6 +41,7 @@ module.exports.callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOA
   } catch (error) {
     return {
       provider,
+      templates,
       response: error.response,
       error
     };
@@ -41,6 +49,7 @@ module.exports.callProvider = async (provider, apiEndpoint, apiKey, ndcBody, SOA
 
   return {
     provider,
+    templates,
     response
   }
 };
