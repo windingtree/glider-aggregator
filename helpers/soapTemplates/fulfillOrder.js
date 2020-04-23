@@ -7,7 +7,7 @@ const mapPassengerList = (passengers) => passengers.reduce((list, passenger) => 
    <edis:Passenger PassengerID="${passenger}"/>`, '');
 
 
-const fulfillOrderTemplate_AF = data => `<soapenv:Envelope xmlns:edis="http://www.iata.org/IATA/EDIST/2017.1" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+module.exports.fulfillOrderTemplate_AF = data => `<soapenv:Envelope xmlns:edis="http://www.iata.org/IATA/EDIST/2017.1" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 <soapenv:Header>
       <trackingMessageHeader xmlns="http://www.af-klm.com/soa/xsd/MessageHeader-V1_0">
    <consumerRef>
@@ -94,39 +94,20 @@ const fulfillOrderTemplate_AF = data => `<soapenv:Envelope xmlns:edis="http://ww
 </soapenv:Envelope>
 `;
 
-const fulfillOrderTemplate_AC = data => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v2="http://sita.aero/NDC/NDCUtility/v2">
+module.exports.fulfillOrderTemplate_AC = (headerData, data) => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v2="http://sita.aero/NDC/NDCUtility/v2">
 <soapenv:Header/>
 <soapenv:Body>
    <v2:NDCMSG_Envelope>
       <NDCMSG_Header>
-         <Function>OrderChangeRQ</Function>
-         <SchemaType>NDC</SchemaType>
-         <SchemaVersion>YY.2017.2</SchemaVersion>
-         <Sender>
-            <Address>
-               <Company>WindingTree</Company>
-               <NDCSystemId>DEV</NDCSystemId>
-            </Address>
-         </Sender>
-         <Recipient>
-            <Address>
-               <Company>AC</Company>
-               <NDCSystemId>DEV</NDCSystemId>
-            </Address>
-         </Recipient>
+         ${convertObjectToXML(headerData).join('')}
       </NDCMSG_Header>
       <NDCMSG_Body>
          <NDCMSG_Payload>
             <OrderChangeRQ Version="2017.2" PrimaryLangID="EN" xmlns="http://www.iata.org/IATA/EDIST/2017.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" ">
-            ${convertObjectToXML(data).join('')}
+               ${convertObjectToXML(data).join('')}
             </OrderChangeRQ>
          </NDCMSG_Payload>
       </NDCMSG_Body>
    </v2:NDCMSG_Envelope>
 </soapenv:Body>
 </soapenv:Envelope>`;
-
-module.exports = {
-   fulfillOrderTemplate_AF,
-   fulfillOrderTemplate_AC
-};

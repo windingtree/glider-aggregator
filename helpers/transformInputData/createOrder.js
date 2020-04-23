@@ -22,6 +22,27 @@ module.exports.mapNdcRequestData_AF = (config, { offerId, offerItems, passengers
   },
 });
 
+module.exports.mapNdcRequestHeaderData_AC = guaranteeClaim => ({
+  Function: 'OrderCreateRQ',
+  SchemaType: 'NDC',
+  SchemaVersion: 'YY.2017.2',
+  ...(!guaranteeClaim ? {
+    RichMedia: true
+  } : {}),
+  Sender: {
+    Address: {
+      Company: 'WindingTree',
+      NDCSystemId: guaranteeClaim ? 'DEV-PCI' : 'DEV'
+    }
+  },
+  Recipient: {
+    Address: {
+      Company: 'AC',
+      NDCSystemId: guaranteeClaim ? 'DEV-PCI' : 'DEV'
+    }
+  }
+});
+
 module.exports.mapNdcRequestData_AC = (
   { apiKey, commission, AirlineID, ...config },// extract the only needed part of config
   offer,
@@ -53,12 +74,21 @@ module.exports.mapNdcRequestData_AC = (
           Type: 'CC',
           Method: {
             PaymentCard: {
-              CardType: 1,
+              CardType: 3,
               CardCode: getCardCode(guaranteeClaim.card),
               CardNumber: guaranteeClaim.card.accountNumber,
               ...(guaranteeClaim.card.cvv ? {
                 SeriesCode: guaranteeClaim.card.cvv
               } : {}),
+              CardHolderName: 'Simard OU',
+              CardHolderBillingAddress: {
+                Street: 'Tartu mnt 67',
+                BuildingRoom: '1-13b',
+                CityName: 'Tallinn',
+                StateProv: 'Harju',
+                PostalCode: '10115',
+                CountryCode: 'EE'
+              },
               EffectiveExpireDate: {
                 Expiration: `${guaranteeClaim.card.expiryMonth}${guaranteeClaim.card.expiryYear.substr(-2)}`
               }

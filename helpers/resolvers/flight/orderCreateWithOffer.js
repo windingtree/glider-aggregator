@@ -4,6 +4,7 @@ const GliderError = require('../../error');
 
 const {
   mapNdcRequestData_AF,
+  mapNdcRequestHeaderData_AC,
   mapNdcRequestData_AC
 } = require('../../transformInputData/createOrder');
 const {
@@ -30,6 +31,7 @@ const {
 const { callProvider } = require('../utils/flightUtils');
 
 module.exports = async (offer, requestBody, guaranteeClaim) => {
+  let ndcRequestHeaderData;
   let ndcRequestData;
   let providerUrl;
   let apiKey;
@@ -51,10 +53,11 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
       faultsTransformTemplate = null;
       break;
     case 'AC':
+      ndcRequestHeaderData = mapNdcRequestHeaderData_AC(guaranteeClaim);
       ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offer, requestBody, guaranteeClaim);
       providerUrl = 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/OrderCreate';
       apiKey = airCanadaConfig.apiKey;
-      ndcBody = orderCreateRequestTemplate_AC(ndcRequestData);
+      ndcBody = orderCreateRequestTemplate_AC(ndcRequestHeaderData, ndcRequestData);
       responseTransformTemplate = provideOrderCreateTransformTemplate_AC;
       errorsTransformTemplate = ErrorsTransformTemplate_AC;
       faultsTransformTemplate = FaultsTransformTemplate_AC;
@@ -63,6 +66,8 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
       return Promise.reject('Unsupported flight operator');
   }
 
+  console.log('BODY@@@', ndcBody);
+
   const { response, error } = await callProvider(
     offer.provider,
     providerUrl,
@@ -70,6 +75,8 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
     ndcBody,
     SOAPAction
   );
+
+  console.log('RESOP0NSE@@@', response.data);
 
   if (error && !error.isAxiosError) {
     

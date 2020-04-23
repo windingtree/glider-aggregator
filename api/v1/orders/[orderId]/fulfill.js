@@ -1,4 +1,3 @@
-const axios = require('axios');
 const { transform } = require('camaro');
 const { basicDecorator } = require('../../../../decorators/basic');
 const GliderError = require('../../../../helpers/error');
@@ -9,6 +8,7 @@ const {
 const { ordersManager } = require('../../../..//helpers/models/order');
 const {
   mapNdcRequestData_AF,
+  mapNdcRequestHeaderData_AC,
   mapNdcRequestData_AC
 } = require('../../../../helpers/transformInputData/fulfillOrder');
 const {
@@ -48,6 +48,7 @@ module.exports = basicDecorator(async (req, res) => {
     amountAfterTax: order.order.order.price.public
   });
 
+  let ndcRequestHeaderData;
   let ndcRequestData;
   let providerUrl;
   let apiKey;
@@ -70,10 +71,11 @@ module.exports = basicDecorator(async (req, res) => {
       break;
     case 'AC':
       guaranteeClaim = await claimGuaranteeWithCard(body.guaranteeId);
+      ndcRequestHeaderData = mapNdcRequestHeaderData_AC(guaranteeClaim);
       ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, order, body, guaranteeClaim);
       providerUrl = 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/OrderCreate';
       apiKey = airCanadaConfig.apiKey;
-      ndcBody = fulfillOrderTemplate_AC(ndcRequestData);
+      ndcBody = fulfillOrderTemplate_AC(ndcRequestHeaderData, ndcRequestData);
       // console.log('@@@', ndcBody);
       responseTransformTemplate = fulfillOrderTransformTemplate_AC;
       errorsTransformTemplate = ErrorsTransformTemplate_AC;
