@@ -33,7 +33,10 @@ const GliderError = require('../error');
 const offer = require('../models/offer');
 const { selectProvider, callProvider } = require('./utils/flightUtils');
 
-const transformResponse = async ({ provider, response, templates }) => {
+const transformResponse = async (
+  { provider, response, templates },
+  passengersIds
+) => {
 
   const searchResults = await transform(
     response.data,
@@ -63,11 +66,32 @@ const transformResponse = async ({ provider, response, templates }) => {
   });
   searchResults.itineraries.combinations = combinations;
 
+  const mappedPassengers = {};
+  const mappedPassengersReverse = {};
+
   // Create the offers
   for (const offer of Object.values(searchResults.offers)) {
     // Add offer items
     offer.offerItems = reduceToObjectByKey(offer.offerItems);
     offer.offerItems = reduceObjectToProperty(offer.offerItems, '_value_');
+
+    for (const item in offer.offerItems) {
+      const refs = offer
+        .offerItems[item]
+        .passengerReferences
+        .split(' ')
+        .map((r, i) => {
+          for (const p in searchResults.passengers) {
+            const passenger = searchResults.passengers[p];
+            if (r === passenger['_id_']) {
+              mappedPassengers[passengersIds[passenger.type][i]] = r;
+              mappedPassengersReverse[r] = passengersIds[passenger.type][i];
+              return passengersIds[passenger.type][i];
+            }            
+          }
+        });
+      offer.offerItems[item].passengerReferences = refs.join(' ');
+    }
 
     // Add the price plan references
     if (offer.flightsReferences) {
@@ -98,7 +122,12 @@ const transformResponse = async ({ provider, response, templates }) => {
 
   searchResults.offers = roundCommissionDecimals(searchResults.offers);
   searchResults.offers = reduceToObjectByKey(searchResults.offers);
-  searchResults.passengers = reduceToObjectByKey(searchResults.passengers);
+  searchResults.passengers = reduceToObjectByKey(
+    searchResults.passengers.map(p => ({
+      '_id_': mappedPassengersReverse[p['_id_']],
+      type: p.type
+    }))
+  );
   
   if (searchResults.checkedBaggages) {
     searchResults.checkedBaggages = reduceToObjectByKey(searchResults.checkedBaggages);
@@ -207,7 +236,8 @@ const transformResponse = async ({ provider, response, templates }) => {
             {
               offerId,
               segments,
-              destinations
+              destinations,
+              mappedPassengers
             }
           );
           
@@ -225,7 +255,10 @@ const transformResponse = async ({ provider, response, templates }) => {
         searchResults.offers[offerId].expiration,
         searchResults.offers[offerId].offerItems,
         searchResults.offers[offerId].price.public,
-        searchResults.offers[offerId].price.currency
+        searchResults.offers[offerId].price.currency,
+        {
+          mappedPassengers
+        }
       );
     }
   }
@@ -416,11 +449,28 @@ module.exports.searchFlight = async (body) => {
     searchResult.warnings = responseErrors;
   }
 
+  // Build mapped passengers by types
+  const passengersIds = body.passengers.reduce(
+    (a, v) => {
+      if (!v.count) {
+        v.count = 1;
+      }
+      if (!a[v.type]) {
+        a[v.type] = [];
+      }
+      for (let i = 0; i < v.count; i++) {
+        a[v.type].push(uuidv4().split('-')[0].toUpperCase());
+      }
+      return a;
+    },
+    {}
+  );
+
   const transformedResponses = await Promise.all(
     responses
       .filter(r => !r.error)// Exclude errors
       .map(
-        r => transformResponse(r)
+        r => transformResponse(r, passengersIds)
       )
   );
 

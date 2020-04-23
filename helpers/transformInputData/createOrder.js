@@ -164,14 +164,16 @@ module.exports.mapNdcRequestData_AC = (
           FlightReferences: d.FlightReferences
         }))
       },
-      // InstructionsList: {
-      //   Instruction: {
-      //     '@ListKey': 'eTicket',
-      //     FreeFormTextInstruction: {
-      //       Remark: body.guaranteeId ? '3.TST' : '1.TST'
-      //     }
-      //   }
-      // }
+      ...(!body.guaranteeId ? {
+        InstructionsList: {
+          Instruction: {
+            '@ListKey': 'eTicket',
+            FreeFormTextInstruction: {
+              Remark: '1.TST'
+            }
+          }
+        }
+      } : {})
     }
   }
 });

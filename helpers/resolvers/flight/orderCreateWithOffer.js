@@ -41,6 +41,36 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   let errorsTransformTemplate;
   let faultsTransformTemplate;
 
+  // Re-map passengers
+  if (offer.extraData && offer.extraData.mappedPassengers) {
+    requestBody.offerItems = Object.entries(requestBody.offerItems)
+      .map(item => {
+        item[1].passengerReferences = item[1].passengerReferences
+          .split(' ')
+          .map(r => offer.extraData.mappedPassengers[r])
+          .join(' ');
+        return item;
+      })
+      .reduce((a, v) => ({
+        ...a,
+        [v[0]]: v[1]
+      }), {});
+    requestBody.passengers = Object.entries(requestBody.passengers)
+      .map(p => {
+        p[0] = offer.extraData.mappedPassengers[p[0]];
+        return p;
+      })
+      .reduce((a, v) => ({
+        ...a,
+        [v[0]]: v[1]
+      }), {});;
+  } else {
+    throw new GliderError(
+      'Mapped passengers Ids not found in the offer',
+      500
+    );
+  }
+
   switch (offer.provider) {
     case 'AF':
       ndcRequestData = mapNdcRequestData_AF(airFranceConfig, requestBody);
@@ -168,7 +198,9 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
     createResults.order.passengers
   );
 
-  if (Array.isArray(createResults.travelDocuments.bookings) &&
+  if (guaranteeClaim &&
+      createResults.travelDocuments &&
+      Array.isArray(createResults.travelDocuments.bookings) &&
       createResults.travelDocuments.bookings.length > 0) {
     
     createResults.travelDocuments.etickets = reduceToObjectByKey(

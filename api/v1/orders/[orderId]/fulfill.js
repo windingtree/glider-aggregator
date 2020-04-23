@@ -42,6 +42,16 @@ module.exports = basicDecorator(async (req, res) => {
   // Get the order
   const order = await ordersManager.getOrder(query.orderId);
 
+  if (order.offer && order.offer.extraData && order.offer.extraData.mappedPassengers) {
+    body.passengerReferences = body.passengerReferences
+      .map(p => order.offer.extraData.mappedPassengers[p]);
+  } else {
+    throw new GliderError(
+      'Mapped passengers Ids not found in the offer',
+      500
+    );
+  }
+
   // Get the guarantee and verify
   const guarantee = await getGuarantee(body.guaranteeId, {
     currency: order.order.order.price.currency,
