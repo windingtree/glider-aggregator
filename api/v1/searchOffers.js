@@ -24,10 +24,13 @@ module.exports = basicDecorator(async (req, res) => {
 
   if (body.accommodation) {
     resolver = searchHotel;
-  };
-
-  if (body.itinerary) {
+  } else if (body.itinerary) {
     resolver = searchFlight;
+  } else {
+    throw new GliderError(
+      'Unable to choose a resolver',
+      500
+    );
   }
 
   const result = await resolver(body);

@@ -185,7 +185,91 @@ paths:
             - read:orders
         - orgid_token: []
       x-codegen-request-body-name: body
-
+  
+  /offer/{offerId}/options:
+    post:
+      tags:
+        - offers
+      summary: Confirms an offer
+      description: Providing an offer informarion with confirmed price
+      operationId: confirmOffer
+      parameters:
+        - name: offerId
+          in: path
+          description: ID of the offer
+          required: true
+          schema:
+            $ref: "#/components/schemas/UUID"
+      requestBody:
+        description: Reference of the offers and details of the passengers
+        content:
+          application/json:
+            schema:
+              properties:
+                offerId:
+                  $ref: "#/components/schemas/UUID"
+                offerItems:
+                  description: The selected list of offer items
+                  type: object
+                  additionalProperties:
+                    type: object
+                    properties:
+                      passengerReferences:
+                        description: A list of passenger references
+                        type: array
+                        items:
+                          type: string
+                          example: PAX1
+                passengers:
+                  description: Indexed dictionnary of the passengers
+                  type: object
+                  additionalProperties:
+                    $ref: "#/components/schemas/Passenger"
+              example:
+                {
+                  "offerItems":
+                    {
+                      "11111111-2222-3333-4444-000000000001":
+                        { "passengerReferences": "PAX1" }
+                    },
+                  "passengers":
+                    {
+                      "PAX1":
+                        {
+                          "type": "ADT"
+                        }
+                    }
+                }
+        required: true
+      responses:
+        200:
+          description: Offer with confirmed price
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PricedOffer"
+        400:
+          description: Invalid ID supplied
+          content: {}
+        401:
+          description: Authorization required
+          content: {}
+        403:
+          description: Not authorized to retrieve this order
+          content: {}
+        404:
+          description: Order not found
+          content: {}
+        415:
+          description: Content should be application/json
+          content: {}
+        429:
+          description: Too many requests, rate limit has been reached
+          content: {}
+      security:
+        - orgid_auth:
+            - read:offers
+        - orgid_token: []
   # ** Orders **
   /orders/createWithOffer:
     post:
@@ -344,7 +428,7 @@ paths:
                         items:
                           type: string
                           pattern: "^[0-9]{3}-[0-9]{10}$"
-                          example: "057-1438027611"
+                          example: "057-1438027611"                
         400:
           description: Invalid ID supplied
           content: {}
@@ -890,6 +974,126 @@ components:
           maxItems: 12
           items:
             $ref: "#/components/schemas/Segment"
+    
+    PricedOfferServices:
+      description: Indexed object of services offered with the offer
+      type: object
+      properties:
+        code:
+          description: The service code
+          type: string
+          example: "LGAC"
+        name: 
+          description: The service name
+          type: string
+          example: "Lounge Access"
+        description:
+          description: Description of the service
+          type: string
+          example: "Lounge Access"
+        segments: 
+          description: List of segments in which this service is provided
+          type: array
+          items:
+            type: string
+          example:
+            [
+              "HW9EJ7XAC7-SEG1"
+            ]
+
+    PricedOffer:
+      description: An offer with actualized price
+      type: object
+      properties:
+        offerId:
+          $ref: "#/components/schemas/UUID"
+        offer:
+          type: object
+          properties:
+            expiration:
+              description: The offer expiration time.
+              type: string
+              format: date-time
+              example: "2021-04-12T23:20:50.52Z"
+            price:
+              $ref: "#/components/schemas/price"
+            passengers:
+              description: Indexed dictionnary of the passengers
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/Passenger"
+            itinerary:
+              $ref: "#/components/schemas/Itinerary"
+            services:
+              $ref: "#/components/schemas/PricedOfferServices"
+      example:
+        {
+          "offerId": "3d00fa3e-1bd6-4559-8905-431e3325e12e",
+          "offer": {
+            "expiration": "2020-04-27T00:00:00Z",
+            "price": {
+              "currency": "CAD",
+              "public": "5284.15",
+              "commission": "2644.00",
+              "taxes": "139.36"
+            },
+            "passengers": {
+              "681B1AD8": {
+                "type": "ADT"
+              },
+              "A00DB7E9": {
+                "type": "ADT"
+              },
+              "357AD537": {
+                "type": "CHD"
+              }
+            },
+            "itinerary": {
+              "segments": {
+                "SNBVN7MVMC-SEG1": {
+                  "operatorType": "airline",
+                  "airlineIataCode": "AC",
+                  "origin": {
+                    "locationType": "airport",
+                    "iataCode": "DXB"
+                  },
+                  "destination": {
+                    "locationType": "airport",
+                    "iataCode": "ZRH"
+                  },
+                  "departureTime": "2020-09-13T21:35:00.000Z",
+                  "arrivalTime": "2020-09-14T04:25:00.000Z"
+                },
+                "W4KZRCL3RU-SEG2": {
+                  "operatorType": "airline",
+                  "airlineIataCode": "AC",
+                  "origin": {
+                    "locationType": "airport",
+                    "iataCode": "ZRH"
+                  },
+                  "destination": {
+                    "locationType": "airport",
+                    "iataCode": "YYZ"
+                  },
+                  "departureTime": "2020-09-14T07:55:00.000Z",
+                  "arrivalTime": "2020-09-14T16:25:00.000Z"
+                }
+              },
+              "services": {
+                "HJPNXPC3Q9-Service1": {
+                  "code": "LGAC",
+                  "name": "Lounge Access",
+                  "description": [
+                    "Lounge Access"
+                  ],
+                  "segments": [
+                    "SNBVN7MVMC-SEG1"
+                  ]
+                }
+              }
+            }
+          }
+        }
 
     # Define an Offer object
     Offer:
