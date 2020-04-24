@@ -1,67 +1,161 @@
-const axios = require('axios');
 const { transform } = require('camaro');
 const { basicDecorator } = require('../../../../decorators/basic');
 const GliderError = require('../../../../helpers/error');
-const config = require('../../../../config');
-const { ordersManager } = require('../../../..//helpers/models/order');
-const { mapNdcRequestData } = require('../../../../helpers/transformInputData/fulfillOrder');
-const { fulfillOrderTemplate } = require('../../../../helpers/soapTemplates/fulfillOrder');
 const {
-  ErrorsTransformTemplate,
-  fulfillOrderTransformTemplate
+  airFranceConfig,
+  airCanadaConfig
+} = require('../../../../config');
+const { ordersManager } = require('../../../..//helpers/models/order');
+const {
+  mapNdcRequestData_AF,
+  mapNdcRequestHeaderData_AC,
+  mapNdcRequestData_AC
+} = require('../../../../helpers/transformInputData/fulfillOrder');
+const {
+  fulfillOrderTemplate_AF,
+  fulfillOrderTemplate_AC
+} = require('../../../../helpers/soapTemplates/fulfillOrder');
+const {
+  ErrorsTransformTemplate_AF,
+  ErrorsTransformTemplate_AC,
+  FaultsTransformTemplate_AC,
+  fulfillOrderTransformTemplate_AF,
+  fulfillOrderTransformTemplate_AC
 } = require('../../../../helpers/camaroTemplates/fulfillOrder');
 const {
   reduceToObjectByKey,
   reduceToProperty
 } = require('../../../../helpers/parsers');
-const { getGuarantee, claimGuarantee } = require('../../../../helpers/guarantee');
+const {
+  getGuarantee,
+  claimGuarantee,
+  claimGuaranteeWithCard
+} = require('../../../../helpers/guarantee');
+const {
+  callProvider
+} = require('../../../../helpers/resolvers/utils/flightUtils');
 
 module.exports = basicDecorator(async (req, res) => {
   const { body, query } = req;
+  let guaranteeClaim;
 
   // Get the order
-  const storedOrder = await ordersManager.getOrder(query.orderId);
-  
-  // Get the guarantee and verify
-  const guarantee = await getGuarantee(body.guaranteeId, {
-    currency: storedOrder.order.order.price.currency,
-    amountAfterTax: storedOrder.order.order.price.public
-  });
+  const order = await ordersManager.getOrder(query.orderId);
 
-  const ndcRequestData = mapNdcRequestData(body, query);
-  const ndcBody = fulfillOrderTemplate(ndcRequestData);
-
-  const response = await axios.post(
-    'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001489v01/EXT',
-    ndcBody,
-    {
-      headers: {
-        'Content-Type': 'text/xml;charset=UTF-8',
-        'Accept-Encoding': 'gzip,deflate',
-        SOAPAction: '"http://www.af-klm.com/services/passenger/AirDocIssue/airDocIssue"',
-        'api_key': config.airFranceConfig.apiKey,
-      },
-    }
-  );
-
-  const { errors } = await transform(response.data, ErrorsTransformTemplate);
-
-  if (errors.length) {
-    throw new GliderError(`${errors[0].message}`, 502);
+  if (order.offer && order.offer.extraData && order.offer.extraData.mappedPassengers) {
+    body.passengerReferences = body.passengerReferences
+      .map(p => order.offer.extraData.mappedPassengers[p]);
+  } else {
+    throw new GliderError(
+      'Mapped passengers Ids not found in the offer',
+      500
+    );
   }
 
-  const fulfillResults = await transform(response.data, fulfillOrderTransformTemplate);
+  // Get the guarantee and verify
+  const guarantee = await getGuarantee(body.guaranteeId, {
+    currency: order.order.order.price.currency,
+    amountAfterTax: order.order.order.price.public
+  });
+
+  let ndcRequestHeaderData;
+  let ndcRequestData;
+  let providerUrl;
+  let apiKey;
+  let SOAPAction;
+  let ndcBody;
+  let responseTransformTemplate;
+  let errorsTransformTemplate;
+  let faultsTransformTemplate;
+
+  switch (order.provider) {
+    case 'AF':
+      ndcRequestData = mapNdcRequestData_AF(airFranceConfig, body, query);
+      providerUrl = 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001489v01/EXT';
+      apiKey = airFranceConfig.apiKey;
+      SOAPAction = '"http://www.af-klm.com/services/passenger/AirDocIssue/airDocIssue"';
+      ndcBody = fulfillOrderTemplate_AF(ndcRequestData);
+      responseTransformTemplate = fulfillOrderTransformTemplate_AF;
+      errorsTransformTemplate = ErrorsTransformTemplate_AF;
+      faultsTransformTemplate = null;
+      break;
+    case 'AC':
+      guaranteeClaim = await claimGuaranteeWithCard(body.guaranteeId);
+      ndcRequestHeaderData = mapNdcRequestHeaderData_AC(guaranteeClaim);
+      ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, order, body, guaranteeClaim);
+      providerUrl = 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/OrderCreate';
+      apiKey = airCanadaConfig.apiKey;
+      ndcBody = fulfillOrderTemplate_AC(ndcRequestHeaderData, ndcRequestData);
+      // console.log('@@@', ndcBody);
+      responseTransformTemplate = fulfillOrderTransformTemplate_AC;
+      errorsTransformTemplate = ErrorsTransformTemplate_AC;
+      faultsTransformTemplate = FaultsTransformTemplate_AC;
+      break;
+    default:
+      return Promise.reject('Unsupported flight operator');
+  }
+
+  const { response, error } = await callProvider(
+    order.provider,
+    providerUrl,
+    apiKey,
+    ndcBody,
+    SOAPAction
+  );
+
+  if (error && !error.isAxiosError) {
+    
+    throw new GliderError(
+      response.error.message,
+      502
+    );
+  }
+
+  let faultsResult;
+
+  if (faultsTransformTemplate) {
+    faultsResult = await transform(response.data, faultsTransformTemplate);
+  }
+
+  // Attempt to parse as a an error
+  const errorsResult = await transform(response.data, errorsTransformTemplate);
+
+  // Because of two types of errors can be returned: NDCMSG_Fault and Errors
+  const combinedErrors = [
+    ...(faultsResult ? faultsResult.errors : []),
+    ...errorsResult.errors
+  ];
+
+  // If an error is found, stop here
+  if (combinedErrors.length) {
+    throw new GliderError(
+      combinedErrors.map(e => e.message).join('; '),
+      502
+    );
+  } else if (error) {
+    throw new GliderError(
+      error.message,
+      502
+    );
+  }
+
+  const fulfillResults = await transform(
+    response.data,
+    responseTransformTemplate
+  );
 
   fulfillResults.travelDocuments.etickets = reduceToObjectByKey(
     fulfillResults.travelDocuments.etickets
   );
+
   fulfillResults.travelDocuments.etickets = reduceToProperty(
     fulfillResults.travelDocuments.etickets,
     '_passenger_'
   );
 
-  // Claim the guarantee
-  const guaranteeClaim = await claimGuarantee(body.guaranteeId);
+  if (!guaranteeClaim) {
+    guaranteeClaim = await claimGuarantee(body.guaranteeId);
+  }
 
   await ordersManager.saveOrder(
     body.orderId,
@@ -69,7 +163,8 @@ module.exports = basicDecorator(async (req, res) => {
       request: body,
       guarantee: guarantee,
       guaranteeClaim: guaranteeClaim,
-      order: fulfillResults
+      order: fulfillResults,
+      offer: order.offer
     }
   );
 

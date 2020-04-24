@@ -3,7 +3,7 @@ const format = require('date-fns/format');
 // const parseISO = require('date-fns/parseISO');
 const { v4: uuidv4 } = require('uuid');
 const emailValidator = require('email-validator');
-const GliderError = require('../error');
+const { getCardCode } = require('./utils/cardUtils');
 
 /*
   Maps an offer and passengers to an OTA HotelResNotifRQ structure
@@ -31,31 +31,13 @@ const mapFromOffer = (offer, passengers, card) => {
     }
   };
 
-  const cardCodes = {
-    visa: 'VI',
-    mastercard: 'MC',
-    amex: 'AX',
-    bancontact: 'BC',
-    diners: 'DN',
-    discover: 'DS',
-    jcb: 'JC',
-    maestro: 'MA',
-    uatp: 'TP',
-    unionpay: 'CU',
-    electron: 'VE'
-  };
-
-  if (!cardCodes[card.brand.toLowerCase()]) {
-    throw new GliderError('Unknown claimed card brand', 500);
-  }
-
   // Build the Guarantee
   const guarantee = {
     GuaranteeType: 'GuaranteeRequired', // Check !!
     GuaranteeCode: 'GCC',
     PaymentCard: {
       CardType: '1', // 1-Credit as per erevmax doc,
-      CardCode: cardCodes[card.brand.toLowerCase()],
+      CardCode: getCardCode(card),
       CardNumber: card.accountNumber,
       ExpireDate: `${card.expiryMonth}${card.expiryYear.substr(-2)}`, // MMYY format
       //CardHolderName: OPTIONAL

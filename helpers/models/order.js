@@ -12,10 +12,7 @@ class OrdersManager {
       },
       {
         orderId,
-        request: options.request,
-        guarantee: options.guarantee,
-        guaranteeClaim: options.guaranteeClaim,
-        order: options.order
+        ...options
       },
       {
         multi: true,

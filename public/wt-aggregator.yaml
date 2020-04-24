@@ -237,6 +237,7 @@ paths:
                           "civility": "MR",
                           "lastnames": ["Marley"],
                           "firstnames": ["Bob"],
+                          "gender": "Male",
                           "birthdate": "1980-03-21T00:00:00Z",
                           "contactInformation":
                             ["+32123456789", "contact@org.co.uk"],
@@ -295,7 +296,9 @@ paths:
           description: ID of the order to sign
           required: true
           schema:
-            $ref: "#/components/schemas/UUID"
+            oneOf:
+              - $ref: "#/components/schemas/UUID"
+              - $ref: "#/components/schemas/ShortOrderId"
       requestBody:
         content:
           application/json:
@@ -375,6 +378,14 @@ components:
       maxLength: 36
       pattern: "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$"
       example: "11111111-2222-3333-4444-000000000001"
+
+    ShortOrderId:
+      description: Unique short order Id
+      type: string
+      minLength: 6
+      maxLength: 6
+      pattern: "^[0-9a-zA-Z]{6}$"
+      example: "PUVYL9"
 
     OrgId:
       description: ORG.ID identifier
@@ -516,6 +527,14 @@ components:
             minLength: 1
             maxLength: 42
             example: "Bob"
+        
+        gender:
+          description: The gender of the passenger
+          type: string
+          enum:
+            - Male
+            - Female
+          example: Male
 
         birthdate:
           description: The birthdate of the passenger

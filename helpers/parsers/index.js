@@ -2,19 +2,19 @@ const parse = require('date-fns/parse');
 const { zonedTimeToUtc } = require('date-fns-tz');
 const { airports } = require('./timeZoneByAirportCode');
 
-const reduceObjectToProperty = (object, property) => Object.entries(object)
+module.exports.reduceObjectToProperty = (object, property) => Object.entries(object)
   .reduce((result, [key, value])=> ({
       ...result,
       [key]: value[property]
     }), {});
 
-const splitPropertyBySpace = (array, property) => array
+module.exports.splitPropertyBySpace = (array, property) => array
   .map((element) => ({
     ...element,
     [property]: element[property].split(' ')
   }));
 
-const reduceContactInformation = (passengers) => passengers
+module.exports.reduceContactInformation = (passengers) => passengers
   .map((passenger) => {
     const emails = passenger.contactInformation.emails.map(({value})=> value);
     const phones = passenger.contactInformation.phones.map(({value})=> value);
@@ -23,42 +23,61 @@ const reduceContactInformation = (passengers) => passengers
       contactInformation: emails.concat(phones),
     }});
 
-const useDictionary = (array, object, keyToReplace) => array
+module.exports.useDictionary = (array, object, keyToReplace) => array
   .map((element) =>({
     ...element,
-    [keyToReplace]: object[element[keyToReplace]],
+    [keyToReplace]: object[element[keyToReplace]]
   }));
 
-const mergeHourAndDate = (array, dateName, timeName, finalName) => array
-  .map(({ [dateName]: date, [timeName]: time, destination, ...others}) => {
-    const utcDate = zonedTimeToUtc(`${date} ${time}:00.000`, airports[destination.iataCode]);
-    return {
-    ...others,
+module.exports.mergeHourAndDate = array => array
+  .map(({
+    splittedDepartureDate,
+    splittedDepartureTime,
+    splittedArrivalDate,
+    splittedArrivalTime,
+    origin,
     destination,
-    [finalName]: utcDate,
-  }});
+    ...others
+  }) => ({
+    ...others,
+    origin,
+    destination,
+    departureTime: zonedTimeToUtc(
+      `${splittedDepartureDate} ${splittedDepartureTime}:00.000`,
+      airports[origin.iataCode]
+    ),
+    arrivalTime: zonedTimeToUtc(
+      `${splittedArrivalDate} ${splittedArrivalTime}:00.000`,
+      airports[destination.iataCode]
+    )
+  }));
 
-const reduceToProperty = (object, property) =>  Object.keys(object)
+module.exports.convertDateToIrportTime = (date, time, iataCode) => zonedTimeToUtc(
+  `${date} ${time}:00.000`,
+  airports[iataCode]
+);
+
+module.exports.reduceToProperty = (object, property) =>  Object.keys(object)
   .map((key)=> {
     return {
       [key]: object[key][property]
     }
   });
 
-const splitSegments = (combinations) => combinations.map(({_items_, ...others})=> ({
+module.exports.splitSegments = (combinations) => combinations.map(({_items_, ...others})=> ({
   ...others,
   _items_ : _items_.split(' '),
 }));
 
 
-const reduceToObjectByKey = (array) => array
+module.exports.reduceToObjectByKey = (array) => array
   .reduce((segments, { _id_, ...others }) => ({
     ...segments,
     [_id_]: others,
   }), {});
 
 
-const roundCommissionDecimals = (offers) => offers
+module.exports.roundCommissionDecimals = (offers) => offers
   .map(({price, ...others}) => ({
     ...others,
     price: {
@@ -67,7 +86,7 @@ const roundCommissionDecimals = (offers) => offers
     }
   }));
 
-const reduceAcomodation = (accommodation) => accommodation
+module.exports.reduceAcomodation = (accommodation) => accommodation
   .reduce((ac, {_provider_, _id_, ...others}) => {
     const key = `${_provider_}.${_id_}`;
     return {
@@ -76,7 +95,7 @@ const reduceAcomodation = (accommodation) => accommodation
     };
   }, {});
 
-const reduceRoomStays = (_roomStays_ => {
+module.exports.reduceRoomStays = (_roomStays_ => {
   // The offer dicts will contain all offers
   var offers = {}
   _roomStays_.forEach(roomStay => {
@@ -117,17 +136,18 @@ const reduceRoomStays = (_roomStays_ => {
   return offers;
 });
 
+// Deep merge of two objects
+const deepMerge = (target, source) => {
+  
+  for (const key of Object.keys(source)) {
+    
+    if (source[key].constructor === Object && target[key]) {
+      Object.assign(source[key], deepMerge(target[key], source[key]))
+    } else {
+      target[key] = source[key];
+    }
+  }
 
-module.exports = {
-  reduceToObjectByKey,
-  roundCommissionDecimals,
-  splitSegments,
-  reduceToProperty,
-  mergeHourAndDate,
-  useDictionary,
-  reduceContactInformation,
-  splitPropertyBySpace,
-  reduceObjectToProperty,
-  reduceAcomodation,
-  reduceRoomStays,
+  return Object.assign(target || {}, source);
 };
+module.exports.deepMerge = deepMerge;
