@@ -21,7 +21,8 @@ const {
   mergeHourAndDate,
   useDictionary,
   reduceObjectToProperty,
-  deepMerge
+  deepMerge,
+  convertDateToIrportTime
 } = require('../parsers');
 
 const {
@@ -44,17 +45,9 @@ const transformResponse = async (
   );
 
   searchResults.itineraries.segments = mergeHourAndDate(
-    searchResults.itineraries.segments,
-    'splittedDepartureDate',
-    'splittedDepartureTime',
-    'departureTime'
+    searchResults.itineraries.segments
   );
-  searchResults.itineraries.segments = mergeHourAndDate(
-    searchResults.itineraries.segments,
-    'splittedArrivalDate',
-    'splittedArrivalTime',
-    'arrivalTime'
-  );
+
   searchResults.itineraries.segments = reduceToObjectByKey(
     searchResults.itineraries.segments
   );
@@ -373,11 +366,15 @@ module.exports.searchFlight = async (body) => {
     );
   }));
 
+  // const fs = require('fs');
+
   // Check responses for errors
   const responseErrors = (await Promise.all(
     responses
       .map(async ({ provider, response, error, templates }) => {
 
+        // fs.writeFileSync(`/home/kostysh/dev/glider-fork/temp/${provider}-shp-rs.xml`, response.data);
+        
         if (error && !error.isAxiosError) {
 
           // Request error
