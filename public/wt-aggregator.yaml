@@ -22,7 +22,7 @@ tags:
 
 paths:
   # ** Offers **
-  /searchOffers:
+  /offers/search:
     post:
       tags:
         - offers
