@@ -89,7 +89,7 @@ class OfferManager {
         offerId
       },
       {
-        offerId: options.offerId,
+        offerId,
         offer: options.offer
       },
       {

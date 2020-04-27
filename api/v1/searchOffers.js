@@ -24,10 +24,13 @@ module.exports = basicDecorator(async (req, res) => {
 
   if (body.accommodation) {
     resolver = searchHotel;
-  };
-
-  if (body.itinerary) {
+  } else if (body.itinerary) {
     resolver = searchFlight;
+  } else {
+    throw new GliderError(
+      'Invalid search criteria: missing itinerary or accommodation objects',
+      400
+    );
   }
 
   const result = await resolver(body);

@@ -1,7 +1,6 @@
 const { transform } = require('camaro');
 const { airFranceConfig, airCanadaConfig } = require('../../../config');
 const GliderError = require('../../error');
-
 const {
   mapNdcRequestData_AF,
   mapNdcRequestHeaderData_AC,
@@ -18,7 +17,6 @@ const {
   ErrorsTransformTemplate_AC,
   FaultsTransformTemplate_AC
 } = require('../../camaroTemplates/provideOrderCreate');
-
 const {
   mergeHourAndDate,
   reduceToObjectByKey,
@@ -27,10 +25,25 @@ const {
   splitPropertyBySpace,
   reduceToProperty
 } = require('../../parsers');
-
-const { callProvider } = require('../utils/flightUtils');
+const {
+  callProvider,
+  reMapPassengersInRequestBody
+} = require('../utils/flightUtils');
+const { offerPriceRQ } = require('./offerPrice');
 
 module.exports = async (offer, requestBody, guaranteeClaim) => {
+
+  if (!offer.isPriced) {
+    const offerPriceResult = await offerPriceRQ(requestBody.offerId, false);
+
+    if (offerPriceResult.offer.price.public !== offer.amountAfterTax) {
+      throw new GliderError(
+        'Offer price has changed, reprice is required',
+        502
+      );
+    }
+  }
+
   let ndcRequestHeaderData;
   let ndcRequestData;
   let providerUrl;
@@ -42,34 +55,7 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   let faultsTransformTemplate;
 
   // Re-map passengers
-  if (offer.extraData && offer.extraData.mappedPassengers) {
-    requestBody.offerItems = Object.entries(requestBody.offerItems)
-      .map(item => {
-        item[1].passengerReferences = item[1].passengerReferences
-          .split(' ')
-          .map(r => offer.extraData.mappedPassengers[r])
-          .join(' ');
-        return item;
-      })
-      .reduce((a, v) => ({
-        ...a,
-        [v[0]]: v[1]
-      }), {});
-    requestBody.passengers = Object.entries(requestBody.passengers)
-      .map(p => {
-        p[0] = offer.extraData.mappedPassengers[p[0]];
-        return p;
-      })
-      .reduce((a, v) => ({
-        ...a,
-        [v[0]]: v[1]
-      }), {});;
-  } else {
-    throw new GliderError(
-      'Mapped passengers Ids not found in the offer',
-      500
-    );
-  }
+  requestBody = reMapPassengersInRequestBody(offer, requestBody);
 
   switch (offer.provider) {
     case 'AF':
@@ -93,10 +79,13 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
       faultsTransformTemplate = FaultsTransformTemplate_AC;
       break;
     default:
-      return Promise.reject('Unsupported flight operator');
+      throw new GliderError(
+        'Unsupported flight operator',
+        400
+      );
   }
 
-  console.log('BODY@@@', ndcBody);
+  // console.log('BODY@@@', ndcBody);
 
   const { response, error } = await callProvider(
     offer.provider,
@@ -106,7 +95,7 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
     SOAPAction
   );
 
-  console.log('RESOP0NSE@@@', response.data);
+  // console.log('RESOP0NSE@@@', response.data);
 
   if (error && !error.isAxiosError) {
     
@@ -151,16 +140,7 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   );
 
   createResults.order.itinerary.segments = mergeHourAndDate(
-    createResults.order.itinerary.segments,
-    'splittedDepartureDate',
-    'splittedDepartureTime',
-    'departureTime'
-  );
-  createResults.order.itinerary.segments = mergeHourAndDate(
-    createResults.order.itinerary.segments,
-    'splittedArrivalDate',
-    'splittedArrivalTime',
-    'arrivalTime'
+    createResults.order.itinerary.segments
   );
   createResults.order.itinerary.segments = reduceToObjectByKey(
     createResults.order.itinerary.segments

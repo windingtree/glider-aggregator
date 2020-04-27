@@ -31,6 +31,14 @@
             "destination": "/api/v1/orders/[orderId]/fulfill.js?orderId=$1"
         },
         {
+            "source": "/api/v1/offers/search",
+            "destination": "/api/v1/searchOffers.js"
+        },
+        {
+            "source": "/api/v1/offers/(.*)/options",
+            "destination": "/api/v1/offers.js?offerId=$1"
+        },
+        {
             "source": "/api/v1/(.*)",
             "destination": "/api/v1/$1.js"
         },

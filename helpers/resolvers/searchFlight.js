@@ -230,6 +230,7 @@ const transformResponse = async (
               offerId,
               segments,
               destinations,
+              passengers: passengersIds,
               mappedPassengers
             }
           );
@@ -250,6 +251,7 @@ const transformResponse = async (
         searchResults.offers[offerId].price.public,
         searchResults.offers[offerId].price.currency,
         {
+          passengers: passengersIds,
           mappedPassengers
         }
       );

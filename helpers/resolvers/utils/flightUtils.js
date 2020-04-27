@@ -28,6 +28,7 @@ module.exports.callProvider = async (
           'Content-Type': 'application/xml;charset=UTF-8',
           'Accept-Encoding': 'gzip,deflate',
           'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
           'api_key': apiKey,
           'X-apiKey': apiKey,
           ...(SOAPAction ? { SOAPAction } : {})
@@ -255,4 +256,37 @@ module.exports.selectProvider = (origin, destination) => {
 
       return a;
     }, ['AF']);// temporary until we do not have a specific set for AF
+};
+
+module.exports.reMapPassengersInRequestBody = (offer, body) => {
+  if (offer.extraData && offer.extraData.mappedPassengers) {
+    body.offerItems = Object.entries(body.offerItems)
+      .map(item => {
+        item[1].passengerReferences = item[1].passengerReferences
+          .split(' ')
+          .map(r => offer.extraData.mappedPassengers[r])
+          .join(' ');
+        return item;
+      })
+      .reduce((a, v) => ({
+        ...a,
+        [v[0]]: v[1]
+      }), {});
+      body.passengers = Object.entries(body.passengers)
+      .map(p => {
+        p[0] = offer.extraData.mappedPassengers[p[0]];
+        return p;
+      })
+      .reduce((a, v) => ({
+        ...a,
+        [v[0]]: v[1]
+      }), {});;
+  } else {
+    throw new GliderError(
+      'Mapped passengers Ids not found in the offer',
+      500
+    );
+  }
+
+  return body;
 };
