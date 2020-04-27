@@ -42,7 +42,6 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
             operatorType: '#airline',
             iataCode: 'OperatingCarrier/AirlineID'
           },
-          airlineIataCode: 'OperatingCarrier/AirlineID',
           origin: {
             locationType: '#airport',
             iataCode: 'Departure/AirportCode'
