@@ -1,3 +1,5 @@
+const  { airCanadaConfig } = require('../../config');
+
 module.exports.provideOfferPriceTransformTemplate_AC = {
   offerId: '//OfferPriceRS/PricedOffer/@OfferID',
   offer: {
@@ -8,7 +10,7 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
       commission: [
         '//OfferPriceRS/PricedOffer/OfferItem',
         {
-          value: 'TotalPriceDetail/BaseAmount'
+          value: `number(TotalPriceDetail/BaseAmount) * ${airCanadaConfig.commission}`
         }
       ],
       taxes: [
