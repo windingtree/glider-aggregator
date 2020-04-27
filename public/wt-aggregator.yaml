@@ -186,7 +186,7 @@ paths:
         - orgid_token: []
       x-codegen-request-body-name: body
   
-  /offer/{offerId}/options:
+  /offers/{offerId}/options:
     post:
       tags:
         - offers
