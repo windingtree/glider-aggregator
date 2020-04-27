@@ -28,7 +28,7 @@ module.exports = basicDecorator(async (req, res) => {
     resolver = searchFlight;
   } else {
     throw new GliderError(
-      'Unable to choose a resolver',
+      'Invalid search criteria: missing itinerary or accommodation objects',
       500
     );
   }
