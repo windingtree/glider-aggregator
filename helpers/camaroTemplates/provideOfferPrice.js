@@ -36,7 +36,10 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
         '//OfferPriceRS/DataLists/FlightSegmentList/FlightSegment',
         {
           _id_: '@SegmentKey',
-          operatorType: '#airline',
+          operator: {
+            operatorType: '#airline',
+            iataCode: 'OperatingCarrier/AirlineID'
+          },
           airlineIataCode: 'OperatingCarrier/AirlineID',
           origin: {
             locationType: '#airport',

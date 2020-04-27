@@ -29,7 +29,7 @@ module.exports = basicDecorator(async (req, res) => {
   } else {
     throw new GliderError(
       'Invalid search criteria: missing itinerary or accommodation objects',
-      500
+      400
     );
   }
 

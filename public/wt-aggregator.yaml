@@ -1051,7 +1051,10 @@ components:
             "itinerary": {
               "segments": {
                 "SNBVN7MVMC-SEG1": {
-                  "operatorType": "airline",
+                  "operator": {
+                    "operatorType": "airline",
+                    "iataCode": "AC"
+                  },
                   "airlineIataCode": "AC",
                   "origin": {
                     "locationType": "airport",
@@ -1065,7 +1068,10 @@ components:
                   "arrivalTime": "2020-09-14T04:25:00.000Z"
                 },
                 "W4KZRCL3RU-SEG2": {
-                  "operatorType": "airline",
+                  "operator": {
+                    "operatorType": "airline",
+                    "iataCode": "AC"
+                  },
                   "airlineIataCode": "AC",
                   "origin": {
                     "locationType": "airport",
