@@ -202,6 +202,7 @@ module.exports = basicDecorator(async (req, res) => {
       }, {});
 
     // Update offer in the database
+    offer.isPriced = true;
     offer.amountAfterTax = offerResult.offer.price.public;
     offer.offerId = query.offerId;
     offer.extraData.mappedPassengers = newPassengersMap;
