@@ -26,7 +26,6 @@ module.exports.callProvider = async (
       {
         headers: {
           'Content-Type': 'application/xml;charset=UTF-8',
-          'Accept': '*/*',
           'Accept-Encoding': 'gzip,deflate',
           'Cache-Control': 'no-cache',
           'Connection': 'keep-alive',
