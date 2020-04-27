@@ -975,7 +975,7 @@ components:
               format: date-time
               example: "2021-04-12T23:20:50.52Z"
             price:
-              $ref: "#/components/schemas/price"
+              $ref: "#/components/schemas/Price"
             passengers:
               description: Indexed dictionnary of the passengers
               type: object

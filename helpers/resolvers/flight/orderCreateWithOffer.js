@@ -1,7 +1,6 @@
 const { transform } = require('camaro');
 const { airFranceConfig, airCanadaConfig } = require('../../../config');
 const GliderError = require('../../error');
-
 const {
   mapNdcRequestData_AF,
   mapNdcRequestHeaderData_AC,
@@ -18,7 +17,6 @@ const {
   ErrorsTransformTemplate_AC,
   FaultsTransformTemplate_AC
 } = require('../../camaroTemplates/provideOrderCreate');
-
 const {
   mergeHourAndDate,
   reduceToObjectByKey,
@@ -27,13 +25,25 @@ const {
   splitPropertyBySpace,
   reduceToProperty
 } = require('../../parsers');
-
 const {
   callProvider,
   reMapPassengersInRequestBody
 } = require('../utils/flightUtils');
+const { offerPriceRQ } = require('./offerPrice');
 
 module.exports = async (offer, requestBody, guaranteeClaim) => {
+
+  if (!offer.isPriced) {
+    const offerPriceResult = await offerPriceRQ(requestBody.offerId, false);
+
+    if (offerPriceResult.offer.price.public !== offer.amountAfterTax) {
+      throw new GliderError(
+        'Offer price has changed, reprice is required',
+        502
+      );
+    }
+  }
+
   let ndcRequestHeaderData;
   let ndcRequestData;
   let providerUrl;
