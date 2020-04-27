@@ -137,8 +137,6 @@ module.exports = basicDecorator(async (req, res) => {
   const offer = await offerManager.getOffer(query.offerId);
 
   if (offer instanceof FlightOffer) {
-    // Re-map passengers
-    const requestBody = reMapPassengersInRequestBody(offer, body);
 
     switch (offer.provider) {
       case 'AF':
@@ -147,7 +145,7 @@ module.exports = basicDecorator(async (req, res) => {
           500
         );
       case 'AC':
-        ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offer, requestBody);
+        ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offer);
         providerUrl = 'https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/OfferPrice';
         apiKey = airCanadaConfig.apiKey;
         ndcBody = offerPriceRequestTemplate_AC(ndcRequestData);

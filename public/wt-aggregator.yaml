@@ -200,47 +200,6 @@ paths:
           required: true
           schema:
             $ref: "#/components/schemas/UUID"
-      requestBody:
-        description: Reference of the offers and details of the passengers
-        content:
-          application/json:
-            schema:
-              properties:
-                offerId:
-                  $ref: "#/components/schemas/UUID"
-                offerItems:
-                  description: The selected list of offer items
-                  type: object
-                  additionalProperties:
-                    type: object
-                    properties:
-                      passengerReferences:
-                        description: A list of passenger references
-                        type: array
-                        items:
-                          type: string
-                          example: PAX1
-                passengers:
-                  description: Indexed dictionnary of the passengers
-                  type: object
-                  additionalProperties:
-                    $ref: "#/components/schemas/Passenger"
-              example:
-                {
-                  "offerItems":
-                    {
-                      "11111111-2222-3333-4444-000000000001":
-                        { "passengerReferences": "PAX1" }
-                    },
-                  "passengers":
-                    {
-                      "PAX1":
-                        {
-                          "type": "ADT"
-                        }
-                    }
-                }
-        required: true
       responses:
         200:
           description: Offer with confirmed price
