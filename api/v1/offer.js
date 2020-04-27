@@ -107,7 +107,15 @@ const processResponse = async (data, template) => {
 };
 
 module.exports = basicDecorator(async (req, res) => {
-  const { query, body } = req;
+  const { method, query, body } = req;
+
+  if (method !== 'POST') {
+    throw new GliderError(
+      'Method not allowed',
+      405
+    );
+  }
+
   let offerResult;
   let ndcRequestData;
   let providerUrl;
