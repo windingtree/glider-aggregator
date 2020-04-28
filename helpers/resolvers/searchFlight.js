@@ -203,6 +203,7 @@ const transformResponse = async (
             operator.iataCode = operator.iataCode ? operator.iataCode : operator.iataCodeM;
             operator.flightNumber =
               `${operator.iataCodeM}${String(operator.flightNumber).padStart(4, '0')}`;
+            delete operator.iataCodeM;
             if (segment.Departure.Terminal.Name === '') {
               delete segment.Departure.Terminal;
             }
@@ -211,7 +212,6 @@ const transformResponse = async (
             }
             segment.aggregationKey =
               `${provider}${operator.flightNumber}${segment.departureTime}${segment.arrivalTime}`;
-            delete operator.iataCodeM;
             return {
               id: c,
               ...segment
@@ -246,6 +246,17 @@ const transformResponse = async (
         passengers: passengersIds,
         mappedPassengers
       };
+    }
+  }
+
+  if (provider === 'AF') {
+    for (const segmentId in searchResults.itineraries.segments) {
+      const segment = searchResults.itineraries.segments[segmentId];
+      const operator = segment.operator;
+      operator.iataCode = operator.iataCode ? operator.iataCode : operator.iataCodeM;
+      operator.flightNumber =
+        `${operator.iataCodeM}${String(operator.flightNumber).padStart(4, '0')}`;
+      delete operator.iataCodeM;
     }
   }
 

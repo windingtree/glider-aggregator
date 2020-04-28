@@ -181,6 +181,7 @@ module.exports.provideAirShoppingTransformTemplate_AF = {
         operator: {
           operatorType: '#airline',
           iataCode: 'OperatingCarrier/AirlineID',
+          iataCodeM: 'MarketingCarrier/AirlineID',
           flightNumber: 'MarketingCarrier/FlightNumber'
         },
         origin: {
