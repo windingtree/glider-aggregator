@@ -44,7 +44,9 @@ module.exports.provideAirShoppingTransformTemplate_AC = {
         _id_: '@SegmentKey',
         operator: {
           operatorType: '#airline',
-          iataCode: 'MarketingCarrier/AirlineID',
+          iataCode: 'OperatingCarrier/AirlineID',
+          iataCodeM: 'MarketingCarrier/AirlineID',
+          flightNumber: 'MarketingCarrier/FlightNumber'
         },
         origin: {
           locationType: '#airport',
@@ -179,6 +181,7 @@ module.exports.provideAirShoppingTransformTemplate_AF = {
         operator: {
           operatorType: '#airline',
           iataCode: 'OperatingCarrier/AirlineID',
+          flightNumber: 'MarketingCarrier/FlightNumber'
         },
         origin: {
           locationType: '#airport',

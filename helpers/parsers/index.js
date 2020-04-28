@@ -45,11 +45,11 @@ module.exports.mergeHourAndDate = array => array
     departureTime: zonedTimeToUtc(
       `${splittedDepartureDate} ${splittedDepartureTime}:00.000`,
       airports[origin.iataCode]
-    ),
+    ).toISOString(),
     arrivalTime: zonedTimeToUtc(
       `${splittedArrivalDate} ${splittedArrivalTime}:00.000`,
       airports[destination.iataCode]
-    )
+    ).toISOString()
   }));
 
 module.exports.convertDateToIrportTime = (date, time, iataCode) => zonedTimeToUtc(

@@ -730,6 +730,12 @@ components:
           maxLength: 2
           example: "AF"
 
+        flightNumber:
+          description: The flight number
+          type: string
+          pattern: "^[A-Z]{2}[0-9]{4}$"
+          example: "AC0668"
+
     Segment:
       description: A section of a travel itinerary
       type: object
