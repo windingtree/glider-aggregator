@@ -201,9 +201,8 @@ const transformResponse = async (
             const segment = searchResults.itineraries.segments[c];
             const operator = segment.operator;
             operator.iataCode = operator.iataCode ? operator.iataCode : operator.iataCodeM;
-            delete operator.iataCodeM;
             operator.flightNumber =
-              `${operator.iataCode}${String(operator.flightNumber).padStart(4, '0')}`;
+              `${operator.iataCodeM}${String(operator.flightNumber).padStart(4, '0')}`;
             if (segment.Departure.Terminal.Name === '') {
               delete segment.Departure.Terminal;
             }
@@ -212,6 +211,7 @@ const transformResponse = async (
             }
             segment.aggregationKey =
               `${provider}${operator.flightNumber}${segment.departureTime}${segment.arrivalTime}`;
+            delete operator.iataCodeM;
             return {
               id: c,
               ...segment
