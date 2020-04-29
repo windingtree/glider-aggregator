@@ -63,7 +63,7 @@ const processResponse = async (data, template) => {
 };
 
 // Create a OfferPrice request
-const offerPriceRQ = async (offerId, offerUpdateRequired = true) => {
+module.exports.offerPriceRQ = async (offerId, offerUpdateRequired = true) => {
 
   let offerResult;
   let ndcRequestData;
@@ -167,5 +167,3 @@ const offerPriceRQ = async (offerId, offerUpdateRequired = true) => {
 
   return offerResult;
 };
-
-module.exports.offerPriceRQ = offerPriceRQ;

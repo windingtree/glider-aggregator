@@ -31,7 +31,7 @@ const {
 } = require('../../config');
 
 const GliderError = require('../error');
-const offer = require('../models/offer');
+const offerModel = require('../models/offer');
 const { selectProvider, callProvider } = require('./utils/flightUtils');
 
 const transformResponse = async (
@@ -159,12 +159,14 @@ const transformResponse = async (
   if (searchResults.destinations) {
     searchResults.destinations = reduceToObjectByKey(searchResults.destinations);
   }
+
+  let overriddenOffers = {};
   
   // Store the offers
   let indexedOffers = {};
-  let overriddenOffers = {};
   let expirationDate = new Date(Date.now() + 60 * 30 * 1000).toISOString();// now + 30 min
   
+  // Process offers
   for (let offerId in searchResults.offers) {
 
     if (searchResults.offers[offerId].expiration === '') {
@@ -181,7 +183,7 @@ const transformResponse = async (
       let destinations;
       let extraData = {};
       
-      // Extract proper segments associated with the offer
+      // Extract segments and destinations associated with the offer
       for (const pricePlanId in searchResults.offers[offerId].pricePlansReferences) {
         const pricePlan = searchResults.offers[offerId].pricePlansReferences[pricePlanId];
 
@@ -196,17 +198,24 @@ const transformResponse = async (
 
           // Get the associated combinations associated with the flight
           segments = searchResults.itineraries.combinations[flight].map(c => {
-            if (searchResults.itineraries.segments[c].Departure.Terminal.Name === '') {
-              delete searchResults.itineraries.segments[c].Departure.Terminal;
+            const segment = searchResults.itineraries.segments[c];
+            const operator = segment.operator;
+            operator.iataCode = operator.iataCode ? operator.iataCode : operator.iataCodeM;
+            operator.flightNumber =
+              `${operator.iataCodeM}${String(operator.flightNumber).padStart(4, '0')}`;
+            delete operator.iataCodeM;
+            if (segment.Departure.Terminal.Name === '') {
+              delete segment.Departure.Terminal;
             }
-            if (searchResults.itineraries.segments[c].Arrival.Terminal.Name === '') {
-              delete searchResults.itineraries.segments[c].Arrival.Terminal;
+            if (segment.Arrival.Terminal.Name === '') {
+              delete segment.Arrival.Terminal;
             }
-            const segment = {
+            segment.aggregationKey =
+              `${provider}${operator.flightNumber}${segment.departureTime}${segment.arrivalTime}`;
+            return {
               id: c,
-              ...searchResults.itineraries.segments[c]
+              ...segment
             };
-            return segment;
           });
 
           // Get associated destination associated with the flight
@@ -217,44 +226,37 @@ const transformResponse = async (
             }
           ];
 
-          // Save each flight offer (from the set of flights) as separate offer
+          // Create extended set of AirCanada offers
           const splittedOfferId = uuidv4();
-          indexedOffers[splittedOfferId] = new offer.FlightOffer(
-            provider,
-            provider,
-            searchResults.offers[offerId].expiration,
-            searchResults.offers[offerId].offerItems,
-            searchResults.offers[offerId].price.public,
-            searchResults.offers[offerId].price.currency,
-            {
-              offerId,
-              segments,
-              destinations,
-              passengers: passengersIds,
-              mappedPassengers
-            }
-          );
-          
-          // Assign cloned offer to avoid offer mutability
           overriddenOffers[splittedOfferId] = JSON.parse(JSON.stringify(searchResults.offers[offerId]));
           overriddenOffers[splittedOfferId].pricePlansReferences = pricePlansRefsOverride;
+          overriddenOffers[splittedOfferId].extraData = {
+            offerId,
+            segments,
+            destinations,
+            passengers: passengersIds,
+            mappedPassengers
+          };
         }
       }
-      
     } else {
 
-      indexedOffers[offerId] = new offer.FlightOffer(
-        provider,
-        provider,
-        searchResults.offers[offerId].expiration,
-        searchResults.offers[offerId].offerItems,
-        searchResults.offers[offerId].price.public,
-        searchResults.offers[offerId].price.currency,
-        {
-          passengers: passengersIds,
-          mappedPassengers
-        }
-      );
+      // AirFrance offers
+      searchResults.offers[offerId].extraData = {
+        passengers: passengersIds,
+        mappedPassengers
+      };
+    }
+  }
+
+  if (provider === 'AF') {
+    for (const segmentId in searchResults.itineraries.segments) {
+      const segment = searchResults.itineraries.segments[segmentId];
+      const operator = segment.operator;
+      operator.iataCode = operator.iataCode ? operator.iataCode : operator.iataCodeM;
+      operator.flightNumber =
+        `${operator.iataCodeM}${String(operator.flightNumber).padStart(4, '0')}`;
+      delete operator.iataCodeM;
     }
   }
 
@@ -262,10 +264,95 @@ const transformResponse = async (
   if (Object.keys(overriddenOffers).length > 0) {
     searchResults.offers = overriddenOffers;
   }
-  
-  await offer.offerManager.storeOffers(indexedOffers);
 
-  // Remove helpers segments information from results
+  const combinationsMap = {};
+
+  // Deduplicate AirCanada segments and flights
+  if (provider === 'AC') {
+    // Segments aggregation
+    const aggregatedSegments = {};
+    const aggregationKeys = {};
+    const segmentsMap = {};
+
+    for (const origSegmentId in searchResults.itineraries.segments) {
+      const segment = searchResults.itineraries.segments[origSegmentId];
+
+      if (aggregationKeys[segment.aggregationKey]) {
+        segmentsMap[origSegmentId] = aggregationKeys[segment.aggregationKey];
+      } else {
+        aggregatedSegments[origSegmentId] = segment;
+        aggregationKeys[segment.aggregationKey] = origSegmentId;
+      }
+      delete segment.aggregationKey;
+    }
+    searchResults.itineraries.segments = aggregatedSegments;
+    
+    const updatedCombinations = {};
+    const combinationsKeys= {};
+
+    for (const c in searchResults.itineraries.combinations) {
+      let combination = searchResults.itineraries.combinations[c];
+      updatedCombinations[c] = combination.map(
+        segmentId => segmentsMap[segmentId]
+          ? segmentsMap[segmentId]
+          : segmentId
+      );
+      combinationsKeys[c] = updatedCombinations[c].join('');
+    }
+    searchResults.itineraries.combinations = updatedCombinations;
+
+    // Flights aggregation
+    const aggregatedCombinations = {};
+    const aggregatedCombinationsKeys = {};
+    
+    for (const origCombinationId in searchResults.itineraries.combinations) {
+      let combination = searchResults.itineraries.combinations[origCombinationId];
+
+      if (aggregatedCombinationsKeys[combinationsKeys[origCombinationId]]) {
+        combinationsMap[origCombinationId] = aggregatedCombinationsKeys[combinationsKeys[origCombinationId]];
+      } else {
+        aggregatedCombinations[origCombinationId] = combination;
+        aggregatedCombinationsKeys[combinationsKeys[origCombinationId]] = origCombinationId;
+      }
+    };
+    searchResults.itineraries.combinations = aggregatedCombinations;
+  }
+
+  // Prepare offers for storing to the database
+  for (const offerId in searchResults.offers) {
+    const offer = searchResults.offers[offerId];
+
+    // Update aggregated flights
+    if (Object.keys(combinationsMap).length > 0) {
+      for (const pricePlanId in offer.pricePlansReferences) {
+        const flights = offer.pricePlansReferences[pricePlanId].flights;
+        offer.pricePlansReferences[pricePlanId].flights = flights.map(
+          flight => combinationsMap[flight]
+            ? combinationsMap[flight]
+            : flight
+        );
+      }
+    }
+
+    indexedOffers[offerId] = new offerModel.FlightOffer(
+      provider,
+      provider,
+      searchResults.offers[offerId].expiration,
+      searchResults.offers[offerId].offerItems,
+      searchResults.offers[offerId].price.public,
+      searchResults.offers[offerId].price.currency,
+      searchResults.offers[offerId].extraData
+    );
+    delete searchResults.offers[offerId].extraData;
+  }
+
+  // Store offers to the database
+  await offerModel.offerManager.storeOffers(indexedOffers);
+
+  // Cleanup search results from supporting information
+  delete searchResults.checkedBaggages;
+  delete searchResults.destinations;
+
   for (const segment in searchResults.itineraries.segments) {
     delete searchResults.itineraries.segments[segment].Departure;
     delete searchResults.itineraries.segments[segment].Arrival;
@@ -275,9 +362,6 @@ const transformResponse = async (
     delete searchResults.itineraries.segments[segment].ClassOfService;
     delete searchResults.itineraries.segments[segment].FlightDetail;
   }
-
-  delete searchResults.checkedBaggages;
-  delete searchResults.destinations;
 
   return searchResults;
 };
