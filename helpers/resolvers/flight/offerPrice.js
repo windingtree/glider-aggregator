@@ -1,4 +1,5 @@
 const { transform } = require('camaro');
+const { v4: uuidv4 } = require('uuid');
 const GliderError = require('../../error');
 const assertErrors = require('../utils/assertResponseErrors');
 const {
@@ -222,6 +223,9 @@ module.exports.offerPriceRQ = async (offerIds, offerUpdateRequired = true) => {
       });
     }
   } else {
+    const internalOfferId = uuidv4();
+    offerResult.offerId = internalOfferId;
+
     // Save new priced offer
     const offer = new FlightOffer(
       offers[0].provider,
@@ -236,9 +240,9 @@ module.exports.offerPriceRQ = async (offerIds, offerUpdateRequired = true) => {
         segments: offerResult.offer.itinerary.segments
       }
     );
-    offer.offerId = offerResult.offerId;
+    offer.offerId = internalOfferId;
     offer.isPriced = true;
-    await offerManager.saveOffer(offerResult.offerId, {
+    await offerManager.saveOffer(internalOfferId, {
       offer
     });
   }
