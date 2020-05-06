@@ -21,8 +21,7 @@ const {
   mergeHourAndDate,
   useDictionary,
   reduceObjectToProperty,
-  deepMerge,
-  convertDateToIrportTime
+  deepMerge
 } = require('../parsers');
 
 const {
@@ -382,6 +381,20 @@ module.exports.searchFlight = async (body) => {
     );
   };
 
+  // Checking of the type of request: OneWay or Return
+  let requestDocumentId = 'OneWay';
+  const { itinerary: { segments } } = body;
+
+  if (
+    segments.length === 2 &&
+    (
+      segments[0].origin.iataCode == segments[1].destination.iataCode ||
+      segments[1].origin.iataCode == segments[0].destination.iataCode
+    )
+  ) {
+    requestDocumentId = 'Return';
+  }
+
   // Request all providers
   const responses = await Promise.all(providers.map(provider => {
     let ndcRequestData;
@@ -405,13 +418,14 @@ module.exports.searchFlight = async (body) => {
         };
         break;
       case 'AC':
-        ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, body);
+        ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, body, requestDocumentId);
         providerUrl = 'https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/AirShopping';
         apiKey = airCanadaConfig.apiKey;
         ndcBody = provideShoppingRequestTemplate_AC(ndcRequestData);
+        // console.log('@@@', ndcBody);
         templates = {
           response: provideAirShoppingTransformTemplate_AC,
-          faults: ErrorsTransformTemplate_AC,
+          faults: FaultsTransformTemplate_AC,
           errors: ErrorsTransformTemplate_AC
         };
         break;

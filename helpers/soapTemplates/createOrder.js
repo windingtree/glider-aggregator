@@ -54,7 +54,7 @@ const mapContacList = (passengers) => Object.keys(passengers)
       </iata:ContactInformation>`;
   }, '');
 
-  module.exports.orderCreateRequestTemplate_AF = data => `<soapenv:Envelope xmlns:iata="http://www.iata.org/IATA/EDIST/2017.1" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+module.exports.orderCreateRequestTemplate_AF = data => `<soapenv:Envelope xmlns:iata="http://www.iata.org/IATA/EDIST/2017.1" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
   <soapenv:Header>
     <trackingMessageHeader xmlns="http://www.af-klm.com/soa/xsd/MessageHeader-V1_0">
       <consumerRef>
