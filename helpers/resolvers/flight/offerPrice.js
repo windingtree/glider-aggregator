@@ -12,7 +12,8 @@ const {
   FlightOffer
 } = require('../../models/offer');
 const {
-  callProvider
+  callProvider,
+  fetchFlightsOffersByIds
 } = require('../../resolvers/utils/flightUtils');
 const {
   mapNdcRequestData_AC
@@ -125,21 +126,7 @@ module.exports.offerPriceRQ = async (offerIds, offerUpdateRequired = true) => {
   offerIds = offerIds.split(',').map(o => o.trim());
 
   // Retrieve the offers
-  const offers = (await Promise.all(offerIds.map(
-    offerId => offerManager.getOffer(offerId)
-  )))
-    // Should be FlightOffer of type and have same provider
-    .filter((offer, i, array) => (
-      offer instanceof FlightOffer &&
-      offer.provider === array[0].provider
-    ));
-
-  if (offers.length === 0) {
-    throw new GliderError(
-      'Offer not found',
-      400
-    );
-  }
+  const offers = await fetchFlightsOffersByIds(offerIds);
 
   // Check the type of request: OneWay or Return
   let requestDocumentId = 'OneWay';

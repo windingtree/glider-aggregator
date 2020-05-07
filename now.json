@@ -39,6 +39,10 @@
             "destination": "/api/v1/offers.js?offerIds=$1"
         },
         {
+            "source": "/api/v1/offers/(.*)/seatmap",
+            "destination": "/api/v1/seatmap.js?offerIds=$1"
+        },
+        {
             "source": "/api/v1/(.*)",
             "destination": "/api/v1/$1.js"
         },
