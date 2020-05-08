@@ -12,7 +12,7 @@ module.exports = basicDecorator(async (req, res) => {
     );
   }
 
-  const offerResult = await offerPriceRQ(query.offerId);
+  const offerResult = await offerPriceRQ(query.offerIds);
 
   res.status(200).json(offerResult);
 });

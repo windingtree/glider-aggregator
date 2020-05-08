@@ -68,10 +68,18 @@ module.exports.mapNdcRequestData_AF = (config, {itinerary, passengers}) => ({
 
 // Build request data for the request to the AirCanada provider
 module.exports.mapNdcRequestData_AC = (
-  { apiKey, commission, AirlineID, ...config },// extract the only needed part of config
-  { itinerary, passengers }
+  { apiKey, commission, AirlineID, Document, ...config },// extract the only needed part of config
+  { itinerary, passengers },
+  documentId = 'OneWay'
 ) => ({
   ...(JSON.parse(JSON.stringify(config))),
+  ...({
+    Document: {
+      '@id': documentId,
+      Name: Document.Name,
+      ReferenceVersion: Document.ReferenceVersion
+    }
+  }),
   CoreQuery: {
     OriginDestinations: itinerary.segments.map(segment => ({
       OriginDestination: {

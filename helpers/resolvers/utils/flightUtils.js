@@ -1,5 +1,6 @@
 const axios = require('axios');
 const caDestinations = require('./cadest.json');
+const GliderError = require('../../error');
 
 // Send a request to the provider
 module.exports.callProvider = async (

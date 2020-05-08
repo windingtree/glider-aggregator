@@ -35,8 +35,8 @@
             "destination": "/api/v1/searchOffers.js"
         },
         {
-            "source": "/api/v1/offers/(.*)/options",
-            "destination": "/api/v1/offers.js?offerId=$1"
+            "source": "/api/v1/offers/(.*)/price",
+            "destination": "/api/v1/offers.js?offerIds=$1"
         },
         {
             "source": "/api/v1/(.*)",

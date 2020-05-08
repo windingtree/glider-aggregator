@@ -7,12 +7,12 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
     price: {
       currency: '//OfferPriceRS/PricedOffer/TotalPrice/DetailCurrencyPrice/Total/@Code',
       public: '//OfferPriceRS/PricedOffer/TotalPrice/DetailCurrencyPrice/Total',
-      commission: [
-        '//OfferPriceRS/PricedOffer/OfferItem',
-        {
-          value: `number(TotalPriceDetail/BaseAmount) * ${airCanadaConfig.commission}`
-        }
-      ],
+      // commission: [
+      //   '//OfferPriceRS/PricedOffer/OfferItem',
+      //   {
+      //     value: `number(TotalPriceDetail/BaseAmount) * ${airCanadaConfig.commission}`
+      //   }
+      // ],
       taxes: [
         '//OfferPriceRS/PricedOffer/OfferItem',
         {
@@ -20,6 +20,58 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
         }
       ]
     },
+    pricedItems: [
+      '//OfferPriceRS/PricedOffer/OfferItem',
+      {
+        _id_: '@OfferItemID',
+        taxes: [
+          'TotalPriceDetail/Taxes/Breakdown/Tax',
+          {
+            amount: 'Amount',
+            code: 'TaxCode',
+            description: 'Description'
+          }
+        ],
+        fareBase: { // Will be concatenated into `fare` array
+          usage: '#base',
+          amount: 'FareDetail/Price/BaseAmount',
+          components: [
+            'FareDetail/FareComponent',
+            {
+              name: 'FareBasis/CabinType/CabinTypeName',
+              basisCode: 'FareBasis/FareBasisCode/Code',
+              designator: 'FareBasis/RBD',
+              conditions: 'PriceClassRef'// Will be mapped to price class
+            }
+          ]
+        },
+        fareSurcharge: [ // Will be concatenated into `fare` array
+          'TotalPriceDetail/Surcharges/Surcharge',
+          {
+            usage: '#surcharge',
+            code: 'Breakdown/Fee/Designator',
+            description: 'Breakdown/Fee/Description',
+            amount: 'Breakdown/Fee/Amount'
+          }
+        ]
+      }
+    ],
+    priceClassList: [
+      '//OfferPriceRS/DataLists/PriceClassList/PriceClass',
+      {
+        _id_: '@PriceClassID',
+        name: 'Name',
+        code: 'Code',
+        description: [
+          'Descriptions/Description',
+          'Text'
+        ]
+      }
+    ],
+    terms: [
+      '//OfferPriceRS/DataLists/TermsList/Term/Descriptions/Description',
+      'Text'
+    ],
     passengers: [
       '//OfferPriceRS/DataLists/PassengerList/Passenger',
       {
