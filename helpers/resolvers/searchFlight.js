@@ -1,4 +1,4 @@
-const { transform } = require('camaro');
+const { ready, transform } = require('camaro');
 const { v4: uuidv4 } = require('uuid');
 const {
   mapNdcRequestData_AF,
@@ -37,7 +37,7 @@ const transformResponse = async (
   { provider, response, templates },
   passengersIds
 ) => {
-
+  await ready();
   const searchResults = await transform(
     response.data,
     templates.response
@@ -488,12 +488,14 @@ module.exports.searchFlight = async (body) => {
           let faultsResult;
 
           if (templates.faults) {
+            await ready();
             faultsResult = await transform(
               response.data,
               templates.faults
             );
           }
 
+          await ready();
           const errorsResult = await transform(
             response.data,
             templates.errors

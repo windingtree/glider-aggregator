@@ -3,7 +3,7 @@
   Currently hardcoded to e-revemax
 */
 const axios = require('axios');
-const { transform } = require('camaro');
+const { ready, transform } = require('camaro');
 const config = require('../../../config');
 const GliderError = require('../../error');
 const responseTemplate = require('../../camaroTemplates/hotelResNotifRS').otaHotelResNotifRSTemplate;
@@ -29,6 +29,7 @@ module.exports = async (offer, passengers, card) => {
   });
 
   // Transform the XML answer
+  await ready();
   const responseData = await transform(response.data, responseTemplate);
 
   // If any error, send it

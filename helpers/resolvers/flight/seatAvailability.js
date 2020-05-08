@@ -1,6 +1,4 @@
-const {
-  transform
-} = require('camaro');
+const { ready, transform } = require('camaro');
 const GliderError = require('../../error');
 const { airCanadaConfig } = require('../../../config');
 const assertErrors = require('../utils/assertResponseErrors');
@@ -12,21 +10,72 @@ const {
   mapNdcRequestData_AC
 } = require('../../transformInputData/seatAvailability');
 const {
-  offerPriceRequestTemplate_AC
+  seatAvailabilityRequestTemplate_AC
 } = require('../../soapTemplates/seatAvailability');
 const {
-  provideOfferPriceTransformTemplate_AC,
+  provideSeatAvailabilityTransformTemplate_AC,
   FaultsTransformTemplate_AC,
   ErrorsTransformTemplate_AC
 } = require('../../camaroTemplates/provideSeatAvailability');
+const {
+  reduceToObjectByKey
+} = require('../../parsers');
+const { flatOneDepth } = require('../../transformInputData/utils/collections');
 
 // Convert response data to the object form
-const processResponse = async (data, template) => {
+const processResponse = async (data, offers, template) => {
+
+  // Index segments from offers
+  const indexedSegments = flatOneDepth(
+    offers.map(offer => offer.extraData.segments.map(s => ({
+      [`${s.Departure.AirportCode}-${s.Arrival.AirportCode}`]: s.id
+    })))
+  ).reduce((a, v) => ({...a, ...v}), {});
+
+  await ready();
   const seatMapResult = await transform(
     data,
     template
   );
-  
+
+  seatMapResult.services = reduceToObjectByKey(seatMapResult.services);
+
+  seatMapResult.offers = seatMapResult.offers.map(o => {
+    o.offerItems = reduceToObjectByKey(
+      o.offerItems
+    );
+    return o;
+  }); 
+
+  seatMapResult.seatMaps = seatMapResult.seatMaps.reduce((a, v) => {
+    v.cabins = v.cabins.map(c => {
+      c.seats = flatOneDepth(
+        c.rows.map(r => r.seats.map(s => ({
+          ...s,
+          ...({
+            number: `${r.number}${s.number}`
+          }), 
+          ...({
+            optionCode: seatMapResult.offers.reduce((a, v) => {
+              if (v.offerItems[s.optionCode]) {
+                const serviceRef = v.offerItems[s.optionCode].serviceRef;
+                a = `${serviceRef}.${seatMapResult.services[serviceRef].name}`;
+              }              
+              return a;
+            }, undefined)
+          })
+        })))
+      );
+      delete c.rows;
+      return c;
+    });
+    a[indexedSegments[v.segmentKey]] = {
+      cabins: v.cabins
+    };
+    return a;
+  }, {});
+
+  return seatMapResult.seatMaps;
 };
 
 // Create a SeatMap request
@@ -54,6 +103,13 @@ module.exports.seatMapRQ = async (offerIds) => {
   // Retrieve the offers
   const offers = await fetchFlightsOffersByIds(offerIds);
 
+  // Check the type of request: OneWay or Return
+  let requestDocumentId = 'OneWay';
+
+  if (offers.length > 1) {
+    requestDocumentId = 'Return';
+  }
+
   switch (offers[0].provider) {
     case 'AF':
       throw new GliderError(
@@ -61,12 +117,13 @@ module.exports.seatMapRQ = async (offerIds) => {
         500
       );
     case 'AC':
-      ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offers);
+      ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offers, requestDocumentId);
+      // console.log('@@@', JSON.stringify(ndcRequestData, null, 2));
       providerUrl = 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/SeatAvailability';
       apiKey = airCanadaConfig.apiKey;
-      ndcBody = offerPriceRequestTemplate_AC(ndcRequestData);
+      ndcBody = seatAvailabilityRequestTemplate_AC(ndcRequestData);
       // console.log('###', ndcBody);
-      responseTransformTemplate = provideOfferPriceTransformTemplate_AC;
+      responseTransformTemplate = provideSeatAvailabilityTransformTemplate_AC;
       errorsTransformTemplate = ErrorsTransformTemplate_AC;
       faultsTransformTemplate = FaultsTransformTemplate_AC;
       break;
@@ -85,6 +142,8 @@ module.exports.seatMapRQ = async (offerIds) => {
     SOAPAction
   );
 
+  // console.log('!!!!', error);
+
   await assertErrors(
     error,
     response,
@@ -96,6 +155,7 @@ module.exports.seatMapRQ = async (offerIds) => {
 
   seatMapResult = await processResponse(
     response.data,
+    offers,
     responseTransformTemplate
   );
 

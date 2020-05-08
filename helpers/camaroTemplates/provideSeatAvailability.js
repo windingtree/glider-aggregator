@@ -1,138 +1,75 @@
 // const  { airCanadaConfig } = require('../../config');
 
-module.exports.provideOfferPriceTransformTemplate_AC = {
-  offerId: '//OfferPriceRS/PricedOffer/@OfferID',
-  offer: {
-    expiration: '//OfferPriceRS/PricedOffer/TimeLimits/OfferExpiration/@DateTime',
-    price: {
-      currency: '//OfferPriceRS/PricedOffer/TotalPrice/DetailCurrencyPrice/Total/@Code',
-      public: '//OfferPriceRS/PricedOffer/TotalPrice/DetailCurrencyPrice/Total',
-      // commission: [
-      //   '//OfferPriceRS/PricedOffer/OfferItem',
-      //   {
-      //     value: `number(TotalPriceDetail/BaseAmount) * ${airCanadaConfig.commission}`
-      //   }
-      // ],
-      taxes: [
-        '//OfferPriceRS/PricedOffer/OfferItem',
+module.exports.provideSeatAvailabilityTransformTemplate_AC = {
+  seatMaps: [
+    '//SeatAvailabilityRS/SeatMap',
+    {
+      segmentKey: 'concat(SegmentRef/@OffPoint,"-",SegmentRef/@OnPoint)',
+      cabins: [
+        'Cabin',
         {
-          value: 'TotalPriceDetail/Taxes/Total'
-        }
-      ]
-    },
-    pricedItems: [
-      '//OfferPriceRS/PricedOffer/OfferItem',
-      {
-        _id_: '@OfferItemID',
-        taxes: [
-          'TotalPriceDetail/Taxes/Breakdown/Tax',
-          {
-            amount: 'Amount',
-            code: 'TaxCode',
-            description: 'Description'
-          }
-        ],
-        fareBase: { // Will be concatenated into `fare` array
-          usage: '#base',
-          amount: 'FareDetail/Price/BaseAmount',
-          components: [
-            'FareDetail/FareComponent',
+          name: 'CabinType/Name',
+          layout: 'CabinLayout/Columns',
+          firstRow: 'CabinLayout/Rows/First',
+          lastRow: 'CabinLayout/Rows/Last',
+          wingFirst: 'CabinLayout/WingPosition/FirstRow',
+          wingLast: 'CabinLayout/WingPosition/LastRow',
+          exitRows: [
+            'CabinLayout/ExitRowPosition/RowPosition',
+            'First'
+          ],
+          rows: [
+            'Row',
             {
-              name: 'FareBasis/CabinType/CabinTypeName',
-              basisCode: 'FareBasis/FareBasisCode/Code',
-              designator: 'FareBasis/RBD',
-              conditions: 'PriceClassRef'// Will be mapped to price class
+              number: 'Number',
+              seats: [
+                'Seat',
+                {
+                  number: 'Column',
+                  available: 'boolean(SeatStatus="F")',
+                  characteristics: [
+                    'SeatCharacteristics/Code',
+                    '.'
+                  ],
+                  optionCode: 'OfferItemRefs'
+                }
+              ]
             }
           ]
-        },
-        fareSurcharge: [ // Will be concatenated into `fare` array
-          'TotalPriceDetail/Surcharges/Surcharge',
-          {
-            usage: '#surcharge',
-            code: 'Breakdown/Fee/Designator',
-            description: 'Breakdown/Fee/Description',
-            amount: 'Breakdown/Fee/Amount'
-          }
-        ]
-      }
-    ],
-    priceClassList: [
-      '//OfferPriceRS/DataLists/PriceClassList/PriceClass',
-      {
-        _id_: '@PriceClassID',
-        name: 'Name',
-        code: 'Code',
-        description: [
-          'Descriptions/Description',
-          'Text'
-        ]
-      }
-    ],
-    terms: [
-      '//OfferPriceRS/DataLists/TermsList/Term/Descriptions/Description',
-      'Text'
-    ],
-    passengers: [
-      '//OfferPriceRS/DataLists/PassengerList/Passenger',
-      {
-        _id_: '@PassengerID',
-        type: 'PTC',
-        // gender: 'Individual/Gender',
-        // civility: 'Individual/NameTitle',
-        // lastnames: 'Individual/Surname',
-        // firstnames: 'Individual/GivenName',
-        // birthdate: 'Individual/Birthdate',
-        // contactInformation: 'ContactInfoRef'
-      }
-    ],
-    itinerary:  {
-      segments: [
-        '//OfferPriceRS/DataLists/FlightSegmentList/FlightSegment',
-        {
-          _id_: '@SegmentKey',
-          operator: {
-            operatorType: '#airline',
-            iataCode: 'OperatingCarrier/AirlineID'
-          },
-          origin: {
-            locationType: '#airport',
-            iataCode: 'Departure/AirportCode'
-          },
-          destination: {
-            locationType: '#airport',
-            iataCode: 'Arrival/AirportCode'
-          },
-          splittedDepartureTime: 'Departure/Time',
-          splittedDepartureDate: 'Departure/Date',
-          splittedArrivalTime: 'Arrival/Time',
-          splittedArrivalDate: 'Arrival/Date'
         }
       ]
-    },
-    services: [
-      '//OfferPriceRS/DataLists/ServiceDefinitionList/ServiceDefinition',
-      {
-        _id_: '@ServiceDefinitionID',
-        code: 'Encoding/Code',
-        name: 'Name',
-        description: [
-          'Descriptions/Description',
-          'Text'
-        ],
-        segments: [
-          'ServiceBundle',
-          'ServiceDefinitionRef'
-        ]
-      }
-    ]
-  }
+    }
+  ],
+  offers: [
+    '//SeatAvailabilityRS/ALaCarteOffer',
+    {
+      _id_: '@OfferID',
+      offerItems: [
+        'ALaCarteOfferItem',
+        {
+          _id_: '@OfferItemID',
+          serviceRef: 'Service/ServiceDefinitionRef',
+          currency: 'UnitPriceDetail/TotalAmount/SimpleCurrencyPrice/@Code',
+          public: 'UnitPriceDetail/TotalAmount/SimpleCurrencyPrice',
+          taxes: 'UnitPriceDetail/Taxes/Total'
+        }
+      ]
+    }
+  ],
+  services: [
+    '//SeatAvailabilityRS/DataLists/ServiceDefinitionList/ServiceDefinition',
+    {
+      _id_: '@ServiceDefinitionID',
+      name: 'Name'
+    }
+  ]
 };
 
 module.exports.FaultsTransformTemplate_AC = {
-  errors: ['//NDCMSG_Fault', {
-    message: 'Description',
-    code: 'ErrorCode',
-    date: 'Timestamp'
+  errors: ['//soap:Fault', {
+    message: 'faultstring',
+    code: 'faultcode',
+    date: `#${new Date().toISOString()}`
   }]
 };
 

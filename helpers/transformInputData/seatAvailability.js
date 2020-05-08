@@ -1,4 +1,3 @@
-const format = require('date-fns/format');
 const {
   uniqueObjectsList,
   flatOneDepth
@@ -7,7 +6,7 @@ const {
 module.exports.mapNdcRequestData_AC = (
   { apiKey, commission, AirlineID, Document, ...config },// extract the only needed part of config
   offers,
-  documentId = 'OneWay'
+  documentId
 ) => ({
   ...(JSON.parse(JSON.stringify(config))),
   ...({
@@ -22,13 +21,14 @@ module.exports.mapNdcRequestData_AC = (
       '@Owner': offer.provider,
       '@OfferID': offer.extraData.offerId,
       '@ResponseID': '',
-      TotalOfferPrice: {
-        '@Code': offer.currency,
-        '@value': offer.amountAfterTax
-      },
-      OfferItem: Object.entries(offer.offerItems).map(i => ({
-        '@OfferItemID': i[0],
-        PassengerRefs: i[1].passengerReferences
+      PassengerID: flatOneDepth(
+        Object.entries(offer.offerItems).map(i => i[1].passengerReferences.split(' '))
+      )
+        .map(i => ({
+            '@value': i
+        })),
+      SegmentID: offer.extraData.segments.map(s => ({
+          '@value': s.id
       }))
     }))
   },
@@ -38,18 +38,10 @@ module.exports.mapNdcRequestData_AC = (
         flatOneDepth(
           offers.map(
             offer => Object.entries(offer.extraData.passengers)
-              .reduce(
-                (a, v) => {
-                  v[1].forEach(p => {
-                    a.push({
-                      '@PassengerID': offer.extraData.mappedPassengers[p],
-                      PTC: v[0]
-                    });
-                  });
-                  return a;
-                },
-                []
-              )
+                .map(p => p[1].map(id => ({
+                    '@PassengerID': id,
+                    PTC: p[0]
+                })))
           )
         )
       )
@@ -60,7 +52,8 @@ module.exports.mapNdcRequestData_AC = (
           offers.map(
             offer => offer.extraData.segments.map(s => ({
               '@SegmentKey': s.id,
-              '@ElectronicTicketInd': true,
+              '@refs': offer.extraData.destinations
+                .filter(d => d.FlightReferences.split(' ').includes(s.id))[0].id,
               Departure: s.Departure,
               Arrival: s.Arrival,
               MarketingCarrier: s.MarketingCarrier,
@@ -72,21 +65,6 @@ module.exports.mapNdcRequestData_AC = (
           )
         )
       )
-    },
-    OriginDestinationList: {
-      OriginDestination: uniqueObjectsList(
-        flatOneDepth(
-          offers.map(
-            offer => offer.extraData.destinations.map(d => ({
-              '@OriginDestinationKey': d.id,
-              DepartureCode: d.DepartureCode,
-              ArrivalCode: d.ArrivalCode,
-              FlightReferences: d.FlightReferences
-            }))
-          )
-        )
-      )
-    },
-    ServiceDefinitionList: {}
+    }
   }
 });
