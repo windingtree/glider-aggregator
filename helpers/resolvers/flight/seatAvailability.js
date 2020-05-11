@@ -48,6 +48,7 @@ const processResponse = async (data, offers, template) => {
   }); 
 
   seatMapResult.seatMaps = seatMapResult.seatMaps.reduce((a, v) => {
+    const prices = {};    
     v.cabins = v.cabins.map(c => {
       c.seats = flatOneDepth(
         c.rows.map(r => r.seats.map(s => ({
@@ -56,12 +57,17 @@ const processResponse = async (data, offers, template) => {
             number: `${r.number}${s.number}`
           }), 
           ...({
-            optionCode: seatMapResult.offers.reduce((a, v) => {
-              if (v.offerItems[s.optionCode]) {
-                const serviceRef = v.offerItems[s.optionCode].serviceRef;
-                a = `${serviceRef}.${seatMapResult.services[serviceRef].name}`;
+            optionCode: seatMapResult.offers.reduce((acc, val) => {
+              if (val.offerItems[s.optionCode]) {
+                const serviceRef = val.offerItems[s.optionCode].serviceRef;
+                acc = `${serviceRef}.${seatMapResult.services[serviceRef].name}`;
+                prices[acc] = {
+                  currency: val.offerItems[s.optionCode].currency,
+                  public: val.offerItems[s.optionCode].public,
+                  taxes: val.offerItems[s.optionCode].taxes
+                };
               }              
-              return a;
+              return acc;
             }, undefined)
           })
         })))
@@ -70,7 +76,8 @@ const processResponse = async (data, offers, template) => {
       return c;
     });
     a[indexedSegments[v.segmentKey]] = {
-      cabins: v.cabins
+      cabins: v.cabins,
+      prices
     };
     return a;
   }, {});
