@@ -106,7 +106,50 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
           splittedDepartureTime: 'Departure/Time',
           splittedDepartureDate: 'Departure/Date',
           splittedArrivalTime: 'Arrival/Time',
-          splittedArrivalDate: 'Arrival/Date'
+          splittedArrivalDate: 'Arrival/Date',
+          Departure: {
+            AirportCode: 'Departure/AirportCode',
+            Date: 'Departure/Date',
+            Time: 'Departure/Time',
+            Terminal: {
+              Name: 'Departure/Terminal/Name'
+            }
+          },
+          Arrival: {
+            AirportCode: 'Arrival/AirportCode',
+            Date: 'Arrival/Date',
+            Time: 'Arrival/Time',
+            Terminal: {
+              Name: 'Arrival/Terminal/Name'
+            }
+          },
+          MarketingCarrier: {
+            AirlineID: 'MarketingCarrier/AirlineID',
+            Name: 'MarketingCarrier/Name',
+            FlightNumber: 'MarketingCarrier/FlightNumber',
+            ResBookDesigCode: 'MarketingCarrier/ResBookDesigCode'
+          },
+          OperatingCarrier: {
+            Disclosures: {
+              Description: {
+                Text: 'OperatingCarrier/Disclosures/Description/Text'
+              }
+            }
+          },
+          Equipment: {
+            AircraftCode: 'Equipment/AircraftCode'
+          },
+          ClassOfService: {
+            Code: 'ClassOfService/Code'
+          },
+          FlightDetail: {
+            FlightDuration: {
+              Value: 'FlightDetail/FlightDuration/Value'
+            },
+            Stops: {
+              StopQuantity: 'FlightDetail/Stops/StopQuantity'
+            }
+          }
         }
       ]
     },
@@ -124,6 +167,15 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
           'ServiceBundle',
           'ServiceDefinitionRef'
         ]
+      }
+    ],
+    destinations: [
+      '//OfferPriceRS/DataLists/OriginDestinationList/OriginDestination',
+      {
+        _id_: '@OriginDestinationKey',
+        DepartureCode: 'DepartureCode',
+        ArrivalCode: 'ArrivalCode',
+        FlightReferences: 'FlightReferences'
       }
     ]
   }

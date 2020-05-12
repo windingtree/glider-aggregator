@@ -74,6 +74,22 @@ const processResponse = async (data, template) => {
   offerResult.offer.itinerary.segments = mergeHourAndDate(
     offerResult.offer.itinerary.segments
   );
+
+  offerResult.offer.originSegments = JSON.parse(JSON.stringify(
+    offerResult.offer.itinerary.segments
+  ));
+
+  offerResult.offer.itinerary.segments.map(s => {
+    delete s.Departure;
+    delete s.Arrival;
+    delete s.MarketingCarrier;
+    delete s.OperatingCarrier;
+    delete s.Equipment;
+    delete s.ClassOfService;
+    delete s.FlightDetail;
+    return s;
+  });
+
   offerResult.offer.itinerary.segments = reduceToObjectByKey(
     offerResult.offer.itinerary.segments
   );
@@ -214,7 +230,14 @@ module.exports.offerPriceRQ = async (offerIds, offerUpdateRequired = true) => {
     offerResult.offer.price.public,
     offerResult.offer.price.currency,
     {
-      segments: offerResult.offer.itinerary.segments,
+      segments: offerResult.offer.originSegments.map(({_id_, ...s}) => ({
+        ...s,
+        id: _id_
+      })),
+      destinations: offerResult.offer.destinations.map(({_id_, ...d}) => ({
+        ...d,
+        id: _id_
+      })),
       mappedPassengers: mappedPassengers.direct,
       passengers: Object.entries(offerResult.offer.passengers)
         .reduce(
@@ -229,6 +252,9 @@ module.exports.offerPriceRQ = async (offerIds, offerUpdateRequired = true) => {
         )
     }
   );
+  delete offerResult.offer.originSegments;
+  delete offerResult.offer.destinations;
+
   offer.offerId = offerResult.offerId;
   offer.isPriced = true;
 
