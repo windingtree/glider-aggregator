@@ -4,7 +4,7 @@ module.exports.provideSeatAvailabilityTransformTemplate_AC = {
   seatMaps: [
     '//SeatAvailabilityRS/SeatMap',
     {
-      segmentKey: 'concat(SegmentRef/@OffPoint,"-",SegmentRef/@OnPoint)',
+      segmentKey: 'concat(SegmentRef/@OnPoint,"-",SegmentRef/@OffPoint)',
       cabins: [
         'Cabin',
         {

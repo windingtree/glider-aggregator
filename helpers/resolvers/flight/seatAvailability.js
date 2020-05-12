@@ -75,10 +75,14 @@ const processResponse = async (data, offers, template) => {
       delete c.rows;
       return c;
     });
-    a[indexedSegments[v.segmentKey]] = {
-      cabins: v.cabins,
-      prices
-    };
+
+    if (indexedSegments[v.segmentKey]) {
+      a[indexedSegments[v.segmentKey]] = {
+        cabins: v.cabins,
+        prices
+      };
+    }
+    
     return a;
   }, {});
 
@@ -159,6 +163,8 @@ module.exports.seatMapRQ = async (offerIds) => {
   );
 
   // console.log('@@@', response.data);
+  // const fs = require('fs');
+  // fs.writeFileSync('/home/kostysh/dev/glider-fork/temp/seat-rs.xml', response.data);
 
   seatMapResult = await processResponse(
     response.data,
