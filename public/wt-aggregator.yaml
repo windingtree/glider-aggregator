@@ -1108,7 +1108,7 @@ components:
         description:
           type: string
           example: Air Travellers Security Charge (ATSC)
-          
+
     PricedOfferServices:
       description: Indexed object of services offered with the offer
       type: object
@@ -1458,7 +1458,11 @@ components:
                       description: An option code to reference the seat selection
                       type: string
                       example: ASPW_01
-
+        prices: 
+          description: Contains the list of seat prices indexed by option code
+          additionalProperties:
+            $ref: "#/components/schemas/Price"
+            
     OptionSelection:
       description: A selected option
       type: object

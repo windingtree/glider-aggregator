@@ -102,7 +102,11 @@ const processResponse = async (data, template) => {
 };
 
 // Create a OfferPrice request
-module.exports.offerPriceRQ = async (offerIds, offerUpdateRequired = true) => {
+module.exports.offerPriceRQ = async (
+  offerIds,
+  body,
+  offerUpdateRequired = true
+) => {
 
   let offerResult;
   let ndcRequestData;
@@ -141,7 +145,12 @@ module.exports.offerPriceRQ = async (offerIds, offerUpdateRequired = true) => {
         500
       );
     case 'AC':
-      ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offers, requestDocumentId);
+      ndcRequestData = mapNdcRequestData_AC(
+        airCanadaConfig,
+        offers,
+        body,
+        requestDocumentId
+      );
       providerUrl = 'https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/OfferPrice';
       apiKey = airCanadaConfig.apiKey;
       ndcBody = offerPriceRequestTemplate_AC(ndcRequestData);

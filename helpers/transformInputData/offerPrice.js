@@ -7,6 +7,7 @@ const {
 module.exports.mapNdcRequestData_AC = (
   { apiKey, commission, AirlineID, Document, ...config },// extract the only needed part of config
   offers,
+  body,
   documentId = 'OneWay'
 ) => ({
   ...(JSON.parse(JSON.stringify(config))),
@@ -61,6 +62,9 @@ module.exports.mapNdcRequestData_AC = (
             offer => offer.extraData.segments.map(s => ({
               '@SegmentKey': s.id,
               '@ElectronicTicketInd': true,
+              ...(Array.isArray(body) && body.length > 0 ? {
+                '@refs': body.map((_, i) => `SRVC-OS-${i + 1}`).join(' ')
+              } : {}),
               Departure: s.Departure,
               Arrival: s.Arrival,
               MarketingCarrier: s.MarketingCarrier,
@@ -87,6 +91,17 @@ module.exports.mapNdcRequestData_AC = (
         )
       )
     },
-    ServiceDefinitionList: {}
+    ServiceDefinitionList: {
+      ...(Array.isArray(body) && body.length > 0 ? {
+        ServiceDefinition: body.map((s, i) => ({
+          '@ServiceDefinitionID': `SRVC-OS-${i + 1}`,
+          '@Owner': 'AC',
+          Descriptions: {
+            '@refs': s.passenger,
+            Text: `|${s.code.replace('.', '=')}|`
+          }
+        }))
+      } : {})
+    }
   }
 });
