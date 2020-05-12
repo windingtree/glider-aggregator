@@ -1,4 +1,4 @@
-const { transform } = require('camaro');
+const { ready, transform } = require('camaro');
 const { v4: uuidv4 } = require('uuid');
 const GliderError = require('../../error');
 const assertErrors = require('../utils/assertResponseErrors');
@@ -12,7 +12,8 @@ const {
   FlightOffer
 } = require('../../models/offer');
 const {
-  callProvider
+  callProvider,
+  fetchFlightsOffersByIds
 } = require('../../resolvers/utils/flightUtils');
 const {
   mapNdcRequestData_AC
@@ -28,14 +29,13 @@ const {
 
 // Convert response data to the object form
 const processResponse = async (data, template) => {
+  await ready();  
   const offerResult = await transform(
     data,
     template
   );
 
-  if (!offerResult.offer.expiration.match(/Z$/)) {
-    offerResult.offer.expiration = offerResult.offer.expiration + 'Z';
-  }
+  offerResult.offer.expiration = new Date(Date.now() + 60 * 30 * 1000).toISOString();// now + 30 min
 
   offerResult.offer.priceClassList = reduceToObjectByKey(
     offerResult.offer.priceClassList.map(item => ({
@@ -125,21 +125,7 @@ module.exports.offerPriceRQ = async (offerIds, offerUpdateRequired = true) => {
   offerIds = offerIds.split(',').map(o => o.trim());
 
   // Retrieve the offers
-  const offers = (await Promise.all(offerIds.map(
-    offerId => offerManager.getOffer(offerId)
-  )))
-    // Should be FlightOffer of type and have same provider
-    .filter((offer, i, array) => (
-      offer instanceof FlightOffer &&
-      offer.provider === array[0].provider
-    ));
-
-  if (offers.length === 0) {
-    throw new GliderError(
-      'Offer not found',
-      400
-    );
-  }
+  const offers = await fetchFlightsOffersByIds(offerIds);
 
   // Check the type of request: OneWay or Return
   let requestDocumentId = 'OneWay';
@@ -193,56 +179,62 @@ module.exports.offerPriceRQ = async (offerIds, offerUpdateRequired = true) => {
     responseTransformTemplate
   );
 
-  // console.log('###', JSON.stringify(offerResult, null, 2));
-
-  if (offers.length === 1) {
-    offerResult.offerId = offerIds[0];
-
-    // Re-map offer Id to internal Id
-    const newPassengersMap = {};
-    offers[0].passengers = Object.entries(offerResult.offer.passengers)
-      .reduce((a, v) => {
-        const pNumber = v[0].split('-')[1];
-        for (const m in offers[0].extraData.mappedPassengers) {
-          const pNumberMapped = offers[0].extraData.mappedPassengers[m].split('-')[1];
-          if (pNumber === pNumberMapped) {
-            a[m] = v[1];
-            newPassengersMap[m] = v[0];
-          }
-        }
-        return a;
-      }, {});
-
-    if (offerUpdateRequired) {
-      offers[0].isPriced = true;
-      offers[0].amountAfterTax = offerResult.offer.price.public;
-      offers[0].offerId = offerResult.offerId;
-      offers[0].extraData.mappedPassengers = newPassengersMap;
-      await offerManager.saveOffer(offerResult.offerId, {
-        offer: offers[0]
-      });
+  // Map passengers to internal Ids
+  const mappedPassengers = Object.entries(offerResult.offer.passengers)
+  .reduce(
+    (a, v) => {
+      const internalId = uuidv4().split('-')[0].toUpperCase();
+      a.direct[internalId] = v[0];
+      a.reverse[v[0]] = internalId;
+      return a;
+    },
+    {
+      direct: {},
+      reverse: {}
     }
-  } else {
-    const internalOfferId = uuidv4();
-    offerResult.offerId = internalOfferId;
+  );
 
+  // Create indexed version of the priced offer
+  offerResult.offerId = offers.length === 1 ? offerIds[0] : uuidv4();
+  const offer = new FlightOffer(
+    offers[0].provider,
+    offers[0].provider,
+    offerResult.offer.expiration,
+    reduceToObjectByKey(
+      offerResult.offer.pricedItems.map(o => {
+        const offerItem = JSON.parse(JSON.stringify(o));
+        offerItem.passengerReferences = offerItem.passengerReferences
+          .split(' ')
+          .map(p => mappedPassengers.reverse[p])
+          .join(' ');
+        delete o.passengerReferences;
+        return offerItem;
+      })
+    ),
+    offerResult.offer.price.public,
+    offerResult.offer.price.currency,
+    {
+      segments: offerResult.offer.itinerary.segments,
+      mappedPassengers: mappedPassengers.direct,
+      passengers: Object.entries(offerResult.offer.passengers)
+        .reduce(
+          (a, v) => {
+            if (!Array.isArray(a[v[1].type])) {
+              a[v[1].type] = [];
+            }
+            a[v[1].type].push(mappedPassengers.reverse[v[0]]);
+            return a;
+          },
+          {}
+        )
+    }
+  );
+  offer.offerId = offerResult.offerId;
+  offer.isPriced = true;
+
+  if (offers.length > 1 || offerUpdateRequired) {
     // Save new priced offer
-    const offer = new FlightOffer(
-      offers[0].provider,
-      offers[0].provider,
-      offerResult.offer.expiration,
-      reduceToObjectByKey(
-        offerResult.offer.pricedItems
-      ),
-      offerResult.offer.price.public,
-      offerResult.offer.price.currency,
-      {
-        segments: offerResult.offer.itinerary.segments
-      }
-    );
-    offer.offerId = internalOfferId;
-    offer.isPriced = true;
-    await offerManager.saveOffer(internalOfferId, {
+    await offerManager.saveOffer(offerResult.offerId, {
       offer
     });
   }

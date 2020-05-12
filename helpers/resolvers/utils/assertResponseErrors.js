@@ -1,4 +1,4 @@
-const { transform } = require('camaro');
+const { ready, transform } = require('camaro');
 const GliderError = require('../../error');
 
 // Look for all types of response errors
@@ -20,10 +20,12 @@ module.exports = async (
   let faultsResult;
 
   if (faultsTransformTemplate) {
+    await ready();
     faultsResult = await transform(response.data, faultsTransformTemplate);
   }
 
   // Attempt to parse as a an error
+  await ready();
   const errorsResult = await transform(response.data, errorsTransformTemplate);
 
   // Because of two types of errors can be returned: NDCMSG_Fault and Errors

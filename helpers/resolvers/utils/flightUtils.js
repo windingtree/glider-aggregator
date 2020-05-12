@@ -1,6 +1,10 @@
 const axios = require('axios');
 const caDestinations = require('./cadest.json');
 const GliderError = require('../../error');
+const {
+  offerManager,
+  FlightOffer
+} = require('../../models/offer');
 
 // Send a request to the provider
 module.exports.callProvider = async (
@@ -290,4 +294,26 @@ module.exports.reMapPassengersInRequestBody = (offer, body) => {
   }
 
   return body;
+};
+
+// Fetch Flight offers with type validation
+module.exports.fetchFlightsOffersByIds = async offerIds => {
+  // Retrieve the offers
+  const offers = (await Promise.all(offerIds.map(
+    offerId => offerManager.getOffer(offerId)
+  )))
+    // Should be FlightOffer of type and have same provider
+    .filter((offer, i, array) => (
+      offer instanceof FlightOffer &&
+      offer.provider === array[0].provider
+    ));
+
+  if (offers.length === 0) {
+    throw new GliderError(
+      'Offer not found',
+      400
+    );
+  }
+
+  return offers;
 };

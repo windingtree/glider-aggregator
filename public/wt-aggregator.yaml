@@ -164,22 +164,40 @@ paths:
                 $ref: "#/components/schemas/SearchResults"
         401:
           description: Authorization required
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         403:
           description: Not authorized
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         405:
           description: Validation exception
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         415:
           description: Content should be application/json
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         429:
           description: Too many requests
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         500:
           description: Internal Server error
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
       security:
         - orgid_auth:
             - read:orders
@@ -211,26 +229,118 @@ paths:
                 $ref: "#/components/schemas/PricedOffer"
         400:
           description: Invalid ID supplied
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         401:
           description: Authorization required
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         403:
           description: Not authorized to retrieve this order
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         404:
           description: Order not found
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         415:
           description: Content should be application/json
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         429:
           description: Too many requests, rate limit has been reached
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
       security:
         - orgid_auth:
             - read:offers
         - orgid_token: []
+  
+  /offers/{offerIds}/seatmap:
+    get:
+      tags:
+        - offers
+      summary: Retrieve the seats available to select
+      description: Use this operation to retrieve the seatmap in a flight offer. The service provides information on the layout of the cabin and the seats available
+      operationId: getSeatmap
+      parameters:
+        - name: offerIds
+          in: path
+          description: ID of the offers
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/UUID"
+      responses:
+        200:
+          description: List of seatmap indexed by offerId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  seatmaps:
+                    description: Contains the list of seatmaps indexed by segment
+                    additionalProperties:
+                      $ref: "#/components/schemas/SeatMap"
+                  prices: 
+                    description: Contains the list of seat prices indexed by option code
+                    additionalProperties:
+                      $ref: "#/components/schemas/Price"
+        400:
+          description: Invalid Offer Ids supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          description: Authorization required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        403:
+          description: Not authorized to access this offer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Offer(s) not found or no service to offer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        415:
+          description: Content should be application/json
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        429:
+          description: Too many requests, rate limit has been reached
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - orgid_auth:
+            - read:offers
+        - orgid_token: []
+
   # ** Orders **
   /orders/createWithOffer:
     post:
@@ -305,22 +415,40 @@ paths:
                     $ref: "#/components/schemas/Order"
         401:
           description: Authorization required
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         403:
           description: Not authorized
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         405:
           description: Validation exception
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         415:
           description: Content should be application/json
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         429:
           description: Too many requests
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         500:
           description: Internal Server error
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
       security:
         - orgid_auth:
             - write:orders
@@ -392,22 +520,40 @@ paths:
                           example: "057-1438027611"                
         400:
           description: Invalid ID supplied
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         401:
           description: Authorization required
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         403:
           description: Not authorized to retrieve this order
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         404:
           description: Order not found
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         415:
           description: Content should be application/json
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         429:
           description: Too many requests, rate limit has been reached
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
       security:
         - orgid_auth:
             - write:orders
@@ -415,6 +561,20 @@ paths:
 
 components:
   schemas:
+    Error:
+      description: Objet describing an error
+      type: object
+      properties:
+        message:
+          description: Error message
+          type: string
+          example: "Something went wrong"
+        code:
+          description: Error code
+          type: string
+          pattern: "^[0-9A-Z]+$"
+          example: "E01"
+
     UUID:
       description: Unique identifier for Offers and Orders
       type: string
@@ -534,13 +694,11 @@ components:
             - CHD # Child (2-11y)
             - INF # Infant without a seat (<2y)
           example: ADT
-
         count:
           description: Number of associated passengers of the same type
           type: integer
           example: 2
           default: 1
-
         civility:
           description: The civility of the passenger
           type: string
@@ -548,7 +706,6 @@ components:
             - MR
             - MRS
           example: "MR"
-
         lastnames:
           description: The list of last names of this passenger
           type: array
@@ -556,23 +713,20 @@ components:
           maxItems: 5
           items:
             $ref: "#/components/schemas/Name"
-
         firstnames:
           description: The list of first names of this passenger
           type: array
           minItems: 1
           maxItems: 5
           items:
-            $ref: "#/components/schemas/Name"
-            
+            $ref: "#/components/schemas/Name"            
         middlenames:
           description: The list of middle names of this passenger
           type: array
           minItems: 1
           maxItems: 5
           items:
-            $ref: "#/components/schemas/Name"
-        
+            $ref: "#/components/schemas/Name"        
         gender:
           description: The gender of the passenger
           type: string
@@ -580,21 +734,18 @@ components:
             - Male
             - Female
           example: Male
-
         birthdate:
           description: The birthdate of the passenger
           type: string
           format: date
           example: "1980-03-21"
-
         contactInformation:
           description: The contact informations of the passenger
           type: array
           items:
             oneOf:
               - $ref: "#/components/schemas/PhoneNumber"
-              - $ref: "#/components/schemas/Email"
-              
+              - $ref: "#/components/schemas/Email"              
       example: 
         {
           "type": "ADT",
@@ -733,7 +884,6 @@ components:
             - airline
             - railway
           example: "airline"
-
         iataCode:
           description: For airlines, the two letter IATA code
           type: string
@@ -741,7 +891,6 @@ components:
           minLength: 2
           maxLength: 2
           example: "AF"
-
         flightNumber:
           description: The flight number
           type: string
@@ -754,19 +903,15 @@ components:
       properties:
         operator:
           $ref: "#/components/schemas/TravelOperator"
-
         origin:
           $ref: "#/components/schemas/Location"
-
         destination:
           $ref: "#/components/schemas/Location"
-
         departureTime:
           description: The departure time of the segment
           type: string
           format: date-time
           example: "2021-04-12T23:20:50.52Z"
-
         arrivalTime:
           description: The arrival time of the segment
           type: string
@@ -782,7 +927,6 @@ components:
           type: string
           maxLength: 24
           example: "Premium Economy"
-
         amenities:
           description: The amenities for this price plan
           type: array
@@ -797,7 +941,6 @@ components:
               - priorityBoarding
               - seatSelection
             example: meal
-
         checkedBaggages:
           description: the list of checked checkedBaggages
           type: object
@@ -833,22 +976,17 @@ components:
           description: The name of the property or accommodation
           type: string
           example: Comfort Hotel Xpress Stockholm Central
-
         type:
           $ref: "#/components/schemas/AccommodationType"
-
         description:
           description: The description of the property
           type: string
-
         location:
           $ref: "#/components/schemas/Location"
-
         rating:
           description: The award rating as per country rules
           type: integer
           example: 3
-
         contactInformation:
           type: object
           properties:
@@ -860,7 +998,6 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/Email"
-
         checkinoutPolicy:
           description: The check-in and check-out time policy, format HH:MM
           type: object
@@ -873,15 +1010,12 @@ components:
               type: string
               pattern: "^[0-9]{2}:[0-9]{2}$"
               example: "11:00"
-
         otherPolicies:
           type: object
           additionalProperties:
             type: string
-
         media:
           $ref: "#/components/schemas/Media"
-
         roomTypes:
           description: Type of rooms available for this accommodation
           type: object
@@ -1215,6 +1349,81 @@ components:
               "BAR": { "accommodation": "prov.1234", "roomType": "ND" },
               "PC1": { "flights": ["FL1", "FL2"] },
             }
+
+    SeatMap:
+      description: Provides information of a Seat Map for transportation services
+      type: object
+      properties:
+        cabins:
+          description: Provide a list of cabin configurations
+          type: array
+          items:
+            description: A cabin configuration
+            type: object
+            properties:
+              name:
+                description: Name of the cabin
+                type: string
+                example: Economy
+              layout:
+                description: Layout of the cabin
+                type: string
+                example: "ABC DEF"
+              firstRow:
+                description: Number of the first row
+                type: number
+                example: 12
+              lastRow:
+                description: Number of the last row
+                type: number
+                example: 37
+              wingFirst:
+                description: First row over the wing
+                type: number
+                example: 16
+              wingLast:
+                description: Last row over the wing
+                type: number
+                example: 16
+              exitRows:
+                description: Position of the rows with an emergency exit
+                type: array
+                items:
+                  type: number
+                example: [13, 28]
+              seats:
+                description: Provide a list of existing seats, both free and occupied
+                type: array
+                items:
+                  description: Description of a seat
+                  type: object
+                  properties:
+                    number:
+                      description: The seat number
+                      type: string
+                      example: "12A"
+                    row:
+                      description: Row of the seat
+                      type: number
+                      example: 12
+                    column:
+                      description: Column of the seat
+                      type: string
+                      example: A
+                    available:
+                      description: The seat availability status (Status is F in PADIS 9685)
+                      type: boolean
+                    characteristics:
+                      description: The seat characteristics (as per PADIS 9825)
+                      type: array
+                      items:
+                        type: string
+                        example: W
+                      example: [A, H]
+                    optionCode:
+                      description: An option code to reference the seat selection
+                      type: string
+                      example: ASPW_01
 
     # Define an Order object
     Order:

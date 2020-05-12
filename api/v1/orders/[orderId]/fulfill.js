@@ -1,4 +1,4 @@
-const { transform } = require('camaro');
+const { ready, transform } = require('camaro');
 const { basicDecorator } = require('../../../../decorators/basic');
 const GliderError = require('../../../../helpers/error');
 const {
@@ -114,10 +114,12 @@ module.exports = basicDecorator(async (req, res) => {
   let faultsResult;
 
   if (faultsTransformTemplate) {
+    await ready();
     faultsResult = await transform(response.data, faultsTransformTemplate);
   }
 
   // Attempt to parse as a an error
+  await ready();
   const errorsResult = await transform(response.data, errorsTransformTemplate);
 
   // Because of two types of errors can be returned: NDCMSG_Fault and Errors
@@ -139,6 +141,7 @@ module.exports = basicDecorator(async (req, res) => {
     );
   }
 
+  await ready();
   const fulfillResults = await transform(
     response.data,
     responseTransformTemplate

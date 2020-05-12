@@ -1,9 +1,9 @@
-const  { airCanadaConfig } = require('../../config');
+// const  { airCanadaConfig } = require('../../config');
 
 module.exports.provideOfferPriceTransformTemplate_AC = {
   offerId: '//OfferPriceRS/PricedOffer/@OfferID',
   offer: {
-    expiration: '//OfferPriceRS/PricedOffer/TimeLimits/OfferExpiration/@DateTime',
+    // expiration: '//OfferPriceRS/PricedOffer/TimeLimits/OfferExpiration/@DateTime',
     price: {
       currency: '//OfferPriceRS/PricedOffer/TotalPrice/DetailCurrencyPrice/Total/@Code',
       public: '//OfferPriceRS/PricedOffer/TotalPrice/DetailCurrencyPrice/Total',
@@ -53,7 +53,8 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
             description: 'Breakdown/Fee/Description',
             amount: 'Breakdown/Fee/Amount'
           }
-        ]
+        ],
+        passengerReferences: 'Service/PassengerRefs'
       }
     ],
     priceClassList: [
