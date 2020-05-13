@@ -163,7 +163,7 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
           'Descriptions/Description',
           'Text'
         ],
-        segments: [
+        segment: [
           'ServiceBundle',
           'ServiceDefinitionRef'
         ]
