@@ -243,6 +243,13 @@ module.exports.offerPriceRQ = async (
       {}
     );
 
+  offerResult.offer.options = offerResult.offer.options.map(
+    o => ({
+      ...o,
+      passenger: mappedPassengers.reverse[o.passenger]
+    })
+  );
+
   // Create indexed version of the priced offer
   offerResult.offerId = offers.length === 1 ? offerIds[0] : uuidv4();
   const offer = new FlightOffer(
