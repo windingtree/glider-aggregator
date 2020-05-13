@@ -97,6 +97,19 @@ const processResponse = async (data, template) => {
     offerResult.offer.services
   );
 
+  offerResult.offer.options = offerResult.offer.options.map(
+    o => ({
+      ...o,
+      code: offerResult.offer.services[o.serviceId].code,
+      name: offerResult.offer.services[o.serviceId].name,
+      description: offerResult.offer.services[o.serviceId].description.join('\n'),
+      segment: offerResult.offer.services[o.serviceId].segment,
+      passenger: o.passenger.trim(),
+      serviceId: undefined
+    })
+  );
+  delete offerResult.offer.services;
+
   // offerResult.offer.price.commission =
   //   offerResult.offer.price.commission.reduce(
   //     (total, { value }) => total + parseFloat(value),
@@ -108,6 +121,7 @@ const processResponse = async (data, template) => {
       (total, { value }) => total + parseFloat(value),
       0
     ).toFixed(2);
+  
   offerResult.offer.passengers = reduceToObjectByKey(
     offerResult.offer.passengers
   );
@@ -204,20 +218,30 @@ module.exports.offerPriceRQ = async (
     responseTransformTemplate
   );
 
-  // Map passengers to internal Ids
+  // Create internal Ids for passengers
   const mappedPassengers = Object.entries(offerResult.offer.passengers)
-  .reduce(
-    (a, v) => {
-      const internalId = uuidv4().split('-')[0].toUpperCase();
-      a.direct[internalId] = v[0];
-      a.reverse[v[0]] = internalId;
-      return a;
-    },
-    {
-      direct: {},
-      reverse: {}
-    }
-  );
+    .reduce(
+      (a, v) => {
+        const internalId = uuidv4().split('-')[0].toUpperCase();
+        a.direct[internalId] = v[0];
+        a.reverse[v[0]] = internalId;
+        return a;
+      },
+      {
+        direct: {},
+        reverse: {}
+      }
+    );
+  
+  // Map passengers in response to internal Ids
+  offerResult.offer.passengers = Object.entries(offerResult.offer.passengers)
+    .reduce(
+      (a, v) => {
+        a[mappedPassengers.reverse[v[0]]] = v[1];
+        return a;
+      },
+      {}
+    );
 
   // Create indexed version of the priced offer
   offerResult.offerId = offers.length === 1 ? offerIds[0] : uuidv4();

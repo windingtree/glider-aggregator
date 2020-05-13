@@ -180,7 +180,6 @@ const transformResponse = async (
     if (provider === 'AC') {
       let segments;
       let destinations;
-      let extraData = {};
       
       // Extract segments and destinations associated with the offer
       for (const pricePlanId in searchResults.offers[offerId].pricePlansReferences) {

@@ -29,7 +29,9 @@ module.exports.mapNdcRequestData_AC = (
       },
       OfferItem: Object.entries(offer.offerItems).map(i => ({
         '@OfferItemID': i[0],
-        PassengerRefs: i[1].passengerReferences
+        PassengerRefs: i[1].passengerReferences.split(' ').map(
+          p => offer.extraData.mappedPassengers[p]
+        ).join(' ')
       }))
     }))
   },
@@ -63,7 +65,16 @@ module.exports.mapNdcRequestData_AC = (
               '@SegmentKey': s.id,
               '@ElectronicTicketInd': true,
               ...(Array.isArray(body) && body.length > 0 ? {
-                '@refs': body.map((_, i) => `SRVC-OS-${i + 1}`).join(' ')
+                '@refs': body.reduce(
+                  (a, v, i) => {
+                    if (v.segment === s.id &&
+                        offer.extraData.mappedPassengers[v.passenger]) {
+                      a = `${a} SRVC-OS-${i + 1}`;
+                    }
+                    return a.trim();
+                  },
+                  ''
+                )
               } : {}),
               Departure: s.Departure,
               Arrival: s.Arrival,
@@ -97,8 +108,18 @@ module.exports.mapNdcRequestData_AC = (
           '@ServiceDefinitionID': `SRVC-OS-${i + 1}`,
           '@Owner': 'AC',
           Descriptions: {
-            '@refs': s.passenger,
-            Text: `|${s.code.replace('.', '=')}|`
+            Description: {
+              '@refs': offers.reduce(
+                (a, v) => {
+                  if (v.extraData.mappedPassengers[s.passenger]) {
+                    a = v.extraData.mappedPassengers[s.passenger];
+                  }
+                  return a;
+                },
+                ''
+              ),
+              Text: `|${s.code.replace('.', '=')}|`
+            }
           }
         }))
       } : {})
