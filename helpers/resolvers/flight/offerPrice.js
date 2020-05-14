@@ -102,7 +102,7 @@ const processResponse = async (data, template) => {
       ...o,
       code: offerResult.offer.services[o.serviceId].code,
       name: offerResult.offer.services[o.serviceId].name,
-      description: offerResult.offer.services[o.serviceId].description.join('\n'),
+      description: offerResult.offer.services[o.serviceId].description,
       segment: offerResult.offer.services[o.serviceId].segment,
       passenger: o.passenger.trim(),
       serviceId: undefined
@@ -242,7 +242,7 @@ module.exports.offerPriceRQ = async (
       },
       {}
     );
-
+  
   offerResult.offer.options = offerResult.offer.options.map(
     o => ({
       ...o,

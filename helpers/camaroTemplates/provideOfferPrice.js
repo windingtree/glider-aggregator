@@ -159,14 +159,8 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
         _id_: '@ServiceDefinitionID',
         code: 'Encoding/Code',
         name: 'Name',
-        description: [
-          'Descriptions/Description',
-          'Text'
-        ],
-        segment: [
-          'ServiceBundle',
-          'ServiceDefinitionRef'
-        ]
+        description: 'Descriptions/Description/Text',
+        segment: 'ServiceBundle/ServiceDefinitionRef'
       }
     ],
     options: [
