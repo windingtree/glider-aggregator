@@ -65,9 +65,9 @@ const processResponse = async (data, template) => {
     return item;
   });
 
-  // offerResult.offer.pricedItems = reduceToObjectByKey(
-  //   offerResult.offer.pricedItems
-  // );
+  offerResult.offer.disclosures = offerResult.offer.disclosures.map(
+    d => d.text.join('\n')
+  );
 
   offerResult.offer.terms = offerResult.offer.terms.join('\n');
   
@@ -80,6 +80,11 @@ const processResponse = async (data, template) => {
   ));
 
   offerResult.offer.itinerary.segments.map(s => {
+    const operator = s.operator;
+    operator.iataCode = operator.iataCode ? operator.iataCode : operator.iataCodeM;
+    operator.flightNumber =
+      `${operator.iataCodeM}${String(operator.flightNumber).padStart(4, '0')}`;
+    delete operator.iataCodeM;
     delete s.Departure;
     delete s.Arrival;
     delete s.MarketingCarrier;
@@ -218,35 +223,92 @@ module.exports.offerPriceRQ = async (
     responseTransformTemplate
   );
 
-  // Create internal Ids for passengers
-  const mappedPassengers = Object.entries(offerResult.offer.passengers)
+  const mergedOldOffers = offers.reduce(
+    (a, v) => {
+      a.segments = [
+        ...a.segments,
+        ...v.extraData.segments.map(s => ({
+          ...s,
+          index: `${s.origin.iataCode}${s.destination.iataCode}`
+        }))
+      ];
+      a.destinations = [
+        ...a.destinations,
+        ...v.extraData.destinations
+      ];
+      a.passengers = {
+        ...a.passengers,
+        ...v.extraData.passengers
+      };
+      a.mappedPassengers = {
+        ...a.mappedPassengers,
+        ...v.extraData.mappedPassengers
+      };
+      return a;
+    },
+    {
+      segments: [],
+      destinations: [],
+      passengers: {},
+      mappedPassengers: {}
+    }
+  ); 
+
+  // console.log('@@@', JSON.stringify(mergedOldOffers, null, 2));
+
+  // Change new serments Ids to initially obtained with original offers
+  const newSegmentsChanged = Object.entries(offerResult.offer.itinerary.segments)
     .reduce(
       (a, v) => {
-        const internalId = uuidv4().split('-')[0].toUpperCase();
-        a.direct[internalId] = v[0];
-        a.reverse[v[0]] = internalId;
+        const index = `${v[1].origin.iataCode}${v[1].destination.iataCode}`;
+        mergedOldOffers.segments.forEach(s => {
+          if (s.index === index) {
+            a.segments[s.id] = v[1];
+            a.mapping[v[0]] = s.id;
+          }
+        });
         return a;
       },
       {
-        direct: {},
-        reverse: {}
+        segments: {},
+        mapping: {}
       }
     );
-  
-  // Map passengers in response to internal Ids
-  offerResult.offer.passengers = Object.entries(offerResult.offer.passengers)
+
+  offerResult.offer.itinerary.segments = newSegmentsChanged.segments;
+
+  const newPassengersChanged = Object.entries(offerResult.offer.passengers)
     .reduce(
       (a, v) => {
-        a[mappedPassengers.reverse[v[0]]] = v[1];
+        const scope = mergedOldOffers.passengers[v[1].type];
+        if (!a.mapping[v[0]]) {
+          const passengers = scope.filter(p => !a.mapped.includes(p));
+
+          if (passengers.length > 0) {
+            a.mapping[v[0]] = passengers[0];
+            a.mapped.push(passengers[0]);
+            a.passengers[passengers[0]] = v[1];
+          }
+        }
         return a;
       },
-      {}
+      {
+        passengers: {},
+        mapped: [],
+        mapping: {}
+      }
     );
-  
+
+  offerResult.offer.passengers = newPassengersChanged.passengers;
+
+  // Change new segments in options part
   offerResult.offer.options = offerResult.offer.options.map(
     o => ({
       ...o,
-      passenger: mappedPassengers.reverse[o.passenger]
+      passenger: o.passenger.split(' ')
+        .map(p => newPassengersChanged.mapping[p])
+        .join(' '),
+      segment: newSegmentsChanged.mapping[o.segment]
     })
   );
 
@@ -261,7 +323,7 @@ module.exports.offerPriceRQ = async (
         const offerItem = JSON.parse(JSON.stringify(o));
         offerItem.passengerReferences = offerItem.passengerReferences
           .split(' ')
-          .map(p => mappedPassengers.reverse[p])
+          .map(p => newPassengersChanged.mapping[p])
           .join(' ');
         delete o.passengerReferences;
         return offerItem;
@@ -270,26 +332,10 @@ module.exports.offerPriceRQ = async (
     offerResult.offer.price.public,
     offerResult.offer.price.currency,
     {
-      segments: offerResult.offer.originSegments.map(({_id_, ...s}) => ({
-        ...s,
-        id: _id_
-      })),
-      destinations: offerResult.offer.destinations.map(({_id_, ...d}) => ({
-        ...d,
-        id: _id_
-      })),
-      mappedPassengers: mappedPassengers.direct,
-      passengers: Object.entries(offerResult.offer.passengers)
-        .reduce(
-          (a, v) => {
-            if (!Array.isArray(a[v[1].type])) {
-              a[v[1].type] = [];
-            }
-            a[v[1].type].push(mappedPassengers.reverse[v[0]]);
-            return a;
-          },
-          {}
-        )
+      segments: mergedOldOffers.segments,
+      destinations: mergedOldOffers.destinations,
+      mappedPassengers: mergedOldOffers.mappedPassengers,
+      passengers: mergedOldOffers.passengers
     }
   );
   delete offerResult.offer.originSegments;

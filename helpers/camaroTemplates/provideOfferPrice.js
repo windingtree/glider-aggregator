@@ -69,6 +69,15 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
         ]
       }
     ],
+    disclosures: [
+      '//OfferPriceRS/DataLists/DisclosureList/Disclosures',
+      {
+        text: [
+          'Description/Text',
+          '.'
+        ]
+      }
+    ],
     terms: [
       '//OfferPriceRS/DataLists/TermsList/Term/Descriptions/Description',
       'Text'
@@ -93,7 +102,9 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
           _id_: '@SegmentKey',
           operator: {
             operatorType: '#airline',
-            iataCode: 'OperatingCarrier/AirlineID'
+            iataCode: 'OperatingCarrier/AirlineID',
+            iataCodeM: 'MarketingCarrier/AirlineID',
+            flightNumber: 'MarketingCarrier/FlightNumber'
           },
           origin: {
             locationType: '#airport',
