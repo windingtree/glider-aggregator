@@ -7,6 +7,7 @@ const {
 module.exports.mapNdcRequestData_AC = (
   { apiKey, commission, AirlineID, Document, ...config },// extract the only needed part of config
   offers,
+  body,
   documentId = 'OneWay'
 ) => ({
   ...(JSON.parse(JSON.stringify(config))),
@@ -28,7 +29,9 @@ module.exports.mapNdcRequestData_AC = (
       },
       OfferItem: Object.entries(offer.offerItems).map(i => ({
         '@OfferItemID': i[0],
-        PassengerRefs: i[1].passengerReferences
+        PassengerRefs: i[1].passengerReferences.split(' ').map(
+          p => offer.extraData.mappedPassengers[p]
+        ).join(' ')
       }))
     }))
   },
@@ -61,6 +64,18 @@ module.exports.mapNdcRequestData_AC = (
             offer => offer.extraData.segments.map(s => ({
               '@SegmentKey': s.id,
               '@ElectronicTicketInd': true,
+              ...(Array.isArray(body) && body.length > 0 ? {
+                '@refs': body.reduce(
+                  (a, v, i) => {
+                    if (v.segment === s.id &&
+                        offer.extraData.mappedPassengers[v.passenger]) {
+                      a = `${a} SRVC-OS-${i + 1}`;
+                    }
+                    return a.trim();
+                  },
+                  ''
+                )
+              } : {}),
               Departure: s.Departure,
               Arrival: s.Arrival,
               MarketingCarrier: s.MarketingCarrier,
@@ -87,6 +102,27 @@ module.exports.mapNdcRequestData_AC = (
         )
       )
     },
-    ServiceDefinitionList: {}
+    ServiceDefinitionList: {
+      ...(Array.isArray(body) && body.length > 0 ? {
+        ServiceDefinition: body.map((s, i) => ({
+          '@ServiceDefinitionID': `SRVC-OS-${i + 1}`,
+          '@Owner': 'AC',
+          Descriptions: {
+            Description: {
+              '@refs': offers.reduce(
+                (a, v) => {
+                  if (v.extraData.mappedPassengers[s.passenger]) {
+                    a = v.extraData.mappedPassengers[s.passenger];
+                  }
+                  return a;
+                },
+                ''
+              ),
+              Text: `|${s.code.replace('.', '=')}|`
+            }
+          }
+        }))
+      } : {})
+    }
   }
 });

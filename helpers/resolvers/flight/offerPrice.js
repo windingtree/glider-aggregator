@@ -97,6 +97,19 @@ const processResponse = async (data, template) => {
     offerResult.offer.services
   );
 
+  offerResult.offer.options = offerResult.offer.options.map(
+    o => ({
+      ...o,
+      code: offerResult.offer.services[o.serviceId].code,
+      name: offerResult.offer.services[o.serviceId].name,
+      description: offerResult.offer.services[o.serviceId].description,
+      segment: offerResult.offer.services[o.serviceId].segment,
+      passenger: o.passenger.trim(),
+      serviceId: undefined
+    })
+  );
+  delete offerResult.offer.services;
+
   // offerResult.offer.price.commission =
   //   offerResult.offer.price.commission.reduce(
   //     (total, { value }) => total + parseFloat(value),
@@ -108,6 +121,7 @@ const processResponse = async (data, template) => {
       (total, { value }) => total + parseFloat(value),
       0
     ).toFixed(2);
+  
   offerResult.offer.passengers = reduceToObjectByKey(
     offerResult.offer.passengers
   );
@@ -118,7 +132,11 @@ const processResponse = async (data, template) => {
 };
 
 // Create a OfferPrice request
-module.exports.offerPriceRQ = async (offerIds, offerUpdateRequired = true) => {
+module.exports.offerPriceRQ = async (
+  offerIds,
+  body,
+  offerUpdateRequired = true
+) => {
 
   let offerResult;
   let ndcRequestData;
@@ -157,7 +175,12 @@ module.exports.offerPriceRQ = async (offerIds, offerUpdateRequired = true) => {
         500
       );
     case 'AC':
-      ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offers, requestDocumentId);
+      ndcRequestData = mapNdcRequestData_AC(
+        airCanadaConfig,
+        offers,
+        body,
+        requestDocumentId
+      );
       providerUrl = 'https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/OfferPrice';
       apiKey = airCanadaConfig.apiKey;
       ndcBody = offerPriceRequestTemplate_AC(ndcRequestData);
@@ -195,19 +218,36 @@ module.exports.offerPriceRQ = async (offerIds, offerUpdateRequired = true) => {
     responseTransformTemplate
   );
 
-  // Map passengers to internal Ids
+  // Create internal Ids for passengers
   const mappedPassengers = Object.entries(offerResult.offer.passengers)
-  .reduce(
-    (a, v) => {
-      const internalId = uuidv4().split('-')[0].toUpperCase();
-      a.direct[internalId] = v[0];
-      a.reverse[v[0]] = internalId;
-      return a;
-    },
-    {
-      direct: {},
-      reverse: {}
-    }
+    .reduce(
+      (a, v) => {
+        const internalId = uuidv4().split('-')[0].toUpperCase();
+        a.direct[internalId] = v[0];
+        a.reverse[v[0]] = internalId;
+        return a;
+      },
+      {
+        direct: {},
+        reverse: {}
+      }
+    );
+  
+  // Map passengers in response to internal Ids
+  offerResult.offer.passengers = Object.entries(offerResult.offer.passengers)
+    .reduce(
+      (a, v) => {
+        a[mappedPassengers.reverse[v[0]]] = v[1];
+        return a;
+      },
+      {}
+    );
+  
+  offerResult.offer.options = offerResult.offer.options.map(
+    o => ({
+      ...o,
+      passenger: mappedPassengers.reverse[o.passenger]
+    })
   );
 
   // Create indexed version of the priced offer

@@ -220,6 +220,15 @@ paths:
             type: array
             items:
               $ref: "#/components/schemas/UUID"
+      requestBody:
+        description: Optionally provide the selected options
+        content:
+          application/json:
+            schema:
+              description: An array of options selected
+              type: array
+              items:
+                $ref: "#/components/schemas/OptionSelection"
       responses:
         200:
           description: Offer with confirmed price
@@ -1086,6 +1095,20 @@ components:
           items:
             $ref: "#/components/schemas/Segment"
     
+    TaxItem:
+      description: A tax item
+      type: object
+      properties:
+        amount:
+          $ref: "#/components/schemas/Amount"
+        code:
+          type: string
+          pattern: "^[A-Z0-9]{2}$"
+          example: CA
+        description:
+          type: string
+          example: Air Travellers Security Charge (ATSC)
+
     PricedOfferServices:
       description: Indexed object of services offered with the offer
       type: object
@@ -1139,18 +1162,7 @@ components:
                     description: Taxes included in the price
                     type: array
                     items:
-                      description: A tax item
-                      type: object
-                      properties:
-                        amount:
-                          $ref: "#/components/schemas/Amount"
-                        code:
-                          type: string
-                          pattern: "^[A-Z0-9]{2}$"
-                          example: CA
-                        description:
-                          type: string
-                          example: Air Travellers Security Charge (ATSC)
+                      $ref: "#/components/schemas/TaxItem"
                   fare:
                     description: Breakdown of the fare
                     type: array
@@ -1208,15 +1220,27 @@ components:
               type: string
               example: "Air Passenger Protection Regulations Notice:.."
 
+            disclosures:
+              description: List of disclosures
+              type: array
+              items:
+                type: string
+                example: "The seat charge is applicable to each one-way flight..."
+
             passengers:
               description: Indexed dictionnary of the passengers
               type: object
               additionalProperties:
                 $ref: "#/components/schemas/Passenger"
+
             itinerary:
               $ref: "#/components/schemas/Itinerary"
-            services:
-              $ref: "#/components/schemas/PricedOfferServices"
+
+            options:
+              description: Options included in the offer
+              type: array
+              items:
+                $ref: "#/components/schemas/OptionSelection"
       example:
         {
           "offerId": "3d00fa3e-1bd6-4559-8905-431e3325e12e",
@@ -1228,19 +1252,19 @@ components:
               "taxes": "139.36"
             },
             "passengers": {
-              "681B1AD8": {
+              "PAX1": {
                 "type": "ADT"
               },
-              "A00DB7E9": {
+              "PAX2": {
                 "type": "ADT"
               },
-              "357AD537": {
+              "PAX3": {
                 "type": "CHD"
               }
             },
             "itinerary": {
               "segments": {
-                "SNBVN7MVMC-SEG1": {
+                "SEG1": {
                   "operator": {
                     "operatorType": "airline",
                     "iataCode": "AC"
@@ -1257,7 +1281,7 @@ components:
                   "departureTime": "2020-09-13T21:35:00.000Z",
                   "arrivalTime": "2020-09-14T04:25:00.000Z"
                 },
-                "W4KZRCL3RU-SEG2": {
+                "SEG2": {
                   "operator": {
                     "operatorType": "airline",
                     "iataCode": "AC"
@@ -1275,18 +1299,28 @@ components:
                   "arrivalTime": "2020-09-14T16:25:00.000Z"
                 }
               },
-              "services": {
-                "HJPNXPC3Q9-Service1": {
+              "options":
+                [
                   "code": "LGAC",
                   "name": "Lounge Access",
-                  "description": [
-                    "Lounge Access"
+                  "description": "Lounge Access",
+                  "application": "surcharge",
+                  "segment": "SEG1",
+                  "passenger": "PAX1",
+                  "price": {
+                    "currency": "CAD",
+                    "public": "30.00",
+                    "taxes": "5.08"
+                  },
+                  "taxes" : [
+                    {
+                      "code": "XG",
+                      "amount": "5.08",
+                      "description": "Goods and Services Tax"
+                    }
                   ],
-                  "segments": [
-                    "SNBVN7MVMC-SEG1"
-                  ]
-                }
-              }
+                  "conditions": "Non transferable.\nNon refundable"
+                ]
             }
           }
         }
@@ -1424,6 +1458,46 @@ components:
                       description: An option code to reference the seat selection
                       type: string
                       example: ASPW_01
+        prices: 
+          description: Contains the list of seat prices indexed by option code
+          additionalProperties:
+            $ref: "#/components/schemas/Price"
+            
+    OptionSelection:
+      description: A selected option
+      type: object
+      properties:
+        code:
+          description: The option code
+          type: string
+          example: divNonAir11.LGAC1
+        name: 
+          description: The option name
+          type: string
+          example: "Lounge Access"
+        description:
+          description: Description of the option
+          type: string
+          example: "An access to the Exclusive Lounge Access at the departure"
+        segment: 
+          description: Segment for which this option is available
+          type: string
+          example: "HW9EJ7XAC7-SEG1"
+        passenger:
+          description: Passenger for which this option is selected
+          type: string
+          example: "PAX1"
+        seatNumber:
+          description: For seats options, the seat number selected with this option
+          type: string
+          example: 12C
+        price:
+          $ref: "#/components/schemas/Price"
+        taxes:
+          description: Taxes included in the price
+          type: array
+          items:
+            $ref: "#/components/schemas/TaxItem"
 
     # Define an Order object
     Order:

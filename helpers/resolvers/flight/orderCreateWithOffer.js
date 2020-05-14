@@ -34,7 +34,11 @@ const { offerPriceRQ } = require('./offerPrice');
 module.exports = async (offer, requestBody, guaranteeClaim) => {
 
   if (!offer.isPriced) {
-    const offerPriceResult = await offerPriceRQ(requestBody.offerId, false);
+    const offerPriceResult = await offerPriceRQ(
+      requestBody.offerId,
+      requestBody,
+      false
+    );
 
     if (offerPriceResult.offer.price.public !== offer.amountAfterTax) {
       throw new GliderError(

@@ -159,13 +159,30 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
         _id_: '@ServiceDefinitionID',
         code: 'Encoding/Code',
         name: 'Name',
-        description: [
-          'Descriptions/Description',
-          'Text'
-        ],
-        segments: [
-          'ServiceBundle',
-          'ServiceDefinitionRef'
+        description: 'Descriptions/Description/Text',
+        segment: 'ServiceBundle/ServiceDefinitionRef'
+      }
+    ],
+    options: [
+      '//OfferPriceRS/OtherOffers/ALaCarteOffer/ALaCarteOfferItem',
+      {
+        code: '#mappedFromServiceDefinitionEncodingCode',
+        name: '#mappedFromServiceDefinitionName',
+        description: '#mappedFromServiceDefinitionDescriptionsDescriptionText',
+        segment: '#mappedFromServiceDefinitionServiceBundleServiceDefinitionRef',
+        serviceId: 'Service/ServiceDefinitionRef',
+        passenger: 'Eligibility/PassengerRefs',
+        price: {
+          public: 'UnitPriceDetail/TotalAmount/DetailCurrencyPrice/Total',
+          taxes: 'UnitPriceDetail/Taxes/Total'
+        },
+        taxes: [
+          'UnitPriceDetail/Taxes/Breakdown/Tax',
+          {
+            amount: 'Amount',
+            code: 'TaxCode',
+            description: 'Description'
+          }
         ]
       }
     ],
