@@ -122,8 +122,12 @@ module.exports.provideOrderCreateTransformTemplate_AC = {
         '//OrderViewRS/Response/DataLists/FlightSegmentList/FlightSegment',
         {
           _id_: '@SegmentKey',
-          operatorType: '#airline',
-          airlineIataCode: 'OperatingCarrier/AirlineID',
+          operator: {
+            operatorType: '#airline',
+            iataCode: 'OperatingCarrier/AirlineID',
+            iataCodeM: 'MarketingCarrier/AirlineID',
+            flightNumber: 'MarketingCarrier/FlightNumber'
+          },
           origin: {
             locationType: '#airport',
             iataCode: 'Departure/AirportCode'

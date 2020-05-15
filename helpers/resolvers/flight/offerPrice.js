@@ -79,21 +79,22 @@ const processResponse = async (data, template) => {
     offerResult.offer.itinerary.segments
   ));
 
-  offerResult.offer.itinerary.segments.map(s => {
-    const operator = s.operator;
-    operator.iataCode = operator.iataCode ? operator.iataCode : operator.iataCodeM;
-    operator.flightNumber =
-      `${operator.iataCodeM}${String(operator.flightNumber).padStart(4, '0')}`;
-    delete operator.iataCodeM;
-    delete s.Departure;
-    delete s.Arrival;
-    delete s.MarketingCarrier;
-    delete s.OperatingCarrier;
-    delete s.Equipment;
-    delete s.ClassOfService;
-    delete s.FlightDetail;
-    return s;
-  });
+  offerResult.offer.itinerary.segments = offerResult.offer.itinerary.segments
+    .map(s => {
+      const operator = s.operator;
+      operator.iataCode = operator.iataCode ? operator.iataCode : operator.iataCodeM;
+      operator.flightNumber =
+        `${operator.iataCodeM}${String(operator.flightNumber).padStart(4, '0')}`;
+      delete operator.iataCodeM;
+      delete s.Departure;
+      delete s.Arrival;
+      delete s.MarketingCarrier;
+      delete s.OperatingCarrier;
+      delete s.Equipment;
+      delete s.ClassOfService;
+      delete s.FlightDetail;
+      return s;
+    });
 
   offerResult.offer.itinerary.segments = reduceToObjectByKey(
     offerResult.offer.itinerary.segments

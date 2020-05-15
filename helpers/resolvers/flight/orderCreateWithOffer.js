@@ -99,7 +99,7 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
     SOAPAction
   );
 
-  // console.log('RESOP0NSE@@@', response.data);
+  console.log('RESOP0NSE@@@', response.data);
 
   if (error && !error.isAxiosError) {
     
@@ -152,6 +152,15 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   createResults.order.itinerary.segments = reduceToObjectByKey(
     createResults.order.itinerary.segments
   );
+  createResults.order.itinerary.segments = createResults.order.itinerary.segments
+    .map(s => {
+      const operator = s.operator;
+      operator.iataCode = operator.iataCode ? operator.iataCode : operator.iataCodeM;
+      operator.flightNumber =
+        `${operator.iataCodeM}${String(operator.flightNumber).padStart(4, '0')}`;
+      delete operator.iataCodeM;
+      return s;
+    });
   createResults.order.price.commission =
     createResults.order.price.commission.reduce(
       (total, { value }) => total + parseFloat(value),
@@ -162,6 +171,9 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
       (total, { value }) => total + parseFloat(value),
       0
     ).toString();
+  
+  console.log('@@@', JSON.stringify(createResults.order.contactList, null, 2));
+
   createResults.order.contactList = reduceToObjectByKey(
     createResults.order.contactList
   );
