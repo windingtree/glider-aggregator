@@ -99,7 +99,8 @@ module.exports = basicDecorator(async (req, res) => {
         }
       );
   orderCreationResults.order.passengers = changedPassengers.passengers;
-
+  
+  // Change passengers Ids in travelDocuments to internal values
   if (orderCreationResults.travelDocuments) {
     orderCreationResults.travelDocuments.etickets =
       orderCreationResults.travelDocuments.etickets.map(
@@ -112,6 +113,29 @@ module.exports = basicDecorator(async (req, res) => {
         }
       );
   }
+
+  // Change segments Ids to internal values
+  const segmentsIndex = storedOffer.extraData.segments
+    .reduce(
+      (a, v) => {
+        a[`${v.index}`] = v.id;
+        return a;
+      },
+      {}
+    );
+
+  orderCreationResults.order.itinerary.segments =
+    Object.entries(orderCreationResults.order.itinerary.segments)
+      .reduce(
+        (a, v) => {
+          const index = `${v[1].origin.iataCode}${v[1].destination.iataCode}`;
+          if (segmentsIndex[index]) {
+            a[segmentsIndex[index]] = v[1];
+          }
+          return a;
+        },
+        {}
+      );
 
   await ordersManager.saveOrder(
     orderCreationResults.orderId,
