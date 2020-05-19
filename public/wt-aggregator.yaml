@@ -365,18 +365,6 @@ paths:
               properties:
                 offerId:
                   $ref: "#/components/schemas/UUID"
-                offerItems:
-                  description: The selected list of offer items
-                  type: object
-                  additionalProperties:
-                    type: object
-                    properties:
-                      passengerReferences:
-                        description: A list of passenger references
-                        type: array
-                        items:
-                          type: string
-                          example: PAX1
                 passengers:
                   description: Indexed dictionnary of the passengers
                   type: object
@@ -387,11 +375,6 @@ paths:
               example:
                 {
                   "offerId": "11111111-2222-3333-4444-000000000001",
-                  "offerItems":
-                    {
-                      "11111111-2222-3333-4444-000000000001":
-                        { "passengerReferences": "PAX1" },
-                    },
                   "guaranteeId": "02a1a7c0-3ff8-4e12-a3ba-65d57e1e9276",
                   "passengers":
                     {
@@ -1330,23 +1313,6 @@ components:
       description: An offer object
       type: object
       properties:
-        # A list of items in the offer
-        offerItems:
-          description: Items included in the offer
-          type: object
-          additionalProperties:
-            type: object
-            properties:
-              passengerReferences:
-                description: A space-separated list of passenger references.
-                type: string
-                example: "PAX1 PAX2"
-          example:
-            {
-              "eb45c135-cc40-4131-85c1-35cc4071319f":
-                { "passengerReferences": "PAX1" },
-            }
-
         # An offer expiration time
         expiration:
           description: The offer expiration time. Once this time is reached, the booking of the offer is not possible anymore.
