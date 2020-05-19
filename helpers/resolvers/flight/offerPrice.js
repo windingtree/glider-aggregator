@@ -29,7 +29,7 @@ const {
 } = require('../../camaroTemplates/provideOfferPrice');
 
 // Convert response data to the object form
-const processResponse = async (data, template) => {
+const processResponse = async (data, template, requestedOptions) => {
   await ready();  
   const offerResult = await transform(
     data,
@@ -307,17 +307,28 @@ module.exports.offerPriceRQ = async (
   offerResult.offer.passengers = newPassengersChanged.passengers;
 
   // Change new segments Ids in options part
-  offerResult.offer.options = offerResult.offer.options.map(
-    o => ({
-      ...o,
-      passenger: o.passenger
-        .trim()
-        .split(' ')
-        .map(p => newPassengersChanged.mapping[p])
-        .join(' '),
-      segment: newSegmentsChanged.mapping[o.segment]
-    })
-  );
+  const requestedPassengers = body.map(o => o.passenger);
+  offerResult.offer.options = offerResult.offer.options
+    .map(
+      o => ({
+        ...o,
+        passenger: o.passenger
+          .trim()
+          .split(' ')
+          .map(p => newPassengersChanged.mapping[p])
+          .join(' '),
+        segment: newSegmentsChanged.mapping[o.segment]
+      })
+    )
+    .reduce(
+      (a, v) => {
+        if (requestedPassengers.includes(v.passenger)) {
+          a.push(v);
+        }
+        return a;
+      },
+      []
+    );
 
   // Create indexed version of the priced offer
   offerResult.offerId = offers.length === 1 ? offerIds[0] : uuidv4();

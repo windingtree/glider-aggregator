@@ -320,7 +320,7 @@ module.exports.fetchFlightsOffersByIds = async offerIds => {
 
 // Removes passengers dublicates from offered priced options
 // makes ONE passenger per OPTION
-module.exports.dedupPassengersInOptions = options => options
+module.exports.dedupPassengersInOptions = (options) => options
 .reduce(
   (a, v) => {
     const option = a.filter(o => o.code === v.code);
