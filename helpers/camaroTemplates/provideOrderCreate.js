@@ -1,3 +1,5 @@
+const  { airCanadaConfig, airFranceConfig } = require('../../config');
+
 module.exports.provideOrderCreateTransformTemplate_AF = {
   orderId: '/S:Envelope/S:Body/ns2:OrderViewRS/ns2:Response/ns2:Order/@OrderID',
   order: {
@@ -11,7 +13,7 @@ module.exports.provideOrderCreateTransformTemplate_AF = {
       currency: '/S:Envelope/S:Body/ns2:OrderViewRS/ns2:Response/ns2:Order/ns2:TotalOrderPrice/ns2:SimpleCurrencyPrice/@Code',
       public: '/S:Envelope/S:Body/ns2:OrderViewRS/ns2:Response/ns2:Order/ns2:TotalOrderPrice/ns2:SimpleCurrencyPrice',
       commission: ['/S:Envelope/S:Body/ns2:OrderViewRS/ns2:Response/ns2:Order/ns2:OrderItems/ns2:OrderItem', {
-        value: 'ns2:PriceDetail/ns2:BaseAmount'
+        value: `number(ns2:PriceDetail/ns2:BaseAmount) * ${airFranceConfig.commission}`
       }],
       taxes: ['/S:Envelope/S:Body/ns2:OrderViewRS/ns2:Response/ns2:Order/ns2:OrderItems/ns2:OrderItem', {
         value: 'ns2:PriceDetail/ns2:Taxes/ns2:Total'
@@ -65,9 +67,6 @@ module.exports.provideOrderCreateTransformTemplate_AC = {
   orderId: '//OrderViewRS/Response/Order/@OrderID',
   order: {
     version: '#1.0.0',
-    orderItems: ['//OrderViewRS/Response/Order/OrderItems/OrderItem', '@OrderItemID'],
-    supplier: '#ORGIDAddressSupplier',
-    distributor: '#ORGIDAddressDistributor',
     type: '#transportation',
     subtype: '#flight',
     price: {
@@ -76,7 +75,7 @@ module.exports.provideOrderCreateTransformTemplate_AC = {
       commission: [
         '//OrderViewRS/Response/Order/OrderItems/OrderItem',
         {
-          value: 'PriceDetail/BaseAmount'
+          value: `number(PriceDetail/BaseAmount) * ${airCanadaConfig.commission}`
         }
       ],
       taxes: [
@@ -143,10 +142,10 @@ module.exports.provideOrderCreateTransformTemplate_AC = {
         }
       ]
     },
-    supplierSignature: {
-      agent: '#0xc0fbc1348b43d50c948edf1818b0abfdd7466b9e',
-      signature: '#0xa3f20717a250c2b0b729b7e5becbff67fdaef7e0699da4de7ca5895b02a170a12d887fd3b17bfdce3481f10bea41f45ba9f709d39ce8325427b57afcfc994cee1b'
-    }
+    // supplierSignature: {
+    //   agent: '#0xc0fbc1348b43d50c948edf1818b0abfdd7466b9e',
+    //   signature: '#0xa3f20717a250c2b0b729b7e5becbff67fdaef7e0699da4de7ca5895b02a170a12d887fd3b17bfdce3481f10bea41f45ba9f709d39ce8325427b57afcfc994cee1b'
+    // }
   },
   travelDocuments: {
     bookings: [
