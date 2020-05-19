@@ -84,35 +84,41 @@ module.exports.mapNdcRequestData_AC = (
           }
         : {}
       ),
-      OrderItem: offer.extraData.seats
-        .map(
-          s => ({
-            '@refs': ` ${offer.extraData.mappedPassengers[s.passenger]} ${s.segment}`,
-            OfferItemID: {
-              '@Owner': 'AC',
-              '@value': Object.entries(offer.offerItems)
-                .reduce(
-                  (a, v) => {
-                    const passengers = v[1].passengerReferences.split(' ');
-                    if (passengers.includes(s.passenger)) {
-                      a = v[0];
+      ...(
+        Array.isArray(offer.extraData.seats)
+         ? {
+          OrderItem: offer.extraData.seats
+            .map(
+              s => ({
+                '@refs': ` ${offer.extraData.mappedPassengers[s.passenger]} ${s.segment}`,
+                OfferItemID: {
+                  '@Owner': 'AC',
+                  '@value': Object.entries(offer.offerItems)
+                    .reduce(
+                      (a, v) => {
+                        const passengers = v[1].passengerReferences.split(' ');
+                        if (passengers.includes(s.passenger)) {
+                          a = v[0];
+                        }
+                        return a;
+                      },
+                      ''
+                    )
+                },
+                OfferItemType: {
+                  SeatItem: {
+                    Location: {
+                      Row: {
+                        Number: s.seatNumber
+                      }
                     }
-                    return a;
-                  },
-                  ''
-                )
-            },
-            OfferItemType: {
-              SeatItem: {
-                Location: {
-                  Row: {
-                    Number: s.seatNumber
                   }
                 }
-              }
-            }
-          })
-        )
+              })
+            )
+         }
+         : {}
+      )
     },
     ...(body.guaranteeId ? {
       Payments: {
