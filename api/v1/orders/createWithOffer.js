@@ -73,6 +73,46 @@ module.exports = basicDecorator(async (req, res) => {
     );
   }
 
+  // Change passengers Ids to indernal
+  const passengersIndex = Object.entries(requestBody.passengers)
+    .reduce(
+      (a, v) => {
+        a[`${v[1].type}${v[1].lastnames.join('').toUpperCase()}${v[1].firstnames.join('').toUpperCase()}${v[1].birthdate.split('T')[0]}`] = v[0];
+        return a;
+      },
+      {}
+    );
+  const changedPassengers =
+    Object.entries(orderCreationResults.order.passengers)
+      .reduce(
+        (a, v) => {
+          const index = `${v[1].type}${v[1].lastnames.join('').toUpperCase()}${v[1].firstnames.join('').toUpperCase()}${v[1].birthdate}`;
+          if (passengersIndex[index]) {
+            a.passengers[passengersIndex[index]] = v[1];
+            a.mapping[v[0]] = passengersIndex[index];
+          }
+          return a;
+        },
+        {
+          passengers: {},
+          mapping: {}
+        }
+      );
+  orderCreationResults.order.passengers = changedPassengers.passengers;
+
+  if (orderCreationResults.travelDocuments) {
+    orderCreationResults.travelDocuments.etickets =
+      orderCreationResults.travelDocuments.etickets.map(
+        tickets => {
+          const changedTickets = {};
+          for (const t in tickets) {
+            changedTickets[t] = changedPassengers.mapping[tickets[t]];
+          }
+          return changedTickets;
+        }
+      );
+  }
+
   await ordersManager.saveOrder(
     orderCreationResults.orderId,
     {

@@ -307,7 +307,7 @@ module.exports.offerPriceRQ = async (
   offerResult.offer.passengers = newPassengersChanged.passengers;
 
   // Change new segments Ids in options part
-  const requestedPassengers = body.map(o => o.passenger);
+  const requestedPassengers = Array.isArray(body) ? body.map(o => o.passenger) : [];
   offerResult.offer.options = offerResult.offer.options
     .map(
       o => ({

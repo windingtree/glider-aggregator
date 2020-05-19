@@ -162,8 +162,8 @@ module.exports.mapNdcRequestData_AC = (
           Individual: {
             Gender: p[1].gender,
             NameTitle: p[1].civility,
-            GivenName: p[1].lastnames.join(' '),
-            Surname: p[1].firstnames.join(' ')
+            GivenName: p[1].firstnames.join(' '),
+            Surname: p[1].lastnames.join(' ')
           },
           ContactInfoRef: 'CTC1'
         }))
