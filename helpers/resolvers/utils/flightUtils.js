@@ -285,7 +285,7 @@ module.exports.reMapPassengersInRequestBody = (offer, body) => {
       .reduce((a, v) => ({
         ...a,
         [v[0]]: v[1]
-      }), {});;
+      }), {});
   } else {
     throw new GliderError(
       'Mapped passengers Ids not found in the offer',
@@ -317,3 +317,38 @@ module.exports.fetchFlightsOffersByIds = async offerIds => {
 
   return offers;
 };
+
+// Removes passengers dublicates from offered priced options
+// makes ONE passenger per OPTION
+module.exports.dedupPassengersInOptions = (options) => options
+.reduce(
+  (a, v) => {
+    const option = a.filter(o => o.code === v.code);
+    if (option.length > 0) {
+      option[0].passenger = [
+        ...new Set([
+          ...option[0].passenger.split(' '),
+          ...v.passenger.split(' ')
+        ])
+      ].join(' ');
+    } else {
+      a.push(v);
+    }
+    return a;
+  },
+  []
+)
+.reduce(
+  (a, v) => {
+    v.passenger
+      .split(' ')
+      .forEach(passenger => {
+        a.push({
+          ...v,
+          passenger
+        });
+      });
+    return a;
+  },
+  []
+);

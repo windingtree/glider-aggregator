@@ -58,11 +58,16 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   let errorsTransformTemplate;
   let faultsTransformTemplate;
 
-  // Re-map passengers
-  requestBody = reMapPassengersInRequestBody(offer, requestBody);
+  // Check the type of request: OneWay or Return
+  let requestDocumentId = 'OneWay';
+
+  if (offer.isReturnTrip) {
+    requestDocumentId = 'Return';
+  }
 
   switch (offer.provider) {
     case 'AF':
+      requestBody = reMapPassengersInRequestBody(offer, requestBody);
       ndcRequestData = mapNdcRequestData_AF(airFranceConfig, requestBody);
       providerUrl = 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001451v01/EXT';
       apiKey = airFranceConfig.apiKey;
@@ -74,7 +79,13 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
       break;
     case 'AC':
       ndcRequestHeaderData = mapNdcRequestHeaderData_AC(guaranteeClaim);
-      ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offer, requestBody, guaranteeClaim);
+      ndcRequestData = mapNdcRequestData_AC(
+        airCanadaConfig,
+        offer,
+        requestBody,
+        guaranteeClaim,
+        requestDocumentId
+      );
       providerUrl = 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/OrderCreate';
       apiKey = airCanadaConfig.apiKey;
       ndcBody = orderCreateRequestTemplate_AC(ndcRequestHeaderData, ndcRequestData);
@@ -99,7 +110,7 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
     SOAPAction
   );
 
-  // console.log('RESOP0NSE@@@', response.data);
+  // console.log('RESP0NSE@@@', response.data);
 
   if (error && !error.isAxiosError) {
     
@@ -149,19 +160,33 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   createResults.order.itinerary.segments = mergeHourAndDate(
     createResults.order.itinerary.segments
   );
+
+  createResults.order.itinerary.segments = createResults.order.itinerary.segments
+    .map(s => {
+      const operator = s.operator;
+      operator.iataCode = operator.iataCode ? operator.iataCode : operator.iataCodeM;
+      operator.flightNumber =
+        `${operator.iataCodeM}${String(operator.flightNumber).padStart(4, '0')}`;
+      delete operator.iataCodeM;
+      return s;
+    });
+
   createResults.order.itinerary.segments = reduceToObjectByKey(
     createResults.order.itinerary.segments
   );
+
   createResults.order.price.commission =
     createResults.order.price.commission.reduce(
       (total, { value }) => total + parseFloat(value),
       0
     ).toString();
+
   createResults.order.price.taxes =
     createResults.order.price.taxes.reduce(
       (total, { value }) => total + parseFloat(value),
       0
     ).toString();
+  
   createResults.order.contactList = reduceToObjectByKey(
     createResults.order.contactList
   );

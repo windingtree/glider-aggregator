@@ -54,7 +54,10 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
             amount: 'Breakdown/Fee/Amount'
           }
         ],
-        passengerReferences: 'Service/PassengerRefs'
+        passengerReferences: [
+          'Service',
+          'PassengerRefs'
+        ]
       }
     ],
     priceClassList: [
@@ -200,7 +203,7 @@ module.exports.provideOfferPriceTransformTemplate_AC = {
     destinations: [
       '//OfferPriceRS/DataLists/OriginDestinationList/OriginDestination',
       {
-        _id_: '@OriginDestinationKey',
+        id: '@OriginDestinationKey',
         DepartureCode: 'DepartureCode',
         ArrivalCode: 'ArrivalCode',
         FlightReferences: 'FlightReferences'

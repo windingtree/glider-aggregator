@@ -73,6 +73,70 @@ module.exports = basicDecorator(async (req, res) => {
     );
   }
 
+  // Change passengers Ids to indernal
+  const passengersIndex = Object.entries(requestBody.passengers)
+    .reduce(
+      (a, v) => {
+        a[`${v[1].type}${v[1].lastnames.join('').toUpperCase()}${v[1].firstnames.join('').toUpperCase()}${v[1].birthdate.split('T')[0]}`] = v[0];
+        return a;
+      },
+      {}
+    );
+  const changedPassengers =
+    Object.entries(orderCreationResults.order.passengers)
+      .reduce(
+        (a, v) => {
+          const index = `${v[1].type}${v[1].lastnames.join('').toUpperCase()}${v[1].firstnames.join('').toUpperCase()}${v[1].birthdate}`;
+          if (passengersIndex[index]) {
+            a.passengers[passengersIndex[index]] = v[1];
+            a.mapping[v[0]] = passengersIndex[index];
+          }
+          return a;
+        },
+        {
+          passengers: {},
+          mapping: {}
+        }
+      );
+  orderCreationResults.order.passengers = changedPassengers.passengers;
+  
+  // Change passengers Ids in travelDocuments to internal values
+  if (orderCreationResults.travelDocuments) {
+    orderCreationResults.travelDocuments.etickets =
+      orderCreationResults.travelDocuments.etickets.map(
+        tickets => {
+          const changedTickets = {};
+          for (const t in tickets) {
+            changedTickets[t] = changedPassengers.mapping[tickets[t]];
+          }
+          return changedTickets;
+        }
+      );
+  }
+
+  // Change segments Ids to internal values
+  const segmentsIndex = storedOffer.extraData.segments
+    .reduce(
+      (a, v) => {
+        a[`${v.index}`] = v.id;
+        return a;
+      },
+      {}
+    );
+
+  orderCreationResults.order.itinerary.segments =
+    Object.entries(orderCreationResults.order.itinerary.segments)
+      .reduce(
+        (a, v) => {
+          const index = `${v[1].origin.iataCode}${v[1].destination.iataCode}`;
+          if (segmentsIndex[index]) {
+            a[segmentsIndex[index]] = v[1];
+          }
+          return a;
+        },
+        {}
+      );
+
   await ordersManager.saveOrder(
     orderCreationResults.orderId,
     {

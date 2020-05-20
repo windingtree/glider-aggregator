@@ -341,6 +341,8 @@ const transformResponse = async (
       searchResults.offers[offerId].price.currency,
       searchResults.offers[offerId].extraData
     );
+
+    delete searchResults.offers[offerId].offerItems;
     delete searchResults.offers[offerId].extraData;
   }
 

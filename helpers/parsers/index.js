@@ -16,8 +16,12 @@ module.exports.splitPropertyBySpace = (array, property) => array
 
 module.exports.reduceContactInformation = (passengers) => passengers
   .map((passenger) => {
-    const emails = passenger.contactInformation.emails.map(({value})=> value);
-    const phones = passenger.contactInformation.phones.map(({value})=> value);
+    const emails = passenger.contactInformation && Array.isArray(passenger.contactInformation.emails)
+      ? passenger.contactInformation.emails.map(({value})=> value)
+      : [];
+    const phones = passenger.contactInformation && Array.isArray(passenger.contactInformation.phones)
+      ? passenger.contactInformation.phones.map(({value})=> value)
+      : [];
     return {
       ...passenger,
       contactInformation: emails.concat(phones),
