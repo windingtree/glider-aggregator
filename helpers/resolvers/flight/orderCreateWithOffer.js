@@ -100,7 +100,7 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
       );
   }
 
-  // console.log('BODY@@@', ndcBody); 
+  // console.log('BODY@@@', ndcBody);
 
   const { response, error } = await callProvider(
     offer.provider,
@@ -110,7 +110,7 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
     SOAPAction
   );
 
-  // console.log('RESP0NSE@@@', response.data); 
+  // console.log('RESP0NSE@@@', response.data);
 
   if (error && !error.isAxiosError) {
     

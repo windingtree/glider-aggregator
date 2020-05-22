@@ -75,11 +75,11 @@ const transformResponse = async (
         .map((r, i) => {
           for (const p in searchResults.passengers) {
             const passenger = searchResults.passengers[p];
-            if (r === passenger['_id_']) {
+            if (r === passenger._id_) {
               mappedPassengers[passengersIds[passenger.type][i]] = r;
               mappedPassengersReverse[r] = passengersIds[passenger.type][i];
               return passengersIds[passenger.type][i];
-            }            
+            }
           }
         });
       offer.offerItems[item].passengerReferences = refs.join(' ');
@@ -116,7 +116,7 @@ const transformResponse = async (
   searchResults.offers = reduceToObjectByKey(searchResults.offers);
   searchResults.passengers = reduceToObjectByKey(
     searchResults.passengers.map(p => ({
-      '_id_': mappedPassengersReverse[p['_id_']],
+      '_id_': mappedPassengersReverse[p._id_],
       type: p.type
     }))
   );
@@ -389,8 +389,8 @@ module.exports.searchFlight = async (body) => {
   if (
     segments.length === 2 &&
     (
-      segments[0].origin.iataCode == segments[1].destination.iataCode ||
-      segments[1].origin.iataCode == segments[0].destination.iataCode
+      segments[0].origin.iataCode === segments[1].destination.iataCode ||
+      segments[1].origin.iataCode === segments[0].destination.iataCode
     )
   ) {
     requestDocumentId = 'Return';

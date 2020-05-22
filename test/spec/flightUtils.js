@@ -4,7 +4,7 @@ const { convertObjectToXML } = require('../../helpers/soapTemplates/utils/xmlUti
 describe('XML Utils', () => {
 
   describe('#convertObjectToXML', () => {
-    const xml = `<Test id="123456"><tag1>tag1</tag1><tags><tag2 param1="param1" param2="param2">1</tag2><tag2 param1="param1" param2="param2">2</tag2></tags></Test>`;
+    const xml = '<Test id="123456"><tag1>tag1</tag1><tags><tag2 param1="param1" param2="param2">1</tag2><tag2 param1="param1" param2="param2">2</tag2></tags></Test>';
 
     const obj = {
       Test: {
