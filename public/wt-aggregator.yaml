@@ -1532,6 +1532,12 @@ components:
         itinerary:
           $ref: "#/components/schemas/Itinerary"
 
+        options:
+          description: Options included in the order
+          type: array
+          items:
+            $ref: "#/components/schemas/OptionSelection"
+
     # Contains the parameters for a search
     SearchCriteria:
       description: An object to provide search criteria
