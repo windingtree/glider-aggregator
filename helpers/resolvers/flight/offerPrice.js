@@ -29,8 +29,8 @@ const {
 } = require('../../camaroTemplates/provideOfferPrice');
 
 // Convert response data to the object form
-const processResponse = async (data, template, requestedOptions) => {
-  await ready();  
+const processResponse = async (data, template) => {
+  await ready();
   const offerResult = await transform(
     data,
     template
@@ -91,7 +91,7 @@ const processResponse = async (data, template, requestedOptions) => {
       delete s.ClassOfService;
       delete s.FlightDetail;
       return s;
-    }); 
+    });
 
   offerResult.offer.itinerary.segments = reduceToObjectByKey(
     offerResult.offer.itinerary.segments
@@ -247,7 +247,7 @@ module.exports.offerPriceRQ = async (
       passengers: {},
       mappedPassengers: {}
     }
-  ); 
+  );
 
   // Update serments Ids to initially obtained with original offers
   const newSegmentsChanged = Object.entries(offerResult.offer.itinerary.segments)

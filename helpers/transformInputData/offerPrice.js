@@ -1,11 +1,12 @@
-const format = require('date-fns/format');
+// const format = require('date-fns/format');
 const {
   uniqueObjectsList,
   flatOneDepth
 } = require('./utils/collections');
 
 module.exports.mapNdcRequestData_AC = (
-  { apiKey, commission, AirlineID, Document, ...config },// extract the only needed part of config
+  // extract the only needed part of config
+  { apiKey, commission, AirlineID, Document, ...config }, // eslint-disable-line no-unused-vars
   offers,
   body,
   documentId = 'OneWay'
@@ -56,7 +57,7 @@ module.exports.mapNdcRequestData_AC = (
           )
         )
       )
-    },      
+    },
     FlightSegmentList: {
       FlightSegment: uniqueObjectsList(
         flatOneDepth(

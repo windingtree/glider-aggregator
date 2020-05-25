@@ -2,7 +2,6 @@ const { basicDecorator } = require('../../../decorators/basic');
 const { manager } = require('../../../helpers/models/mongo/hotels');
 const GliderError = require('../../../helpers/error');
 
-
 module.exports = basicDecorator(async (req, res) => {
   const { method, query, body } = req;
   let result;

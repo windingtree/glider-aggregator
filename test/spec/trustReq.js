@@ -43,6 +43,7 @@ describe('Trust Requirements', () => {
     });
 
     it('should return "undefined" if wrong tier config has been provided', async () => {
+      // eslint-disable-next-line no-unused-vars
       const wrongTiers = tiers.map(t => ({ 'wrong': 'config' }));
       const results = deposits.map(d => selectTierByDepositRate(wrongTiers, d));
       results.forEach(r => (String(r)).should.equal('undefined'));

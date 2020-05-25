@@ -30,7 +30,7 @@ const processResponse = async (data, offers, template) => {
     offers.map(offer => offer.extraData.segments.map(s => ({
       [`${s.Departure.AirportCode}-${s.Arrival.AirportCode}`]: s.id
     })))
-  ).reduce((a, v) => ({...a, ...v}), {});
+  ).reduce((a, v) => ({ ...a, ...v }), {});
 
   await ready();
   const seatMapResult = await transform(
@@ -45,17 +45,17 @@ const processResponse = async (data, offers, template) => {
       o.offerItems
     );
     return o;
-  }); 
+  });
 
   seatMapResult.seatMaps = seatMapResult.seatMaps.reduce((a, v) => {
-    const prices = {};    
+    const prices = {};
     v.cabins = v.cabins.map(c => {
       c.seats = flatOneDepth(
         c.rows.map(r => r.seats.map(s => ({
           ...s,
           ...({
             number: `${r.number}${s.number}`
-          }), 
+          }),
           ...({
             optionCode: seatMapResult.offers.reduce((acc, val) => {
               if (val.offerItems[s.optionCode]) {
@@ -66,7 +66,7 @@ const processResponse = async (data, offers, template) => {
                   public: val.offerItems[s.optionCode].public,
                   taxes: val.offerItems[s.optionCode].taxes
                 };
-              }              
+              }
               return acc;
             }, undefined)
           })

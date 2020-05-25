@@ -151,10 +151,6 @@ const searchHotel = async (body) => {
 
     // Build the offers by parsing the room rates
     roomStay._roomRates_.forEach(roomRate => {
-
-      // Build the offer key
-      var offerKey = `${accommodationReference}.${roomRate.ratePlanReference}.${roomRate.roomTypeReference}`;// @todo What is it?
-
       // Build the PricePlanReference
       const pricePlanReference = {
         accommodation: accommodationReference,

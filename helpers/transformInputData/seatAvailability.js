@@ -4,7 +4,8 @@ const {
 } = require('./utils/collections');
 
 module.exports.mapNdcRequestData_AC = (
-  { apiKey, commission, AirlineID, Document, ...config },// extract the only needed part of config
+  // extract the only needed part of config
+  { apiKey, commission, AirlineID, Document, ...config }, // eslint-disable-line no-unused-vars
   offers,
   documentId
 ) => ({
@@ -22,13 +23,14 @@ module.exports.mapNdcRequestData_AC = (
       '@OfferID': offer.extraData.offerId,
       '@ResponseID': '',
       PassengerID: flatOneDepth(
-        Object.entries(offer.offerItems).map(i => i[1].passengerReferences.split(' '))
+        Object.entries(offer.offerItems)
+          .map(i => i[1].passengerReferences.split(' '))
       )
         .map(i => ({
-            '@value': i
+          '@value': i
         })),
       SegmentID: offer.extraData.segments.map(s => ({
-          '@value': s.id
+        '@value': s.id
       }))
     }))
   },
@@ -38,14 +40,14 @@ module.exports.mapNdcRequestData_AC = (
         flatOneDepth(
           offers.map(
             offer => Object.entries(offer.extraData.passengers)
-                .map(p => p[1].map(id => ({
-                    '@PassengerID': id,
-                    PTC: p[0]
-                })))
+              .map(p => p[1].map(id => ({
+                '@PassengerID': id,
+                PTC: p[0]
+              })))
           )
         )
       )
-    },      
+    },
     FlightSegmentList: {
       FlightSegment: uniqueObjectsList(
         flatOneDepth(

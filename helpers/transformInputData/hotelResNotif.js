@@ -152,13 +152,13 @@ const mapFromOffer = (offer, passengers, card) => {
     'OTA_HotelResNotifRQ': {
       ResStatus: 'Commit',
       Version: '2.000',
-      TimeStamp: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
+      TimeStamp: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"), // eslint-disable-line quotes
       xmlns: 'http://www.opentravel.org/OTA/2003/05',
       EchoToken: uuidv4(),
       POS: pos,
       HotelReservations: {
         HotelReservation: {
-          CreateDateTime: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
+          CreateDateTime: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"), // eslint-disable-line quotes
           CreatorID: 'WindingTree',
           ResStatus: 'Commit',
           UniqueID: {

@@ -71,8 +71,8 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
       `didResult_${did}`,
       JSON.stringify(didResult),
       'EX',
-      60 * 60 * 12,// 12 hours
-      (err, res) => {
+      60 * 60 * 12, // 12 hours
+      (err) => {
         if (err) {
           throw new GliderError(err.message, 500);
         }

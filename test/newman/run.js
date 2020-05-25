@@ -1,6 +1,6 @@
 const newman = require('newman');
 const testsCollection = require('./glider.json');
-const fs = require('fs');
+// const fs = require('fs');
 
 if (!process.env.GLIDER_HOST) {
   const deployment = require(`${process.cwd()}/deployment.json`);
@@ -9,7 +9,7 @@ if (!process.env.GLIDER_HOST) {
     process.env.GLIDER_HOST = deployment.url;
   } else {
     throw new Error('Glider host is required');
-  }  
+  }
 }
 
 // Glider API host

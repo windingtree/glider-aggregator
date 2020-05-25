@@ -1,4 +1,4 @@
-const format = require('date-fns/format');
+// const format = require('date-fns/format');
 const { getCardCode } = require('./utils/cardUtils');
 
 module.exports.mapNdcRequestData_AF = (config, { orderItems, passengerReferences }, { orderId }) => ({
@@ -48,11 +48,12 @@ module.exports.mapNdcRequestData_AC = (
     order
   },
   {
-    orderItems,
-    passengerReferences
+    // @todo Inspect these options, if not needed then do refactoring
+    orderItems, // eslint-disable-line no-unused-vars
+    passengerReferences // eslint-disable-line no-unused-vars
   },
   guaranteeClaim
-  ) => ({
+) => ({
   ...(JSON.parse(JSON.stringify(config))),
   Query: {
     OrderID: orderId,

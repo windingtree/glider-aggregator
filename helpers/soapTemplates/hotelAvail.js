@@ -1,31 +1,47 @@
-
 const mapGuestCounts = (guests) => guests
-	.reduce((guestCounts, {AgeQualifyingCode, Count}) => `${guestCounts}
-		<GuestCount AgeQualifyingCode="${AgeQualifyingCode}" Count="${Count}"/>`
-	, '')
+  .reduce(
+    (
+      guestCounts,
+      {
+        AgeQualifyingCode,
+        Count
+      }
+    ) => `${guestCounts}
+      <GuestCount AgeQualifyingCode="${AgeQualifyingCode}" Count="${Count}"/>`,
+    ''
+  );
 
-const mapCriterions = (HotelSearchCriteria, {isDeepLinkRequired, isContentRequired, isCancellationPolicyRequired}) => HotelSearchCriteria
-	.reduce((criterions, {HotelRef}) => `${criterions}
-	<Criterion>
-		<StayDateRange Duration="${HotelRef.StayDateRange.Duration}" Start="${HotelRef.StayDateRange.Start}"/>
-		<RoomStayCandidates>
-			<RoomStayCandidate Quantity="${HotelRef.StayDateRange.RoomStayCandidates.RoomStayCandidate.Quantity}">
-				<GuestCounts>
-					${mapGuestCounts(HotelRef.StayDateRange.RoomStayCandidates.RoomStayCandidate.GuestCounts)}
-				</GuestCounts>
-			</RoomStayCandidate>
-		</RoomStayCandidates>
-		<HotelRef HotelCode="${HotelRef.HotelCode}"/>
-		<TPA_Extensions>
-			<isDeepLinkRequired DeepLinkType="${isDeepLinkRequired.DeepLinkType}" isDeepLinkRequired="${isDeepLinkRequired.isDeepLinkRequired}"/>
-			<isContentRequired isAmenityRequired="${isContentRequired.isAmenityRequired}" isContentRequired="${isContentRequired.isContentRequired}"/>
-			<isCancellationPolicyRequired CancellationPolicyRequired="${isCancellationPolicyRequired.isCancellationPolicyRequired}"/>
-		</TPA_Extensions>
-	</Criterion>
-	`, '');
+const mapCriterions = (
+  HotelSearchCriteria,
+  {
+    isDeepLinkRequired,
+    isContentRequired,
+    isCancellationPolicyRequired
+  }
+) => HotelSearchCriteria
+  .reduce(
+    (criterions, { HotelRef }) => `${criterions}
+    <Criterion>
+      <StayDateRange Duration="${HotelRef.StayDateRange.Duration}" Start="${HotelRef.StayDateRange.Start}"/>
+      <RoomStayCandidates>
+        <RoomStayCandidate Quantity="${HotelRef.StayDateRange.RoomStayCandidates.RoomStayCandidate.Quantity}">
+          <GuestCounts>
+            ${mapGuestCounts(HotelRef.StayDateRange.RoomStayCandidates.RoomStayCandidate.GuestCounts)}
+          </GuestCounts>
+        </RoomStayCandidate>
+      </RoomStayCandidates>
+      <HotelRef HotelCode="${HotelRef.HotelCode}"/>
+      <TPA_Extensions>
+        <isDeepLinkRequired DeepLinkType="${isDeepLinkRequired.DeepLinkType}" isDeepLinkRequired="${isDeepLinkRequired.isDeepLinkRequired}"/>
+        <isContentRequired isAmenityRequired="${isContentRequired.isAmenityRequired}" isContentRequired="${isContentRequired.isContentRequired}"/>
+        <isCancellationPolicyRequired CancellationPolicyRequired="${isCancellationPolicyRequired.isCancellationPolicyRequired}"/>
+      </TPA_Extensions>
+    </Criterion>
+    `,
+    ''
+  );
 
-
-const hotelAvailRequestTemplate = ({OTA_HotelAvailRQ}) => `
+const hotelAvailRequestTemplate = ({ OTA_HotelAvailRQ }) => `
 <?xml version="1.0" ?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
 	<SOAP-ENV:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
@@ -58,4 +74,4 @@ const hotelAvailRequestTemplate = ({OTA_HotelAvailRQ}) => `
 
 module.exports = {
   hotelAvailRequestTemplate,
-}
+};

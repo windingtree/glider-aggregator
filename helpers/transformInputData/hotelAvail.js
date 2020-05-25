@@ -4,30 +4,36 @@ const parseISO = require('date-fns/parseISO');
 
 const mapRequestData = (hotelCodes, { accommodation: { arrival, departure }, passengers }) => {
   const duration = differenceInCalendarDays(parseISO(departure), parseISO(arrival));
-  const guestCounts = passengers.map(({type, count}) => ({
-    AgeQualifyingCode: type === 'ADT' ? 10 : 8,
-      Count: count === undefined ? 1: count,
-    }));
+  const guestCounts = passengers
+    .map(
+      ({ type, count }) => ({
+        AgeQualifyingCode: type === 'ADT' ? 10 : 8,
+        Count: count === undefined ? 1: count,
+      })
+    );
 
-  const hotelSearchCriteria = hotelCodes.map(hotelCode => ({
-    HotelRef: {
-      HotelCode: hotelCode,
-      StayDateRange: {
-        Start:  format(new Date(arrival), 'yyyy-MM-dd'),
-        Duration: duration,
-        RoomStayCandidates: {
-          RoomStayCandidate: {
-            Quantity: '1',
-            GuestCounts: guestCounts,
-            },
-          },
-        },
-      },
-    }));
+  const hotelSearchCriteria = hotelCodes
+    .map(
+      hotelCode => ({
+        HotelRef: {
+          HotelCode: hotelCode,
+          StayDateRange: {
+            Start:  format(new Date(arrival), 'yyyy-MM-dd'),
+            Duration: duration,
+            RoomStayCandidates: {
+              RoomStayCandidate: {
+                Quantity: '1',
+                GuestCounts: guestCounts,
+              }
+            }
+          }
+        }
+      })
+    );
 
   return {
     OTA_HotelAvailRQ: {
-      TimeStamp: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'+01:00'"),
+      TimeStamp: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'+01:00'"), // eslint-disable-line quotes
       Version: '2.2',
       PrimaryLangID: 'en',
       AvailRatesOnly: true,
@@ -66,16 +72,16 @@ const mapRequestData = (hotelCodes, { accommodation: { arrival, departure }, pas
         },
         isContentRequired: {
           isAmenityRequired: true,
-          isContentRequired: true,          
+          isContentRequired: true,
         },
         isCancellationPolicyRequired: {
           isCancellationPolicyRequired : true,
         }
       }
-    },
+    }
   };
 };
 
 module.exports = {
-  mapRequestData,
+  mapRequestData
 };

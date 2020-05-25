@@ -22,7 +22,7 @@ module.exports.callProvider = async (
     const timeout = 60 * 1000; // 60 sec
     const source = axios.CancelToken.source();
     const connectionTimeout = setTimeout(() => source.cancel(
-        `Cannot connect to the source: ${apiEndpoint}`
+      `Cannot connect to the source: ${apiEndpoint}`
     ), timeout);// connection timeout
 
     response = await axios.post(
@@ -57,7 +57,7 @@ module.exports.callProvider = async (
     provider,
     templates,
     response
-  }
+  };
 };
 
 // Fetching of the flight operators associated with the given origin and destination
@@ -277,7 +277,7 @@ module.exports.reMapPassengersInRequestBody = (offer, body) => {
         ...a,
         [v[0]]: v[1]
       }), {});
-      body.passengers = Object.entries(body.passengers)
+    body.passengers = Object.entries(body.passengers)
       .map(p => {
         p[0] = offer.extraData.mappedPassengers[p[0]];
         return p;
@@ -321,34 +321,34 @@ module.exports.fetchFlightsOffersByIds = async offerIds => {
 // Removes passengers dublicates from offered priced options
 // makes ONE passenger per OPTION
 module.exports.dedupPassengersInOptions = (options) => options
-.reduce(
-  (a, v) => {
-    const option = a.filter(o => o.code === v.code);
-    if (option.length > 0) {
-      option[0].passenger = [
-        ...new Set([
-          ...option[0].passenger.split(' '),
-          ...v.passenger.split(' ')
-        ])
-      ].join(' ');
-    } else {
-      a.push(v);
-    }
-    return a;
-  },
-  []
-)
-.reduce(
-  (a, v) => {
-    v.passenger
-      .split(' ')
-      .forEach(passenger => {
-        a.push({
-          ...v,
-          passenger
+  .reduce(
+    (a, v) => {
+      const option = a.filter(o => o.code === v.code);
+      if (option.length > 0) {
+        option[0].passenger = [
+          ...new Set([
+            ...option[0].passenger.split(' '),
+            ...v.passenger.split(' ')
+          ])
+        ].join(' ');
+      } else {
+        a.push(v);
+      }
+      return a;
+    },
+    []
+  )
+  .reduce(
+    (a, v) => {
+      v.passenger
+        .split(' ')
+        .forEach(passenger => {
+          a.push({
+            ...v,
+            passenger
+          });
         });
-      });
-    return a;
-  },
-  []
-);
+      return a;
+    },
+    []
+  );

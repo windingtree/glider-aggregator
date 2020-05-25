@@ -2,7 +2,8 @@ const { convertObjectToXML } = require('./utils/xmlUtils');
 
 const EMAIL_REGEXP =
   /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
-  const isEmail = (value) => EMAIL_REGEXP.test(value);
+
+const isEmail = (value) => EMAIL_REGEXP.test(value);
 
 const mapOfferItems = (offerItems) => Object.entries(offerItems)
   .reduce((items, [key, { passengerReferences }]) => `${items}

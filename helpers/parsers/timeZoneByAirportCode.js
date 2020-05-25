@@ -1,4 +1,4 @@
-const airports = { 
+const airports = {
   AAA: 'Pacific/Tahiti',
   AAB: 'Australia/Brisbane',
   AAC: 'Africa/Cairo',
@@ -11792,8 +11792,9 @@ const airports = {
   ZZU: 'Africa/Blantyre',
   ZZV: 'America/New_York',
   ZZW: 'Australia/Sydney',
-  ZZZ: 'Europe/London' };
+  ZZZ: 'Europe/London'
+};
 
 module.exports = {
   airports,
-}
+};
