@@ -1,4 +1,4 @@
-const { ready, transform } = require('camaro');
+const { transform } = require('camaro');
 const { v4: uuidv4 } = require('uuid');
 const GliderError = require('../../error');
 const assertErrors = require('../utils/assertResponseErrors');
@@ -30,7 +30,6 @@ const {
 
 // Convert response data to the object form
 const processResponse = async (data, template) => {
-  await ready();
   const offerResult = await transform(
     data,
     template

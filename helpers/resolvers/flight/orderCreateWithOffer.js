@@ -1,4 +1,4 @@
-const { ready, transform } = require('camaro');
+const { transform } = require('camaro');
 const { airFranceConfig, airCanadaConfig } = require('../../../config');
 const GliderError = require('../../error');
 const {
@@ -123,12 +123,10 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   let faultsResult;
   
   if (faultsTransformTemplate) {
-    await ready();
     faultsResult = await transform(response.data, faultsTransformTemplate);
   }
 
   // Attempt to parse as a an error
-  await ready();
   const errorsResult = await transform(response.data, errorsTransformTemplate);
 
   // Because of two types of errors can be returned: NDCMSG_Fault and Errors
@@ -151,7 +149,6 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   }
 
   // Otherwise parse as a result
-  await ready();
   const createResults = await transform(
     response.data,
     responseTransformTemplate
