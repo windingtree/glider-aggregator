@@ -268,7 +268,7 @@ const transformResponse = async (
   if (provider === 'AC') {
     // Segments aggregation
     const aggregatedSegments = {};
-    const aggregationKeys = {};
+    const aggregationKeys = {}; // Mapping of unique aggregationKeys to SegmentsIds
     const segmentsMap = {};
 
     for (const origSegmentId in searchResults.itineraries.segments) {
@@ -305,11 +305,11 @@ const transformResponse = async (
     for (const origCombinationId in searchResults.itineraries.combinations) {
       let combination = searchResults.itineraries.combinations[origCombinationId];
 
-      if (aggregatedCombinationsKeys[combinationsKeys[origCombinationId]]) {
-        combinationsMap[origCombinationId] = aggregatedCombinationsKeys[combinationsKeys[origCombinationId]];
+      if (aggregatedCombinationsKeys[updatedCombinations[origCombinationId]]) {
+        combinationsMap[origCombinationId] = aggregatedCombinationsKeys[updatedCombinations[origCombinationId]];
       } else {
         aggregatedCombinations[origCombinationId] = combination;
-        aggregatedCombinationsKeys[combinationsKeys[origCombinationId]] = origCombinationId;
+        aggregatedCombinationsKeys[updatedCombinations[origCombinationId]] = origCombinationId;
       }
     };
     searchResults.itineraries.combinations = aggregatedCombinations;
