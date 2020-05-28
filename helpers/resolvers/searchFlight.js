@@ -1,4 +1,4 @@
-const { ready, transform } = require('camaro');
+const { transform } = require('camaro');
 const { v4: uuidv4 } = require('uuid');
 const {
   mapNdcRequestData_AF,
@@ -37,7 +37,6 @@ const transformResponse = async (
   { provider, response, templates },
   passengersIds
 ) => {
-  await ready();
   const searchResults = await transform(
     response.data,
     templates.response
@@ -269,7 +268,7 @@ const transformResponse = async (
   if (provider === 'AC') {
     // Segments aggregation
     const aggregatedSegments = {};
-    const aggregationKeys = {};
+    const aggregationKeys = {}; // Mapping of unique aggregationKeys to SegmentsIds
     const segmentsMap = {};
 
     for (const origSegmentId in searchResults.itineraries.segments) {
@@ -306,11 +305,11 @@ const transformResponse = async (
     for (const origCombinationId in searchResults.itineraries.combinations) {
       let combination = searchResults.itineraries.combinations[origCombinationId];
 
-      if (aggregatedCombinationsKeys[combinationsKeys[origCombinationId]]) {
-        combinationsMap[origCombinationId] = aggregatedCombinationsKeys[combinationsKeys[origCombinationId]];
+      if (aggregatedCombinationsKeys[updatedCombinations[origCombinationId]]) {
+        combinationsMap[origCombinationId] = aggregatedCombinationsKeys[updatedCombinations[origCombinationId]];
       } else {
         aggregatedCombinations[origCombinationId] = combination;
-        aggregatedCombinationsKeys[combinationsKeys[origCombinationId]] = origCombinationId;
+        aggregatedCombinationsKeys[updatedCombinations[origCombinationId]] = origCombinationId;
       }
     };
     searchResults.itineraries.combinations = aggregatedCombinations;
@@ -489,14 +488,12 @@ module.exports.searchFlight = async (body) => {
           let faultsResult;
 
           if (templates.faults) {
-            await ready();
             faultsResult = await transform(
               response.data,
               templates.faults
             );
           }
 
-          await ready();
           const errorsResult = await transform(
             response.data,
             templates.errors

@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { ready, transform } = require('camaro');
+const { transform } = require('camaro');
 const { v4: uuidv4 } = require('uuid');
 const { mapRequestData } = require('../transformInputData/hotelAvail');
 const { hotelAvailRequestTemplate } = require('../soapTemplates/hotelAvail');
@@ -108,7 +108,6 @@ const searchHotel = async (body) => {
     });
 
   // Handle any errors returned from the API
-  await ready();
   const { errors } = await transform(response.data, errorsTransformTemplate);
 
   if (errors.length) {
@@ -119,7 +118,6 @@ const searchHotel = async (body) => {
   }
 
   // Handle the search results
-  await ready();
   const searchResults = await transform(response.data, hotelAvailTransformTemplate);
 
   // Go through the Room Stays to build the offers and gather the room types

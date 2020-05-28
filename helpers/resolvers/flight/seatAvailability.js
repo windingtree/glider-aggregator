@@ -1,4 +1,4 @@
-const { ready, transform } = require('camaro');
+const { transform } = require('camaro');
 const GliderError = require('../../error');
 const { airCanadaConfig } = require('../../../config');
 const assertErrors = require('../utils/assertResponseErrors');
@@ -32,7 +32,6 @@ const processResponse = async (data, offers, template) => {
     })))
   ).reduce((a, v) => ({ ...a, ...v }), {});
 
-  await ready();
   const seatMapResult = await transform(
     data,
     template
