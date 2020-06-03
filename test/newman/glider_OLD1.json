@@ -1,0 +1,2267 @@
+{
+	"info": {
+		"_postman_id": "4c98e864-3ad3-47fe-86b4-2cae1019883f",
+		"name": "Glider Automated Testing",
+		"description": "Automated tests for Glider",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "F01.Flight Booking Basic 1ADT",
+			"item": [
+				{
+					"name": "Glider: Search Flight Offers",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d195eabd-3f97-4b63-a4a2-e4ab76ce4704",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"travel_date\", oneMonthFromNow.toISOString());",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "0694a992-cb9a-4832-9a03-ea9d7830bb85",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonSearchResults = pm.response.json();",
+									"",
+									"",
+									"pm.test(\"Check for offers\", function () {",
+									"    // Check the offers",
+									"    var offerIds = Object.keys(jsonSearchResults.offers);",
+									"    pm.expect(offerIds.length).to.be.above(0);",
+									"    ",
+									"    // Select an offer",
+									"    pm.collectionVariables.set('offer_id', offerIds[0]);",
+									"    pm.collectionVariables.set('offer_items',JSON.stringify(jsonSearchResults.offers[offerIds[0]].offerItems));",
+									"});",
+									"",
+									"pm.test(\"Check for Combinations\", function () {",
+									"    var combinations = Object.keys(jsonSearchResults.itineraries.combinations)",
+									"    pm.expect(combinations.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Segments\", function () {",
+									"    var segments = Object.keys(jsonSearchResults.itineraries.segments);",
+									"    pm.expect(segments.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Segments\", function () {",
+									"    var segments = Object.keys(jsonSearchResults.itineraries.segments)",
+									"    pm.expect(segments.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Price Plans\", function () {",
+									"    var pricePlans = Object.keys(jsonSearchResults.pricePlans);",
+									"    pm.expect(pricePlans.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Passengers\", function () {",
+									"    var passengers = Object.keys(jsonSearchResults.passengers);",
+									"    pm.expect(passengers.length).to.be.eq(1);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"console.log(pm.collectionVariables.get('offer_id'));",
+									"console.log(pm.collectionVariables.get('offer_items'));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"itinerary\": {\n    \"segments\": [\n      {\n        \"origin\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"CDG\"\n        },\n        \"destination\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"MAD\"\n        },\n        \"departureTime\": \"{{travel_date}}\"\n      }\n    ]\n  },\n  \"passengers\": [\n    {\n      \"type\": \"ADT\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/searchOffers",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"searchOffers"
+							]
+						},
+						"description": "Search for offers"
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Create Order from offer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "be25bfa8-4b1a-4149-a950-1a3f15565e42",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonOrderCreationResult = pm.response.json();",
+									"",
+									"",
+									"pm.test(\"Check for orderId\", function () {",
+									"    pm.expect(jsonOrderCreationResult.orderId).to.be.a('string');",
+									"    pm.collectionVariables.set('order_id', jsonOrderCreationResult.orderId)",
+									"});",
+									"",
+									"pm.test(\"Check for Order Items\", function () {",
+									"    pm.expect(jsonOrderCreationResult.order.orderItems).to.be.a('array');",
+									"    pm.collectionVariables.set('order_items',JSON.stringify(jsonOrderCreationResult.order.orderItems));",
+									"});",
+									"",
+									"pm.test(\"Check for Currency\", function () {",
+									"    pm.expect(jsonOrderCreationResult.order.price.currency).to.be.a('string');",
+									"    pm.expect(jsonOrderCreationResult.order.price.currency.length).to.eq(3);",
+									"    pm.collectionVariables.set('currency',jsonOrderCreationResult.order.price.currency);",
+									"});",
+									"",
+									"pm.test(\"Check for price amount\", function () {",
+									"    pm.collectionVariables.set('amount',jsonOrderCreationResult.order.price.public);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"offerId\": \"{{offer_id}}\",\n  \"offerItems\": {{offer_items}},\n  \"passengers\": {\n    \"PAX1\": {\n      \"type\": \"ADT\",\n      \"civility\": \"MR\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Bob\"\n      ],\n      \"birthdate\": \"1980-03-21T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/orders/createWithOffer",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"orders",
+								"createWithOffer"
+							]
+						},
+						"description": "Create an order from a received offer"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Make Deposit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5c2a0efd-9bae-43d6-9bc6-96fc7dfbbef5",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currency\": \"{{currency}}\",\n  \"amount\": \"{{amount}}\"\n}"
+						},
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/simulateDeposit",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"simulateDeposit"
+							]
+						},
+						"description": "Create a deposit"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Create Guarantee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "35a51b1f-a367-4985-b0c1-d9adbd1eef14",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "cec52eb3-4363-4938-a6ea-3deb9eb30221",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonGuaranteeCreationResult = pm.response.json();",
+									"",
+									"pm.test(\"Get Guarantee ID\", function () {",
+									"    pm.collectionVariables.set('guarantee_id',jsonGuaranteeCreationResult.guaranteeId);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currency\": \"{{currency}}\",\n  \"amount\": \"{{amount}}\",\n  \"creditorOrgId\": \"0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0\",\n  \"expiration\": \"{{guarantee_expiration}}\"\n}"
+						},
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/guarantees",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"guarantees"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Fulfill order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "31f74f3a-11c4-4111-9664-d2fe43e3ad84",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonOrderFulfillmentResult = pm.response.json();",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderItems\": {{order_items}},\n  \"passengerReferences\": [\"PAX1\"],\n  \"guaranteeId\": \"{{guarantee_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/orders/{{order_id}}/fulfill",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"orders",
+								"{{order_id}}",
+								"fulfill"
+							]
+						},
+						"description": "Fulfill the order"
+					},
+					"response": []
+				}
+			],
+			"description": "Tests for Flights",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "F02.Flight Booking Family Return",
+			"item": [
+				{
+					"name": "Glider: Search Flight Offers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "48e4d239-b97b-444e-b403-6c6abc947ce4",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonSearchResults = pm.response.json();",
+									"",
+									"",
+									"pm.test(\"Check for offers\", function () {",
+									"    // Check the offers",
+									"    var offerIds = Object.keys(jsonSearchResults.offers);",
+									"    pm.expect(offerIds.length).to.be.above(0);",
+									"    ",
+									"    // Select an offer",
+									"    pm.collectionVariables.set('offer_id', offerIds[0]);",
+									"    pm.collectionVariables.set('offer_items',JSON.stringify(jsonSearchResults.offers[offerIds[0]].offerItems));",
+									"});",
+									"",
+									"pm.test(\"Check for Combinations\", function () {",
+									"    var combinations = Object.keys(jsonSearchResults.itineraries.combinations)",
+									"    pm.expect(combinations.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Segments\", function () {",
+									"    var segments = Object.keys(jsonSearchResults.itineraries.segments);",
+									"    pm.expect(segments.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Segments\", function () {",
+									"    var segments = Object.keys(jsonSearchResults.itineraries.segments)",
+									"    pm.expect(segments.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Price Plans\", function () {",
+									"    var pricePlans = Object.keys(jsonSearchResults.pricePlans);",
+									"    pm.expect(pricePlans.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Passengers\", function () {",
+									"    var passengers = Object.keys(jsonSearchResults.passengers);",
+									"    pm.expect(passengers.length).to.be.eq(5);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"console.log(pm.collectionVariables.get('offer_id'));",
+									"console.log(pm.collectionVariables.get('offer_items'));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "55563287-3f72-4758-9766-d9098d07b3da",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 259200000); // + 30 days",
+									"var oneMonthFromNowPlusOne = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"travel_date\", oneMonthFromNow.toISOString());",
+									"pm.collectionVariables.set(\"return_date\", oneMonthFromNowPlusOne.toISOString());",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\t{\n\t  \"itinerary\": {\n\t    \"segments\": [\n\t\t {\n\t\t  \"origin\": {\n\t\t    \"locationType\": \"airport\",\n\t\t    \"iataCode\": \"MAD\"\n\t\t  },\n\t\t  \"destination\": {\n\t\t    \"locationType\": \"airport\",\n\t\t    \"iataCode\": \"BLR\"\n\t\t  },\n\t\t  \"departureTime\": \"2020-07-12T00:00:00Z\"\n\t\t},\n\t\t{\n\t\t  \"origin\": {\n\t\t    \"locationType\": \"airport\",\n\t\t    \"iataCode\": \"BLR\"\n\t\t  },\n\t\t  \"destination\": {\n\t\t    \"locationType\": \"airport\",\n\t\t    \"iataCode\": \"MAD\"\n\t\t  },\n\t\t  \"departureTime\": \"2020-07-14T00:00:00Z\"\n\t\t}\n    ]\n  },\n  \"passengers\": [\n    {\n      \"type\": \"ADT\",\n      \"count\": 2\n    },\n    {\n      \"type\": \"CHD\",\n      \"count\": 2\n    },\n    {\n      \"type\": \"INF\",\n      \"count\": 1\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/searchOffers",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"searchOffers"
+							]
+						},
+						"description": "Search for offers"
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Create Order from offer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "be25bfa8-4b1a-4149-a950-1a3f15565e42",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonOrderCreationResult = pm.response.json();",
+									"",
+									"",
+									"pm.test(\"Check for orderId\", function () {",
+									"    pm.expect(jsonOrderCreationResult.orderId).to.be.a('string');",
+									"    pm.collectionVariables.set('order_id', jsonOrderCreationResult.orderId)",
+									"});",
+									"",
+									"pm.test(\"Check for Order Items\", function () {",
+									"    pm.expect(jsonOrderCreationResult.order.orderItems).to.be.a('array');",
+									"    pm.collectionVariables.set('order_items',JSON.stringify(jsonOrderCreationResult.order.orderItems));",
+									"});",
+									"",
+									"pm.test(\"Check for Currency\", function () {",
+									"    pm.expect(jsonOrderCreationResult.order.price.currency).to.be.a('string');",
+									"    pm.expect(jsonOrderCreationResult.order.price.currency.length).to.eq(3);",
+									"    pm.collectionVariables.set('currency',jsonOrderCreationResult.order.price.currency);",
+									"});",
+									"",
+									"pm.test(\"Check for price amount\", function () {",
+									"    pm.collectionVariables.set('amount',jsonOrderCreationResult.order.price.public);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"offerId\": \"{{offer_id}}\",\n  \"offerItems\": {{offer_items}},\n  \"passengers\": {\n    \"PAX1\": {\n      \"type\": \"ADT\",\n      \"civility\": \"MR\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Bob\"\n      ],\n      \"birthdate\": \"1980-03-21T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    },\n    \"PAX2\": {\n      \"type\": \"ADT\",\n      \"civility\": \"MRS\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Bobette\"\n      ],\n      \"birthdate\": \"1965-03-20T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    },\n    \"PAX3\": {\n      \"type\": \"CHD\",\n      \"civility\": \"MR\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Junior\"\n      ],\n      \"birthdate\": \"2015-03-20T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    },\n    \"PAX4\": {\n      \"type\": \"CHD\",\n      \"civility\": \"MRS\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Juniorette\"\n      ],\n      \"birthdate\": \"2015-03-20T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    },\n    \"PAX5\": {\n      \"type\": \"INF\",\n      \"civility\": \"MRS\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Infant\"\n      ],\n      \"birthdate\": \"2019-03-20T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/orders/createWithOffer",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"orders",
+								"createWithOffer"
+							]
+						},
+						"description": "Create an order from a received offer"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Make Deposit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5c2a0efd-9bae-43d6-9bc6-96fc7dfbbef5",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currency\": \"{{currency}}\",\n  \"amount\": \"{{amount}}\"\n}"
+						},
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/simulateDeposit",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"simulateDeposit"
+							]
+						},
+						"description": "Create a deposit"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Create Guarantee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "35a51b1f-a367-4985-b0c1-d9adbd1eef14",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "cec52eb3-4363-4938-a6ea-3deb9eb30221",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonGuaranteeCreationResult = pm.response.json();",
+									"",
+									"pm.test(\"Get Guarantee ID\", function () {",
+									"    pm.collectionVariables.set('guarantee_id',jsonGuaranteeCreationResult.guaranteeId);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currency\": \"{{currency}}\",\n  \"amount\": \"{{amount}}\",\n  \"creditorOrgId\": \"0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0\",\n  \"expiration\": \"{{guarantee_expiration}}\"\n}"
+						},
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/guarantees",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"guarantees"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Fulfill order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "31f74f3a-11c4-4111-9664-d2fe43e3ad84",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonOrderFulfillmentResult = pm.response.json();",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderItems\": {{order_items}},\n  \"passengerReferences\": [\"PAX1\"],\n  \"guaranteeId\": \"{{guarantee_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/orders/{{order_id}}/fulfill",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"orders",
+								"{{order_id}}",
+								"fulfill"
+							]
+						},
+						"description": "Fulfill the order"
+					},
+					"response": []
+				}
+			],
+			"description": "Tests for Flights",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "H01.Hotel Booking Basic 1ADT",
+			"item": [
+				{
+					"name": "Glider: Search Hotel Offer by rectangle",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c3f38bd1-375b-4c83-83a8-aa31819b5780",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 259200000); // + 30 days",
+									"var oneMonthFromNowPlusOne = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"checkin_date\", oneMonthFromNow.toISOString());",
+									"pm.collectionVariables.set(\"checkout_date\", oneMonthFromNowPlusOne.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "c0bc13c1-62bd-44a7-bc06-cc6213fcf41c",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonSearchResults = pm.response.json();",
+									"",
+									"",
+									"pm.test(\"Check for offers\", function () {",
+									"    // Check the offers",
+									"    var offerIds = Object.keys(jsonSearchResults.offers);",
+									"    pm.expect(offerIds.length).to.be.above(0);",
+									"    ",
+									"    // Select an offer",
+									"    pm.collectionVariables.set('offer_id', offerIds[0]);",
+									"    pm.collectionVariables.set('offer_items',JSON.stringify(jsonSearchResults.offers[offerIds[0]].offerItems));",
+									"    ",
+									"    let currency = jsonSearchResults.offers[offerIds[0]].price.currency;",
+									"    let amount = jsonSearchResults.offers[offerIds[0]].price.public;",
+									"    pm.expect(currency).to.be.a('string');",
+									"    pm.expect(currency.length).to.eq(3);",
+									"    pm.collectionVariables.set('currency',currency);",
+									"    pm.collectionVariables.set('amount',amount);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Check for Accomodations\", function () {",
+									"    var accommodations = Object.keys(jsonSearchResults.accommodations)",
+									"    pm.expect(accommodations.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Price Plans\", function () {",
+									"    var pricePlans = Object.keys(jsonSearchResults.pricePlans);",
+									"    pm.expect(pricePlans.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Passengers\", function () {",
+									"    var passengers = Object.keys(jsonSearchResults.passengers);",
+									"    pm.expect(passengers.length).to.be.eq(1);",
+									"});",
+									"",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"console.log(pm.collectionVariables.get('offer_id'));",
+									"console.log(pm.collectionVariables.get('offer_items'));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accommodation\": {\n    \"location\": {\n      \"rectangle\": {\n        \"south\": 55.13,\n        \"west\": 10.59,\n        \"north\": 69.06,\n        \"east\": 24.18\n      }\n    },\n    \"arrival\": \"{{checkin_date}}\",\n    \"departure\": \"{{checkout_date}}\"\n  },\n  \"passengers\": [\n    {\n      \"type\": \"ADT\",\n      \"count\": 1\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/searchOffers",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"searchOffers"
+							]
+						},
+						"description": "Search for hotel offers"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Make Deposit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5c2a0efd-9bae-43d6-9bc6-96fc7dfbbef5",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currency\": \"{{currency}}\",\n  \"amount\": \"{{amount}}\"\n}"
+						},
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/simulateDeposit",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"simulateDeposit"
+							]
+						},
+						"description": "Create a deposit"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Create Guarantee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "35a51b1f-a367-4985-b0c1-d9adbd1eef14",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "cec52eb3-4363-4938-a6ea-3deb9eb30221",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonGuaranteeCreationResult = pm.response.json();",
+									"",
+									"pm.test(\"Get Guarantee ID\", function () {",
+									"    pm.collectionVariables.set('guarantee_id',jsonGuaranteeCreationResult.guaranteeId);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currency\": \"{{currency}}\",\n  \"amount\": \"{{amount}}\",\n  \"creditorOrgId\": \"0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0\",\n  \"expiration\": \"{{guarantee_expiration}}\"\n}"
+						},
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/guarantees",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"guarantees"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Create Order from offer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "be25bfa8-4b1a-4149-a950-1a3f15565e42",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonOrderCreationResult = pm.response.json();",
+									"",
+									"",
+									"pm.test(\"Check for reservation number\", function () {",
+									"    pm.expect(jsonOrderCreationResult.order.response).to.eq('Committed');",
+									"    pm.expect(jsonOrderCreationResult.order.reservationNumber).to.eq('64478864');",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"offerId\": \"{{offer_id}}\",\n  \"guaranteeId\": \"{{guarantee_id}}\",\n  \"passengers\": {\n    \"PAX1\": {\n      \"type\": \"ADT\",\n      \"civility\": \"MR\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Bob\"\n      ],\n      \"birthdate\": \"1980-03-21T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/orders/createWithOffer",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"orders",
+								"createWithOffer"
+							]
+						},
+						"description": "Create an order from a received offer"
+					},
+					"response": []
+				}
+			],
+			"description": "Basic booking for one adult",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{GLIDER_JWT}}",
+						"type": "string"
+					}
+				]
+			},
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "H02.Hotel Booking Family",
+			"item": [
+				{
+					"name": "Glider: Search Hotel Offer by circle",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c3f38bd1-375b-4c83-83a8-aa31819b5780",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2592000000); // + 30 days",
+									"var twoMonthFromNow = new Date((+new Date()) + 5184000000); // + 30 days",
+									"pm.collectionVariables.set(\"checkin_date\", oneMonthFromNow.toISOString());",
+									"pm.collectionVariables.set(\"checkout_date\", twoMonthFromNow.toISOString());",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "c0bc13c1-62bd-44a7-bc06-cc6213fcf41c",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonSearchResults = pm.response.json();",
+									"",
+									"",
+									"pm.test(\"Check for offers\", function () {",
+									"    // Check the offers",
+									"    var offerIds = Object.keys(jsonSearchResults.offers);",
+									"    pm.expect(offerIds.length).to.be.above(0);",
+									"    ",
+									"    // Select an offer",
+									"    pm.collectionVariables.set('offer_id', offerIds[0]);",
+									"    pm.collectionVariables.set('offer_items',JSON.stringify(jsonSearchResults.offers[offerIds[0]].offerItems));",
+									"    ",
+									"    let currency = jsonSearchResults.offers[offerIds[0]].price.currency;",
+									"    let amount = jsonSearchResults.offers[offerIds[0]].price.public;",
+									"    pm.expect(currency).to.be.a('string');",
+									"    pm.expect(currency.length).to.eq(3);",
+									"    pm.collectionVariables.set('currency',currency);",
+									"    pm.collectionVariables.set('amount',amount);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Check for Accomodations\", function () {",
+									"    var accommodations = Object.keys(jsonSearchResults.accommodations)",
+									"    pm.expect(accommodations.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Price Plans\", function () {",
+									"    var pricePlans = Object.keys(jsonSearchResults.pricePlans);",
+									"    pm.expect(pricePlans.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Passengers\", function () {",
+									"    var passengers = Object.keys(jsonSearchResults.passengers);",
+									"    pm.expect(passengers.length).to.be.eq(1);",
+									"});",
+									"",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"console.log(pm.collectionVariables.get('offer_id'));",
+									"console.log(pm.collectionVariables.get('offer_items'));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accommodation\": {\n    \"location\": {\n      \"circle\": {\n        \"longitude\": 14.63636847,\n        \"latitude\": 63.17994135,\n        \"radius\": 50.00\n      }\n    },\n    \"arrival\": \"{{checkin_date}}\",\n    \"departure\": \"{{checkout_date}}\"\n  },\n  \"passengers\": [\n    {\n      \"type\": \"ADT\",\n      \"count\": 3\n    },\n    {\n      \"type\": \"CHD\",\n      \"count\": 2\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/searchOffers",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"searchOffers"
+							]
+						},
+						"description": "Search for hotel offers"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Make Deposit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5c2a0efd-9bae-43d6-9bc6-96fc7dfbbef5",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currency\": \"{{currency}}\",\n  \"amount\": \"{{amount}}\"\n}"
+						},
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/simulateDeposit",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"simulateDeposit"
+							]
+						},
+						"description": "Create a deposit"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Create Guarantee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "35a51b1f-a367-4985-b0c1-d9adbd1eef14",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "cec52eb3-4363-4938-a6ea-3deb9eb30221",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonGuaranteeCreationResult = pm.response.json();",
+									"",
+									"pm.test(\"Get Guarantee ID\", function () {",
+									"    pm.collectionVariables.set('guarantee_id',jsonGuaranteeCreationResult.guaranteeId);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currency\": \"{{currency}}\",\n  \"amount\": \"{{amount}}\",\n  \"creditorOrgId\": \"0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0\",\n  \"expiration\": \"{{guarantee_expiration}}\"\n}"
+						},
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/guarantees",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"guarantees"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Create Order from offer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "be25bfa8-4b1a-4149-a950-1a3f15565e42",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonOrderCreationResult = pm.response.json();",
+									"",
+									"",
+									"pm.test(\"Check for reservation number\", function () {",
+									"    pm.expect(jsonOrderCreationResult.order.response).to.eq('Committed');",
+									"    pm.expect(jsonOrderCreationResult.order.reservationNumber).to.eq('64478864');",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"offerId\": \"{{offer_id}}\",\n  \"guaranteeId\": \"{{guarantee_id}}\",\n  \"passengers\": {\n    \"PAX1\": {\n      \"type\": \"ADT\",\n      \"civility\": \"MR\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Bob\"\n      ],\n      \"birthdate\": \"1980-03-21T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/orders/createWithOffer",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"orders",
+								"createWithOffer"
+							]
+						},
+						"description": "Create an order from a received offer"
+					},
+					"response": []
+				}
+			],
+			"description": "Basic booking for one adult",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{GLIDER_JWT}}",
+						"type": "string"
+					}
+				]
+			},
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "A01.Admin Hotels",
+			"item": [
+				{
+					"name": "Glider Admin: Retrieve current Hotels",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "05fdd575-e0a7-4b00-992b-f004af0e4ab1",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check records\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.records).to.be.an('array');",
+									"});",
+									"pm.test(\"Check total\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.total).to.gt(0);",
+									"    pm.collectionVariables.set('total_hotels', jsonData.total);",
+									"});",
+									"pm.test(\"Check default skip\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.skip).to.eq(null);",
+									"});",
+									"pm.test(\"Check default limit\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.limit).to.eq(null);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/hotels",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"hotels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Glider Admin: Add one hotel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a12f26b-b76b-488a-a918-066c50066e6b",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Check reply\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"    pm.expect(jsonData.length).to.eq(1);",
+									"    pm.collectionVariables.set('hotel_id', jsonData[0].id);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ebd85740-8525-460f-93fb-93bb96a5a208",
+								"exec": [
+									"pm.collectionVariables.set(",
+									"    'hotel_latitude',",
+									"    pm.variables.replaceIn('{{$randomLatitude}}')",
+									");",
+									"pm.collectionVariables.set(",
+									"    'hotel_longitude',",
+									"    pm.variables.replaceIn('{{$randomLongitude}}')",
+									");",
+									"pm.collectionVariables.set(",
+									"    'hotel_currency',",
+									"    pm.variables.replaceIn('{{$randomCurrencyCode}}').substring(0,3)",
+									");",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"provider\": \"TEST\",\n    \"ref\": \"12345\",\n    \"longitude\": {{hotel_longitude}},\n    \"latitude\": {{hotel_latitude}},\n    \"currency\": \"{{hotel_currency}}\"\n  }\n]"
+						},
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/hotels",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"hotels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Glider Admin: Get created hotel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d001bc23-1161-439d-aac5-e9c52971a548",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Check hotel ID\", function () {",
+									"    pm.expect(jsonData.id).to.eql(pm.collectionVariables.get(\"hotel_id\"));",
+									"});",
+									"",
+									"pm.test(\"Check hotel Provider\", function () {",
+									"    pm.expect(jsonData.provider).to.eql(\"TEST\");",
+									"});",
+									"",
+									"pm.test(\"Check hotel Provider reference\", function () {",
+									"    pm.expect(jsonData.ref).to.eql(\"12345\");",
+									"});",
+									"",
+									"pm.test(\"Check hotel longitude\", function () {",
+									"    pm.expect(Number(jsonData.longitude).toFixed(4)).to.eq(pm.variables.get(\"hotel_longitude\"));",
+									"});",
+									"",
+									"pm.test(\"Check hotel latitude\", function () {",
+									"    pm.expect(Number(jsonData.latitude).toFixed(4)).to.eq(pm.variables.get(\"hotel_latitude\"));",
+									"});",
+									"",
+									"pm.test(\"Check hotel currency\", function () {",
+									"    pm.expect(jsonData.currency).to.eq(pm.variables.get(\"hotel_currency\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/hotels/{{hotel_id}}",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"hotels",
+								"{{hotel_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Glider Admin: Retrieve all Hotels",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "05fdd575-e0a7-4b00-992b-f004af0e4ab1",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check records\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.records).to.be.an('array');",
+									"});",
+									"pm.test(\"Check total\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.total).to.eq(Number(pm.variables.get('total_hotels'))+1)",
+									"});",
+									"pm.test(\"Check default skip\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.skip).to.eq(null);",
+									"});",
+									"pm.test(\"Check default limit\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.limit).to.eq(null);",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/hotels",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"hotels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Glider Admin: Delete created hotel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ff0673ea-9de1-447a-bdb2-434fa8520452",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/hotels/{{hotel_id}}",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"hotels",
+								"{{hotel_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Glider Admin: Try to get the deleted hotel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a6ff9316-1f5d-4fe4-bc16-6479c26d6bc6",
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/hotels/{{hotel_id}}",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"hotels",
+								"{{hotel_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Glider Admin: Retrieve all Hotels",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "05fdd575-e0a7-4b00-992b-f004af0e4ab1",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Check records\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.records).to.be.an('array');",
+									"});",
+									"pm.test(\"Check total\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(String(jsonData.total)).to.eq(pm.variables.get('total_hotels'))",
+									"});",
+									"pm.test(\"Check default skip\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.skip).to.eq(null);",
+									"});",
+									"pm.test(\"Check default limit\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.limit).to.eq(null);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/hotels",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"hotels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Glider Admin: Unauthorized",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7290d69d-a71a-451f-a833-3b127272b5a9",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/hotels",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"hotels"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{GLIDER_JWT}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "614f83c1-a94c-4fc4-a8c0-4186ba1b81fb",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "fd35ce6d-7bd6-406d-8b23-76ac94017bfe",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "a9675b70-215e-4381-9b60-ccb133c29075",
+			"key": "GLIDER_JWT",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6b3JnaWQ6MHg2YWQ0NDNjNTRmZDdiMWRkNjVlYjkyZjE0OTJiMThmN2UzOGE5MzUxMTQ0M2RmY2U1MzAyMDMwYjFkMjMzZWQyI3dlYnNlcnZlciIsImF1ZCI6ImRpZDpvcmdpZDoweDcxY2QxNzgxYTMwODJmMzNkMjUyMWFjODI5MGM5ZDRiM2IzYjExNmU0ZTg1NDhhNDkxNGI3MWExZjcyMDFkYTAiLCJpYXQiOjE1ODQ2ODkwMzAsImV4cCI6MTYxNjIyNTAzMH0.bopsjn86GtNGYjf0f7ZZwyU08h6xbxAoCnn4lW4X7MKEyVSig4Flqa9Lfb9nW4W9dUUQ_m1ZgT1RHp04yPwvFA",
+			"type": "string"
+		},
+		{
+			"id": "2571ff03-3cdb-4f0f-927e-353e48cb7702",
+			"key": "GLIDER_URL",
+			"value": "https://staging.aggregator.windingtree.net/api/v1",
+			"type": "string"
+		},
+		{
+			"id": "488ef681-d14e-4cb6-9d42-e1398f3fd058",
+			"key": "travel_date",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "9ee70b92-94e7-4c21-8388-57d83fad1c95",
+			"key": "offer_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "d1240679-c5d8-4091-b3de-4b9213035797",
+			"key": "offer_items",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "2eae88f6-2d6d-4d09-9ea9-e5b4a872ec3e",
+			"key": "order_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "83e06903-9f33-4afb-98ee-8ea94b97810a",
+			"key": "order_items",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "eeffc15c-b05a-4cd1-bbd6-ce530c571b9e",
+			"key": "SIMARD_JWT",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6b3JnaWQ6MHg2YWQ0NDNjNTRmZDdiMWRkNjVlYjkyZjE0OTJiMThmN2UzOGE5MzUxMTQ0M2RmY2U1MzAyMDMwYjFkMjMzZWQyI3dlYnNlcnZlciIsImF1ZCI6ImRpZDpvcmdpZDoweDVlNjk5NGY3Njc2NGNlYjQyYzQ3NmEyNTA1MDY1YTYxNzAxNzhhMjRjMDNkODFjOWYzNzI1NjM4MzAwMDExNzEiLCJpYXQiOjE1ODQ2ODkwMzAsImV4cCI6MTYxNjIyNTAzMH0.Toi6zguJLv61ynrtTZgsQ_Cj7QzImChpKQRI-T7VKUTev9HYDjheydAXNjIucY7MeGSmNpDmx4XCr1nlnGZjZg",
+			"type": "string"
+		},
+		{
+			"id": "4da00147-7947-4131-b149-1af8f5206ba1",
+			"key": "amount",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "665de0b0-dbe9-4325-8b08-fbbbfa10c112",
+			"key": "currency",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "021bb7b9-6fed-4525-9b2e-f4170e85b38d",
+			"key": "SIMARD_URL",
+			"value": "https://staging.api.simard.io/api/v1",
+			"type": "string"
+		},
+		{
+			"id": "b583bdf7-8320-4529-8bfa-2430d7756336",
+			"key": "guarantee_expiration",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "8d54390c-870c-4808-9c2f-12c4829e9942",
+			"key": "guarantee_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "67b5be72-dd15-4b86-98eb-a4449d9fe1ca",
+			"key": "checkin_date",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "2ba211be-39c0-44a5-9b0a-4b8b9655e028",
+			"key": "checkout_date",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "260a85e8-1c9b-4746-b1b9-a88278550d7f",
+			"key": "return_date",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "99591fdd-5843-4695-8a7c-e3f52ffe1d8a",
+			"key": "GLIDER_ADMIN_URL",
+			"value": "http://localhost:3000/admin/v1",
+			"type": "string"
+		},
+		{
+			"id": "55c59382-bb2e-4bf1-aee5-f77ee58c29be",
+			"key": "GLIDER_ADMIN_JWT",
+			"value": "eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJkaWQ6b3JnaWQ6MHg3MWNkMTc4MWEzMDgyZjMzZDI1MjFhYzgyOTBjOWQ0YjNiM2IxMTZlNGU4NTQ4YTQ5MTRiNzFhMWY3MjAxZGEwI3NlY29uZGtleSIsImF1ZCI6ImRpZDpvcmdpZDoweDcxY2QxNzgxYTMwODJmMzNkMjUyMWFjODI5MGM5ZDRiM2IzYjExNmU0ZTg1NDhhNDkxNGI3MWExZjcyMDFkYTAiLCJleHAiOjE2MjEzMTg0NjksInNjb3BlIjoiIn0.VOS1hk-sww8PNaou9392tDN8GpL7z1KkUYAC2KSbEkX9zVlDR7rztC8xjroZoyAHCojogc-RorX2IavkOgR4_w",
+			"type": "string"
+		},
+		{
+			"id": "5458f00c-c8d7-4e24-a0a8-70ef51bad387",
+			"key": "total_hotels",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "535aace2-7781-4f4b-a078-d05a27a097cc",
+			"key": "hotel_currency",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "1d2d76dc-a769-43dd-8c54-045f9c7d5a3a",
+			"key": "hotel_latitude",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "5bc6ce50-9d81-49c1-adae-b579a8f2a609",
+			"key": "hotel_longitude",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "9f2e23e7-3811-460d-bd97-9760490d0f98",
+			"key": "hotel_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

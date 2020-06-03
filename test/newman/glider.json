@@ -1,13 +1,13 @@
 {
 	"info": {
-		"_postman_id": "4c98e864-3ad3-47fe-86b4-2cae1019883f",
-		"name": "Glider Automated Testing",
+		"_postman_id": "31e2c3fc-2076-4856-9332-19e235715230",
+		"name": "Glider Automated Testing last",
 		"description": "Automated tests for Glider",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "F01.Flight Booking Basic 1ADT",
+			"name": "F02.Flight Booking instant 2ADT Return",
 			"item": [
 				{
 					"name": "Glider: Search Flight Offers",
@@ -15,12 +15,84 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "d195eabd-3f97-4b63-a4a2-e4ab76ce4704",
+								"id": "70f903ea-afcb-4f20-885d-f6cbdb084b26",
 								"exec": [
 									"// Set the travel Date",
 									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"var twoMonthFromNow = new Date((+new Date()) + 2 * 2678400000); // + 31 days",
 									"pm.collectionVariables.set(\"travel_date\", oneMonthFromNow.toISOString());",
-									""
+									"pm.collectionVariables.set(\"return_date\", twoMonthFromNow.toISOString());",
+									"pm.collectionVariables.set(\"origin\", \"LHR\");",
+									"pm.collectionVariables.set(\"destination\", \"YVR\");",
+									"",
+									"const passengers =",
+									"  [",
+									"    {",
+									"      \"type\": \"ADT\",",
+									"      \"civility\": \"MR\",",
+									"      \"gender\": \"Male\",",
+									"      \"lastnames\": [",
+									"        \"Marley\"",
+									"      ],",
+									"      \"firstnames\": [",
+									"        \"Bob\"",
+									"      ],",
+									"      \"birthdate\": \"1980-03-21T00:00:00Z\",",
+									"      \"contactInformation\": [",
+									"        \"+32123456789\",",
+									"        \"contact@org.co.uk\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"ADT\",",
+									"      \"civility\": \"MR\",",
+									"      \"gender\": \"Male\",",
+									"      \"lastnames\": [",
+									"        \"Marleyyy\"",
+									"      ],",
+									"      \"firstnames\": [",
+									"        \"Bobby\"",
+									"      ],",
+									"      \"birthdate\": \"1980-03-21T00:00:00Z\",",
+									"      \"contactInformation\": [",
+									"        \"+32123456789\",",
+									"        \"contact@org.co.uk\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"CHD\",",
+									"      \"civility\": \"MR\",",
+									"      \"gender\": \"Male\",",
+									"      \"lastnames\": [",
+									"        \"Marleyyy\"",
+									"      ],",
+									"      \"firstnames\": [",
+									"        \"Child\"",
+									"      ],",
+									"      \"birthdate\": \"2015-03-21\",",
+									"      \"contactInformation\": [",
+									"        \"+32123456789\",",
+									"        \"contact@org.co.uk\"",
+									"      ]",
+									"    }",
+									"  ];",
+									"pm.collectionVariables.set(\"passengers\", JSON.stringify(passengers));",
+									"",
+									"",
+									"const passengersTypes = passengers.reduce((acc, passenger) => {",
+									"  const ptc = passenger.type;",
+									"  if (ptc in acc) {",
+									"    acc[ptc].count++;",
+									"  } else {",
+									"    acc[ptc] = {",
+									"      type: ptc,",
+									"      count: 1",
+									"    }",
+									"  }",
+									"  return acc;",
+									"}, {});",
+									"pm.collectionVariables.set(\"passengersTypes\", JSON.stringify(Object.values(passengersTypes)));",
+									"pm.variables.set('seats', \"[]\");"
 								],
 								"type": "text/javascript"
 							}
@@ -28,57 +100,250 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "0694a992-cb9a-4832-9a03-ea9d7830bb85",
+								"id": "4dec4010-7516-46c4-af0c-10df062525aa",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Response is Ok\", function () {",
 									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
+									"",
 									"var jsonSearchResults = pm.response.json();",
+									"var offerIds = Object.keys(jsonSearchResults.offers);",
+									"var combinations = Object.keys(jsonSearchResults.itineraries.combinations);",
+									"var segments = Object.keys(jsonSearchResults.itineraries.segments);",
+									"var pricePlans = Object.keys(jsonSearchResults.pricePlans);",
+									"var passengers = Object.keys(jsonSearchResults.passengers);",
 									"",
 									"",
-									"pm.test(\"Check for offers\", function () {",
+									"pm.test(\"Check for offers presence\", function () {",
 									"    // Check the offers",
-									"    var offerIds = Object.keys(jsonSearchResults.offers);",
 									"    pm.expect(offerIds.length).to.be.above(0);",
-									"    ",
-									"    // Select an offer",
-									"    pm.collectionVariables.set('offer_id', offerIds[0]);",
-									"    pm.collectionVariables.set('offer_items',JSON.stringify(jsonSearchResults.offers[offerIds[0]].offerItems));",
+									"",
 									"});",
 									"",
-									"pm.test(\"Check for Combinations\", function () {",
-									"    var combinations = Object.keys(jsonSearchResults.itineraries.combinations)",
+									"pm.test(\"Check for Combinations presence\", function () {",
 									"    pm.expect(combinations.length).to.be.above(0);",
 									"});",
 									"",
-									"pm.test(\"Check for Segments\", function () {",
-									"    var segments = Object.keys(jsonSearchResults.itineraries.segments);",
+									"pm.test(\"Check for Segments presence\", function () {",
 									"    pm.expect(segments.length).to.be.above(0);",
 									"});",
 									"",
 									"pm.test(\"Check for Segments\", function () {",
-									"    var segments = Object.keys(jsonSearchResults.itineraries.segments)",
 									"    pm.expect(segments.length).to.be.above(0);",
 									"});",
 									"",
-									"pm.test(\"Check for Price Plans\", function () {",
-									"    var pricePlans = Object.keys(jsonSearchResults.pricePlans);",
+									"pm.test(\"Check for Price Plans presence\", function () {",
 									"    pm.expect(pricePlans.length).to.be.above(0);",
 									"});",
 									"",
-									"pm.test(\"Check for Passengers\", function () {",
-									"    var passengers = Object.keys(jsonSearchResults.passengers);",
-									"    pm.expect(passengers.length).to.be.eq(1);",
+									"pm.test(\"Check for Passengers presence\", function () {",
+									"    const definedPassengers = JSON.parse(pm.variables.get(\"passengers\"));",
+									"    console.log('definedPassengers >>>', definedPassengers);",
+									"",
+									"    //Apply defined passengers to the provided keys",
+									"    let indexedPassengers = definedPassengers.reduce((acc, pax) => {",
+									"        // Search a key with correct passenger type",
+									"        for (let paxIndex = 0; paxIndex < passengers.length; paxIndex++) {",
+									"            let key = passengers[paxIndex];",
+									"            if (jsonSearchResults.passengers[key].type == pax.type) {",
+									"                // Only add if the key is not used yet",
+									"                if (!(key in acc)) {",
+									"                    acc[key] = pax;",
+									"                    return acc;",
+									"                }",
+									"            }",
+									"        }",
+									"    }, {});",
+									"",
+									"    pm.collectionVariables.set(\"indexedPassengers\", JSON.stringify(indexedPassengers));",
+									"    //console.log(indexedPassengers);",
 									"});",
 									"",
+									"",
+									"// Check the offers",
+									"offerIds.forEach(offerId => {",
+									"    let offer = jsonSearchResults.offers[offerId];",
+									"    let offerFlights = [];",
+									"",
+									"    // Check price consistency",
+									"    pm.test(`Offer #${offerId}: Check Price`, function () {",
+									"        let offerPrice = offer.price;",
+									"        pm.expect(offerPrice).to.have.property('currency');",
+									"        pm.expect(offerPrice).to.have.property('public');",
+									"        pm.expect(offerPrice).to.have.property('taxes');",
+									"        pm.expect(Number(offerPrice.public)).to.be.above(Number(offerPrice.taxes));",
+									"    });",
+									"",
+									"",
+									"    // Check the price plans",
+									"    pm.test(`Offer #${offerId}: Check Price Plans`, function () {",
+									"        let offerPricePlans = Object.keys(offer.pricePlansReferences);",
+									"        pm.expect(offerPricePlans.length).to.be.above(0);",
+									"",
+									"        offerPricePlans.forEach(offerPricePlanKey => {",
+									"            // Check the price plan is in the list",
+									"            pm.expect(pricePlans).to.include(offerPricePlanKey);",
+									"",
+									"            // Check the price plan include a flight list",
+									"            pm.expect(offer.pricePlansReferences[offerPricePlanKey]).to.have.property('flights');",
+									"            let pricePlanFlights = offer.pricePlansReferences[offerPricePlanKey].flights;",
+									"            pm.expect(pricePlanFlights.length).to.be.above(0);",
+									"            offerFlights.concat(pricePlanFlights);",
+									"        });",
+									"    });",
+									"",
+									"    // Check the flights",
+									"    pm.test(`Offer #${offerId}: Check Flight Presence`, function () {",
+									"        offerFlights.forEach(flightKey => {",
+									"            pm.expect(combinations).to.include(flightKey);",
+									"        });",
+									"    });",
+									"",
+									"    // Offer expiration should be at least 20 min",
+									"    pm.test(`Offer #${offerId}: Check Flight Presence`, function () {",
+									"        pm.expect(new Date(offer.expiration) - new Date()).to.be.above(20 * 60 * 1000, `Offer ${offerId} expires in less than 20 min`);",
+									"    });",
+									"",
+									"});",
+									"",
+									"",
+									"// Chech Combinations",
+									"let nbOutbound = 0;",
+									"let nbInbound = 0;",
+									"combinations.forEach(combinationKey => {",
+									"    let combinationSegments = jsonSearchResults.itineraries.combinations[combinationKey];",
+									"",
+									"    pm.test(`Flight #${combinationKey}: Check combinations`, function () {",
+									"",
+									"        // Check the combination includes at least one segment",
+									"        pm.expect(combinationSegments.length).to.be.above(0);",
+									"",
+									"        // Check all segments are defined in the segments section",
+									"        combinationSegments.forEach(segmentKey => {",
+									"            pm.expect(segments).to.include(segmentKey);",
+									"        });",
+									"    });",
+									"",
+									"    // Check the reply matches the origin & destination requested",
+									"    pm.test(`Flight #${combinationKey}: Check Segment continuity`, function () {",
+									"        let firstSegment = jsonSearchResults.itineraries.segments[combinationSegments[0]];",
+									"        let lastSegment = jsonSearchResults.itineraries.segments[combinationSegments[combinationSegments.length - 1]];",
+									"        let journeyOrigin = pm.variables.get('origin');",
+									"        let journeyDestination = pm.variables.get('destination');",
+									"        let isReturn;",
+									"",
+									"        // Check if we have a inbound or outbound",
+									"        pm.expect(firstSegment.origin.iataCode).to.be.oneOf([journeyOrigin, journeyDestination]);",
+									"        if (firstSegment.origin.iataCode == journeyOrigin) {",
+									"            pm.expect(lastSegment.destination.iataCode).to.be.eq(journeyDestination);",
+									"            isReturn = false;",
+									"            nbOutbound++;",
+									"        } else if (firstSegment.origin.iataCode == journeyDestination) {",
+									"            pm.expect(lastSegment.destination.iataCode).to.be.eq(journeyOrigin);",
+									"            isReturn = true;",
+									"            nbInbound++;",
+									"        }",
+									"",
+									"        // Check for consistent itinerary",
+									"        if (combinationSegments.length > 1) {",
+									"            let previousSegment = firstSegment;",
+									"            for (let segmentIndex = 1; segmentIndex < combinationSegments.length; segmentIndex++) {",
+									"",
+									"                // Get current Segment",
+									"                let segmentKey = combinationSegments[segmentIndex];",
+									"                let segment = jsonSearchResults.itineraries.segments[segmentKey];",
+									"",
+									"                // Check that the segment starts where the previous one stopped",
+									"                pm.expect(segment.origin.iataCode).to.be.eq(previousSegment.destination.iataCode, `Segments are not continous for flight ${combinationKey}`);",
+									"",
+									"                // Check the connexion time does not overlap",
+									"                // pm.expect(new Date(segment.departureTime) - new Date(previousSegment.arrivalTime)).to.be.above(15 * 60 * 1000, `${combinationKey} connexion time is too short`);",
+									"",
+									"                // Prepare for next iteration",
+									"                previousSegment = segment;",
+									"            }",
+									"        }",
+									"    });",
+									"",
+									"});",
+									"",
+									"pm.test(`Check we have both inbound and outbound flights`, function () {",
+									"    pm.expect(nbOutbound).to.be.above(0);",
+									"    pm.expect(nbInbound).to.be.above(0);",
+									"});",
+									"",
+									"// Select an offer for the outbound and one for the inbound",
+									"let inboundSelected = false;",
+									"let outboundSelected = false;",
+									"for (let offerId of offerIds) {",
+									"    // Get the flights",
+									"    let offer = jsonSearchResults.offers[offerId];",
+									"    let pricePlanKeys = Object.keys(offer.pricePlansReferences);",
+									"    let flights = [];",
+									"    for (let pricePlanKey of pricePlanKeys) {",
+									"        flights = flights.concat(offer.pricePlansReferences[pricePlanKey].flights);",
+									"    }",
+									"",
+									"    // If there is more than one flight, it is a return offer ",
+									"    // We are not interested in this offer for this test case",
+									"    if (flights.length > 1) continue;",
+									"",
+									"    // Get the segments",
+									"    let flightCombinationKey = flights[0];",
+									"    let segmentKeys = jsonSearchResults.itineraries.combinations[flightCombinationKey];",
+									"",
+									"    let segments = [];",
+									"    for (let segmentKey of segmentKeys) {",
+									"        segments.push(jsonSearchResults.itineraries.segments[segmentKey]);",
+									"    }",
+									"",
+									"    // If the flight is an outbound, select it if not yet done",
+									"    if ((segments[0].origin.iataCode == pm.variables.get('origin')) && !outboundSelected) {",
+									"        pm.collectionVariables.set('offer_id_outbound', offerId);",
+									"        pm.collectionVariables.set('offer_items_outbound', JSON.stringify(jsonSearchResults.offers[offerId].offerItems));",
+									"        pm.collectionVariables.set('currency', jsonSearchResults.offers[offerId].price.currency);",
+									"        pm.collectionVariables.set('amount_outbound', jsonSearchResults.offers[offerId].price.public);",
+									"        outboundSelected = true;",
+									"    }",
+									"",
+									"    // If the flight is an outbound, select it if not yet done",
+									"    if ((segments[0].origin.iataCode == pm.variables.get('destination')) && !inboundSelected) {",
+									"        pm.collectionVariables.set('offer_id_inbound', offerId);",
+									"        pm.collectionVariables.set('offer_items_inbound', JSON.stringify(jsonSearchResults.offers[offerId].offerItems));",
+									"        //pm.collectionVariables.set('currency_inbound',jsonSearchResults.offers[offerId].price.currency);",
+									"        pm.collectionVariables.set('amount_inbound', jsonSearchResults.offers[offerId].price.public);",
+									"        inboundSelected = true;",
+									"    }",
+									"",
+									"    // Stop execution if we found both",
+									"    if (outboundSelected && inboundSelected) break;",
+									"",
+									"}",
+									"",
 									"// Stop execution if there is an error",
-									"if(pm.response.status !== \"OK\") {",
+									"if (pm.response.status !== \"OK\") {",
 									"    postman.setNextRequest(null);",
 									"}",
 									"",
-									"console.log(pm.collectionVariables.get('offer_id'));",
-									"console.log(pm.collectionVariables.get('offer_items'));",
-									""
+									"pm.collectionVariables.set('amount', Number(",
+									"    Number(pm.variables.get('amount_inbound'))",
+									"    + Number(pm.variables.get('amount_outbound'))",
+									").toFixed(2));",
+									"pm.collectionVariables.set('max_amount', Number(",
+									"    Number(pm.variables.get('amount')*1.001)",
+									").toFixed(2));",
+									"console.log(pm.collectionVariables.get('offer_id_inbound'));",
+									"console.log(pm.collectionVariables.get('offer_id_outbound'));",
+									"",
+									"// Merge the offer items",
+									"/*",
+									"let offerItems = {",
+									"    ...JSON.parse(pm.collectionVariables.get('offer_items_outbound')),",
+									"    ...JSON.parse(pm.collectionVariables.get('offer_items_inbound')),",
+									"}",
+									"pm.variables.set('offer_items', JSON.stringify(offerItems)); */"
 								],
 								"type": "text/javascript"
 							}
@@ -110,15 +375,16 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"itinerary\": {\n    \"segments\": [\n      {\n        \"origin\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"CDG\"\n        },\n        \"destination\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"MAD\"\n        },\n        \"departureTime\": \"{{travel_date}}\"\n      }\n    ]\n  },\n  \"passengers\": [\n    {\n      \"type\": \"ADT\"\n    }\n  ]\n}"
+							"raw": "{\n  \"itinerary\": {\n    \"segments\": [\n      {\n        \"origin\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"{{origin}}\"\n        },\n        \"destination\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"{{destination}}\"\n        },\n        \"departureTime\": \"{{travel_date}}\"\n      },\n      {\n        \"origin\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"{{destination}}\"\n        },\n        \"destination\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"{{origin}}\"\n        },\n        \"departureTime\": \"{{return_date}}\"\n      }\n    ]\n  },\n  \"passengers\": {{passengersTypes}}\n}"
 						},
 						"url": {
-							"raw": "{{GLIDER_URL}}/searchOffers",
+							"raw": "{{GLIDER_URL}}/offers/search",
 							"host": [
 								"{{GLIDER_URL}}"
 							],
 							"path": [
-								"searchOffers"
+								"offers",
+								"search"
 							]
 						},
 						"description": "Search for offers"
@@ -126,43 +392,182 @@
 					"response": []
 				},
 				{
-					"name": "Glider: Create Order from offer",
+					"name": "Glider: Get Seat Map",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "be25bfa8-4b1a-4149-a950-1a3f15565e42",
+								"id": "74d00725-cf64-4b93-a409-7d2723267cdd",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Response is Ok\", function () {",
 									"    pm.response.to.have.status(200);",
-									"});",
-									"var jsonOrderCreationResult = pm.response.json();",
-									"",
-									"",
-									"pm.test(\"Check for orderId\", function () {",
-									"    pm.expect(jsonOrderCreationResult.orderId).to.be.a('string');",
-									"    pm.collectionVariables.set('order_id', jsonOrderCreationResult.orderId)",
-									"});",
-									"",
-									"pm.test(\"Check for Order Items\", function () {",
-									"    pm.expect(jsonOrderCreationResult.order.orderItems).to.be.a('array');",
-									"    pm.collectionVariables.set('order_items',JSON.stringify(jsonOrderCreationResult.order.orderItems));",
-									"});",
-									"",
-									"pm.test(\"Check for Currency\", function () {",
-									"    pm.expect(jsonOrderCreationResult.order.price.currency).to.be.a('string');",
-									"    pm.expect(jsonOrderCreationResult.order.price.currency.length).to.eq(3);",
-									"    pm.collectionVariables.set('currency',jsonOrderCreationResult.order.price.currency);",
-									"});",
-									"",
-									"pm.test(\"Check for price amount\", function () {",
-									"    pm.collectionVariables.set('amount',jsonOrderCreationResult.order.price.public);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
 									"// Stop execution if there is an error",
-									"if(pm.response.status !== \"OK\") {",
+									"if (pm.response.status !== \"OK\") {",
 									"    postman.setNextRequest(null);",
-									"}"
+									"}",
+									"",
+									"const jsonSeatMap = pm.response.json();",
+									"const segments = Object.keys(jsonSeatMap);",
+									"let selectedSeat;",
+									"",
+									"pm.test(\"Check for segments\", function () {",
+									"    pm.expect(segments.length).to.be.above(0);",
+									"});",
+									"",
+									"// Check Segments",
+									"segments.forEach(segmentId => {",
+									"    // Check prices",
+									"    const prices = jsonSeatMap[segmentId].prices;",
+									"    const optionCodes = Object.keys(prices);",
+									"",
+									"    pm.test(\"Check for prices\", function () {",
+									"        pm.expect(optionCodes.length).to.be.above(0);",
+									"        optionCodes.forEach(optionCode => {",
+									"            const optionPrice = prices[optionCode];",
+									"            pm.expect(optionPrice).to.have.all.keys('currency', 'public', 'taxes');",
+									"            pm.expect(optionPrice.currency).to.be.a('string');",
+									"        });",
+									"    });",
+									"",
+									"    // Check Cabins",
+									"    const cabins = jsonSeatMap[segmentId].cabins;",
+									"",
+									"    pm.test(\"Check for cabins\", function () {",
+									"        pm.expect(cabins.length).to.be.above(0);",
+									"    });",
+									"",
+									"    cabins.forEach(cabin => {",
+									"        // Check Cabin",
+									"        pm.test(`Check for cabin ${cabin.name}`, function () {",
+									"            pm.expect(cabin).to.have.all.keys(",
+									"                'name',",
+									"                'layout',",
+									"                'firstRow',",
+									"                'lastRow',",
+									"                'wingFirst',",
+									"                'wingLast',",
+									"                'exitRows',",
+									"                'seats',",
+									"            );",
+									"        });",
+									"",
+									"",
+									"        pm.test(`Check for seats in cabin ${cabin.name}`, function () {",
+									"            const seats = cabin.seats;",
+									"            seats.forEach(seat => {",
+									"                // Check mandatory keys",
+									"                pm.expect(seat).to.include.all.keys(",
+									"                    'number',",
+									"                    'available',",
+									"                );",
+									"",
+									"                // Check for seat price if available",
+									"                if (seat.available) {",
+									"                    pm.expect(seat).to.include.all.keys(",
+									"                        'optionCode',",
+									"                        'characteristics', // Is optional for non-available seats",
+									"                    );",
+									"",
+									"                    pm.expect(optionCodes).to.include(seat.optionCode);",
+									"",
+									"                    if (!selectedSeat) {",
+									"                        selectedSeat = {",
+									"                            ...seat,",
+									"                            price: prices[seat.optionCode],",
+									"                            segment: segmentId,",
+									"                        };",
+									"                        pm.collectionVariables.set('seats', JSON.stringify([selectedSeat]));",
+									"                    }",
+									"                }",
+									"",
+									"            });",
+									"        });",
+									"    });",
+									"",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{GLIDER_URL}}/offers/{{offer_id_outbound}},{{offer_id_inbound}}/seatmap",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"offers",
+								"{{offer_id_outbound}},{{offer_id_inbound}}",
+								"seatmap"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Price offers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1bdc9c6c-2493-4e3d-82ab-c5fd7ea61802",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"var pricingResults = pm.response.json();",
+									"let offerPrice = pricingResults.offer.price.public;",
+									"",
+									"//",
+									"pm.test(\"Check for price change\", function () {",
+									"    pm.expect(Number(pricingResults.offer.price.public)).to.be.below(Number(pm.variables.get('max_amount')));",
+									"});",
+									"",
+									"pm.collectionVariables.set('amount', pricingResults.offer.price.public);",
+									"pm.collectionVariables.set('offer_id', pricingResults.offerId);",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "816037d9-bbf8-4119-9dee-5ad29241bafb",
+								"exec": [
+									"console.log('PRICE: indexedPassengers >>>>', pm.variables.get('indexedPassengers'));",
+									"console.log('PRICE: seats >>>>', pm.variables.get('seats'));",
+									"",
+									"",
+									"const passengers = JSON.parse(pm.variables.get('indexedPassengers'));",
+									"pm.collectionVariables.set(\"selectedOptions\", JSON.stringify(",
+									"    JSON.parse(pm.variables.get('seats') || \"[]\").map(seat => {",
+									"        return {",
+									"            code: seat.optionCode,",
+									"            seatNumber: seat.number,",
+									"            segment: seat.segment,",
+									"            passenger: Object.keys(passengers)[1]",
+									"        }",
+									"    })",
+									"));"
 								],
 								"type": "text/javascript"
 							}
@@ -194,19 +599,108 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"offerId\": \"{{offer_id}}\",\n  \"offerItems\": {{offer_items}},\n  \"passengers\": {\n    \"PAX1\": {\n      \"type\": \"ADT\",\n      \"civility\": \"MR\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Bob\"\n      ],\n      \"birthdate\": \"1980-03-21T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    }\n  }\n}"
+							"raw": "{{selectedOptions}}"
 						},
 						"url": {
-							"raw": "{{GLIDER_URL}}/orders/createWithOffer",
+							"raw": "{{GLIDER_URL}}/offers/{{offer_id_outbound}},{{offer_id_inbound}}/price",
 							"host": [
 								"{{GLIDER_URL}}"
 							],
 							"path": [
-								"orders",
-								"createWithOffer"
+								"offers",
+								"{{offer_id_outbound}},{{offer_id_inbound}}",
+								"price"
 							]
 						},
-						"description": "Create an order from a received offer"
+						"description": "Search for offers"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Balance",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "177d8699-bc15-47e3-a7bb-63919feb3fc3",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "32c2630e-54fc-4581-85f2-6967ca898329",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"var balanceJson = pm.response.json();",
+									"let currency = pm.variables.get(\"currency\");",
+									"let balance;",
+									"if(currency in balanceJson) {",
+									"    balance = balanceJson[currency];",
+									"} else {",
+									"    balance = {",
+									"        \"available\": \"0.00\",",
+									"        \"reserved\": \"0\",",
+									"        \"total\": \"0.00\"",
+									"    };",
+									"}",
+									"pm.collectionVariables.set(\"balance\", balance);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances"
+							]
+						},
+						"description": "Create a guarantee"
 					},
 					"response": []
 				},
@@ -216,10 +710,12 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "5c2a0efd-9bae-43d6-9bc6-96fc7dfbbef5",
+								"id": "eca42a44-67b5-41a6-b5fb-f58dd4dce6b2",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Response is Ok\", function () {",
 									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
 									"// Stop execution if there is an error",
@@ -279,7 +775,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "35a51b1f-a367-4985-b0c1-d9adbd1eef14",
+								"id": "57e2fd93-0fdf-48e1-ad25-d905324f1c2c",
 								"exec": [
 									"// Set the travel Date",
 									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
@@ -291,10 +787,12 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "cec52eb3-4363-4938-a6ea-3deb9eb30221",
+								"id": "bebfeb91-dbc8-4386-b238-a852b9682460",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Response is Ok\", function () {",
 									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
 									"var jsonGuaranteeCreationResult = pm.response.json();",
@@ -355,22 +853,152 @@
 					"response": []
 				},
 				{
-					"name": "Glider: Fulfill order",
+					"name": "Simard: Get Balance",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8e2e30ad-ee7d-4477-90e8-6984f60db7ae",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "35ea4236-9519-4829-aa7f-5fa24f6c7711",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"var balanceJson = pm.response.json();",
+									"let currency = pm.variables.get(\"currency\");",
+									"let balance;",
+									"if (currency in balanceJson) {",
+									"    balance = balanceJson[currency];",
+									"} else {",
+									"    balance = {",
+									"        \"available\": \"0.00\",",
+									"        \"reserved\": \"0.00\",",
+									"        \"total\": \"0.00\"",
+									"    };",
+									"}",
+									"let previousBalance = pm.variables.get(\"balance\");",
+									"",
+									"// Check deposit has been made",
+									"pm.test(\"Check for balance update\", function () {",
+									"    pm.expect(Number(balance.total).toFixed(2)).to.eq(",
+									"        Number(",
+									"            Number(previousBalance.total) +",
+									"            Number(pm.variables.get(\"amount\"))",
+									"        ).toFixed(2)",
+									"    );",
+									"    pm.expect(Number(balance.reserved).toFixed(2)).to.eq(",
+									"        Number(",
+									"            Number(previousBalance.reserved) +",
+									"            Number(pm.variables.get(\"amount\"))",
+									"        ).toFixed(2)",
+									"    );",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Create Order from offer",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "31f74f3a-11c4-4111-9664-d2fe43e3ad84",
+								"id": "ca9a69e9-1e8d-4175-adb4-58c516439593",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Response is Ok\", function () {",
 									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
-									"var jsonOrderFulfillmentResult = pm.response.json();",
+									"var jsonOrderCreationResult = pm.response.json();",
+									"",
+									"",
+									"pm.test(\"Check for orderId\", function () {",
+									"    pm.expect(jsonOrderCreationResult.orderId).to.be.a('string');",
+									"    pm.collectionVariables.set('order_id', jsonOrderCreationResult.orderId)",
+									"});",
+									"",
+									"pm.test(\"Check for Currency\", function () {",
+									"    pm.expect(jsonOrderCreationResult.order.price.currency).to.be.a('string');",
+									"    pm.expect(jsonOrderCreationResult.order.price.currency.length).to.eq(3);",
+									"    pm.collectionVariables.set('currency', jsonOrderCreationResult.order.price.currency);",
+									"});",
+									"",
+									"pm.test(\"Check for price amount\", function () {",
+									"    pm.collectionVariables.set('amount', jsonOrderCreationResult.order.price.public);",
+									"});",
 									"",
 									"// Stop execution if there is an error",
-									"if(pm.response.status !== \"OK\") {",
+									"if (pm.response.status !== \"OK\") {",
 									"    postman.setNextRequest(null);",
 									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ba51a79f-e78b-4e1f-989f-cde5b6bf2405",
+								"exec": [
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -402,20 +1030,189 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"orderItems\": {{order_items}},\n  \"passengerReferences\": [\"PAX1\"],\n  \"guaranteeId\": \"{{guarantee_id}}\"\n}"
+							"raw": "{\n  \"offerId\": \"{{offer_id}}\",\n  \"guaranteeId\": \"{{guarantee_id}}\",\n  \"passengers\": {{indexedPassengers}}\n}"
 						},
 						"url": {
-							"raw": "{{GLIDER_URL}}/orders/{{order_id}}/fulfill",
+							"raw": "{{GLIDER_URL}}/orders/createWithOffer",
 							"host": [
 								"{{GLIDER_URL}}"
 							],
 							"path": [
 								"orders",
-								"{{order_id}}",
-								"fulfill"
+								"createWithOffer"
 							]
 						},
-						"description": "Fulfill the order"
+						"description": "Create an order from a received offer"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Guarantee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "603477e0-4190-42bc-80fb-d33677742994",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "d3c43e36-58c4-4212-a1dd-416dee3423c7",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"var jsonGuaranteeCreationResult = pm.response.json();",
+									"",
+									"pm.test(\"Get Guarantee ID\", function () {",
+									"    pm.collectionVariables.set('guarantee_id',jsonGuaranteeCreationResult.guaranteeId);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/guarantees/{{guarantee_id}}",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"guarantees",
+								"{{guarantee_id}}"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Balance",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a97a6653-5097-4334-94cc-ab43cb4e578c",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "7452a42d-186e-44dd-a78c-2b55b7665aef",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"var balanceJson = pm.response.json();",
+									"let currency = pm.variables.get(\"currency\");",
+									"let balance;",
+									"if(currency in balanceJson) {",
+									"    balance = balanceJson[currency];",
+									"} else {",
+									"    balance = {",
+									"        \"available\": \"0.00\",",
+									"        \"reserved\": \"0.00\",",
+									"        \"total\": \"0.00\"",
+									"    };",
+									"}",
+									"let previousBalance = pm.variables.get(\"balance\");",
+									"",
+									"// We do the exact comparison because we have made a deposit in between",
+									"pm.expect(Number(balance.total).toFixed(2)).to.eq(Number(previousBalance.total).toFixed(2));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances"
+							]
+						},
+						"description": "Create a guarantee"
 					},
 					"response": []
 				}
@@ -424,64 +1221,369 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "F02.Flight Booking Family Return",
+			"name": "F03.Flight Booking instant 1ADT OneWay",
 			"item": [
 				{
 					"name": "Glider: Search Flight Offers",
 					"event": [
 						{
+							"listen": "prerequest",
+							"script": {
+								"id": "2af58086-caf2-483b-81d5-ff5d357e52c7",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"travel_date\", oneMonthFromNow.toISOString());",
+									"pm.collectionVariables.set(\"origin\", \"LHR\");",
+									"pm.collectionVariables.set(\"destination\", \"YUL\");",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
 							"listen": "test",
 							"script": {
-								"id": "48e4d239-b97b-444e-b403-6c6abc947ce4",
+								"id": "52bf69d9-5db3-4b8d-b725-6e5f7645422f",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Response is Ok\", function () {",
 									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
+									"",
 									"var jsonSearchResults = pm.response.json();",
+									"var offerIds = Object.keys(jsonSearchResults.offers);",
+									"var combinations = Object.keys(jsonSearchResults.itineraries.combinations);",
+									"var segments = Object.keys(jsonSearchResults.itineraries.segments);",
+									"var pricePlans = Object.keys(jsonSearchResults.pricePlans);",
+									"var passengers = Object.keys(jsonSearchResults.passengers);",
 									"",
 									"",
-									"pm.test(\"Check for offers\", function () {",
+									"pm.test(\"Check for offers presence\", function () {",
 									"    // Check the offers",
-									"    var offerIds = Object.keys(jsonSearchResults.offers);",
 									"    pm.expect(offerIds.length).to.be.above(0);",
-									"    ",
-									"    // Select an offer",
-									"    pm.collectionVariables.set('offer_id', offerIds[0]);",
-									"    pm.collectionVariables.set('offer_items',JSON.stringify(jsonSearchResults.offers[offerIds[0]].offerItems));",
 									"});",
 									"",
-									"pm.test(\"Check for Combinations\", function () {",
-									"    var combinations = Object.keys(jsonSearchResults.itineraries.combinations)",
+									"pm.test(\"Check for Combinations presence\", function () {",
 									"    pm.expect(combinations.length).to.be.above(0);",
 									"});",
 									"",
-									"pm.test(\"Check for Segments\", function () {",
-									"    var segments = Object.keys(jsonSearchResults.itineraries.segments);",
+									"pm.test(\"Check for Segments presence\", function () {",
 									"    pm.expect(segments.length).to.be.above(0);",
 									"});",
 									"",
 									"pm.test(\"Check for Segments\", function () {",
-									"    var segments = Object.keys(jsonSearchResults.itineraries.segments)",
 									"    pm.expect(segments.length).to.be.above(0);",
 									"});",
 									"",
-									"pm.test(\"Check for Price Plans\", function () {",
-									"    var pricePlans = Object.keys(jsonSearchResults.pricePlans);",
+									"pm.test(\"Check for Price Plans presence\", function () {",
 									"    pm.expect(pricePlans.length).to.be.above(0);",
 									"});",
 									"",
-									"pm.test(\"Check for Passengers\", function () {",
-									"    var passengers = Object.keys(jsonSearchResults.passengers);",
-									"    pm.expect(passengers.length).to.be.eq(5);",
+									"pm.test(\"Check for Passengers presence\", function () {",
+									"    pm.expect(passengers.length).to.be.eq(1);",
 									"});",
 									"",
+									"pm.test(\"Check each offer\", function () {",
+									"    // Check the offers",
+									"    offerIds.forEach(offerId => {",
+									"        let offer = jsonSearchResults.offers[offerId];",
+									"        let offerFlights = [];",
+									"",
+									"        // Check price consistency",
+									"        let offerPrice = offer.price;",
+									"        pm.expect(offerPrice).to.have.property('currency');",
+									"        pm.expect(offerPrice).to.have.property('public');",
+									"        pm.expect(offerPrice).to.have.property('taxes');",
+									"        pm.expect(Number(offerPrice.public)).to.be.above(Number(offerPrice.taxes));",
+									"",
+									"",
+									"        // Check the price plans",
+									"        let offerPricePlans = Object.keys(offer.pricePlansReferences);",
+									"        pm.expect(offerPricePlans.length).to.be.above(0);",
+									"",
+									"        offerPricePlans.forEach(offerPricePlanKey => {",
+									"            // Check the price plan is in the list",
+									"            pm.expect(pricePlans).to.include(offerPricePlanKey);",
+									"",
+									"            // Check the price plan include a flight list",
+									"            pm.expect(offer.pricePlansReferences[offerPricePlanKey]).to.have.property('flights');",
+									"            let pricePlanFlights = offer.pricePlansReferences[offerPricePlanKey].flights;",
+									"            pm.expect(pricePlanFlights.length).to.be.above(0);",
+									"            offerFlights.concat(pricePlanFlights);",
+									"        });",
+									"",
+									"        // Check the flights",
+									"        offerFlights.forEach(flightKey => {",
+									"            pm.expect(combinations).to.include(flightKey);",
+									"        });",
+									"",
+									"        // Offer expiration should be at least 20 min",
+									"        pm.expect(new Date(offer.expiration) - new Date()).to.be.above(20 * 60 * 1000, `Offer ${offerId} expires in less than 20 min`);",
+									"",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"Check each flight (as one way)\", function () {",
+									"    combinations.forEach(combinationKey => {",
+									"        let combinationSegments = jsonSearchResults.itineraries.combinations[combinationKey];",
+									"",
+									"        // Check the combination includes at least one segment",
+									"        pm.expect(combinationSegments.length).to.be.above(0);",
+									"",
+									"        // Check all segments are defined in the segments section",
+									"        combinationSegments.forEach(segmentKey => {",
+									"            pm.expect(segments).to.include(segmentKey);",
+									"        });",
+									"",
+									"        // Check the reply matches the origin & destination requested",
+									"        let firstSegment = jsonSearchResults.itineraries.segments[combinationSegments[0]];",
+									"        let lastSegment = jsonSearchResults.itineraries.segments[combinationSegments[combinationSegments.length - 1]];",
+									"        pm.expect(firstSegment.origin.iataCode).to.be.eq(pm.variables.get('origin'));",
+									"        pm.expect(lastSegment.destination.iataCode).to.be.eq(pm.variables.get('destination'));",
+									"",
+									"        // Check for consistent itinerary",
+									"        if (combinationSegments.length > 1) {",
+									"            let previousSegment = firstSegment;",
+									"            for (let segmentIndex = 1; segmentIndex < combinationSegments.length; segmentIndex++) {",
+									"",
+									"                // Get current Segment",
+									"                let segmentKey = combinationSegments[segmentIndex];",
+									"                let segment = jsonSearchResults.itineraries.segments[segmentKey];",
+									"",
+									"                // Check that the segment starts where the previous one stopped",
+									"                pm.expect(segment.origin.iataCode).to.be.eq(previousSegment.destination.iataCode, `Segments are not continous for flight ${combinationKey}`);",
+									"",
+									"                // Check the connexion time does not overlap",
+									"                pm.expect(new Date(segment.departureTime) - new Date(previousSegment.arrivalTime)).to.be.above(15 * 60 * 1000, `${combinationKey} connexion time is too short`);",
+									"",
+									"                // Prepare for next iteration",
+									"                previousSegment = segment;",
+									"            }",
+									"        }",
+									"",
+									"",
+									"    });",
+									"});",
+									"",
+									"",
 									"// Stop execution if there is an error",
-									"if(pm.response.status !== \"OK\") {",
+									"if (pm.response.status !== \"OK\") {",
 									"    postman.setNextRequest(null);",
 									"}",
 									"",
-									"console.log(pm.collectionVariables.get('offer_id'));",
-									"console.log(pm.collectionVariables.get('offer_items'));",
+									"// Select an offer",
+									"pm.collectionVariables.set('offer_id', offerIds[0]);",
+									"pm.collectionVariables.set('offer_items', JSON.stringify(jsonSearchResults.offers[offerIds[0]].offerItems));",
+									"pm.collectionVariables.set('currency', jsonSearchResults.offers[offerIds[0]].price.currency);",
+									"pm.collectionVariables.set('amount', jsonSearchResults.offers[offerIds[0]].price.public);",
+									"pm.collectionVariables.set('max_amount', Number( Number(pm.variables.get('amount')*1.001)));",
+									"pm.collectionVariables.set('passengers', JSON.stringify(jsonSearchResults.passengers));",
+									"",
+									"//console.log(pm.collectionVariables.get('offer_id'));",
+									"//console.log(pm.collectionVariables.get('offer_items'));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"itinerary\": {\n    \"segments\": [\n      {\n        \"origin\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"{{origin}}\"\n        },\n        \"destination\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"{{destination}}\"\n        },\n        \"departureTime\": \"{{travel_date}}\"\n      }\n    ]\n  },\n  \"passengers\": [\n    {\n      \"type\": \"ADT\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/offers/search",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"offers",
+								"search"
+							]
+						},
+						"description": "Search for offers"
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Get Seat Map",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9a0f3c4e-0b4a-49c9-b11f-c91b7a039bc8",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"const jsonSeatMap = pm.response.json();",
+									"const segments = Object.keys(jsonSeatMap);",
+									"let selectedSeat;",
+									"",
+									"pm.test(\"Check for segments\", function () {",
+									"    pm.expect(segments.length).to.be.above(0);",
+									"});",
+									"",
+									"// Check Segments",
+									"segments.forEach(segmentId => {",
+									"    // Check prices",
+									"    const prices = jsonSeatMap[segmentId].prices;",
+									"    const optionCodes = Object.keys(prices);",
+									"",
+									"    pm.test(\"Check for prices\", function () {",
+									"        pm.expect(optionCodes.length).to.be.above(0);",
+									"        optionCodes.forEach(optionCode => {",
+									"            const optionPrice = prices[optionCode];",
+									"            pm.expect(optionPrice).to.have.all.keys('currency', 'public', 'taxes');",
+									"            pm.expect(optionPrice.currency).to.be.a('string');",
+									"        });",
+									"    });",
+									"",
+									"    // Check Cabins",
+									"    const cabins = jsonSeatMap[segmentId].cabins;",
+									"",
+									"    pm.test(\"Check for cabins\", function () {",
+									"        pm.expect(cabins.length).to.be.above(0);",
+									"    });",
+									"",
+									"    cabins.forEach(cabin => {",
+									"        // Check Cabin",
+									"        pm.test(`Check for cabin ${cabin.name}`, function () {",
+									"            pm.expect(cabin).to.have.all.keys(",
+									"                'name',",
+									"                'layout',",
+									"                'firstRow',",
+									"                'lastRow',",
+									"                'wingFirst',",
+									"                'wingLast',",
+									"                'exitRows',",
+									"                'seats',",
+									"            );",
+									"        });",
+									"",
+									"",
+									"        pm.test(`Check for seats in cabin ${cabin.name}`, function () {",
+									"            const seats = cabin.seats;",
+									"            seats.forEach(seat => {",
+									"                // Check mandatory keys",
+									"                pm.expect(seat).to.include.all.keys(",
+									"                    'number',",
+									"                    'available',",
+									"                );",
+									"",
+									"                // Check for seat price if available",
+									"                if (seat.available) {",
+									"                    pm.expect(seat).to.include.all.keys(",
+									"                        'optionCode',",
+									"                        'characteristics', // Is optional for non-available seats",
+									"                    );",
+									"",
+									"                    pm.expect(optionCodes).to.include(seat.optionCode);",
+									"",
+									"                    if (!selectedSeat) {",
+									"                        selectedSeat = {",
+									"                            ...seat,",
+									"                            price: prices[seat.optionCode],",
+									"                            segment: segmentId,",
+									"                        };",
+									"                    }",
+									"                }",
+									"",
+									"            });",
+									"        });",
+									"    });",
+									"",
+									"});",
+									"",
+									"if (selectedSeat) {",
+									"    pm.collectionVariables.set('seats', JSON.stringify([selectedSeat]));",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{GLIDER_URL}}/offers/{{offer_id}}/seatmap",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"offers",
+								"{{offer_id}}",
+								"seatmap"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Add offer options",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aedcd6f8-93e0-4cb0-8038-a0be3466f38c",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"var pricingResults = pm.response.json();",
+									"let offerPrice = pricingResults.offer.price.public;",
+									"",
+									"//",
+									"pm.test(\"Check for price change\", function () {",
+									"    pm.expect(Number(pricingResults.offer.price.public)).to.be.below(Number(pm.variables.get('max_amount')));",
+									"});",
+									"",
+									"pm.collectionVariables.set('amount', pricingResults.offer.price.public);",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"",
 									""
 								],
 								"type": "text/javascript"
@@ -490,13 +1592,116 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "55563287-3f72-4758-9766-d9098d07b3da",
+								"id": "545fce2d-47e5-4bd5-b1b3-3eae81a80a19",
+								"exec": [
+									"console.log('PRICE: passengers >>>>', pm.variables.get('passengers'));",
+									"console.log('PRICE: seats >>>>', pm.variables.get('seats'));",
+									"",
+									"const passengers = JSON.parse(pm.variables.get('passengers'));",
+									"",
+									"pm.collectionVariables.set(\"selectedOptions\", JSON.stringify(",
+									"    (JSON.parse(pm.variables.get('seats') || \"[]\")).map(seat => {",
+									"        return {",
+									"            code: seat.optionCode,",
+									"            seatNumber: seat.number,",
+									"            segment: seat.segment,",
+									"            passenger: Object.keys(passengers)[0]",
+									"        }",
+									"    })",
+									"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{selectedOptions}}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/offers/{{offer_id}}/price",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"offers",
+								"{{offer_id}}",
+								"price"
+							]
+						},
+						"description": "Search for offers"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Balance",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f6d888b0-3268-46d7-ba34-4d0f71e538b5",
 								"exec": [
 									"// Set the travel Date",
-									"var oneMonthFromNow = new Date((+new Date()) + 259200000); // + 30 days",
-									"var oneMonthFromNowPlusOne = new Date((+new Date()) + 2678400000); // + 31 days",
-									"pm.collectionVariables.set(\"travel_date\", oneMonthFromNow.toISOString());",
-									"pm.collectionVariables.set(\"return_date\", oneMonthFromNowPlusOne.toISOString());",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ea0ad405-4e43-4a7a-ab9a-f0084fbb1c07",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"var balanceJson = pm.response.json();",
+									"let currency = pm.variables.get(\"currency\");",
+									"let balance;",
+									"if(currency in balanceJson) {",
+									"    balance = balanceJson[currency];",
+									"} else {",
+									"    balance = {",
+									"        \"available\": \"0.00\",",
+									"        \"reserved\": \"0\",",
+									"        \"total\": \"0.00\"",
+									"    };",
+									"}",
+									"pm.collectionVariables.set(\"balance\", balance);",
 									""
 								],
 								"type": "text/javascript"
@@ -509,96 +1714,12 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{GLIDER_JWT}}",
+									"value": "{{SIMARD_JWT}}",
 									"type": "string"
 								}
 							]
 						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "\t{\n\t  \"itinerary\": {\n\t    \"segments\": [\n\t\t {\n\t\t  \"origin\": {\n\t\t    \"locationType\": \"airport\",\n\t\t    \"iataCode\": \"MAD\"\n\t\t  },\n\t\t  \"destination\": {\n\t\t    \"locationType\": \"airport\",\n\t\t    \"iataCode\": \"BLR\"\n\t\t  },\n\t\t  \"departureTime\": \"2020-07-12T00:00:00Z\"\n\t\t},\n\t\t{\n\t\t  \"origin\": {\n\t\t    \"locationType\": \"airport\",\n\t\t    \"iataCode\": \"BLR\"\n\t\t  },\n\t\t  \"destination\": {\n\t\t    \"locationType\": \"airport\",\n\t\t    \"iataCode\": \"MAD\"\n\t\t  },\n\t\t  \"departureTime\": \"2020-07-14T00:00:00Z\"\n\t\t}\n    ]\n  },\n  \"passengers\": [\n    {\n      \"type\": \"ADT\",\n      \"count\": 2\n    },\n    {\n      \"type\": \"CHD\",\n      \"count\": 2\n    },\n    {\n      \"type\": \"INF\",\n      \"count\": 1\n    }\n  ]\n}"
-						},
-						"url": {
-							"raw": "{{GLIDER_URL}}/searchOffers",
-							"host": [
-								"{{GLIDER_URL}}"
-							],
-							"path": [
-								"searchOffers"
-							]
-						},
-						"description": "Search for offers"
-					},
-					"response": []
-				},
-				{
-					"name": "Glider: Create Order from offer",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "be25bfa8-4b1a-4149-a950-1a3f15565e42",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"var jsonOrderCreationResult = pm.response.json();",
-									"",
-									"",
-									"pm.test(\"Check for orderId\", function () {",
-									"    pm.expect(jsonOrderCreationResult.orderId).to.be.a('string');",
-									"    pm.collectionVariables.set('order_id', jsonOrderCreationResult.orderId)",
-									"});",
-									"",
-									"pm.test(\"Check for Order Items\", function () {",
-									"    pm.expect(jsonOrderCreationResult.order.orderItems).to.be.a('array');",
-									"    pm.collectionVariables.set('order_items',JSON.stringify(jsonOrderCreationResult.order.orderItems));",
-									"});",
-									"",
-									"pm.test(\"Check for Currency\", function () {",
-									"    pm.expect(jsonOrderCreationResult.order.price.currency).to.be.a('string');",
-									"    pm.expect(jsonOrderCreationResult.order.price.currency.length).to.eq(3);",
-									"    pm.collectionVariables.set('currency',jsonOrderCreationResult.order.price.currency);",
-									"});",
-									"",
-									"pm.test(\"Check for price amount\", function () {",
-									"    pm.collectionVariables.set('amount',jsonOrderCreationResult.order.price.public);",
-									"});",
-									"",
-									"// Stop execution if there is an error",
-									"if(pm.response.status !== \"OK\") {",
-									"    postman.setNextRequest(null);",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{GLIDER_JWT}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "Accept",
@@ -611,21 +1732,16 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"offerId\": \"{{offer_id}}\",\n  \"offerItems\": {{offer_items}},\n  \"passengers\": {\n    \"PAX1\": {\n      \"type\": \"ADT\",\n      \"civility\": \"MR\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Bob\"\n      ],\n      \"birthdate\": \"1980-03-21T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    },\n    \"PAX2\": {\n      \"type\": \"ADT\",\n      \"civility\": \"MRS\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Bobette\"\n      ],\n      \"birthdate\": \"1965-03-20T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    },\n    \"PAX3\": {\n      \"type\": \"CHD\",\n      \"civility\": \"MR\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Junior\"\n      ],\n      \"birthdate\": \"2015-03-20T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    },\n    \"PAX4\": {\n      \"type\": \"CHD\",\n      \"civility\": \"MRS\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Juniorette\"\n      ],\n      \"birthdate\": \"2015-03-20T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    },\n    \"PAX5\": {\n      \"type\": \"INF\",\n      \"civility\": \"MRS\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Infant\"\n      ],\n      \"birthdate\": \"2019-03-20T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    }\n  }\n}"
-						},
 						"url": {
-							"raw": "{{GLIDER_URL}}/orders/createWithOffer",
+							"raw": "{{SIMARD_URL}}/balances",
 							"host": [
-								"{{GLIDER_URL}}"
+								"{{SIMARD_URL}}"
 							],
 							"path": [
-								"orders",
-								"createWithOffer"
+								"balances"
 							]
 						},
-						"description": "Create an order from a received offer"
+						"description": "Create a guarantee"
 					},
 					"response": []
 				},
@@ -635,10 +1751,12 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "5c2a0efd-9bae-43d6-9bc6-96fc7dfbbef5",
+								"id": "9acce2f0-4076-4180-ad85-827792b049a4",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Response is Ok\", function () {",
 									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
 									"// Stop execution if there is an error",
@@ -698,7 +1816,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "35a51b1f-a367-4985-b0c1-d9adbd1eef14",
+								"id": "3646a6c4-1c77-4340-8693-5247f6ef6fec",
 								"exec": [
 									"// Set the travel Date",
 									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
@@ -710,10 +1828,12 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "cec52eb3-4363-4938-a6ea-3deb9eb30221",
+								"id": "f29bac5c-d20e-4cec-8b28-0f34fad6c43c",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Response is Ok\", function () {",
 									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
 									"var jsonGuaranteeCreationResult = pm.response.json();",
@@ -774,22 +1894,152 @@
 					"response": []
 				},
 				{
-					"name": "Glider: Fulfill order",
+					"name": "Simard: Get Balance",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "227f27e5-24ea-4741-9ca5-36ed2d83e3c2",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "389a1dc9-3065-453d-a3a3-7f2473a0835f",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"var balanceJson = pm.response.json();",
+									"let currency = pm.variables.get(\"currency\");",
+									"let balance;",
+									"if (currency in balanceJson) {",
+									"    balance = balanceJson[currency];",
+									"} else {",
+									"    balance = {",
+									"        \"available\": \"0.00\",",
+									"        \"reserved\": \"0.00\",",
+									"        \"total\": \"0.00\"",
+									"    };",
+									"}",
+									"let previousBalance = pm.variables.get(\"balance\");",
+									"",
+									"// Check deposit has been made",
+									"pm.test(\"Check for balance update\", function () {",
+									"    pm.expect(Number(balance.total).toFixed(2)).to.eq(",
+									"        Number(",
+									"            Number(previousBalance.total) +",
+									"            Number(pm.variables.get(\"amount\"))",
+									"        ).toFixed(2)",
+									"    );",
+									"    pm.expect(Number(balance.reserved).toFixed(2)).to.eq(",
+									"        Number(",
+									"            Number(previousBalance.reserved) +",
+									"            Number(pm.variables.get(\"amount\"))",
+									"        ).toFixed(2)",
+									"    );",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Create Order from offer",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "31f74f3a-11c4-4111-9664-d2fe43e3ad84",
+								"id": "02b449e8-8a4d-4eec-b4b3-7168d602a6ea",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Response is Ok\", function () {",
 									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
-									"var jsonOrderFulfillmentResult = pm.response.json();",
+									"var jsonOrderCreationResult = pm.response.json();",
+									"",
+									"",
+									"pm.test(\"Check for orderId\", function () {",
+									"    pm.expect(jsonOrderCreationResult.orderId).to.be.a('string');",
+									"    pm.collectionVariables.set('order_id', jsonOrderCreationResult.orderId)",
+									"});",
+									"",
+									"pm.test(\"Check for Currency\", function () {",
+									"    pm.expect(jsonOrderCreationResult.order.price.currency).to.be.a('string');",
+									"    pm.expect(jsonOrderCreationResult.order.price.currency.length).to.eq(3);",
+									"    pm.collectionVariables.set('currency', jsonOrderCreationResult.order.price.currency);",
+									"});",
+									"",
+									"pm.test(\"Check for price amount\", function () {",
+									"    pm.collectionVariables.set('amount', jsonOrderCreationResult.order.price.public);",
+									"});",
 									"",
 									"// Stop execution if there is an error",
-									"if(pm.response.status !== \"OK\") {",
+									"if (pm.response.status !== \"OK\") {",
 									"    postman.setNextRequest(null);",
 									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "917c38a6-1abf-4751-a554-c08bb1cec0ad",
+								"exec": [
+									"pm.collectionVariables.set('passengerKey', Object.keys(JSON.parse(pm.variables.get('passengers')))[0]);",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -821,20 +2071,2445 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"orderItems\": {{order_items}},\n  \"passengerReferences\": [\"PAX1\"],\n  \"guaranteeId\": \"{{guarantee_id}}\"\n}"
+							"raw": "{\n  \"offerId\": \"{{offer_id}}\",\n  \"guaranteeId\": \"{{guarantee_id}}\",\n  \"passengers\": {\n    \"{{passengerKey}}\": {\n      \"type\": \"ADT\",\n      \"civility\": \"MR\",\n       \"gender\": \"Male\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Bob\"\n      ],\n      \"birthdate\": \"1980-03-21T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    }\n  }\n}"
 						},
 						"url": {
-							"raw": "{{GLIDER_URL}}/orders/{{order_id}}/fulfill",
+							"raw": "{{GLIDER_URL}}/orders/createWithOffer",
 							"host": [
 								"{{GLIDER_URL}}"
 							],
 							"path": [
 								"orders",
-								"{{order_id}}",
-								"fulfill"
+								"createWithOffer"
 							]
 						},
-						"description": "Fulfill the order"
+						"description": "Create an order from a received offer"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Guarantee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "26f6782f-3a91-439a-8421-164bab97eb96",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "57848594-e3e5-4e3f-acf3-eb62f24ca22c",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"var jsonGuaranteeCreationResult = pm.response.json();",
+									"",
+									"pm.test(\"Get Guarantee ID\", function () {",
+									"    pm.collectionVariables.set('guarantee_id',jsonGuaranteeCreationResult.guaranteeId);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/guarantees/{{guarantee_id}}",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"guarantees",
+								"{{guarantee_id}}"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Balance",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "27f30992-2547-4a7e-9a8d-5372fa6a7855",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "284867e1-ff7b-4938-9617-7ac3767ce27f",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"var balanceJson = pm.response.json();",
+									"let currency = pm.variables.get(\"currency\");",
+									"let balance;",
+									"if(currency in balanceJson) {",
+									"    balance = balanceJson[currency];",
+									"} else {",
+									"    balance = {",
+									"        \"available\": \"0.00\",",
+									"        \"reserved\": \"0.00\",",
+									"        \"total\": \"0.00\"",
+									"    };",
+									"}",
+									"let previousBalance = pm.variables.get(\"balance\");",
+									"",
+									"// We do the exact comparison because we have made a deposit in between",
+									"pm.expect(Number(balance.total).toFixed(2)).to.eq(Number(previousBalance.total).toFixed(2));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				}
+			],
+			"description": "Tests for Flights",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "F03.Flight Booking instant 1ADT 1INF OneWay",
+			"item": [
+				{
+					"name": "Glider: Search Flight Offers",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e7ee68fa-c4e8-4b86-a3d4-7e3af2b5cbe1",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"travel_date\", oneMonthFromNow.toISOString());",
+									"pm.collectionVariables.set(\"origin\", \"LHR\");",
+									"pm.collectionVariables.set(\"destination\", \"YUL\");",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "8ce11259-28e6-4fbd-98c1-846b4ad129ce",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"var jsonSearchResults = pm.response.json();",
+									"var offerIds = Object.keys(jsonSearchResults.offers);",
+									"var combinations = Object.keys(jsonSearchResults.itineraries.combinations);",
+									"var segments = Object.keys(jsonSearchResults.itineraries.segments);",
+									"var pricePlans = Object.keys(jsonSearchResults.pricePlans);",
+									"var passengers = Object.keys(jsonSearchResults.passengers);",
+									"",
+									"",
+									"pm.test(\"Check for offers presence\", function () {",
+									"    // Check the offers",
+									"    pm.expect(offerIds.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Combinations presence\", function () {",
+									"    pm.expect(combinations.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Segments presence\", function () {",
+									"    pm.expect(segments.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Segments\", function () {",
+									"    pm.expect(segments.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Price Plans presence\", function () {",
+									"    pm.expect(pricePlans.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Passengers presence\", function () {",
+									"    pm.expect(passengers.length).to.be.eq(1);",
+									"});",
+									"",
+									"pm.test(\"Check each offer\", function () {",
+									"    // Check the offers",
+									"    offerIds.forEach(offerId => {",
+									"        let offer = jsonSearchResults.offers[offerId];",
+									"        let offerFlights = [];",
+									"",
+									"        // Check price consistency",
+									"        let offerPrice = offer.price;",
+									"        pm.expect(offerPrice).to.have.property('currency');",
+									"        pm.expect(offerPrice).to.have.property('public');",
+									"        pm.expect(offerPrice).to.have.property('taxes');",
+									"        pm.expect(Number(offerPrice.public)).to.be.above(Number(offerPrice.taxes));",
+									"",
+									"",
+									"        // Check the price plans",
+									"        let offerPricePlans = Object.keys(offer.pricePlansReferences);",
+									"        pm.expect(offerPricePlans.length).to.be.above(0);",
+									"",
+									"        offerPricePlans.forEach(offerPricePlanKey => {",
+									"            // Check the price plan is in the list",
+									"            pm.expect(pricePlans).to.include(offerPricePlanKey);",
+									"",
+									"            // Check the price plan include a flight list",
+									"            pm.expect(offer.pricePlansReferences[offerPricePlanKey]).to.have.property('flights');",
+									"            let pricePlanFlights = offer.pricePlansReferences[offerPricePlanKey].flights;",
+									"            pm.expect(pricePlanFlights.length).to.be.above(0);",
+									"            offerFlights.concat(pricePlanFlights);",
+									"        });",
+									"",
+									"        // Check the flights",
+									"        offerFlights.forEach(flightKey => {",
+									"            pm.expect(combinations).to.include(flightKey);",
+									"        });",
+									"",
+									"        // Offer expiration should be at least 20 min",
+									"        pm.expect(new Date(offer.expiration) - new Date()).to.be.above(20 * 60 * 1000, `Offer ${offerId} expires in less than 20 min`);",
+									"",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"Check each flight (as one way)\", function () {",
+									"    combinations.forEach(combinationKey => {",
+									"        let combinationSegments = jsonSearchResults.itineraries.combinations[combinationKey];",
+									"",
+									"        // Check the combination includes at least one segment",
+									"        pm.expect(combinationSegments.length).to.be.above(0);",
+									"",
+									"        // Check all segments are defined in the segments section",
+									"        combinationSegments.forEach(segmentKey => {",
+									"            pm.expect(segments).to.include(segmentKey);",
+									"        });",
+									"",
+									"        // Check the reply matches the origin & destination requested",
+									"        let firstSegment = jsonSearchResults.itineraries.segments[combinationSegments[0]];",
+									"        let lastSegment = jsonSearchResults.itineraries.segments[combinationSegments[combinationSegments.length - 1]];",
+									"        pm.expect(firstSegment.origin.iataCode).to.be.eq(pm.variables.get('origin'));",
+									"        pm.expect(lastSegment.destination.iataCode).to.be.eq(pm.variables.get('destination'));",
+									"",
+									"        // Check for consistent itinerary",
+									"        if (combinationSegments.length > 1) {",
+									"            let previousSegment = firstSegment;",
+									"            for (let segmentIndex = 1; segmentIndex < combinationSegments.length; segmentIndex++) {",
+									"",
+									"                // Get current Segment",
+									"                let segmentKey = combinationSegments[segmentIndex];",
+									"                let segment = jsonSearchResults.itineraries.segments[segmentKey];",
+									"",
+									"                // Check that the segment starts where the previous one stopped",
+									"                pm.expect(segment.origin.iataCode).to.be.eq(previousSegment.destination.iataCode, `Segments are not continous for flight ${combinationKey}`);",
+									"",
+									"                // Check the connexion time does not overlap",
+									"                pm.expect(new Date(segment.departureTime) - new Date(previousSegment.arrivalTime)).to.be.above(15 * 60 * 1000, `${combinationKey} connexion time is too short`);",
+									"",
+									"                // Prepare for next iteration",
+									"                previousSegment = segment;",
+									"            }",
+									"        }",
+									"",
+									"",
+									"    });",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"// Select an offer",
+									"pm.collectionVariables.set('offer_id', offerIds[0]);",
+									"pm.collectionVariables.set('offer_items', JSON.stringify(jsonSearchResults.offers[offerIds[0]].offerItems));",
+									"pm.collectionVariables.set('currency', jsonSearchResults.offers[offerIds[0]].price.currency);",
+									"pm.collectionVariables.set('amount', jsonSearchResults.offers[offerIds[0]].price.public);",
+									"pm.collectionVariables.set('max_amount', Number( Number(pm.variables.get('amount')*1.001)));",
+									"pm.collectionVariables.set('passengers', JSON.stringify(jsonSearchResults.passengers));",
+									"",
+									"//console.log(pm.collectionVariables.get('offer_id'));",
+									"//console.log(pm.collectionVariables.get('offer_items'));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"itinerary\": {\n    \"segments\": [\n      {\n        \"origin\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"{{origin}}\"\n        },\n        \"destination\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"{{destination}}\"\n        },\n        \"departureTime\": \"{{travel_date}}\"\n      }\n    ]\n  },\n  \"passengers\": [\n    {\n      \"type\": \"ADT\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/offers/search",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"offers",
+								"search"
+							]
+						},
+						"description": "Search for offers"
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Get Seat Map",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e9eb1f1b-9b83-4f3a-abc7-553ee8ee2863",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"const jsonSeatMap = pm.response.json();",
+									"const segments = Object.keys(jsonSeatMap);",
+									"let selectedSeat;",
+									"",
+									"pm.test(\"Check for segments\", function () {",
+									"    pm.expect(segments.length).to.be.above(0);",
+									"});",
+									"",
+									"// Check Segments",
+									"segments.forEach(segmentId => {",
+									"    // Check prices",
+									"    const prices = jsonSeatMap[segmentId].prices;",
+									"    const optionCodes = Object.keys(prices);",
+									"",
+									"    pm.test(\"Check for prices\", function () {",
+									"        pm.expect(optionCodes.length).to.be.above(0);",
+									"        optionCodes.forEach(optionCode => {",
+									"            const optionPrice = prices[optionCode];",
+									"            pm.expect(optionPrice).to.have.all.keys('currency', 'public', 'taxes');",
+									"            pm.expect(optionPrice.currency).to.be.a('string');",
+									"        });",
+									"    });",
+									"",
+									"    // Check Cabins",
+									"    const cabins = jsonSeatMap[segmentId].cabins;",
+									"",
+									"    pm.test(\"Check for cabins\", function () {",
+									"        pm.expect(cabins.length).to.be.above(0);",
+									"    });",
+									"",
+									"    cabins.forEach(cabin => {",
+									"        // Check Cabin",
+									"        pm.test(`Check for cabin ${cabin.name}`, function () {",
+									"            pm.expect(cabin).to.have.all.keys(",
+									"                'name',",
+									"                'layout',",
+									"                'firstRow',",
+									"                'lastRow',",
+									"                'wingFirst',",
+									"                'wingLast',",
+									"                'exitRows',",
+									"                'seats',",
+									"            );",
+									"        });",
+									"",
+									"",
+									"        pm.test(`Check for seats in cabin ${cabin.name}`, function () {",
+									"            const seats = cabin.seats;",
+									"            seats.forEach(seat => {",
+									"                // Check mandatory keys",
+									"                pm.expect(seat).to.include.all.keys(",
+									"                    'number',",
+									"                    'available',",
+									"                );",
+									"",
+									"                // Check for seat price if available",
+									"                if (seat.available) {",
+									"                    pm.expect(seat).to.include.all.keys(",
+									"                        'optionCode',",
+									"                        'characteristics', // Is optional for non-available seats",
+									"                    );",
+									"",
+									"                    pm.expect(optionCodes).to.include(seat.optionCode);",
+									"",
+									"                    if (!selectedSeat) {",
+									"                        selectedSeat = {",
+									"                            ...seat,",
+									"                            price: prices[seat.optionCode],",
+									"                            segment: segmentId,",
+									"                        };",
+									"                    }",
+									"                }",
+									"",
+									"            });",
+									"        });",
+									"    });",
+									"",
+									"});",
+									"",
+									"if (selectedSeat) {",
+									"    pm.collectionVariables.set('seats', JSON.stringify([selectedSeat]));",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{GLIDER_URL}}/offers/{{offer_id}}/seatmap",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"offers",
+								"{{offer_id}}",
+								"seatmap"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Add offer options",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d5c26dfe-b305-466c-82f7-0df9f030527c",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"var pricingResults = pm.response.json();",
+									"let offerPrice = pricingResults.offer.price.public;",
+									"",
+									"//",
+									"pm.test(\"Check for price change\", function () {",
+									"    pm.expect(Number(pricingResults.offer.price.public)).to.be.below(Number(pm.variables.get('max_amount')));",
+									"});",
+									"",
+									"pm.collectionVariables.set('amount', pricingResults.offer.price.public);",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "65969867-689d-4b71-bab4-5ffa62408f6d",
+								"exec": [
+									"console.log('PRICE: passengers >>>>', pm.variables.get('passengers'));",
+									"console.log('PRICE: seats >>>>', pm.variables.get('seats'));",
+									"",
+									"const passengers = JSON.parse(pm.variables.get('passengers'));",
+									"",
+									"pm.collectionVariables.set(\"selectedOptions\", JSON.stringify(",
+									"    (JSON.parse(pm.variables.get('seats') || \"[]\")).map(seat => {",
+									"        return {",
+									"            code: seat.optionCode,",
+									"            seatNumber: seat.number,",
+									"            segment: seat.segment,",
+									"            passenger: Object.keys(passengers)[0]",
+									"        }",
+									"    })",
+									"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{selectedOptions}}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/offers/{{offer_id}}/price",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"offers",
+								"{{offer_id}}",
+								"price"
+							]
+						},
+						"description": "Search for offers"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Balance",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d3311d58-36b7-4df9-927b-945059895dbf",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "1be559b6-1955-450b-8e5e-dd09a5b9e676",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"var balanceJson = pm.response.json();",
+									"let currency = pm.variables.get(\"currency\");",
+									"let balance;",
+									"if(currency in balanceJson) {",
+									"    balance = balanceJson[currency];",
+									"} else {",
+									"    balance = {",
+									"        \"available\": \"0.00\",",
+									"        \"reserved\": \"0\",",
+									"        \"total\": \"0.00\"",
+									"    };",
+									"}",
+									"pm.collectionVariables.set(\"balance\", balance);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Make Deposit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "502ee064-80cc-459a-86b4-35911c82808c",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currency\": \"{{currency}}\",\n  \"amount\": \"{{amount}}\"\n}"
+						},
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/simulateDeposit",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"simulateDeposit"
+							]
+						},
+						"description": "Create a deposit"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Create Guarantee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "7fdbb76b-19e7-4e6a-87be-c4dcb0de5817",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5ded95b8-36ee-48fd-8308-66bd0efce183",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"var jsonGuaranteeCreationResult = pm.response.json();",
+									"",
+									"pm.test(\"Get Guarantee ID\", function () {",
+									"    pm.collectionVariables.set('guarantee_id',jsonGuaranteeCreationResult.guaranteeId);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currency\": \"{{currency}}\",\n  \"amount\": \"{{amount}}\",\n  \"creditorOrgId\": \"0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0\",\n  \"expiration\": \"{{guarantee_expiration}}\"\n}"
+						},
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/guarantees",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"guarantees"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Balance",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "09d3f2f3-7398-4239-a664-f6feb4b9ecbb",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "f35b08d5-cff8-448b-8ad7-8649adefe402",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"var balanceJson = pm.response.json();",
+									"let currency = pm.variables.get(\"currency\");",
+									"let balance;",
+									"if (currency in balanceJson) {",
+									"    balance = balanceJson[currency];",
+									"} else {",
+									"    balance = {",
+									"        \"available\": \"0.00\",",
+									"        \"reserved\": \"0.00\",",
+									"        \"total\": \"0.00\"",
+									"    };",
+									"}",
+									"let previousBalance = pm.variables.get(\"balance\");",
+									"",
+									"// Check deposit has been made",
+									"pm.test(\"Check for balance update\", function () {",
+									"    pm.expect(Number(balance.total).toFixed(2)).to.eq(",
+									"        Number(",
+									"            Number(previousBalance.total) +",
+									"            Number(pm.variables.get(\"amount\"))",
+									"        ).toFixed(2)",
+									"    );",
+									"    pm.expect(Number(balance.reserved).toFixed(2)).to.eq(",
+									"        Number(",
+									"            Number(previousBalance.reserved) +",
+									"            Number(pm.variables.get(\"amount\"))",
+									"        ).toFixed(2)",
+									"    );",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Create Order from offer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c314c00f-15a1-4ddd-b7fd-efb0bd1da596",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"var jsonOrderCreationResult = pm.response.json();",
+									"",
+									"",
+									"pm.test(\"Check for orderId\", function () {",
+									"    pm.expect(jsonOrderCreationResult.orderId).to.be.a('string');",
+									"    pm.collectionVariables.set('order_id', jsonOrderCreationResult.orderId)",
+									"});",
+									"",
+									"pm.test(\"Check for Currency\", function () {",
+									"    pm.expect(jsonOrderCreationResult.order.price.currency).to.be.a('string');",
+									"    pm.expect(jsonOrderCreationResult.order.price.currency.length).to.eq(3);",
+									"    pm.collectionVariables.set('currency', jsonOrderCreationResult.order.price.currency);",
+									"});",
+									"",
+									"pm.test(\"Check for price amount\", function () {",
+									"    pm.collectionVariables.set('amount', jsonOrderCreationResult.order.price.public);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "9d1a5e1a-3754-49ee-a6f3-ae224224d3a7",
+								"exec": [
+									"pm.collectionVariables.set('passengerKey', Object.keys(JSON.parse(pm.variables.get('passengers')))[0]);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"offerId\": \"{{offer_id}}\",\n  \"guaranteeId\": \"{{guarantee_id}}\",\n  \"passengers\": {\n    \"{{passengerKey}}\": {\n      \"type\": \"ADT\",\n      \"civility\": \"MR\",\n       \"gender\": \"Male\",\n      \"lastnames\": [\n        \"Marley\"\n      ],\n      \"firstnames\": [\n        \"Bob\"\n      ],\n      \"birthdate\": \"1980-03-21T00:00:00Z\",\n      \"contactInformation\": [\n        \"+32123456789\",\n        \"contact@org.co.uk\"\n      ]\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/orders/createWithOffer",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"orders",
+								"createWithOffer"
+							]
+						},
+						"description": "Create an order from a received offer"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Guarantee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6bad6a5b-50fd-40f3-a16c-692ca2e9821f",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "1df2a2a7-f860-4c6d-ba16-645655035d5b",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"var jsonGuaranteeCreationResult = pm.response.json();",
+									"",
+									"pm.test(\"Get Guarantee ID\", function () {",
+									"    pm.collectionVariables.set('guarantee_id',jsonGuaranteeCreationResult.guaranteeId);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/guarantees/{{guarantee_id}}",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"guarantees",
+								"{{guarantee_id}}"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Balance",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e8c54b8c-fde2-413a-8bb3-0d38e865e527",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "26a85707-0b16-421e-b5ae-3260d5cc712f",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"var balanceJson = pm.response.json();",
+									"let currency = pm.variables.get(\"currency\");",
+									"let balance;",
+									"if(currency in balanceJson) {",
+									"    balance = balanceJson[currency];",
+									"} else {",
+									"    balance = {",
+									"        \"available\": \"0.00\",",
+									"        \"reserved\": \"0.00\",",
+									"        \"total\": \"0.00\"",
+									"    };",
+									"}",
+									"let previousBalance = pm.variables.get(\"balance\");",
+									"",
+									"// We do the exact comparison because we have made a deposit in between",
+									"pm.expect(Number(balance.total).toFixed(2)).to.eq(Number(previousBalance.total).toFixed(2));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				}
+			],
+			"description": "Tests for Flights",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "F04.Flight Booking instant 2ADT 1CHD Return",
+			"item": [
+				{
+					"name": "Glider: Search Flight Offers",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "fd80db78-dabe-4f13-8d85-9be3b1a2afa9",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"var twoMonthFromNow = new Date((+new Date()) + 2 * 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"travel_date\", oneMonthFromNow.toISOString());",
+									"pm.collectionVariables.set(\"return_date\", twoMonthFromNow.toISOString());",
+									"pm.collectionVariables.set(\"origin\", \"LHR\");",
+									"pm.collectionVariables.set(\"destination\", \"YVR\");",
+									"",
+									"const passengers =",
+									"  [",
+									"    {",
+									"      \"type\": \"ADT\",",
+									"      \"civility\": \"MR\",",
+									"      \"gender\": \"Male\",",
+									"      \"lastnames\": [",
+									"        \"Marley\"",
+									"      ],",
+									"      \"firstnames\": [",
+									"        \"Bob\"",
+									"      ],",
+									"      \"birthdate\": \"1980-03-21T00:00:00Z\",",
+									"      \"contactInformation\": [",
+									"        \"+32123456789\",",
+									"        \"contact@org.co.uk\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"ADT\",",
+									"      \"civility\": \"MR\",",
+									"      \"gender\": \"Male\",",
+									"      \"lastnames\": [",
+									"        \"Marleyyy\"",
+									"      ],",
+									"      \"firstnames\": [",
+									"        \"Bobby\"",
+									"      ],",
+									"      \"birthdate\": \"1980-03-21T00:00:00Z\",",
+									"      \"contactInformation\": [",
+									"        \"+32123456789\",",
+									"        \"contact@org.co.uk\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"CHD\",",
+									"      \"civility\": \"MR\",",
+									"      \"gender\": \"Male\",",
+									"      \"lastnames\": [",
+									"        \"Marleyyy\"",
+									"      ],",
+									"      \"firstnames\": [",
+									"        \"Child\"",
+									"      ],",
+									"      \"birthdate\": \"2015-03-21\",",
+									"      \"contactInformation\": [",
+									"        \"+32123456789\",",
+									"        \"contact@org.co.uk\"",
+									"      ]",
+									"    }",
+									"  ];",
+									"pm.collectionVariables.set(\"passengers\", JSON.stringify(passengers));",
+									"",
+									"",
+									"const passengersTypes = passengers.reduce((acc, passenger) => {",
+									"  const ptc = passenger.type;",
+									"  if (ptc in acc) {",
+									"    acc[ptc].count++;",
+									"  } else {",
+									"    acc[ptc] = {",
+									"      type: ptc,",
+									"      count: 1",
+									"    }",
+									"  }",
+									"  return acc;",
+									"}, {});",
+									"pm.collectionVariables.set(\"passengersTypes\", JSON.stringify(Object.values(passengersTypes)));",
+									"pm.variables.set('seats', \"[]\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "b91f389a-ec07-43d6-a52a-c9791d8cfd4f",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"var jsonSearchResults = pm.response.json();",
+									"var offerIds = Object.keys(jsonSearchResults.offers);",
+									"var combinations = Object.keys(jsonSearchResults.itineraries.combinations);",
+									"var segments = Object.keys(jsonSearchResults.itineraries.segments);",
+									"var pricePlans = Object.keys(jsonSearchResults.pricePlans);",
+									"var passengers = Object.keys(jsonSearchResults.passengers);",
+									"",
+									"",
+									"pm.test(\"Check for offers presence\", function () {",
+									"    // Check the offers",
+									"    pm.expect(offerIds.length).to.be.above(0);",
+									"",
+									"});",
+									"",
+									"pm.test(\"Check for Combinations presence\", function () {",
+									"    pm.expect(combinations.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Segments presence\", function () {",
+									"    pm.expect(segments.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Segments\", function () {",
+									"    pm.expect(segments.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Price Plans presence\", function () {",
+									"    pm.expect(pricePlans.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Check for Passengers presence\", function () {",
+									"    const definedPassengers = JSON.parse(pm.variables.get(\"passengers\"));",
+									"    console.log('definedPassengers >>>', definedPassengers);",
+									"",
+									"    //Apply defined passengers to the provided keys",
+									"    let indexedPassengers = definedPassengers.reduce((acc, pax) => {",
+									"        // Search a key with correct passenger type",
+									"        for (let paxIndex = 0; paxIndex < passengers.length; paxIndex++) {",
+									"            let key = passengers[paxIndex];",
+									"            if (jsonSearchResults.passengers[key].type == pax.type) {",
+									"                // Only add if the key is not used yet",
+									"                if (!(key in acc)) {",
+									"                    acc[key] = pax;",
+									"                    return acc;",
+									"                }",
+									"            }",
+									"        }",
+									"    }, {});",
+									"",
+									"    pm.collectionVariables.set(\"indexedPassengers\", JSON.stringify(indexedPassengers));",
+									"    //console.log(indexedPassengers);",
+									"});",
+									"",
+									"",
+									"// Check the offers",
+									"offerIds.forEach(offerId => {",
+									"    let offer = jsonSearchResults.offers[offerId];",
+									"    let offerFlights = [];",
+									"",
+									"    // Check price consistency",
+									"    pm.test(`Offer #${offerId}: Check Price`, function () {",
+									"        let offerPrice = offer.price;",
+									"        pm.expect(offerPrice).to.have.property('currency');",
+									"        pm.expect(offerPrice).to.have.property('public');",
+									"        pm.expect(offerPrice).to.have.property('taxes');",
+									"        pm.expect(Number(offerPrice.public)).to.be.above(Number(offerPrice.taxes));",
+									"    });",
+									"",
+									"",
+									"    // Check the price plans",
+									"    pm.test(`Offer #${offerId}: Check Price Plans`, function () {",
+									"        let offerPricePlans = Object.keys(offer.pricePlansReferences);",
+									"        pm.expect(offerPricePlans.length).to.be.above(0);",
+									"",
+									"        offerPricePlans.forEach(offerPricePlanKey => {",
+									"            // Check the price plan is in the list",
+									"            pm.expect(pricePlans).to.include(offerPricePlanKey);",
+									"",
+									"            // Check the price plan include a flight list",
+									"            pm.expect(offer.pricePlansReferences[offerPricePlanKey]).to.have.property('flights');",
+									"            let pricePlanFlights = offer.pricePlansReferences[offerPricePlanKey].flights;",
+									"            pm.expect(pricePlanFlights.length).to.be.above(0);",
+									"            offerFlights.concat(pricePlanFlights);",
+									"        });",
+									"    });",
+									"",
+									"    // Check the flights",
+									"    pm.test(`Offer #${offerId}: Check Flight Presence`, function () {",
+									"        offerFlights.forEach(flightKey => {",
+									"            pm.expect(combinations).to.include(flightKey);",
+									"        });",
+									"    });",
+									"",
+									"    // Offer expiration should be at least 20 min",
+									"    pm.test(`Offer #${offerId}: Check Flight Presence`, function () {",
+									"        pm.expect(new Date(offer.expiration) - new Date()).to.be.above(20 * 60 * 1000, `Offer ${offerId} expires in less than 20 min`);",
+									"    });",
+									"",
+									"});",
+									"",
+									"",
+									"// Chech Combinations",
+									"let nbOutbound = 0;",
+									"let nbInbound = 0;",
+									"combinations.forEach(combinationKey => {",
+									"    let combinationSegments = jsonSearchResults.itineraries.combinations[combinationKey];",
+									"",
+									"    pm.test(`Flight #${combinationKey}: Check combinations`, function () {",
+									"",
+									"        // Check the combination includes at least one segment",
+									"        pm.expect(combinationSegments.length).to.be.above(0);",
+									"",
+									"        // Check all segments are defined in the segments section",
+									"        combinationSegments.forEach(segmentKey => {",
+									"            pm.expect(segments).to.include(segmentKey);",
+									"        });",
+									"    });",
+									"",
+									"    // Check the reply matches the origin & destination requested",
+									"    pm.test(`Flight #${combinationKey}: Check Segment continuity`, function () {",
+									"        let firstSegment = jsonSearchResults.itineraries.segments[combinationSegments[0]];",
+									"        let lastSegment = jsonSearchResults.itineraries.segments[combinationSegments[combinationSegments.length - 1]];",
+									"        let journeyOrigin = pm.variables.get('origin');",
+									"        let journeyDestination = pm.variables.get('destination');",
+									"        let isReturn;",
+									"",
+									"        // Check if we have a inbound or outbound",
+									"        pm.expect(firstSegment.origin.iataCode).to.be.oneOf([journeyOrigin, journeyDestination]);",
+									"        if (firstSegment.origin.iataCode == journeyOrigin) {",
+									"            pm.expect(lastSegment.destination.iataCode).to.be.eq(journeyDestination);",
+									"            isReturn = false;",
+									"            nbOutbound++;",
+									"        } else if (firstSegment.origin.iataCode == journeyDestination) {",
+									"            pm.expect(lastSegment.destination.iataCode).to.be.eq(journeyOrigin);",
+									"            isReturn = true;",
+									"            nbInbound++;",
+									"        }",
+									"",
+									"        // Check for consistent itinerary",
+									"        if (combinationSegments.length > 1) {",
+									"            let previousSegment = firstSegment;",
+									"            for (let segmentIndex = 1; segmentIndex < combinationSegments.length; segmentIndex++) {",
+									"",
+									"                // Get current Segment",
+									"                let segmentKey = combinationSegments[segmentIndex];",
+									"                let segment = jsonSearchResults.itineraries.segments[segmentKey];",
+									"",
+									"                // Check that the segment starts where the previous one stopped",
+									"                pm.expect(segment.origin.iataCode).to.be.eq(previousSegment.destination.iataCode, `Segments are not continous for flight ${combinationKey}`);",
+									"",
+									"                // Check the connexion time does not overlap",
+									"                // pm.expect(new Date(segment.departureTime) - new Date(previousSegment.arrivalTime)).to.be.above(15 * 60 * 1000, `${combinationKey} connexion time is too short`);",
+									"",
+									"                // Prepare for next iteration",
+									"                previousSegment = segment;",
+									"            }",
+									"        }",
+									"    });",
+									"",
+									"});",
+									"",
+									"pm.test(`Check we have both inbound and outbound flights`, function () {",
+									"    pm.expect(nbOutbound).to.be.above(0);",
+									"    pm.expect(nbInbound).to.be.above(0);",
+									"});",
+									"",
+									"// Select an offer for the outbound and one for the inbound",
+									"let inboundSelected = false;",
+									"let outboundSelected = false;",
+									"for (let offerId of offerIds) {",
+									"    // Get the flights",
+									"    let offer = jsonSearchResults.offers[offerId];",
+									"    let pricePlanKeys = Object.keys(offer.pricePlansReferences);",
+									"    let flights = [];",
+									"    for (let pricePlanKey of pricePlanKeys) {",
+									"        flights = flights.concat(offer.pricePlansReferences[pricePlanKey].flights);",
+									"    }",
+									"",
+									"    // If there is more than one flight, it is a return offer ",
+									"    // We are not interested in this offer for this test case",
+									"    if (flights.length > 1) continue;",
+									"",
+									"    // Get the segments",
+									"    let flightCombinationKey = flights[0];",
+									"    let segmentKeys = jsonSearchResults.itineraries.combinations[flightCombinationKey];",
+									"",
+									"    let segments = [];",
+									"    for (let segmentKey of segmentKeys) {",
+									"        segments.push(jsonSearchResults.itineraries.segments[segmentKey]);",
+									"    }",
+									"",
+									"    // If the flight is an outbound, select it if not yet done",
+									"    if ((segments[0].origin.iataCode == pm.variables.get('origin')) && !outboundSelected) {",
+									"        pm.collectionVariables.set('offer_id_outbound', offerId);",
+									"        pm.collectionVariables.set('offer_items_outbound', JSON.stringify(jsonSearchResults.offers[offerId].offerItems));",
+									"        pm.collectionVariables.set('currency', jsonSearchResults.offers[offerId].price.currency);",
+									"        pm.collectionVariables.set('amount_outbound', jsonSearchResults.offers[offerId].price.public);",
+									"        outboundSelected = true;",
+									"    }",
+									"",
+									"    // If the flight is an outbound, select it if not yet done",
+									"    if ((segments[0].origin.iataCode == pm.variables.get('destination')) && !inboundSelected) {",
+									"        pm.collectionVariables.set('offer_id_inbound', offerId);",
+									"        pm.collectionVariables.set('offer_items_inbound', JSON.stringify(jsonSearchResults.offers[offerId].offerItems));",
+									"        //pm.collectionVariables.set('currency_inbound',jsonSearchResults.offers[offerId].price.currency);",
+									"        pm.collectionVariables.set('amount_inbound', jsonSearchResults.offers[offerId].price.public);",
+									"        inboundSelected = true;",
+									"    }",
+									"",
+									"    // Stop execution if we found both",
+									"    if (outboundSelected && inboundSelected) break;",
+									"",
+									"}",
+									"",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"pm.collectionVariables.set('amount', Number(",
+									"    Number(pm.variables.get('amount_inbound'))",
+									"    + Number(pm.variables.get('amount_outbound'))",
+									").toFixed(2));",
+									"pm.collectionVariables.set('max_amount', Number(",
+									"    Number(pm.variables.get('amount')*1.001)",
+									").toFixed(2));",
+									"console.log(pm.collectionVariables.get('offer_id_inbound'));",
+									"console.log(pm.collectionVariables.get('offer_id_outbound'));",
+									"",
+									"// Merge the offer items",
+									"/*",
+									"let offerItems = {",
+									"    ...JSON.parse(pm.collectionVariables.get('offer_items_outbound')),",
+									"    ...JSON.parse(pm.collectionVariables.get('offer_items_inbound')),",
+									"}",
+									"pm.variables.set('offer_items', JSON.stringify(offerItems)); */"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"itinerary\": {\n    \"segments\": [\n      {\n        \"origin\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"{{origin}}\"\n        },\n        \"destination\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"{{destination}}\"\n        },\n        \"departureTime\": \"{{travel_date}}\"\n      },\n      {\n        \"origin\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"{{destination}}\"\n        },\n        \"destination\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"{{origin}}\"\n        },\n        \"departureTime\": \"{{return_date}}\"\n      }\n    ]\n  },\n  \"passengers\": {{passengersTypes}}\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/offers/search",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"offers",
+								"search"
+							]
+						},
+						"description": "Search for offers"
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Get Seat Map",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "67bfdfcb-74f8-40c1-92c0-17ee4f583d66",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"const jsonSeatMap = pm.response.json();",
+									"const segments = Object.keys(jsonSeatMap);",
+									"let selectedSeat;",
+									"",
+									"pm.test(\"Check for segments\", function () {",
+									"    pm.expect(segments.length).to.be.above(0);",
+									"});",
+									"",
+									"// Check Segments",
+									"segments.forEach(segmentId => {",
+									"    // Check prices",
+									"    const prices = jsonSeatMap[segmentId].prices;",
+									"    const optionCodes = Object.keys(prices);",
+									"",
+									"    pm.test(\"Check for prices\", function () {",
+									"        pm.expect(optionCodes.length).to.be.above(0);",
+									"        optionCodes.forEach(optionCode => {",
+									"            const optionPrice = prices[optionCode];",
+									"            pm.expect(optionPrice).to.have.all.keys('currency', 'public', 'taxes');",
+									"            pm.expect(optionPrice.currency).to.be.a('string');",
+									"        });",
+									"    });",
+									"",
+									"    // Check Cabins",
+									"    const cabins = jsonSeatMap[segmentId].cabins;",
+									"",
+									"    pm.test(\"Check for cabins\", function () {",
+									"        pm.expect(cabins.length).to.be.above(0);",
+									"    });",
+									"",
+									"    cabins.forEach(cabin => {",
+									"        // Check Cabin",
+									"        pm.test(`Check for cabin ${cabin.name}`, function () {",
+									"            pm.expect(cabin).to.have.all.keys(",
+									"                'name',",
+									"                'layout',",
+									"                'firstRow',",
+									"                'lastRow',",
+									"                'wingFirst',",
+									"                'wingLast',",
+									"                'exitRows',",
+									"                'seats',",
+									"            );",
+									"        });",
+									"",
+									"",
+									"        pm.test(`Check for seats in cabin ${cabin.name}`, function () {",
+									"            const seats = cabin.seats;",
+									"            seats.forEach(seat => {",
+									"                // Check mandatory keys",
+									"                pm.expect(seat).to.include.all.keys(",
+									"                    'number',",
+									"                    'available',",
+									"                );",
+									"",
+									"                // Check for seat price if available",
+									"                if (seat.available) {",
+									"                    pm.expect(seat).to.include.all.keys(",
+									"                        'optionCode',",
+									"                        'characteristics', // Is optional for non-available seats",
+									"                    );",
+									"",
+									"                    pm.expect(optionCodes).to.include(seat.optionCode);",
+									"",
+									"                    if (!selectedSeat) {",
+									"                        selectedSeat = {",
+									"                            ...seat,",
+									"                            price: prices[seat.optionCode],",
+									"                            segment: segmentId,",
+									"                        };",
+									"                        pm.collectionVariables.set('seats', JSON.stringify([selectedSeat]));",
+									"                    }",
+									"                }",
+									"",
+									"            });",
+									"        });",
+									"    });",
+									"",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{GLIDER_URL}}/offers/{{offer_id_outbound}},{{offer_id_inbound}}/seatmap",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"offers",
+								"{{offer_id_outbound}},{{offer_id_inbound}}",
+								"seatmap"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Price offers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4d5afc7a-f166-4c90-8ba3-827906f844d0",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"var pricingResults = pm.response.json();",
+									"let offerPrice = pricingResults.offer.price.public;",
+									"",
+									"//",
+									"pm.test(\"Check for price change\", function () {",
+									"    pm.expect(Number(pricingResults.offer.price.public)).to.be.below(Number(pm.variables.get('max_amount')));",
+									"});",
+									"",
+									"pm.collectionVariables.set('amount', pricingResults.offer.price.public);",
+									"pm.collectionVariables.set('offer_id', pricingResults.offerId);",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "2d0dcb65-70dd-4290-bca7-2e6cd4257b94",
+								"exec": [
+									"console.log('PRICE: indexedPassengers >>>>', pm.variables.get('indexedPassengers'));",
+									"console.log('PRICE: seats >>>>', pm.variables.get('seats'));",
+									"",
+									"",
+									"const passengers = JSON.parse(pm.variables.get('indexedPassengers'));",
+									"pm.collectionVariables.set(\"selectedOptions\", JSON.stringify(",
+									"    JSON.parse(pm.variables.get('seats') || \"[]\").map(seat => {",
+									"        return {",
+									"            code: seat.optionCode,",
+									"            seatNumber: seat.number,",
+									"            segment: seat.segment,",
+									"            passenger: Object.keys(passengers)[1]",
+									"        }",
+									"    })",
+									"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{selectedOptions}}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/offers/{{offer_id_outbound}},{{offer_id_inbound}}/price",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"offers",
+								"{{offer_id_outbound}},{{offer_id_inbound}}",
+								"price"
+							]
+						},
+						"description": "Search for offers"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Balance",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "420bddff-2cdf-4fc9-b810-311198062cba",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "223c1dbe-59e4-497f-81b5-7de571c22d89",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"var balanceJson = pm.response.json();",
+									"let currency = pm.variables.get(\"currency\");",
+									"let balance;",
+									"if(currency in balanceJson) {",
+									"    balance = balanceJson[currency];",
+									"} else {",
+									"    balance = {",
+									"        \"available\": \"0.00\",",
+									"        \"reserved\": \"0\",",
+									"        \"total\": \"0.00\"",
+									"    };",
+									"}",
+									"pm.collectionVariables.set(\"balance\", balance);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Make Deposit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f77d243a-6953-4132-953b-86ec6257aa13",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currency\": \"{{currency}}\",\n  \"amount\": \"{{amount}}\"\n}"
+						},
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/simulateDeposit",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"simulateDeposit"
+							]
+						},
+						"description": "Create a deposit"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Create Guarantee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "968244d1-c760-43ad-b167-f2a7e3bb8115",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "e0c903c5-04e2-4ff2-a809-04aee02b910b",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"var jsonGuaranteeCreationResult = pm.response.json();",
+									"",
+									"pm.test(\"Get Guarantee ID\", function () {",
+									"    pm.collectionVariables.set('guarantee_id',jsonGuaranteeCreationResult.guaranteeId);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currency\": \"{{currency}}\",\n  \"amount\": \"{{amount}}\",\n  \"creditorOrgId\": \"0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0\",\n  \"expiration\": \"{{guarantee_expiration}}\"\n}"
+						},
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/guarantees",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"guarantees"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Balance",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "5bed15a1-361e-4316-bf5b-a34b03a1e14d",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "37bc964b-20c7-4c8c-96b8-005f612939e7",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"var balanceJson = pm.response.json();",
+									"let currency = pm.variables.get(\"currency\");",
+									"let balance;",
+									"if (currency in balanceJson) {",
+									"    balance = balanceJson[currency];",
+									"} else {",
+									"    balance = {",
+									"        \"available\": \"0.00\",",
+									"        \"reserved\": \"0.00\",",
+									"        \"total\": \"0.00\"",
+									"    };",
+									"}",
+									"let previousBalance = pm.variables.get(\"balance\");",
+									"",
+									"// Check deposit has been made",
+									"pm.test(\"Check for balance update\", function () {",
+									"    pm.expect(Number(balance.total).toFixed(2)).to.eq(",
+									"        Number(",
+									"            Number(previousBalance.total) +",
+									"            Number(pm.variables.get(\"amount\"))",
+									"        ).toFixed(2)",
+									"    );",
+									"    pm.expect(Number(balance.reserved).toFixed(2)).to.eq(",
+									"        Number(",
+									"            Number(previousBalance.reserved) +",
+									"            Number(pm.variables.get(\"amount\"))",
+									"        ).toFixed(2)",
+									"    );",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Glider: Create Order from offer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7bef891a-26bc-474c-9553-bf03b0c0cd13",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"var jsonOrderCreationResult = pm.response.json();",
+									"",
+									"",
+									"pm.test(\"Check for orderId\", function () {",
+									"    pm.expect(jsonOrderCreationResult.orderId).to.be.a('string');",
+									"    pm.collectionVariables.set('order_id', jsonOrderCreationResult.orderId)",
+									"});",
+									"",
+									"pm.test(\"Check for Currency\", function () {",
+									"    pm.expect(jsonOrderCreationResult.order.price.currency).to.be.a('string');",
+									"    pm.expect(jsonOrderCreationResult.order.price.currency.length).to.eq(3);",
+									"    pm.collectionVariables.set('currency', jsonOrderCreationResult.order.price.currency);",
+									"});",
+									"",
+									"pm.test(\"Check for price amount\", function () {",
+									"    pm.collectionVariables.set('amount', jsonOrderCreationResult.order.price.public);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if (pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "23b0dc50-f9bc-4c8d-860b-47636824eb0d",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"offerId\": \"{{offer_id}}\",\n  \"guaranteeId\": \"{{guarantee_id}}\",\n  \"passengers\": {{indexedPassengers}}\n}"
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/orders/createWithOffer",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"orders",
+								"createWithOffer"
+							]
+						},
+						"description": "Create an order from a received offer"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Guarantee",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a5e6d049-ab41-4e75-a9bc-6387be7a743b",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "8e9dbecd-cb11-4f3e-9bef-98d54d714fbb",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"var jsonGuaranteeCreationResult = pm.response.json();",
+									"",
+									"pm.test(\"Get Guarantee ID\", function () {",
+									"    pm.collectionVariables.set('guarantee_id',jsonGuaranteeCreationResult.guaranteeId);",
+									"});",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances/guarantees/{{guarantee_id}}",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances",
+								"guarantees",
+								"{{guarantee_id}}"
+							]
+						},
+						"description": "Create a guarantee"
+					},
+					"response": []
+				},
+				{
+					"name": "Simard: Get Balance",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "53dd3ca1-1f05-4c3f-88fb-9c224cb2a4c1",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"guarantee_expiration\", oneMonthFromNow.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "32aa6293-c8b7-48f9-83f9-9029584deb12",
+								"exec": [
+									"pm.test(\"Response is Ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"",
+									"// Stop execution if there is an error",
+									"if(pm.response.status !== \"OK\") {",
+									"    postman.setNextRequest(null);",
+									"}",
+									"",
+									"var balanceJson = pm.response.json();",
+									"let currency = pm.variables.get(\"currency\");",
+									"let balance;",
+									"if(currency in balanceJson) {",
+									"    balance = balanceJson[currency];",
+									"} else {",
+									"    balance = {",
+									"        \"available\": \"0.00\",",
+									"        \"reserved\": \"0.00\",",
+									"        \"total\": \"0.00\"",
+									"    };",
+									"}",
+									"let previousBalance = pm.variables.get(\"balance\");",
+									"",
+									"// We do the exact comparison because we have made a deposit in between",
+									"pm.expect(Number(balance.total).toFixed(2)).to.eq(Number(previousBalance.total).toFixed(2));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SIMARD_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{SIMARD_URL}}/balances",
+							"host": [
+								"{{SIMARD_URL}}"
+							],
+							"path": [
+								"balances"
+							]
+						},
+						"description": "Create a guarantee"
 					},
 					"response": []
 				}
@@ -851,7 +4526,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "c3f38bd1-375b-4c83-83a8-aa31819b5780",
+								"id": "43d0cf68-a18a-43d9-89c7-b0bb009bc72e",
 								"exec": [
 									"// Set the travel Date",
 									"var oneMonthFromNow = new Date((+new Date()) + 259200000); // + 30 days",
@@ -865,7 +4540,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "c0bc13c1-62bd-44a7-bc06-cc6213fcf41c",
+								"id": "e7587d6d-74d2-45a0-8c5a-e527c7919ae1",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -947,7 +4622,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"accommodation\": {\n    \"location\": {\n      \"rectangle\": {\n        \"south\": 55.13,\n        \"west\": 10.59,\n        \"north\": 69.06,\n        \"east\": 24.18\n      }\n    },\n    \"arrival\": \"{{checkin_date}}\",\n    \"departure\": \"{{checkout_date}}\"\n  },\n  \"passengers\": [\n    {\n      \"type\": \"ADT\",\n      \"count\": 1\n    }\n  ]\n}"
+							"raw": "{\n  \"accommodation\": {\n    \"location\": {\n      \"rectangle\": {\n        \"south\": \"55.13\",\n        \"west\": \"10.59\",\n        \"north\": \"69.06\",\n        \"east\": \"24.18\"\n      }\n    },\n    \"arrival\": \"{{checkin_date}}\",\n    \"departure\": \"{{checkout_date}}\"\n  },\n  \"passengers\": [\n    {\n      \"type\": \"ADT\",\n      \"count\": 1\n    }\n  ]\n}"
 						},
 						"url": {
 							"raw": "{{GLIDER_URL}}/searchOffers",
@@ -968,7 +4643,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "5c2a0efd-9bae-43d6-9bc6-96fc7dfbbef5",
+								"id": "38ad5f62-5102-4b33-bd29-c0ddd944e2dc",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1031,7 +4706,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "35a51b1f-a367-4985-b0c1-d9adbd1eef14",
+								"id": "00b76e9e-81d8-4108-8dbb-48b794b72cb7",
 								"exec": [
 									"// Set the travel Date",
 									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
@@ -1043,7 +4718,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "cec52eb3-4363-4938-a6ea-3deb9eb30221",
+								"id": "341d0668-2b25-4cd9-b5a2-eb9b7231f821",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1112,7 +4787,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "be25bfa8-4b1a-4149-a950-1a3f15565e42",
+								"id": "e7eec6fc-0048-4b79-bee5-c54b3044aeef",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1200,7 +4875,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "c3f38bd1-375b-4c83-83a8-aa31819b5780",
+								"id": "cd268b46-515f-4838-952e-1531fe94fdfe",
 								"exec": [
 									"// Set the travel Date",
 									"var oneMonthFromNow = new Date((+new Date()) + 2592000000); // + 30 days",
@@ -1215,7 +4890,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "c0bc13c1-62bd-44a7-bc06-cc6213fcf41c",
+								"id": "a29d855d-57e7-46bc-a948-400f7c871171",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1318,7 +4993,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "5c2a0efd-9bae-43d6-9bc6-96fc7dfbbef5",
+								"id": "587f8bc8-4b83-4065-9805-a8fe24ab91c1",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1381,7 +5056,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "35a51b1f-a367-4985-b0c1-d9adbd1eef14",
+								"id": "2a3a629c-5867-4654-bac2-cf3dc5e15c25",
 								"exec": [
 									"// Set the travel Date",
 									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
@@ -1393,7 +5068,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "cec52eb3-4363-4938-a6ea-3deb9eb30221",
+								"id": "34e425e3-b358-4140-8a49-bbc11aa1bebb",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1462,7 +5137,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "be25bfa8-4b1a-4149-a950-1a3f15565e42",
+								"id": "fc02ee21-fbed-4e72-85c4-d58fc74a2131",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1550,7 +5225,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "05fdd575-e0a7-4b00-992b-f004af0e4ab1",
+								"id": "76024d43-99d7-47ac-95b6-d05a939804be",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1624,7 +5299,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "5a12f26b-b76b-488a-a918-066c50066e6b",
+								"id": "6da00a63-2309-4df4-901e-197866c25afc",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1648,7 +5323,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "ebd85740-8525-460f-93fb-93bb96a5a208",
+								"id": "ae78edca-b85a-49ee-92a3-1270a68be2bb",
 								"exec": [
 									"pm.collectionVariables.set(",
 									"    'hotel_latitude',",
@@ -1715,7 +5390,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "d001bc23-1161-439d-aac5-e9c52971a548",
+								"id": "f7b9f5ee-449f-4710-bcd4-db365fdf937b",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1740,11 +5415,11 @@
 									"});",
 									"",
 									"pm.test(\"Check hotel longitude\", function () {",
-									"    pm.expect(Number(jsonData.longitude).toFixed(4)).to.eq(pm.variables.get(\"hotel_longitude\"));",
+									"    pm.expect(String(jsonData.longitude)).to.eq(pm.variables.get(\"hotel_longitude\"));",
 									"});",
 									"",
 									"pm.test(\"Check hotel latitude\", function () {",
-									"    pm.expect(Number(jsonData.latitude).toFixed(4)).to.eq(pm.variables.get(\"hotel_latitude\"));",
+									"    pm.expect(String(jsonData.latitude)).to.eq(pm.variables.get(\"hotel_latitude\"));",
 									"});",
 									"",
 									"pm.test(\"Check hotel currency\", function () {",
@@ -1798,7 +5473,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "05fdd575-e0a7-4b00-992b-f004af0e4ab1",
+								"id": "709f39a3-8c4c-4db6-9304-549e80fea08c",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1809,7 +5484,7 @@
 									"});",
 									"pm.test(\"Check total\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.total).to.eq(Number(pm.variables.get('total_hotels'))+1)",
+									"    pm.expect(jsonData.total).to.eq(pm.variables.get('total_hotels')+1)",
 									"});",
 									"pm.test(\"Check default skip\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -1872,7 +5547,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "ff0673ea-9de1-447a-bdb2-434fa8520452",
+								"id": "bd635a53-085c-4eb6-8035-1dc3e1fb745d",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1930,7 +5605,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a6ff9316-1f5d-4fe4-bc16-6479c26d6bc6",
+								"id": "9f137937-cbb0-4fa7-a831-36ef23d8c423",
 								"exec": [
 									"pm.test(\"Status code is 404\", function () {",
 									"    pm.response.to.have.status(404);",
@@ -1984,7 +5659,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "05fdd575-e0a7-4b00-992b-f004af0e4ab1",
+								"id": "ebecf0d8-e0a5-4a21-9873-2b286499502b",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1995,7 +5670,7 @@
 									"});",
 									"pm.test(\"Check total\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(String(jsonData.total)).to.eq(pm.variables.get('total_hotels'))",
+									"    pm.expect(jsonData.total).to.eq(pm.variables.get('total_hotels'))",
 									"});",
 									"pm.test(\"Check default skip\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -2052,7 +5727,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7290d69d-a71a-451f-a833-3b127272b5a9",
+								"id": "225c41c7-e95c-42cb-a226-149c80cb2e46",
 								"exec": [
 									"pm.test(\"Status code is 403\", function () {",
 									"    pm.response.to.have.status(403);",
@@ -2089,6 +5764,710 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "A02.Admin API: Black and White lists",
+			"item": [
+				{
+					"name": "01.Create new list",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "827eaaf3-6d6a-472f-8861-6a32372cb2fd",
+								"exec": [
+									"// Create a random ORG.iD list",
+									"var orgids = [];",
+									"for(var n=0; n<5; n++) {",
+									"    var orgid = '0x';",
+									"    for(var i=0; i<8; i++) {",
+									"        orgid += Math.random().toString(16).substr(2, 8);",
+									"    }",
+									"    orgids.push(orgid);",
+									"}",
+									"",
+									"pm.collectionVariables.set(",
+									"    'orgid_list',",
+									"    JSON.stringify(orgids)",
+									");",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "4421e224-fd46-4333-a60a-e443ed128ef2",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"OK\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{orgid_list}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/orglist/white",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"orglist",
+								"white"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02. Check values",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cdee1526-51da-45c7-9126-dd8c3920a0b0",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Tests values are added\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.include.members(JSON.parse(pm.variables.get('orgid_list')));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/orglist/white",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"orglist",
+								"white"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "03.Delete created list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f6c1f7bd-90b4-4479-9e64-9cadb89ce833",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"OK\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{orgid_list}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/orglist/white",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"orglist",
+								"white"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "04.Check values are removed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "91707ce4-30b8-4a16-8980-0ef996e40484",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Tests values are removed\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.not.include.members(JSON.parse(pm.variables.get('orgid_list')));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/orglist/white",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"orglist",
+								"white"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "05.Add own ORG.ID to blacklist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d9320d7d-0805-4789-91f7-c0c12f320fff",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"OK\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t\"0x6ad443c54fd7b1dd65eb92f1492b18f7e38a93511443dfce5302030b1d233ed2\"\n]"
+						},
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/orglist/black",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"orglist",
+								"black"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "06. Search attempt is rejected",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1a935905-ee7e-4942-b568-b6c0b61cdca3",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"travel_date\", oneMonthFromNow.toISOString());",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "25a3e696-e900-4bfb-8cf9-f962c1afd65d",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"pm.test(\"Check message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"The organization: 0x6ad443c54fd7b1dd65eb92f1492b18f7e38a93511443dfce5302030b1d233ed2 is blocked\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"itinerary\": {\n    \"segments\": [\n      {\n        \"origin\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"CDG\"\n        },\n        \"destination\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"MAD\"\n        },\n        \"departureTime\": \"{{travel_date}}\"\n      }\n    ]\n  },\n  \"passengers\": [\n    {\n      \"type\": \"ADT\"\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/searchOffers",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"searchOffers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "07.Remove ORG.iD from blacklist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e713c79b-2b40-4df8-aa1e-5b246bccd69c",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"OK\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t\"0x6ad443c54fd7b1dd65eb92f1492b18f7e38a93511443dfce5302030b1d233ed2\"\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/orglist/black",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"orglist",
+								"black"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "A03.Admin API: Rate limits",
+			"item": [
+				{
+					"name": "01.Retrieve current limits",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bb50b1d3-2352-497d-b9e3-b25ee8d3dd56",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/config/limits/%2Fapi%2Fv1%2FsearchOffers",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"config",
+								"limits",
+								"%2Fapi%2Fv1%2FsearchOffers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02.Delete current limits",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5960f08d-bed3-4d20-a72d-07e493f9e774",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/config/limits/%2Fapi%2Fv1%2FsearchOffers",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"config",
+								"limits",
+								"%2Fapi%2Fv1%2FsearchOffers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "03.Add a limit of one call",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "59f98104-786e-446d-bc7c-9240c7ad92d0",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"OK\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"min\": 0,\n    \"max\": 5,\n    \"sec\": 1,\n    \"day\": 1\n  }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/config/limits/%2Fapi%2Fv1%2FsearchOffers",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"config",
+								"limits",
+								"%2Fapi%2Fv1%2FsearchOffers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "04. Search attempt is rejected",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "02548c6d-a30f-44b4-931e-6b0dab9d8471",
+								"exec": [
+									"// Set the travel Date",
+									"var oneMonthFromNow = new Date((+new Date()) + 2678400000); // + 31 days",
+									"pm.collectionVariables.set(\"travel_date\", oneMonthFromNow.toISOString());",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ec186578-ff86-48ac-95a8-808bdd48ccb7",
+								"exec": [
+									"pm.test(\"Status code is 429\", function () {",
+									"    pm.response.to.have.status(429);",
+									"});",
+									"",
+									"pm.test(\"Check message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"API Call limit reached: Increase your LIF Deposit to make more calls\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"itinerary\": {\n    \"segments\": [\n      {\n        \"origin\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"CDG\"\n        },\n        \"destination\": {\n          \"locationType\": \"airport\",\n          \"iataCode\": \"MAD\"\n        },\n        \"departureTime\": \"{{travel_date}}\"\n      }\n    ]\n  },\n  \"passengers\": [\n    {\n      \"type\": \"ADT\"\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{GLIDER_URL}}/searchOffers",
+							"host": [
+								"{{GLIDER_URL}}"
+							],
+							"path": [
+								"searchOffers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "05.Delete API Limits",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e2b147fc-98b8-44e4-8549-385034b57b19",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{GLIDER_ADMIN_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{GLIDER_ADMIN_URL}}/config/limits/%2Fapi%2Fv1%2FsearchOffers",
+							"host": [
+								"{{GLIDER_ADMIN_URL}}"
+							],
+							"path": [
+								"config",
+								"limits",
+								"%2Fapi%2Fv1%2FsearchOffers"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"auth": {
@@ -2105,7 +6484,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "614f83c1-a94c-4fc4-a8c0-4186ba1b81fb",
+				"id": "fce9dfa5-0ad7-49d7-aead-a5072680612b",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -2115,7 +6494,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "fd35ce6d-7bd6-406d-8b23-76ac94017bfe",
+				"id": "e2cc8314-ca0b-4045-aaee-6ada0d5264a3",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -2125,140 +6504,194 @@
 	],
 	"variable": [
 		{
-			"id": "a9675b70-215e-4381-9b60-ccb133c29075",
+			"id": "6e0cb8b2-cb7d-42f4-8078-80cf76122ed4",
 			"key": "GLIDER_JWT",
 			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6b3JnaWQ6MHg2YWQ0NDNjNTRmZDdiMWRkNjVlYjkyZjE0OTJiMThmN2UzOGE5MzUxMTQ0M2RmY2U1MzAyMDMwYjFkMjMzZWQyI3dlYnNlcnZlciIsImF1ZCI6ImRpZDpvcmdpZDoweDcxY2QxNzgxYTMwODJmMzNkMjUyMWFjODI5MGM5ZDRiM2IzYjExNmU0ZTg1NDhhNDkxNGI3MWExZjcyMDFkYTAiLCJpYXQiOjE1ODQ2ODkwMzAsImV4cCI6MTYxNjIyNTAzMH0.bopsjn86GtNGYjf0f7ZZwyU08h6xbxAoCnn4lW4X7MKEyVSig4Flqa9Lfb9nW4W9dUUQ_m1ZgT1RHp04yPwvFA",
 			"type": "string"
 		},
 		{
-			"id": "2571ff03-3cdb-4f0f-927e-353e48cb7702",
+			"id": "bf316911-b407-450e-956a-a562cf612bd5",
 			"key": "GLIDER_URL",
 			"value": "https://staging.aggregator.windingtree.net/api/v1",
 			"type": "string"
 		},
 		{
-			"id": "488ef681-d14e-4cb6-9d42-e1398f3fd058",
-			"key": "travel_date",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"id": "9ee70b92-94e7-4c21-8388-57d83fad1c95",
-			"key": "offer_id",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"id": "d1240679-c5d8-4091-b3de-4b9213035797",
-			"key": "offer_items",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"id": "2eae88f6-2d6d-4d09-9ea9-e5b4a872ec3e",
-			"key": "order_id",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"id": "83e06903-9f33-4afb-98ee-8ea94b97810a",
-			"key": "order_items",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"id": "eeffc15c-b05a-4cd1-bbd6-ce530c571b9e",
+			"id": "ce0a74f7-0c0d-40f9-818a-8a32d1cbb929",
 			"key": "SIMARD_JWT",
 			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6b3JnaWQ6MHg2YWQ0NDNjNTRmZDdiMWRkNjVlYjkyZjE0OTJiMThmN2UzOGE5MzUxMTQ0M2RmY2U1MzAyMDMwYjFkMjMzZWQyI3dlYnNlcnZlciIsImF1ZCI6ImRpZDpvcmdpZDoweDVlNjk5NGY3Njc2NGNlYjQyYzQ3NmEyNTA1MDY1YTYxNzAxNzhhMjRjMDNkODFjOWYzNzI1NjM4MzAwMDExNzEiLCJpYXQiOjE1ODQ2ODkwMzAsImV4cCI6MTYxNjIyNTAzMH0.Toi6zguJLv61ynrtTZgsQ_Cj7QzImChpKQRI-T7VKUTev9HYDjheydAXNjIucY7MeGSmNpDmx4XCr1nlnGZjZg",
 			"type": "string"
 		},
 		{
-			"id": "4da00147-7947-4131-b149-1af8f5206ba1",
-			"key": "amount",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"id": "665de0b0-dbe9-4325-8b08-fbbbfa10c112",
-			"key": "currency",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"id": "021bb7b9-6fed-4525-9b2e-f4170e85b38d",
+			"id": "340d67d8-ae8a-4f4e-a123-b52529687eb7",
 			"key": "SIMARD_URL",
 			"value": "https://staging.api.simard.io/api/v1",
 			"type": "string"
 		},
 		{
-			"id": "b583bdf7-8320-4529-8bfa-2430d7756336",
+			"id": "c25e9821-42bb-41fd-ac06-9c6e44a4fb43",
+			"key": "GLIDER_ADMIN_URL",
+			"value": "https://staging.aggregator.windingtree.net/admin/v1",
+			"type": "string"
+		},
+		{
+			"id": "50f0a946-03f2-475f-b0fa-56f0f6dcfff2",
+			"key": "destination",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "01e337c6-5560-43bf-829b-765f7c5e4f88",
+			"key": "origin",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "5b82f4de-434d-45be-afb6-4340dee481a0",
+			"key": "passengers",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "9f5af9e7-d39a-476b-a0e9-65008f42ba22",
+			"key": "passengersTypes",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "92b4d5e7-1497-4973-b30c-cdd30a2865e4",
+			"key": "travel_date",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "d704bc08-3122-4c1e-8657-69e70b5a9853",
+			"key": "amount",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "85c19e93-3202-4d50-b31c-ff95840273aa",
+			"key": "currency",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "cb4a9587-eec8-4904-af8c-20137e8fc2aa",
+			"key": "indexedPassengers",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "7af45113-4ed0-4739-980b-6ad24f457ea1",
+			"key": "offer_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "fbd2fb1e-73a8-4fbe-b900-a06dd23d85a1",
+			"key": "offer_items",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "8adddbf0-467d-4ba1-9295-1cb3baa24fd7",
+			"key": "selectedOptions",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "d03c54c6-94b7-4df0-b326-e2fe63be3b4b",
 			"key": "guarantee_expiration",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "8d54390c-870c-4808-9c2f-12c4829e9942",
+			"id": "b4976515-03dc-4c82-b26f-046a1867545e",
+			"key": "balance",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "809021de-206d-4293-97aa-5a330fc68e9a",
 			"key": "guarantee_id",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "67b5be72-dd15-4b86-98eb-a4449d9fe1ca",
-			"key": "checkin_date",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"id": "2ba211be-39c0-44a5-9b0a-4b8b9655e028",
-			"key": "checkout_date",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"id": "260a85e8-1c9b-4746-b1b9-a88278550d7f",
+			"id": "e512c72a-3d71-4638-8fe8-fb096c66c908",
 			"key": "return_date",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "99591fdd-5843-4695-8a7c-e3f52ffe1d8a",
-			"key": "GLIDER_ADMIN_URL",
-			"value": "http://localhost:3000/admin/v1",
-			"type": "string"
-		},
-		{
-			"id": "55c59382-bb2e-4bf1-aee5-f77ee58c29be",
-			"key": "GLIDER_ADMIN_JWT",
-			"value": "eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJkaWQ6b3JnaWQ6MHg3MWNkMTc4MWEzMDgyZjMzZDI1MjFhYzgyOTBjOWQ0YjNiM2IxMTZlNGU4NTQ4YTQ5MTRiNzFhMWY3MjAxZGEwI3NlY29uZGtleSIsImF1ZCI6ImRpZDpvcmdpZDoweDcxY2QxNzgxYTMwODJmMzNkMjUyMWFjODI5MGM5ZDRiM2IzYjExNmU0ZTg1NDhhNDkxNGI3MWExZjcyMDFkYTAiLCJleHAiOjE2MjEzMTg0NjksInNjb3BlIjoiIn0.VOS1hk-sww8PNaou9392tDN8GpL7z1KkUYAC2KSbEkX9zVlDR7rztC8xjroZoyAHCojogc-RorX2IavkOgR4_w",
-			"type": "string"
-		},
-		{
-			"id": "5458f00c-c8d7-4e24-a0a8-70ef51bad387",
-			"key": "total_hotels",
+			"id": "7f7b577c-355a-4f98-9c7f-46f6f0be2920",
+			"key": "amount_inbound",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "535aace2-7781-4f4b-a078-d05a27a097cc",
-			"key": "hotel_currency",
+			"id": "9f861b74-893d-497b-a541-e7533d8a5960",
+			"key": "amount_outbound",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "1d2d76dc-a769-43dd-8c54-045f9c7d5a3a",
-			"key": "hotel_latitude",
+			"id": "e6959239-41a8-4a68-88a2-d194f9e159ca",
+			"key": "offer_id_inbound",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "5bc6ce50-9d81-49c1-adae-b579a8f2a609",
-			"key": "hotel_longitude",
+			"id": "2d631303-3152-461b-a1ff-657d9efa06ab",
+			"key": "offer_id_outbound",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "9f2e23e7-3811-460d-bd97-9760490d0f98",
-			"key": "hotel_id",
+			"id": "b41b0690-e025-458b-880e-6cb9806ef82e",
+			"key": "offer_items_inbound",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "8b887f4f-c04e-4819-93f2-aaf80a38b85a",
+			"key": "offer_items_outbound",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "5351678a-7828-4d03-9aca-0269291e916c",
+			"key": "seats",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "d1c95e55-dfe8-4943-8a1c-5ee58ff70c08",
+			"key": "passengerKey",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "7ca8e3a8-2fae-4c18-88dc-138e697b984e",
+			"key": "order_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "c8bdc7d4-aca4-4e9e-95c9-009df63272a2",
+			"key": "max_amount",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "1820b54c-5ee8-429b-bf2b-b0a13a9b79af",
+			"key": "checkin_date",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "f286285a-f0cb-4c1e-89ce-3f472a5aeea8",
+			"key": "checkout_date",
 			"value": "",
 			"type": "string"
 		}
