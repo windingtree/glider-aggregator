@@ -10,6 +10,7 @@ const responseTemplate = require('../../camaroTemplates/hotelResNotifRS').otaHot
 
 const hotelResNotif = require('../../transformInputData/hotelResNotif');
 const mapOTAHotelResNotifSoap = require('../../soapTemplates/ota/otaHotelResNotifRQ');
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = async (offer, passengers, card) => {
   // Build the request
@@ -39,5 +40,11 @@ module.exports = async (offer, passengers, card) => {
     );
   }
 
-  return { order: responseData };
+  return {
+    orderId: uuidv4(),
+    order: {
+      ...responseData,
+      passengers
+    }
+  };
 };
