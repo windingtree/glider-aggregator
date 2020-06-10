@@ -12,28 +12,7 @@ const {
 } = require('../../../helpers/guarantee');
 const hotelResolver = require('../../../helpers/resolvers/hotel/orderCreateWithOffer');
 const flightResolver = require('../../../helpers/resolvers/flight/orderCreateWithOffer');
-
-const setOrderStatus = async (offer, orderStatus) => {
-  offer = {
-    ...offer,
-    extraData: {
-      ...(
-        offer.extraData
-          ? {
-            ...offer.extraData,
-            orderStatus
-          }
-          : {
-            orderStatus
-          }
-      )
-    }
-  };
-
-  await offerManager.saveOffer(offer.offerId, {
-    offer
-  });
-};
+const { setOrderStatus, assertOrgerStatus } = require('../../../helpers/resolvers/utils/offers');
 
 module.exports = basicDecorator(async (req, res) => {
   const requestBody = req.body;
@@ -48,22 +27,21 @@ module.exports = basicDecorator(async (req, res) => {
   // Retrieve the offer
   const storedOffer = await offerManager.getOffer(requestBody.offerId);
 
-  if (storedOffer.extraData && storedOffer.extraData.orderStatus === 'CREATING') {
-    throw new GliderError(
-      'Order creation ongoing for this offer',
-      400
-    );
-  }
+  const originOffers = await Promise.all(
+    storedOffer.extraData.originOffers.map(
+      offer => offerManager.getOffer(offer.offerId)
+    )
+  );
 
-  if (storedOffer.extraData && storedOffer.extraData.orderStatus === 'CREATED') {
-    throw new GliderError(
-      'Order already created for this offer',
-      400
-    );
-  }
+  const allOffers = [
+    storedOffer,
+    ...originOffers
+  ];
+
+  assertOrgerStatus(allOffers);
 
   try {
-    await setOrderStatus(storedOffer, 'CREATING');
+    await setOrderStatus([storedOffer], 'CREATING');
 
     let orderCreationResults;
     let guarantee;
@@ -194,11 +172,11 @@ module.exports = basicDecorator(async (req, res) => {
       }
     );
 
-    await setOrderStatus(storedOffer, 'CREATED');
+    await setOrderStatus(allOffers, 'CREATED');
 
     res.status(200).json(orderCreationResults);
   } catch (error) {
-    await setOrderStatus(storedOffer, 'UNLOCKED');
+    await setOrderStatus(allOffers, 'UNLOCKED');
     throw error;
   }
 });
