@@ -82,5 +82,6 @@ module.exports.INFURA_URI = `${process.env.INFURA_ENDPOINT}/${process.env.INFURA
 module.exports.GLIDER_DID = `did:orgid:${process.env.GLIDER_ORGID}`;
 module.exports.GLIDER_ADMIN_DID = `did:orgid:${process.env.GLIDER_ORGID}#${process.env.GLIDER_ADMIN_KEY}`;
 module.exports.SIMARD_URL = process.env.SIMARD_URL;
+module.exports.LIF_MIN_DEPOSIT = process.env.LIF_MIN_DEPOSIT;
 module.exports.expirationTime = 30 * 60; // 30 min in seconds
 module.exports.expirationLong = 60 * 60 * 24 * 365 * 7; // 7 years in seconds
