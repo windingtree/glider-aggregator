@@ -105,8 +105,8 @@
         "AF_API_KEY": "@af_api_key",
 
         "AC_API_KEY": "@ac_api_key",
-        "AC_USERNAME": "@ac_username",
-        "AC_PASSWORD": "@ac_password",
+        "AC_USERNAME": "@ac_participant_enabled_system_participant_name",
+        "AC_PASSWORD": "@ac_participant_enabled_system_participant_system_id",
 
         "EREVMAX_RESERVATION_URL": "@staging.glider-aggregator.erevmax_reservation_url",
         "EREVMAX_AVAILABILITY_URL": "@staging.glider-aggregator.erevmax_availability_url",
