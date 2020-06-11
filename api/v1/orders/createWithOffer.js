@@ -27,12 +27,16 @@ module.exports = basicDecorator(async (req, res) => {
   // Retrieve the offer
   const storedOffer = await offerManager.getOffer(requestBody.offerId);
 
-  const originOffers = await Promise.all(
-    storedOffer.extraData.originOffers.map(
-      offer => offerManager.getOffer(offer.offerId)
-    )
-  );
+  let originOffers = [];
 
+  if (storedOffer instanceof FlightOffer) {
+    originOffers = await Promise.all(
+      storedOffer.extraData.originOffers.map(
+        offerId => offerManager.getOffer(offerId)
+      )
+    );
+  }
+  
   const allOffers = [
     storedOffer,
     ...originOffers
@@ -41,7 +45,7 @@ module.exports = basicDecorator(async (req, res) => {
   assertOrgerStatus(allOffers);
 
   try {
-    await setOrderStatus([storedOffer], 'CREATING');
+    await setOrderStatus(allOffers, 'CREATING');
 
     let orderCreationResults;
     let guarantee;
