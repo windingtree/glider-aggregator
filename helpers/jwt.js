@@ -83,15 +83,15 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
   // Organization should not be disabled
   if (!didResult.organization.state) {
     throw new GliderError(
-      `The organization: ${didResult.organization.orgId} is disabled`,
+      `Organization: ${didResult.organization.orgId} is disabled`,
       403
     );
   }
 
   // Lif deposit should be equal or more then configured
-  if (Number(web3.utils.fromWei(didResult.lifDeposit.deposit, 'ether')) < process.env.LIF_MIN_DEPOSIT) {
+  if (Number(web3.utils.fromWei(didResult.lifDeposit.deposit, 'ether')) < config.LIF_MIN_DEPOSIT) {
     throw new GliderError(
-      `Lif token deposit for the organization: ${didResult.organization.orgId} is less then ${process.env.LIF_MIN_DEPOSIT}`,
+      `Lif token deposit insuficient: ${didResult.organization.orgId} has less than ${config.LIF_MIN_DEPOSIT} LIF`,
       403
     );
   }
@@ -183,7 +183,7 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
 
       switch (e.code) {
         case 'ERR_JWT_EXPIRED':
-          e.message = 'JWT has expired';
+          e.message = 'JWT is expired';
           break;
 
         case 'ERR_JWT_CLAIM_INVALID':

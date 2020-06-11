@@ -3,7 +3,7 @@ const config = require('../../config');
 const GliderError = require('../error');
 
 const simardHeaders = {
-  Authorization: `Bearer ${config.JWT}`,
+  Authorization: `Bearer ${config.SIMARD_JWT}`,
 };
 
 const processSimardError = e => {
