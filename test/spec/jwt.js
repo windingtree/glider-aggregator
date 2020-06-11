@@ -92,7 +92,7 @@ describe('JWT', () => {
       );
       await assertFailure(
         verifyJWT('Bearer', token),
-        'JWT has expired',
+        'JWT is expired',
         403
       );
     });
