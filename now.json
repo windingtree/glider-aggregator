@@ -103,42 +103,23 @@
     ],
     "env": {
         "AF_API_KEY": "@af_api_key",
-        "AF_COMISSION": "@af_comission",
-        "AF_SENDER_NAME": "@af_sender_name",
-        "AF_SENDER_PSEUDOCITY": "@af_sender_pseudocity",
-        "AF_SENDER_IATA_NUMBER": "@af_sender_iata_number",
-        "AF_SENDER_AGENCY_ID": "@af_sender_agency_id",
-        "AF_SENDER_AGENT_USER_ID": "@af_sender_agent_user_id",
-        "AF_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SEQUENCE_NUMBER": "@af_participant_enabled_system_participant_sequence_number",
-        "AF_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_NAME": "@af_participant_enabled_system_participant_name",
-        "AF_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SYSTEM_ID": "@af_participant_enabled_system_participant_system_id",
-        "AF_PARTICIPANT_RECIPENT_AIRLINE_ID": "@af_participant_recipent_airline_id",
-        "AF_PARTICIPANT_RECIPENT_NAME": "@af_participant_recipent_name",
-        
-        "AC_API_KEY": "@ac_api_key",
-        "AC_COMISSION": "@ac_comission",
-        "AC_PARTICIPANT_RECIPENT_AIRLINE_ID": "@ac_participant_recipent_airline_id",
-        "AC_POINT_OF_SALE_DEVICE_CODE": "@ac_participant_recipent_name",
-        "AC_DOCUMENT_ID": "@ac_document_id",
-        "AC_DOCUMENT_NAME": "@ac_document_name",
-        "AC_DOCUMENT_REFERENCE_VERSION": "@ac_document_reference_version",
-        "AC_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SEQUENCE_NUMBER": "@ac_participant_enabled_system_participant_sequence_number",
-        "AC_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_NAME": "@ac_participant_enabled_system_participant_name",
-        "AC_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_CATEGORY": "@ac_participant_enabled_system_participant_category",
-        "AC_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SYSTEM_ID_OWNER": "@ac_participant_enabled_system_participant_system_id_owner",
-        "AC_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SYSTEM_ID": "@ac_participant_enabled_system_participant_system_id",
 
-        "JWT": "@staging.glider-aggregator.jwt",
-        "REDIS_URL": "@staging.glider-aggregator.redis_url",
-        "MONGO_URL": "@staging.glider-aggregator.mongo_url",
-        "ELASTIC_URL": "@staging.glider-aggregator.elastic_url",
+        "AC_API_KEY": "@ac_api_key",
+        "AC_USERNAME": "@ac_username",
+        "AC_PASSWORD": "@ac_password",
+
         "EREVMAX_RESERVATION_URL": "@staging.glider-aggregator.erevmax_reservation_url",
         "EREVMAX_AVAILABILITY_URL": "@staging.glider-aggregator.erevmax_availability_url",
-        "INFURA_ENDPOINT": "@infura_wss_endpoint",
-        "INFURA_PROJECT_ID": "@infura_project_id",
+
+        "SIMARD_JWT": "@staging.glider-aggregator.jwt",
         "GLIDER_ORGID": "@ropsten.glider-aggregator.orgid",
         "GLIDER_ADMIN_KEY": "@staging.glider-aggregator.admin-key",
         "LIF_MIN_DEPOSIT": "@staging.glider-aggregator.lif_deposit",
-        "SIMARD_URL": "@staging.glider-aggregator.simard_api_endpoint"
+
+        "REDIS_URL": "@staging.glider-aggregator.redis_url",
+        "MONGO_URL": "@staging.glider-aggregator.mongo_url",
+        "ELASTIC_URL": "@staging.glider-aggregator.elastic_url",
+        "INFURA_ENDPOINT": "@infura_wss_endpoint",
+        "INFURA_PROJECT_ID": "@infura_project_id"
     }
 }
