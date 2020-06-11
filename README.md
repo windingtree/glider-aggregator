@@ -1,22 +1,29 @@
 # glider-aggregator
 
 ## Dependencies
-Requires [now-cli](https://zeit.co/download) installed globaly
+Requires:
+* node.js 10.x or 12.x
+* npm
+* [now-cli](https://zeit.co/download) installed globaly
 
 ## Initial setup
 
+### Install dependencies
 ```bash
 $ npm i
 ```
 
+### Create a configuration file
+Create a `.env` file at the root of the project with the environment variables.
+
 ## Run local servers
+You can run your own local servers or use remote servers. By default the configuration expects local servers up and running. For a shorthand use:
 
 ```bash
 npm run localservers
 ```
 
-Configuration environment for servers (should be placed to the `.env` file):  
-
+To override the configuration environment for servers, you can create/edit an `.env` file at the root of the project with the details. For example:
 ```
 REDIS_URL = redis://localhost:6379
 MONGO_URL = mongodb://localhost/glider
