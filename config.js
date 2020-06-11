@@ -121,6 +121,14 @@ const erevmax = {
   reservationUrl: getConfigKey('EREVMAX_RESERVATION_URL') || 'https://ota-simulator.now.sh/api?ota=getOTAHotelReservation',
 };
 
+module.exports.debugInfo = () => {
+  return {
+    enviroment: enviroment,
+    erevmax: erevmax,
+    env: process.env,
+  }
+}
+
 module.exports.airFranceConfig = airFranceConfig;
 module.exports.airCanadaConfig = airCanadaConfig;
 module.exports.erevmax = erevmax;
