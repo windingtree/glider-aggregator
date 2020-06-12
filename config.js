@@ -9,7 +9,7 @@
  * Environment is determined from:
  * - The GLIDER_ENV variable, if any
  * - The Github's branch, if the deployment is made using the Vercel/Github integration
- * - Defaults to 'staging'
+ * - Defaults to 'staging', including local
  */
 
 // Define the current enviroment
