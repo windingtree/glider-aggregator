@@ -9,7 +9,7 @@
  * Environment is determined from:
  * - The GLIDER_ENV variable, if any
  * - The Github's branch, if the deployment is made using the Vercel/Github integration
- * - Defaults to 'staging'
+ * - Defaults to 'staging', including local
  */
 
 // Define the current enviroment
@@ -20,7 +20,7 @@ const determineEnviroment = () => {
   }
 
   // Otherwise use the Github branch provided by Vercel
-  switch(process.env.VERCEL_GITHUB_COMMIT_REF) {
+  switch(process.env.VERCEL_GITHUB_COMMIT_REF || process.env.NOW_GITHUB_COMMIT_REF) {
     case 'master':
       return 'production';
     case 'develop':
@@ -120,6 +120,14 @@ const erevmax = {
   availabilityUrl: getConfigKey('EREVMAX_AVAILABILITY_URL') || 'https://ota-simulator.now.sh/api?ota=getOTAHotelAvailability',
   reservationUrl: getConfigKey('EREVMAX_RESERVATION_URL') || 'https://ota-simulator.now.sh/api?ota=getOTAHotelReservation',
 };
+
+module.exports.debugInfo = () => {
+  return {
+    enviroment: enviroment,
+    erevmax: erevmax,
+    env: process.env,
+  }
+}
 
 module.exports.airFranceConfig = airFranceConfig;
 module.exports.airCanadaConfig = airCanadaConfig;

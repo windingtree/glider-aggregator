@@ -24,7 +24,8 @@
     "dev": "npx now dev",
     "test": "./scripts/test.sh",
     "test:newman": "node ./test/newman/run.js",
-    "lint": "npx eslint test admin api decorators helpers"
+    "lint": "npx eslint test admin api decorators helpers",
+    "now-build": "node ./scripts/build/now-build.js"
   },
   "dependencies": {
     "axios": "0.19.2",
