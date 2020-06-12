@@ -2,7 +2,6 @@ const { basicDecorator } = require('../../../decorators/basic');
 const { debugInfo } = require('../../../config');
 const BuiltEnv = require('../../../built-env');
 
-
 module.exports = basicDecorator(async (req, res) => {
     res.json({
         code: 200,

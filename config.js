@@ -20,7 +20,7 @@ const determineEnviroment = () => {
   }
 
   // Otherwise use the Github branch provided by Vercel
-  switch(process.env.VERCEL_GITHUB_COMMIT_REF) {
+  switch(process.env.VERCEL_GITHUB_COMMIT_REF || process.env.NOW_GITHUB_COMMIT_REF) {
     case 'master':
       return 'production';
     case 'develop':
