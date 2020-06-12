@@ -35,3 +35,14 @@ These [secrets have to be defined](https://github.com/windingtree/glider-aggrega
 **pull_request_review** events handling is managed by the [reviews.yml](./.github/../../.github/workflows/reviews.yml) workflow 
 
 ![pull_request_review](./../assets/activity/reviews.svg)
+
+## Environments and branches
+### Branches
+* `develop` branch is linked to the `staging` environment
+* `master` branch is linked to the `production` environment
+
+### Workflow
+1. A PR from developer's fork to `develop` create a temporary `preview` environment (one per PR)
+2. Once the PR is merged, this environment is promoted to `staging`
+3. A PR from `staging` to `master` creates a `release candidate` environment
+4. A merge or push in `master` promotes the release candidate to production
