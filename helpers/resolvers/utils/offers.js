@@ -1,4 +1,4 @@
-const { GliderError } = require('../../error');
+const GliderError = require('../../error');
 const {
   offerManager
 } = require('../../models/offer');
