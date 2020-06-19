@@ -104,9 +104,12 @@
     "env": {
         "AF_API_KEY": "@af_api_key",
 
-        "AC_API_KEY": "@ac_api_key",
-        "AC_USERNAME": "@ac_participant_enabled_system_participant_name",
-        "AC_PASSWORD": "@ac_participant_enabled_system_participant_system_id",
+        "AC_API_KEY": "@staging.glider-aggregator.ac_api_key",
+        "AC_USERNAME": "@staging.glider-aggregator.ac_username",
+        "AC_PASSWORD": "@staging.glider-aggregator.ac_password",
+        "PRODUCTION_AC_API_KEY":  "@production.glider-aggregator.ac_api_key",
+        "PRODUCTION_AC_USERNAME": "@production.glider-aggregator.ac_username",
+        "PRODUCTION_AC_PASSWORD": "@production.glider-aggregator.ac_password",
 
         "STAGING_EREVMAX_RESERVATION_URL": "@staging.glider-aggregator.erevmax_reservation_url",
         "STAGING_EREVMAX_AVAILABILITY_URL": "@staging.glider-aggregator.erevmax_availability_url",
@@ -114,14 +117,23 @@
         "PRODUCTION_EREVMAX_AVAILABILITY_URL": "@production.glider-aggregator.erevmax_availability_url",
 
         "SIMARD_JWT": "@staging.glider-aggregator.jwt",
-        "GLIDER_ORGID": "@ropsten.glider-aggregator.orgid",
+        "GLIDER_ORGID": "@staging.glider-aggregator.orgid",
         "GLIDER_ADMIN_KEY": "@staging.glider-aggregator.admin-key",
         "LIF_MIN_DEPOSIT": "@staging.glider-aggregator.lif_deposit",
+        "PRODUCTION_SIMARD_JWT": "@production.glider-aggregator.jwt",
+        "PRODUCTION_GLIDER_ORGID": "@production.glider-aggregator.orgid",
+        "PRODUCTION_GLIDER_ADMIN_KEY": "@production.glider-aggregator.admin-key",
+        "PRODUCTION_LIF_MIN_DEPOSIT": "@production.glider-aggregator.lif_deposit",
+
 
         "REDIS_URL": "@staging.glider-aggregator.redis_url",
         "MONGO_URL": "@staging.glider-aggregator.mongo_url",
         "ELASTIC_URL": "@staging.glider-aggregator.elastic_url",
-        "INFURA_ENDPOINT": "@infura_wss_endpoint",
+        "INFURA_ENDPOINT": "@staging.infura_wss_endpoint",
+        "PRODUCTION_REDIS_URL": "@production.glider-aggregator.redis_url",
+        "PRODUCTION_MONGO_URL": "@production.glider-aggregator.mongo_url",
+        "PRODUCTION_ELASTIC_URL": "@production.glider-aggregator.elastic_url",
+        "PRODUCTION_INFURA_ENDPOINT": "@production.infura_wss_endpoint",
         "INFURA_PROJECT_ID": "@infura_project_id"
     }
 }
