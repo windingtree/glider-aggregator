@@ -17,8 +17,8 @@ const apiHost = process.env.GLIDER_HOST;// https://staging.aggregator.windingtre
 
 // List of tests to skip
 const testsToSkip = [
-  'F01',
-  'F02'
+  // 'F01',
+  // 'F02'
 ];
 
 // Collection filtering method
