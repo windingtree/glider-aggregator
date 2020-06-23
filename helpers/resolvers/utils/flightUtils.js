@@ -66,10 +66,10 @@ module.exports.selectProvider = (origin, destination) => {
   destination = Array.isArray(destination) ? destination : [destination];
 
   const sdMapping = [
-    {
-      provider: 'AF',
-      destinations: []
-    },
+    // {
+    //   provider: 'AF',
+    //   destinations: []
+    // },
     {
       provider: 'AC',
       destinations: caDestinations
@@ -260,7 +260,7 @@ module.exports.selectProvider = (origin, destination) => {
       }
 
       return a;
-    }, ['AF']);// temporary until we do not have a specific set for AF
+    }, []);// temporary until we do not have a specific set for AF - ['AF']
 };
 
 module.exports.reMapPassengersInRequestBody = (offer, body) => {
