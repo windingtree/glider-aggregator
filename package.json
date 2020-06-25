@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "axios": "0.19.2",
-    "camaro": "6.0.1",
+    "camaro": "6.0.2",
     "date-fns": "2.14.0",
     "date-fns-tz": "1.0.10",
     "email-validator": "2.0.4",
@@ -37,19 +37,19 @@
     "express": "4.17.1",
     "redis": "3.0.2",
     "uuid": "8.1.0",
-    "web3": "1.2.8",
-    "@windingtree/org.id-resolver": "0.4.2",
-    "jose": "1.27.0",
-    "mongoose": "5.9.16",
-    "@elastic/elasticsearch": "7.7.1"
+    "web3": "1.2.9",
+    "@windingtree/org.id-resolver": "0.4.4",
+    "jose": "1.27.1",
+    "mongoose": "5.9.20",
+    "@elastic/elasticsearch": "7.8.0"
   },
   "devDependencies": {
-    "now": "19.0.1",
-    "eslint": "7.1.0",
-    "mocha": "7.2.0",
+    "now": "19.1.1",
+    "eslint": "7.3.1",
+    "mocha": "8.0.1",
     "chai": "4.2.0",
     "dotenv": "8.2.0",
-    "newman": "5.0.1",
+    "newman": "5.1.0",
     "@actions/core": "1.2.4",
     "@actions/github": "2.2.0",
     "@actions/exec": "1.0.4"
