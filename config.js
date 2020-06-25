@@ -87,6 +87,11 @@ const airCanadaConfig = {
   commission: getConfigKey('AC_COMISSION') || '0',
   AirlineID: getConfigKey('AC_PARTICIPANT_RECIPENT_AIRLINE_ID') || 'AC',
   PointOfSale: {
+    Location: {
+      CountryCode: {
+        '@value': 'US'
+      }
+    },
     TouchPoint: {
       Device: {
         Code: getConfigKey('AC_POINT_OF_SALE_DEVICE_CODE') || '0.AAA.X',
