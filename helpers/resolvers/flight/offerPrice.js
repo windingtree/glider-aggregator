@@ -192,7 +192,7 @@ module.exports.offerPriceRQ = async (
           body,
           requestDocumentId
         );
-        providerUrl = 'https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/OfferPrice';
+        providerUrl = `${airCanadaConfig.baseUrl}/OfferPrice`;
         apiKey = airCanadaConfig.apiKey;
         ndcBody = offerPriceRequestTemplate_AC(ndcRequestData);
         // console.log('###', ndcBody);

@@ -83,7 +83,7 @@ module.exports = basicDecorator(async (req, res) => {
       guaranteeClaim = await claimGuaranteeWithCard(body.guaranteeId);
       ndcRequestHeaderData = mapNdcRequestHeaderData_AC(guaranteeClaim);
       ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, order, body, guaranteeClaim);
-      providerUrl = 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/OrderCreate';
+      providerUrl = `${airCanadaConfig.baseUrlPci}/OrderCreate`;
       apiKey = airCanadaConfig.apiKey;
       ndcBody = fulfillOrderTemplate_AC(ndcRequestHeaderData, ndcRequestData);
       // console.log('@@@', ndcBody);
