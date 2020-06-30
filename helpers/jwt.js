@@ -2,17 +2,21 @@ const { JWK, JWT } = require('jose');
 const ethers = require('ethers');
 const Web3 = require('web3');
 const { OrgIdResolver, httpFetchMethod } = require('@windingtree/org.id-resolver');
-const { addresses } = require('@windingtree/org.id');
+const { addresses: orgIdAddresses } = require('@windingtree/org.id');
+const { addresses: lifDepositAddresses } = require('@windingtree/org.id-lif-deposit');
 const GliderError = require('./error');
 const { redisClient } = require('./redis');
+const { toChecksObject } = require('./json');
 
 const config = require('../config');
 const web3 = new Web3(config.INFURA_URI);
 
 // ORG.ID resolver configuration
+const defaultNetwork = 'ropsten'; // @todo Set the network type on the base of environment config
 const orgIdResolver = new OrgIdResolver({
   web3,
-  orgId: addresses.ropsten // @todo Set the network type on the base of environment config
+  orgId: orgIdAddresses[defaultNetwork],
+  lifDeposit: lifDepositAddresses[defaultNetwork]
 });
 orgIdResolver.registerFetchMethod(httpFetchMethod);
 
@@ -58,11 +62,12 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
     didResult = cachedDidResult;
   } else {
     didResult = await orgIdResolver.resolve(did);
+    const checks = toChecksObject(didResult.checks);
     
     // didDocument should be resolved
-    if (!didResult.didDocument) {
+    if (!checks.DID_DOCUMENT.passed) {
       throw new GliderError(
-        didResult.errors[0].detail,
+        checks.DID_DOCUMENT.errors.join('; '),
         403
       );
     }
@@ -81,7 +86,7 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
   }
 
   // Organization should not be disabled
-  if (!didResult.organization.state) {
+  if (!didResult.organization.isActive) {
     throw new GliderError(
       `Organization: ${didResult.organization.orgId} is disabled`,
       403
@@ -89,6 +94,7 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
   }
 
   // Lif deposit should be equal or more then configured
+  didResult.lifDeposit.deposit = didResult.lifDeposit.deposit ? didResult.lifDeposit.deposit : '0';
   if (Number(web3.utils.fromWei(didResult.lifDeposit.deposit, 'ether')) < config.LIF_MIN_DEPOSIT) {
     throw new GliderError(
       `Lif token deposit insuficient: ${didResult.organization.orgId} has less than ${config.LIF_MIN_DEPOSIT} LIF`,
@@ -121,7 +127,7 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
     if (![
       didResult.organization.owner,
       ...(didResult.organization.director !== '0x0000000000000000000000000000000000000000'
-          && didResult.organization.directorConfirmed
+          && didResult.organization.isDirectorshipAccepted
         ? [didResult.organization.director]
         : [])
     ].includes(signingAddress)) {
