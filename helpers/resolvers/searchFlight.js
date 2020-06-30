@@ -419,7 +419,7 @@ module.exports.searchFlight = async (body) => {
         break;
       case 'AC':
         ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, body, requestDocumentId);
-        providerUrl = 'https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/AirShopping';
+        providerUrl = `${airCanadaConfig.baseUrl}/AirShopping`;
         apiKey = airCanadaConfig.apiKey;
         ndcBody = provideShoppingRequestTemplate_AC(ndcRequestData);
         // console.log('@@@', ndcBody);
