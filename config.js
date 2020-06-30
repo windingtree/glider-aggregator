@@ -148,3 +148,4 @@ module.exports.SIMARD_JWT = getConfigKey('SIMARD_JWT') || getConfigKey('JWT');
 module.exports.LIF_MIN_DEPOSIT = getConfigKey('LIF_MIN_DEPOSIT') || '0';
 module.exports.expirationTime = 30 * 60; // 30 min in seconds
 module.exports.expirationLong = 60 * 60 * 24 * 365 * 7; // 7 years in seconds
+module.exports.ETHEREUM_NETWORK = getConfigKey('ETHEREUM_NETWORK') || 'ropsten';
