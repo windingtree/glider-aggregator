@@ -55,14 +55,6 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
   // Resolve did to didDocument
   const { did, fragment } = iss.match(/(?<did>did:orgid:0x\w{64})(?:#{1})?(?<fragment>\w+)?/).groups;
 
-  console.log('Resolver config:', JSON.stringify({
-    defaultNetwork,
-    orgId: orgIdAddresses[defaultNetwork],
-    lifDeposit: lifDepositAddresses[defaultNetwork]
-  }, null, 2));
-  console.log('Resolver result for: ', did);
-  console.log(JSON.stringify(await orgIdResolver.resolve(did), null, 2));
-  
   let didResult;
   const cachedDidResult = JSON.parse(await redisClient.asyncGet(`didResult_${did}`));
 
@@ -102,7 +94,9 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
   }
 
   // Lif deposit should be equal or more then configured
-  didResult.lifDeposit.deposit = didResult.lifDeposit.deposit ? didResult.lifDeposit.deposit : '0';
+  didResult.lifDeposit.deposit = didResult.lifDeposit && didResult.lifDeposit.deposit
+    ? didResult.lifDeposit.deposit
+    : '0';
   if (Number(web3.utils.fromWei(didResult.lifDeposit.deposit, 'ether')) < config.LIF_MIN_DEPOSIT) {
     throw new GliderError(
       `Lif token deposit insuficient: ${didResult.organization.orgId} has less than ${config.LIF_MIN_DEPOSIT} LIF`,
