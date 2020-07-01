@@ -1,5 +1,6 @@
 const format = require('date-fns/format');
 const { getCardCode } = require('./utils/cardUtils');
+const { getACSystemId } = require('../soapTemplates/utils/xmlUtils');
 
 module.exports.mapNdcRequestData_AF = (config, { offerId, offerItems, passengers }) => ({
   ...(JSON.parse(JSON.stringify(config))),
@@ -32,13 +33,13 @@ module.exports.mapNdcRequestHeaderData_AC = guaranteeClaim => ({
   Sender: {
     Address: {
       Company: 'WindingTree',
-      NDCSystemId: guaranteeClaim ? 'DEV-PCI' : 'DEV'
+      NDCSystemId: getACSystemId(guaranteeClaim !== undefined)
     }
   },
   Recipient: {
     Address: {
       Company: 'AC',
-      NDCSystemId: guaranteeClaim ? 'DEV-PCI' : 'DEV'
+      NDCSystemId: getACSystemId(guaranteeClaim !== undefined)
     }
   }
 });

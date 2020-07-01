@@ -1,5 +1,4 @@
-const { convertObjectToXML } = require('./utils/xmlUtils');
-
+const { convertObjectToXML, getACSystemId } = require('./utils/xmlUtils');
 // For documentation, https://github.com/windingtree/simard-schemas/blob/master/ndc/data-mapping.mds
 
 // The Passenger object
@@ -116,13 +115,13 @@ module.exports.provideShoppingRequestTemplate_AC = data => `<soapenv:Envelope xm
           <Sender>
             <Address>
                 <Company>WindingTree</Company>
-                <NDCSystemId>DEV</NDCSystemId>
+                <NDCSystemId>${getACSystemId(false)}</NDCSystemId>
             </Address>
           </Sender>
           <Recipient>
             <Address>
               <Company>AC</Company>
-              <NDCSystemId>DEV</NDCSystemId>
+              <NDCSystemId>${getACSystemId(false)}</NDCSystemId>
             </Address>
           </Recipient>
       </NDCMSG_Header>
