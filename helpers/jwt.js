@@ -12,7 +12,7 @@ const config = require('../config');
 const web3 = new Web3(config.INFURA_URI);
 
 // ORG.ID resolver configuration
-const defaultNetwork = config.ETHEREUM_NETWORK;
+const defaultNetwork = process.env.ETHEREUM_NETWORK;
 const orgIdResolver = new OrgIdResolver({
   web3,
   orgId: orgIdAddresses[defaultNetwork],
