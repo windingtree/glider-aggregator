@@ -54,6 +54,14 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
 
   // Resolve did to didDocument
   const { did, fragment } = iss.match(/(?<did>did:orgid:0x\w{64})(?:#{1})?(?<fragment>\w+)?/).groups;
+
+  console.log('Resolver config:', JSON.stringify({
+    defaultNetwork,
+    orgId: orgIdAddresses[defaultNetwork],
+    lifDeposit: lifDepositAddresses[defaultNetwork]
+  }, null, 2));
+  console.log('Resolver result for: ', did);
+  console.log(JSON.stringify(await orgIdResolver.resolve(did), null, 2));
   
   let didResult;
   const cachedDidResult = JSON.parse(await redisClient.asyncGet(`didResult_${did}`));
