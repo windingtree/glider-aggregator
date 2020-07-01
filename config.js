@@ -85,11 +85,18 @@ const airFranceConfig = {
 const airCanadaConfig = {
   apiKey: getConfigKey('AC_API_KEY'),
   commission: getConfigKey('AC_COMISSION') || '0',
+  baseUrl: getConfigKey('AC_BASEURL') || (enviroment === 'production' ? 'https://ndcexchange.mconnect.aero/messaging/v2/ndc-exchange/' : 'https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/'),
+  baseUrlPci: getConfigKey('AC_BASEURL_PCI') || (enviroment === 'production' ? 'https://pci.ndcexchange.mconnect.aero/messaging/v2/ndc-exchange/' : 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/'),
   AirlineID: getConfigKey('AC_PARTICIPANT_RECIPENT_AIRLINE_ID') || 'AC',
   PointOfSale: {
+    Location: {
+      CountryCode: {
+        '@value': getConfigKey('AC_POS_COUNTRY_CODE') || 'CA'
+      }
+    },
     TouchPoint: {
       Device: {
-        Code: getConfigKey('AC_POINT_OF_SALE_DEVICE_CODE') || '0.AAA.X',
+        Code: getConfigKey('AC_POS_DEVICE_CODE') || '0.AAA.X',
         TableName: {}
       }
     }
@@ -143,3 +150,4 @@ module.exports.SIMARD_JWT = getConfigKey('SIMARD_JWT') || getConfigKey('JWT');
 module.exports.LIF_MIN_DEPOSIT = getConfigKey('LIF_MIN_DEPOSIT') || '0';
 module.exports.expirationTime = 30 * 60; // 30 min in seconds
 module.exports.expirationLong = 60 * 60 * 24 * 365 * 7; // 7 years in seconds
+module.exports.ETHEREUM_NETWORK = getConfigKey('ETHEREUM_NETWORK') || 'ropsten';

@@ -109,6 +109,7 @@
     "GLIDER_ORGID": "@ropsten.glider-aggregator.orgid",
     "GLIDER_ADMIN_KEY": "@staging.glider-aggregator.admin-key",
     "LIF_MIN_DEPOSIT": "@staging.glider-aggregator.lif_deposit",
-    "SIMARD_URL": "@staging.glider-aggregator.simard_api_endpoint"
+    "SIMARD_URL": "@staging.glider-aggregator.simard_api_endpoint",
+    "ETHEREUM_NETWORK": "@staging.glider-aggregator.ethereum_network"
   }
 }

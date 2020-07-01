@@ -86,7 +86,7 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
         guaranteeClaim,
         requestDocumentId
       );
-      providerUrl = 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/OrderCreate';
+      providerUrl = `${airCanadaConfig.baseUrlPci}/OrderCreate`;
       apiKey = airCanadaConfig.apiKey;
       ndcBody = orderCreateRequestTemplate_AC(ndcRequestHeaderData, ndcRequestData);
       responseTransformTemplate = provideOrderCreateTransformTemplate_AC;

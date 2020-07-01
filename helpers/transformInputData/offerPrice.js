@@ -6,7 +6,7 @@ const {
 
 module.exports.mapNdcRequestData_AC = (
   // extract the only needed part of config
-  { apiKey, commission, AirlineID, Document, ...config }, // eslint-disable-line no-unused-vars
+  { apiKey, commission, AirlineID, Document, baseUrl, baseUrlPci, ...config }, // eslint-disable-line no-unused-vars
   offers,
   body,
   documentId = 'OneWay'
