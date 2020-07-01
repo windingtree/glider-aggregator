@@ -94,6 +94,9 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
   }
 
   // Lif deposit should be equal or more then configured
+  if(!didResult.lifDeposit) {
+    didResult.lifDeposit = {};
+  }
   didResult.lifDeposit.deposit = didResult.lifDeposit.deposit ? didResult.lifDeposit.deposit : '0';
   if (Number(web3.utils.fromWei(didResult.lifDeposit.deposit, 'ether')) < config.LIF_MIN_DEPOSIT) {
     throw new GliderError(
