@@ -39,8 +39,8 @@
     "uuid": "8.1.0",
     "web3": "1.2.9",
     "@windingtree/org.id": "1.1.0",
-    "@windingtree/org.id-resolver": "1.2.2",
-    "@windingtree/org.id-lif-deposit": "1.0.0",
+    "@windingtree/org.id-resolver": "1.3.0",
+    "@windingtree/org.id-lif-deposit": "1.0.1",
     "jose": "1.27.1",
     "mongoose": "5.9.20",
     "@elastic/elasticsearch": "7.8.0"
