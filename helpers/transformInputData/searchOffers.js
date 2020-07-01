@@ -71,7 +71,7 @@ module.exports.mapNdcRequestData_AF = (config, { itinerary, passengers }) => ({
 // Build request data for the request to the AirCanada provider
 module.exports.mapNdcRequestData_AC = (
   // extract the only needed part of config
-  { apiKey, commission, AirlineID, Document, ...config }, // eslint-disable-line no-unused-vars
+  { apiKey, commission, AirlineID, Document, baseUrl, baseUrlPci, ...config }, // eslint-disable-line no-unused-vars
   { itinerary, passengers },
   documentId = 'OneWay'
 ) => ({

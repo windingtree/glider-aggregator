@@ -129,7 +129,7 @@ module.exports.seatMapRQ = async (offerIds) => {
     case 'AC':
       ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offers, requestDocumentId);
       // console.log('@@@', JSON.stringify(ndcRequestData, null, 2));
-      providerUrl = 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/SeatAvailability';
+      providerUrl = `${airCanadaConfig.baseUrlPci}/SeatAvailability`;
       apiKey = airCanadaConfig.apiKey;
       ndcBody = seatAvailabilityRequestTemplate_AC(ndcRequestData);
       // console.log('###', ndcBody);

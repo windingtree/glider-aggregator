@@ -1,4 +1,4 @@
-const { convertObjectToXML } = require('./utils/xmlUtils');
+const { convertObjectToXML, getACSystemId } = require('./utils/xmlUtils');
 
 module.exports.offerPriceRequestTemplate_AC = data => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v2="http://sita.aero/NDC/NDCUtility/v2">
 <soapenv:Header/>
@@ -11,13 +11,13 @@ module.exports.offerPriceRequestTemplate_AC = data => `<soapenv:Envelope xmlns:s
       <Sender>
         <Address>
           <Company>WindingTree</Company>
-          <NDCSystemId>DEV</NDCSystemId>
+          <NDCSystemId>${getACSystemId(false)}</NDCSystemId>
         </Address>
       </Sender>
       <Recipient>
         <Address>
           <Company>AC</Company>
-          <NDCSystemId>DEV</NDCSystemId>
+          <NDCSystemId>${getACSystemId(false)}</NDCSystemId>
         </Address>
       </Recipient>
     </NDCMSG_Header>
