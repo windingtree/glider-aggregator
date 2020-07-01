@@ -28,3 +28,23 @@ const stringifyCircular = (obj, indent = null) => {
   }, indent ? indent : undefined);
 };
 module.exports.stringifyCircular = stringifyCircular;
+
+const toChecksObject = checks => checks.reduce(
+  (a, {
+    type,
+    passed,
+    errors = [],
+    warnings = []
+  }) => {
+    a = {
+      ...a,
+      [type]: {
+        passed,
+        errors,
+        warnings
+      }
+    };
+    return a;
+  }, {}
+);
+module.exports.toChecksObject = toChecksObject;

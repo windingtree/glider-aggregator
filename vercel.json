@@ -136,6 +136,9 @@
         "PRODUCTION_MONGO_URL": "@production.glider-aggregator.mongo_url",
         "PRODUCTION_ELASTIC_URL": "@production.glider-aggregator.elastic_url",
         "PRODUCTION_INFURA_ENDPOINT": "@production.infura_wss_endpoint",
-        "INFURA_PROJECT_ID": "@infura_project_id"
+        "INFURA_PROJECT_ID": "@infura_project_id",
+
+        "ETHEREUM_NETWORK": "ropsten",
+        "PRODUCTION_ETHEREUM_NETWORK": "mainnet"
     }
 }
