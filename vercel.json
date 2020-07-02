@@ -138,7 +138,7 @@
         "PRODUCTION_INFURA_ENDPOINT": "@production.infura_wss_endpoint",
         "INFURA_PROJECT_ID": "@infura_project_id",
 
-        "ETHEREUM_NETWORK": "@staging.ethereum_network",
-        "PRODUCTION_ETHEREUM_NETWORK": "@production.ethereum_network"
+        "ETHEREUM_NETWORK": "ropsten",
+        "PRODUCTION_ETHEREUM_NETWORK": "main"
     }
 }
