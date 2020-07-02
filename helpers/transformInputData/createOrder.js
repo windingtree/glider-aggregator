@@ -23,6 +23,16 @@ module.exports.mapNdcRequestData_AF = (config, { offerId, offerItems, passengers
   },
 });
 
+// Handle specific behavior for order create
+const getACSystemIdOrderCreateRQ = (isPci) => {
+  let systemId = getACSystemId(isPci);
+  // Exception case for OrderCreateRQ
+  if(systemId === 'PROD-PCI') {
+    systemId = 'PROD'
+  }
+  return systemId;
+}
+
 module.exports.mapNdcRequestHeaderData_AC = guaranteeClaim => ({
   Function: 'OrderCreateRQ',
   SchemaType: 'NDC',
@@ -39,7 +49,7 @@ module.exports.mapNdcRequestHeaderData_AC = guaranteeClaim => ({
   Recipient: {
     Address: {
       Company: 'AC',
-      NDCSystemId: getACSystemId(guaranteeClaim !== undefined)
+      NDCSystemId: getACSystemIdOrderCreateRQ(guaranteeClaim !== undefined)
     }
   }
 });
