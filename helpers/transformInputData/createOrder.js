@@ -30,6 +30,7 @@ const getACSystemIdOrderCreateRQ = (isPci) => {
   if(systemId === 'PROD-PCI') {
     systemId = 'PROD'
   }
+  return systemId;
 }
 
 module.exports.mapNdcRequestHeaderData_AC = guaranteeClaim => ({
