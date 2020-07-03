@@ -29,6 +29,16 @@ module.exports = async (offer, passengers, card) => {
     data: otaRequestBody
   });
 
+  // Handle error from reservation
+  if(response.status !== 200 || !response.data) {
+    console.log(JSON.stringify(otaRequestBody));
+    response.data && console.log(JSON.stringify(response.data));
+    throw new GliderError(
+      `[erevmax:${response.status}] Booking creation failed`,
+      502
+    );
+  }
+
   // Transform the XML answer
   const responseData = await transform(response.data, responseTemplate);
 

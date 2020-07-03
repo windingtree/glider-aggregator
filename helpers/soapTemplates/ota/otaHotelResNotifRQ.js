@@ -248,7 +248,7 @@ const mapHotelResNotif = OTA_HotelResNotifRQ => `
 <OTA_HotelResNotifRQ
   EchoToken="${OTA_HotelResNotifRQ.EchoToken}"
   ResStatus="${OTA_HotelResNotifRQ.ResStatus}"
-  Target="Production" 
+  Target="Production"
   TimeStamp="${OTA_HotelResNotifRQ.TimeStamp}"
   Version="${OTA_HotelResNotifRQ.Version}"
   xmlns="${OTA_HotelResNotifRQ.xmlns}"
