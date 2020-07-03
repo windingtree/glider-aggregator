@@ -11,12 +11,18 @@
  * - The Github's branch, if the deployment is made using the Vercel/Github integration
  * - Defaults to 'staging', including local
  */
+var buildEnv = require('./env.json');
 
 // Define the current enviroment
 const determineEnviroment = () => {
   // If defined, use the Glider environment variable
   if(process.env.GLIDER_ENV) {
     return process.env.GLIDER_ENV;
+  }
+
+  // If env.json file present, use it
+  if(buildEnv) {
+    return buildEnv.environment;
   }
 
   // Otherwise use the Github branch provided by Vercel
@@ -133,6 +139,7 @@ module.exports.debugInfo = () => {
     enviroment: enviroment,
     erevmax: erevmax,
     env: process.env,
+    buildEnv: buildEnv,
   }
 }
 
