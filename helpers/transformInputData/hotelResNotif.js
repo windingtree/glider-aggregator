@@ -37,7 +37,7 @@ const mapFromOffer = (offer, passengers, card) => {
     GuaranteeCode: 'GCC',
     PaymentCard: {
       CardType: '1', // 1-Credit as per erevmax doc,
-      CardCode: getCardCode(card),
+      CardCode: getCardCode(card, 'ota'),
       CardNumber: card.accountNumber,
       ExpireDate: `${card.expiryMonth}${card.expiryYear.substr(-2)}`, // MMYY format
       //CardHolderName: OPTIONAL
