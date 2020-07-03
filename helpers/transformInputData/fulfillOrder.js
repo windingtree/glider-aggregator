@@ -65,7 +65,7 @@ module.exports.mapNdcRequestData_AC = (
         Method: {
           PaymentCard: {
             CardType: 3,
-            CardCode: getCardCode(guaranteeClaim.card),
+            CardCode: getCardCode(guaranteeClaim.card, 'iata'),
             CardNumber: guaranteeClaim.card.accountNumber,
             ...(guaranteeClaim.card.cvv ? {
               SeriesCode: guaranteeClaim.card.cvv
