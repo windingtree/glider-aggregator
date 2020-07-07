@@ -22,7 +22,14 @@ const hotelAvailTransformTemplate = {
         emails: [
           'BasicPropertyInfo/Address/TPA_Extensions/Emails/Email',
           '@email_ID'
-        ]
+        ],
+        address:{
+          streetAddress:'BasicPropertyInfo/Address/AddressLine/@address1',
+          premise:'BasicPropertyInfo/Address/AddressLine/@address2',
+          locality:'BasicPropertyInfo/Address/CityName',
+          postalCode:'BasicPropertyInfo/Address/PostalCode',
+          country:'BasicPropertyInfo/Address/CountryName'
+        }
       },
       checkinoutPolicy: {
         checkinTime: 'BasicPropertyInfo/Policy/@CheckInTime',
