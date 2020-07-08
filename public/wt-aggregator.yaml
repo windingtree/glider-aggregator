@@ -990,6 +990,28 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/Email"
+            address:
+              type: object
+              properties:
+                streetAddress:
+                  description: address line
+                  type: string
+                  example: Maskingatan 11
+                premise:
+                  type: string
+                  example: Gota Alv River
+                locality:
+                  description: city name
+                  type: string
+                  example: Gothenburg
+                postalCode:
+                  description: postal code
+                  type: string
+                  example: 417 64
+                country:
+                  description: country code
+                  type: string
+                  example: SE
         checkinoutPolicy:
           description: The check-in and check-out time policy, format HH:MM
           type: object
