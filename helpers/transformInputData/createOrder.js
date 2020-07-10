@@ -107,7 +107,7 @@ module.exports.mapNdcRequestData_AC = (
       segment: segmentsChanged.mapping[o.segment]
     })
   );
-  offer.extraData.seats = offer.extraData.seats.map(
+  offer.extraData.seats = Array.isArray(offer.extraData.seats) && offer.extraData.seats.map(
     s => ({
       ...s,
       segment: segmentsChanged.mapping[s.segment]
