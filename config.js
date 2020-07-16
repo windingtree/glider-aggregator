@@ -11,7 +11,10 @@
  * - The Github's branch, if the deployment is made using the Vercel/Github integration
  * - Defaults to 'staging', including local
  */
-var buildEnv = require('./env.json');
+let buildEnv;
+try {
+  buildEnv = require('./env.json');
+} catch (err) {}
 
 // Define the current enviroment
 const determineEnviroment = () => {

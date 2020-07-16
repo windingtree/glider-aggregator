@@ -20,4 +20,4 @@ else
     testDir="$@"
 fi
 
-npx mocha --exit -R spec --timeout 70000 --recursive "$testDir"
+npx mocha -r ./node_modules/dotenv/config --exit -R spec --timeout 70000 --recursive "$testDir"
