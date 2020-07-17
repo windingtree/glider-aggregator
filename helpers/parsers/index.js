@@ -108,7 +108,7 @@ module.exports.roundCommissionDecimals = (offers) => offers
     })
   );
 
-module.exports.reduceAcomodation = (accommodation) => accommodation
+module.exports.reduceAccommodation = (accommodation) => accommodation
   .reduce(
     (ac, { _provider_, _id_, ...others }) => {
       const key = `${_provider_}.${_id_}`;

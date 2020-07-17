@@ -10,7 +10,7 @@ const {
 const {
   reduceToObjectByKey,
   reduceObjectToProperty,
-  reduceAcomodation
+  reduceAccommodation
 } = require('../parsers');
 const { manager: hotelsManager } = require('../models/mongo/hotels');
 
@@ -18,32 +18,75 @@ const GliderError = require('../error');
 const offer = require('../models/offer');
 const config = require('../../config');
 
-const searchHotel = async (body) => {
+// Convert rectangle coordinates to polygon
+const rectangleToPolygon = rectangle => [
+  [
+    rectangle.west,
+    rectangle.north
+  ],
+  [
+    rectangle.east,
+    rectangle.north
+  ],
+  [
+    rectangle.east,
+    rectangle.south
+  ],
+  [
+    rectangle.west,
+    rectangle.south
+  ]
+].map(c => [Number(c[0]), Number(c[1])]);
+module.exports.rectangleToPolygon = rectangleToPolygon;
+
+// Get the Guest count
+const getGuestCounts = passengers => {
+  if (!passengers || !Array.isArray(passengers) || passengers.length === 0) {
+    throw new GliderError('Passengers search property is required', 400);
+  }
+
+  const guestCounts = [
+    new offer.GuestCount('ADT', 0),
+    new offer.GuestCount('CHD', 0),
+  ];
+
+  for (let p of passengers) {
+    let newCount = p.count === undefined ? 1 : Number(p.count);
+    if (p.type === 'ADT') {
+      guestCounts[0].count += newCount;
+    } else if (p.type === 'CHD') {
+      guestCounts[1].count += newCount;
+    } else {
+      throw new GliderError('Unsupported passenger type', 400);
+    }
+  }
+
+  if (guestCounts[0].count === 0) {
+    throw new GliderError(
+      'At least one adult passenger is required to search properties',
+      400
+    );
+  }
+
+  return guestCounts;
+};
+module.exports.getGuestCounts = getGuestCounts;
+
+module.exports.searchHotel = async (body) => {
   let hotels;
+
+  if (!body.passengers.length) {
+    throw new GliderError('Missing passenger types', 400);
+  }
+
+  const guestCounts = getGuestCounts(body.passengers);
 
   if (typeof body.accommodation.location.circle === 'object') {
     hotels = await hotelsManager.searchByLocation(body.accommodation.location.circle);
   } else if (Array.isArray(body.accommodation.location.polygon)) {
     hotels = await hotelsManager.searchWithin(body.accommodation.location.polygon);
   } else if (typeof body.accommodation.location.rectangle === 'object') {
-    const polygon = [
-      [
-        body.accommodation.location.rectangle.west,
-        body.accommodation.location.rectangle.north
-      ],
-      [
-        body.accommodation.location.rectangle.east,
-        body.accommodation.location.rectangle.north
-      ],
-      [
-        body.accommodation.location.rectangle.east,
-        body.accommodation.location.rectangle.south
-      ],
-      [
-        body.accommodation.location.rectangle.west,
-        body.accommodation.location.rectangle.south
-      ]
-    ].map(c => [Number(c[0]), Number(c[1])]);
+    const polygon = rectangleToPolygon(body.accommodation.location.rectangle);
     hotels = await hotelsManager.searchWithin(polygon);
   } else {
     throw new GliderError(
@@ -63,34 +106,6 @@ const searchHotel = async (body) => {
   
   if (!hotelCodes.length) {
     throw new GliderError('No matching hotels', 404);
-  }
-
-  // Get the Guest count
-  var guestCounts = [
-    new offer.GuestCount('ADT', 0),
-    new offer.GuestCount('CHD', 0),
-  ];
-
-  if (!body.passengers.length) {
-    throw new GliderError('Missing passenger types', 400);
-  }
-
-  for (let p of body.passengers) {
-    let newCount = p.count === undefined ? 1 : Number(p.count);
-    if (p.type === 'ADT') {
-      guestCounts[0].count += newCount;
-    } else if (p.type === 'CHD') {
-      guestCounts[1].count += newCount;
-    } else {
-      throw new GliderError('Unsupported passenger type', 400);
-    }
-  }
-
-  if (guestCounts[0].count === 0) {
-    throw new GliderError(
-      'At least one adult passenger is required to search properties',
-      400
-    );
   }
 
   // Build the request
@@ -121,7 +136,7 @@ const searchHotel = async (body) => {
   const searchResults = await transform(response.data, hotelAvailTransformTemplate);
 
   // Go through the Room Stays to build the offers and gather the room types
-  var accomodationRoomTypes = {};
+  var accommodationRoomTypes = {};
   var offers = {};
   let offersToStore = {};
   searchResults._roomStays_.forEach(roomStay => {
@@ -135,12 +150,12 @@ const searchHotel = async (body) => {
       roomType.policies = reduceToObjectByKey(roomType.policies);
       roomType.policies = reduceObjectToProperty(roomType.policies, '_value_');
 
-      // Add the room type to the dict that will be used when building accomodation
-      if (!(accomodationRoomTypes[accommodationReference])) {
-        accomodationRoomTypes[accommodationReference] = {};
+      // Add the room type to the dict that will be used when building accommodation
+      if (!(accommodationRoomTypes[accommodationReference])) {
+        accommodationRoomTypes[accommodationReference] = {};
       }
-      accomodationRoomTypes[accommodationReference][roomType._id_] = roomType;
-      delete(accomodationRoomTypes[accommodationReference][roomType._id_]._id_);
+      accommodationRoomTypes[accommodationReference][roomType._id_] = roomType;
+      delete(accommodationRoomTypes[accommodationReference][roomType._id_]._id_);
     }
 
     // Handle the Rate Plans
@@ -204,10 +219,10 @@ const searchHotel = async (body) => {
     });
   });
 
-  // Parse the accomodations
+  // Parse the accommodations
   for (var accommodation of searchResults.accommodations) {
 
-    // Build the accomodation reference key
+    // Build the accommodation reference key
     var accommodationReference = `${accommodation._provider_}.${accommodation._id_}`;
 
     // Reduce the policies
@@ -215,10 +230,10 @@ const searchHotel = async (body) => {
     accommodation.otherPolicies = reduceObjectToProperty(accommodation.otherPolicies, '_value_');
 
     // Add the room types gathered from Room Rates
-    accommodation.roomTypes = accomodationRoomTypes[accommodationReference];
+    accommodation.roomTypes = accommodationRoomTypes[accommodationReference];
 
   }
-  searchResults.accommodations = reduceAcomodation(searchResults.accommodations);
+  searchResults.accommodations = reduceAccommodation(searchResults.accommodations);
 
   searchResults.offers = offers;
   delete(searchResults._roomStays_);
@@ -234,8 +249,4 @@ const searchHotel = async (body) => {
   };
 
   return searchResults;
-};
-
-module.exports = {
-  searchHotel,
 };
