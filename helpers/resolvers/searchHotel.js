@@ -147,6 +147,7 @@ module.exports.searchHotel = async (body) => {
     // Handle the room types
     for (const roomType of roomStay._roomTypes_) {
       // Reduce the policies
+      console.log('@@@', roomType.policies);
       roomType.policies = reduceToObjectByKey(roomType.policies);
       roomType.policies = reduceObjectToProperty(roomType.policies, '_value_');
 
@@ -233,6 +234,7 @@ module.exports.searchHotel = async (body) => {
     accommodation.roomTypes = accommodationRoomTypes[accommodationReference];
 
   }
+  console.log(searchResults.accommodations);
   searchResults.accommodations = reduceAccommodation(searchResults.accommodations);
 
   searchResults.offers = offers;

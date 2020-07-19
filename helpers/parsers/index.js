@@ -2,7 +2,7 @@
 const { zonedTimeToUtc } = require('date-fns-tz');
 const { airports } = require('./timeZoneByAirportCode');
 
-module.exports.reduceObjectToProperty = (object, property) => Object.entries(object)
+module.exports.reduceObjectToProperty = (array, property) => Object.entries(array)
   .reduce(
     (result, [key, value])=> ({
       ...result,
