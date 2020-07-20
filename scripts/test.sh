@@ -10,6 +10,7 @@ trap cleanup EXIT
 
 cleanup() {
     # cleanup logic
+    rm -rf .nyc_output
     echo "Testing environment is cleaned"
 }
 
