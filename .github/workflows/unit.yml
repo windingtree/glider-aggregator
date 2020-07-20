@@ -11,8 +11,8 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      # - name: Code Linting
-      #   run: npm run lint
+      - name: Code Linting
+        run: npm run lint
 
       - name: Start Redis
         uses: superchargejs/redis-github-action@master
