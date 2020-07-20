@@ -24,6 +24,7 @@
     "dev": "npx now dev",
     "test": "./scripts/test.sh",
     "test:newman": "node ./test/newman/run.js",
+    "coverage": "COVERAGE=true ./scripts/test.sh",
     "lint": "npx eslint test admin api decorators helpers",
     "now-build": "node ./scripts/build/now-build.js"
   },
@@ -50,6 +51,7 @@
     "eslint": "7.4.0",
     "mocha": "8.0.1",
     "chai": "4.2.0",
+    "nyc": "15.1.0",
     "dotenv": "8.2.0",
     "newman": "5.1.2",
     "@actions/core": "1.2.4",
