@@ -74,8 +74,8 @@ module.exports.getGuestCounts = getGuestCounts;
 
 module.exports.searchHotel = async (body) => {
   let hotels;
-
-  if (!body.passengers.length) {
+  
+  if (!body.passengers || !body.passengers.length) {
     throw new GliderError('Missing passenger types', 400);
   }
 
@@ -94,14 +94,14 @@ module.exports.searchHotel = async (body) => {
       400
     );
   }
-
+  
   if (hotels.total === 0) {
     throw new GliderError(
       'No Hotels were found with the provided criteria',
       404
     );
   }
-
+  
   const hotelCodes = hotels.records.map(r => r.ref);
   
   if (!hotelCodes.length) {
@@ -113,14 +113,28 @@ module.exports.searchHotel = async (body) => {
   const requestBody = hotelAvailRequestTemplate(requestData);
 
   // Fire the request
-  const response = await axios.post(
-    config.erevmax.availabilityUrl,
-    requestBody, {
-      headers: {
-        'Content-Type': 'application/xml',
-        SOAPAction: 'http://www.opentravel.org/OTA/2003/05/getOTAHotelAvailability',
-      },
-    });
+  let response;
+  
+  if (!process.env.TESTING) {
+    /* istanbul ignore next */
+    response = await axios.post(
+      config.erevmax.availabilityUrl,
+      requestBody,
+      {
+        headers: {
+          'Content-Type': 'application/xml',
+          SOAPAction: 'http://www.opentravel.org/OTA/2003/05/getOTAHotelAvailability',
+        },
+      }
+    );
+    // console.log(require('../json').stringifyCircular(response));
+  } else {
+    const erevmaxResponse = require('../../test/mocks/erevmax.json');
+    const erevmaxErrorsResponse = require('../../test/mocks/erevmaxErrors.json');
+    response = process.env.TESTING_PROVIDER_ERRORS === '1'
+      ? erevmaxErrorsResponse
+      : erevmaxResponse;
+  }
 
   // Handle any errors returned from the API
   const { errors } = await transform(response.data, errorsTransformTemplate);
@@ -233,7 +247,7 @@ module.exports.searchHotel = async (body) => {
     accommodation.roomTypes = accommodationRoomTypes[accommodationReference];
 
   }
-  console.log(searchResults.accommodations);
+  
   searchResults.accommodations = reduceAccommodation(searchResults.accommodations);
 
   searchResults.offers = offers;
