@@ -254,7 +254,10 @@ module.exports.searchHotel = async (body) => {
   delete(searchResults._roomStays_);
 
   // Store the offers
-  await offer.offerManager.storeOffers(offersToStore);
+  if (!process.env.TESTING) {
+    /* istanbul ignore next */
+    await offer.offerManager.storeOffers(offersToStore);
+  }
 
   // Hotels require only the main passenger
   searchResults.passengers = {
