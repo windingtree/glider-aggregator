@@ -23,7 +23,7 @@ module.exports.assertFailure = async (promise, reason = false, code = null) => {
   } catch (error) {
     
     if (reason) {
-      const reasonFoundByString = error.message
+      const reasonFoundByString = error.message === reason || error.message
         .toLowerCase().search(reason.toLowerCase()) >= 0;
       
       assert(

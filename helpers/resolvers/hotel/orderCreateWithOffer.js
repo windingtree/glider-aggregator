@@ -17,22 +17,38 @@ module.exports = async (offer, passengers, card) => {
   const otaHotelResNotifRQData = hotelResNotif.mapFromOffer(offer, passengers, card);
   const otaRequestBody = mapOTAHotelResNotifSoap(otaHotelResNotifRQData);
 
-  const response = await axios({
-    method: 'post',
-    url: config.erevmax.reservationUrl,
-    headers: {
-      'Content-Type': 'text/xml;charset=UTF-8',
-      'Accept': '*/*',
-      'Accept-Encoding': 'gzip, deflate, br',
-      'SOAPAction': 'http://www.opentravel.org/OTA/2003/05/getOTAHotelAvailability',
-    },
-    data: otaRequestBody
-  });
+  let response;
+
+  if (!process.env.TESTING) {
+    /* istanbul ignore next */
+    response = await axios({
+      method: 'post',
+      url: config.erevmax.reservationUrl,
+      headers: {
+        'Content-Type': 'text/xml;charset=UTF-8',
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'SOAPAction': 'http://www.opentravel.org/OTA/2003/05/getOTAHotelAvailability',
+      },
+      data: otaRequestBody
+    });
+  } else {
+    response = process.env.TESTING_PROVIDER_ERRORS === '1'
+      ? {
+        status: 502,
+        data: {}
+      }
+      : require('../../../test/mocks/erevmaxOrder.json');
+  }
+  // console.log('@@@', require('../../json').stringifyCircular(response));
 
   // Handle error from reservation
   if(response.status !== 200 || !response.data) {
-    console.log(JSON.stringify(otaRequestBody));
-    response.data && console.log(JSON.stringify(response.data));
+    if (!process.env.TESTING) {
+      /* istanbul ignore next */
+      console.log(JSON.stringify(otaRequestBody));
+      response.data && console.log(JSON.stringify(response.data));
+    }
     throw new GliderError(
       `[erevmax:${response.status}] Booking creation failed`,
       502

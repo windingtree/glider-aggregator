@@ -27,7 +27,7 @@ const {
   FaultsTransformTemplate_AC,
   ErrorsTransformTemplate_AC
 } = require('../../camaroTemplates/provideOfferPrice');
-const { setOrderStatus, assertOrgerStatus } = require('../utils/offers');
+const { setOrderStatus, assertOrderStatus } = require('../utils/offers');
 
 // Convert response data to the object form
 const processResponse = async (data, template) => {
@@ -167,7 +167,7 @@ module.exports.offerPriceRQ = async (
   const offers = await fetchFlightsOffersByIds(offerIds);
 
   // Assert order status in offers
-  assertOrgerStatus(offers);
+  assertOrderStatus(offers);
 
   try {
     await setOrderStatus(offers, 'CREATING');
