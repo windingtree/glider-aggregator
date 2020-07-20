@@ -27,10 +27,10 @@ const cardCodesIATA = {
 module.exports.getCardCode = (card, type) => {
   let cardCode;
   switch(type) {
-    case 'iata': 
+    case 'iata':
       cardCode = cardCodesIATA[card.brand.toLowerCase()];
       break;
-    case 'ota': 
+    case 'ota':
       cardCode = cardCodesOTA[card.brand.toLowerCase()];
       break;
     default:

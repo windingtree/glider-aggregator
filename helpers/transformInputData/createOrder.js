@@ -28,10 +28,10 @@ const getACSystemIdOrderCreateRQ = (isPci) => {
   let systemId = getACSystemId(isPci);
   // Exception case for OrderCreateRQ
   if(systemId === 'PROD-PCI') {
-    systemId = 'PROD'
+    systemId = 'PROD';
   }
   return systemId;
-}
+};
 
 module.exports.mapNdcRequestHeaderData_AC = guaranteeClaim => ({
   Function: 'OrderCreateRQ',
