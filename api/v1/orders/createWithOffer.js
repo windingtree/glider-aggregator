@@ -28,8 +28,13 @@ module.exports = basicDecorator(async (req, res) => {
   const storedOffer = await offerManager.getOffer(requestBody.offerId);
 
   let originOffers = [];
-
-  if (storedOffer instanceof FlightOffer) {
+  
+  // in case of not priced offer
+  // there possible situation when storedOffer.extraData.originOffers is undefined
+  if (storedOffer instanceof FlightOffer &&
+    storedOffer.extraData &&
+    storedOffer.extraData.originOffers) {
+    
     originOffers = await Promise.all(
       storedOffer.extraData.originOffers.map(
         offerId => offerManager.getOffer(offerId)

@@ -3,7 +3,8 @@ const {
   reduceObjectToProperty,
   splitPropertyBySpace,
   reduceToObjectByKey,
-  reduceAccommodation
+  reduceAccommodation,
+  reduceContactInformation
 } = require('../../../helpers/parsers');
 
 require('chai').should();
@@ -119,6 +120,58 @@ describe('Helpers/parsers', () => {
       const result = reduceAccommodation(accommodations);
       accommodations.forEach(a => {
         (result[`${a._provider_}.${a._id_}`]).should.be.an('object').to.have.property('data').to.equal(a.data);
+      });
+    });
+  });
+
+  describe('#reduceContactInformation', () => {
+    const passengers = [
+      {
+        _id_: 'TravelerRefNumber2',
+        type: 'ADT',
+        gender: 'Male',
+        civility: 'MR',
+        lastnames: [
+          'MARLEY'
+        ],
+        firstnames: [
+          'BOB'
+        ],
+        birthdate: '1980-03-21',
+        contactInformation: {
+          emails: [
+            {
+              value: 'CONTACT@ORG.CO.UK'
+            }
+          ],
+          phones: [
+            {
+              value: '+32123456789'
+            }
+          ]
+        }
+      }
+    ];
+
+    it('should throw of wrong passengers has been provided', async () => {
+      (() => reduceContactInformation(undefined)).should.to.throw;
+      (() => reduceContactInformation('notAnArray')).should.to.throw;
+      (() => reduceContactInformation({})).should.to.throw;
+    });
+
+    it('should reduce contact information', async () => {
+      const result = reduceContactInformation(passengers);
+      (result).should.be.an('array');
+      result.forEach(t => {
+        (t).should.be.an('object');
+        (t).should.to.have.property('_id_').to.be.a('string');
+        (t).should.to.have.property('type').to.be.a('string');
+        (t).should.to.have.property('gender').to.be.a('string');
+        (t).should.to.have.property('civility').to.be.a('string');
+        (t).should.to.have.property('lastnames').to.be.an('array');
+        (t).should.to.have.property('firstnames').to.be.an('array');
+        (t).should.to.have.property('birthdate').to.be.a('string');
+        (t).should.to.have.property('contactInformation').to.be.an('array');
       });
     });
   });
