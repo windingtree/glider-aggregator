@@ -80,6 +80,7 @@ module.exports.reduceToProperty = (object, property) =>  Object.keys(object)
     };
   });
 
+/* istanbul ignore next */
 module.exports.splitSegments = (combinations) => combinations
   .map(
     ({ _items_, ...others }) => ({
@@ -120,6 +121,7 @@ module.exports.reduceAccommodation = (accommodation) => accommodation
     {}
   );
 
+/* istanbul ignore next */
 module.exports.reduceRoomStays = (_roomStays_ => {
   // The offer dicts will contain all offers
   let offers = {};

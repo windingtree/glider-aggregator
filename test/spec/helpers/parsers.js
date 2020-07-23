@@ -10,7 +10,9 @@ const {
   useDictionary,
   mergeHourAndDate,
   convertDateToAirportTime,
-  reduceToProperty
+  reduceToProperty,
+  roundCommissionDecimals,
+  deepMerge
 } = require('../../../helpers/parsers');
 
 require('chai').should();
@@ -419,6 +421,121 @@ describe('Helpers/parsers', () => {
         (data).should.to.have.property(prop);
         (a[prop]).should.to.deep.equal(data[prop].prop);
       });
+    });
+  });
+
+  describe('#roundCommissionDecimals', () => {
+    const offers = [
+      {
+        '_id_': 'T4B56FYQEH-OfferID-42',
+        'offerItems': {
+          'HAS54TFEWO-OfferItemID-83': {
+            'passengerReferences': '5B628F25 84B3E141'
+          },
+          'KPIC3IX1DH-OfferItemID-84': {
+            'passengerReferences': 'E32E17CB'
+          }
+        },
+        'expiration': '',
+        'price': {
+          'currency': 'CAD',
+          'public': '3666.90',
+          'commission': 0,
+          'taxes': '135.30'
+        },
+        'pricePlansReferences': {
+          'G9I3YBZWA4-BusinessClassflexible': {
+            'flights': [
+              'FFCQV2B62M-OD120',
+              'GOKZJ5PLMB-OD121'
+            ]
+          }
+        }
+      },
+      {
+        '_id_': 'Q2T85YX2T0-OfferID-43',
+        'offerItems': {
+          'AQ7HWZ2LXH-OfferItemID-85': {
+            'passengerReferences': '5B628F25 84B3E141'
+          },
+          'Y5OU8TUXKZ-OfferItemID-86': {
+            'passengerReferences': 'E32E17CB'
+          }
+        },
+        'expiration': '',
+        'price': {
+          'currency': 'CAD',
+          'public': '3671.49',
+          'commission': 0,
+          'taxes': '136.83'
+        },
+        'pricePlansReferences': {
+          'G9I3YBZWA4-BusinessClassflexible': {
+            'flights': [
+              'F7RWILPCNQ-OD122'
+            ]
+          }
+        }
+      }
+    ];
+
+    it('should to throw if wrong array has been provided', async () => {
+      (() => roundCommissionDecimals(undefined)).should.to.throw;
+      (() => roundCommissionDecimals('wrongType')).should.to.throw;
+      (() => roundCommissionDecimals([])).should.to.throw;
+      (() => roundCommissionDecimals({})).should.to.throw;
+    });
+
+    it('should round commission decimals in offers', async () => {
+      const result = roundCommissionDecimals(offers);
+      (result).should.be.an('array');
+      result.forEach((o, i) => {
+        (o).should.to.have.property('price').to.be.an('object').to.have.property('commission');
+        (o.price.commission).should.to.equal(offers[i].price.commission.toFixed(2).toString());
+      });
+    });
+  });
+
+  describe('#deepMerge', () => {
+    const obj1 = {
+      prop1: {
+        value1: 1,
+        value2: {
+          value3: 3
+        }
+      },
+      prop2: {
+        value4: 4
+      }
+    };
+    const obj2 = {
+      prop1: {
+        value4: 'new4',
+        value2: {
+          value3: 'new3',
+          value5: 5
+        }
+      },
+      prop2: {
+        value6: 6
+      }
+    };
+
+    it('should to throw if wrong object has been provided', async () => {
+      (() => deepMerge(undefined, obj2)).should.to.throw;
+      (() => deepMerge(obj1, undefined)).should.to.throw;
+      (() => deepMerge('obj1', obj2)).should.to.throw;
+      (() => deepMerge(obj1, 'obj2')).should.to.throw;
+      (() => deepMerge([], obj2)).should.to.throw;
+      (() => deepMerge(obj1, [])).should.to.throw;
+    });
+
+    it('should create merged object', async () => {
+      const result = deepMerge(obj1, obj2);
+      (result).should.be.an('object').to.have.property('prop1')
+        .to.deep.equal({ value4: 'new4', value2: { value3: 'new3', value5: 5 }, value1: 1 });
+      (result).should.property('prop2')
+        .to.deep.equal({ value6: 6, value4: 4 });
     });
   });
 });
