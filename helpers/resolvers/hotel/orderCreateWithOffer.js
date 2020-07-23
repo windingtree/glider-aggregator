@@ -44,8 +44,8 @@ module.exports = async (offer, passengers, card) => {
 
   // Handle error from reservation
   if(response.status !== 200 || !response.data) {
+    /* istanbul ignore if */
     if (!process.env.TESTING) {
-      /* istanbul ignore next */
       console.log(JSON.stringify(otaRequestBody));
       response.data && console.log(JSON.stringify(response.data));
     }

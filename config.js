@@ -16,7 +16,7 @@ try {
   buildEnv = require('./env.json');
 } catch (err) {}
 
-// Define the current enviroment
+// Define the current environment
 const determineEnviroment = () => {
   // If defined, use the Glider environment variable
   if(process.env.GLIDER_ENV) {
@@ -38,12 +38,12 @@ const determineEnviroment = () => {
   }
 }
 
-const enviroment = determineEnviroment();
+const environment = determineEnviroment();
 
 // Get an an environment variable
 const getConfigKey = (key) => {
   // Return environment specific variable if any
-  const envKey = `${enviroment.toUpperCase()}_${key}`;
+  const envKey = `${environment.toUpperCase()}_${key}`;
   if(process.env.hasOwnProperty(envKey)) {
     return process.env[envKey];
   }
@@ -94,8 +94,8 @@ const airFranceConfig = {
 const airCanadaConfig = {
   apiKey: getConfigKey('AC_API_KEY'),
   commission: getConfigKey('AC_COMISSION') || '0',
-  baseUrl: getConfigKey('AC_BASEURL') || (enviroment === 'production' ? 'https://ndcexchange.mconnect.aero/messaging/v2/ndc-exchange/' : 'https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/'),
-  baseUrlPci: getConfigKey('AC_BASEURL_PCI') || (enviroment === 'production' ? 'https://pci.ndcexchange.mconnect.aero/messaging/v2/ndc-exchange/' : 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/'),
+  baseUrl: getConfigKey('AC_BASEURL') || (environment === 'production' ? 'https://ndcexchange.mconnect.aero/messaging/v2/ndc-exchange/' : 'https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/'),
+  baseUrlPci: getConfigKey('AC_BASEURL_PCI') || (environment === 'production' ? 'https://pci.ndcexchange.mconnect.aero/messaging/v2/ndc-exchange/' : 'https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/'),
   AirlineID: getConfigKey('AC_PARTICIPANT_RECIPENT_AIRLINE_ID') || 'AC',
   PointOfSale: {
     Location: {
@@ -139,7 +139,7 @@ const erevmax = {
 
 module.exports.debugInfo = () => {
   return {
-    enviroment: enviroment,
+    environment: environment,
     erevmax: erevmax,
     env: process.env,
     buildEnv: buildEnv,
@@ -155,10 +155,10 @@ module.exports.elasticUrl = getConfigKey('ELASTIC_URL') || 'http://localhost:920
 module.exports.INFURA_URI = `${getConfigKey('INFURA_ENDPOINT')}/${getConfigKey('INFURA_PROJECT_ID')}`;
 module.exports.GLIDER_DID = `did:orgid:${getConfigKey('GLIDER_ORGID') || '0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0'}`;
 module.exports.GLIDER_ADMIN_DID = `did:orgid:${getConfigKey('GLIDER_ORGID') || '0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0'}#${getConfigKey('GLIDER_ADMIN_KEY') || ''}`;
-module.exports.SIMARD_URL = getConfigKey('SIMARD_URL') || `https://${enviroment}.api.simard.io/api/v1`;
+module.exports.SIMARD_URL = getConfigKey('SIMARD_URL') || `https://${environment}.api.simard.io/api/v1`;
 module.exports.SIMARD_JWT = getConfigKey('SIMARD_JWT') || getConfigKey('JWT');
 module.exports.LIF_MIN_DEPOSIT = getConfigKey('LIF_MIN_DEPOSIT') || '0';
 module.exports.expirationTime = 30 * 60; // 30 min in seconds
 module.exports.expirationLong = 60 * 60 * 24 * 365 * 7; // 7 years in seconds
 module.exports.ETHEREUM_NETWORK = getConfigKey('ETHEREUM_NETWORK') || 'ropsten';
-module.exports.enviroment = enviroment;
+module.exports.environment = environment;
