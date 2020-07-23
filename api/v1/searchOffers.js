@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const { basicDecorator } = require('../../decorators/basic');
 const GliderError = require('../../helpers/error');
 const { searchHotel } = require('../../helpers/resolvers/searchHotel');

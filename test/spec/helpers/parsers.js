@@ -9,7 +9,8 @@ const {
   reduceContactInformation,
   useDictionary,
   mergeHourAndDate,
-  convertDateToAirportTime
+  convertDateToAirportTime,
+  reduceToProperty
 } = require('../../../helpers/parsers');
 
 require('chai').should();
@@ -372,6 +373,52 @@ describe('Helpers/parsers', () => {
         airports[iataCode]
       ).toISOString();
       (result.toISOString()).should.to.equal(airportTime);
+    });
+  });
+
+  describe('#reduceToProperty', () => {
+    const data = {
+      one: {
+        prop: {
+          value: 1
+        }
+      },
+      two: {
+        prop: {
+          value: 2
+        }
+      }
+    };
+
+    it('should to throw if wrong object has been provided', async () => {
+      (() => reduceToProperty(undefined, 'prop')).should.to.throw;
+      (() => reduceToProperty('wrongType', 'prop')).should.to.throw;
+      (() => reduceToProperty([], 'prop')).should.to.throw;
+      (() => reduceToProperty({}, 'prop')).should.to.throw;
+    });
+
+    it('should to throw if wrong property has been provided', async () => {
+      (() => reduceToProperty(data, undefined)).should.to.throw;
+      (() => reduceToProperty(data, [])).should.to.throw;
+      (() => reduceToProperty(data, {})).should.to.throw;
+    });
+
+    it('should return broken array if unknown property has been provided', async () => {
+      const result = reduceToProperty(data, 'unknownProperty');
+      result.forEach(a => {
+        const prop = Object.keys(a)[0];
+        (data).should.to.have.property(prop);
+        (typeof a[prop]).should.to.equal('undefined');
+      });
+    });
+    
+    it('should fulfill', async () => {
+      const result = reduceToProperty(data, 'prop');
+      result.forEach(a => {
+        const prop = Object.keys(a)[0];
+        (data).should.to.have.property(prop);
+        (a[prop]).should.to.deep.equal(data[prop].prop);
+      });
     });
   });
 });
