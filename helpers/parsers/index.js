@@ -68,7 +68,7 @@ module.exports.mergeHourAndDate = array => array
     })
   );
 
-module.exports.convertDateToIrportTime = (date, time, iataCode) => zonedTimeToUtc(
+module.exports.convertDateToAirportTime = (date, time, iataCode) => zonedTimeToUtc(
   `${date} ${time}:00.000`,
   airports[iataCode]
 );
