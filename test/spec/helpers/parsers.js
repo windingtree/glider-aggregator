@@ -1,10 +1,14 @@
 // const { assertFailure } = require('../../helpers/assertions');
+const { zonedTimeToUtc } = require('date-fns-tz');
+const { airports } = require('../../../helpers/parsers/timeZoneByAirportCode');
 const {
   reduceObjectToProperty,
   splitPropertyBySpace,
   reduceToObjectByKey,
   reduceAccommodation,
-  reduceContactInformation
+  reduceContactInformation,
+  useDictionary,
+  mergeHourAndDate
 } = require('../../../helpers/parsers');
 
 require('chai').should();
@@ -172,6 +176,161 @@ describe('Helpers/parsers', () => {
         (t).should.to.have.property('firstnames').to.be.an('array');
         (t).should.to.have.property('birthdate').to.be.a('string');
         (t).should.to.have.property('contactInformation').to.be.an('array');
+      });
+    });
+  });
+
+  describe('#useDictionary', () => {
+    const passengers = [
+      {
+        _id_: 'TravelerRefNumber2',
+        contactInformation: 'CONTACT_For_TravelerRefNumber2'
+      }
+    ];
+    const contacList = {
+      'CONTACT_For_TravelerRefNumber2': {
+        emails: [
+          {
+            value: 'CONTACT@ORG.CO.UK'
+          }
+        ]
+      }
+    };
+    const word = 'contactInformation';
+
+    it('should to trow if wrong array has been provided', async () => {
+      (() => useDictionary(undefined, contacList, word)).should.to.throw;
+      (() => useDictionary('wrongType', contacList, word)).should.to.throw;
+      (() => useDictionary({}, contacList, word)).should.to.throw;
+    });
+
+    it('should to trow if wrong dictionary has been provided', async () => {
+      (() => useDictionary(passengers, undefined, word)).should.to.throw;
+      (() => useDictionary(passengers, 'wrongType', word)).should.to.throw;
+      (() => useDictionary(passengers, {}, word)).should.to.throw;
+    });
+
+    it('should to trow if undefined word has been provided', async () => {
+      (() => useDictionary(passengers, contacList, undefined)).should.to.throw;
+    });
+
+    it('should produce broken array if unknown word has been provided', async () => {
+      const word = 'unknownWord';
+      const result = useDictionary(passengers, contacList, word);
+      (result).should.be.an('array');
+      result.forEach(t => {
+        (t).should.to.have.property(word).to.equal(undefined);
+      });
+    });
+
+    it('should transform array with dictionary', async () => {
+      const result = useDictionary(passengers, contacList, word);
+      (result).should.be.an('array');
+      result.forEach((t, i) => {
+        (t).should.to.have.property('_id_').to.equal(passengers[i]._id_);
+        (t).should.to.have.property('contactInformation')
+          .to.deep.equal(contacList[passengers[i][word]]);
+      });
+    });
+  });
+
+  describe('#mergeHourAndDate', () => {
+    const segments = [
+      {
+        '_id_': 'HWYTY2RNMT-SEG291',
+        'operator': {
+          'operatorType': 'airline',
+          'iataCode': '',
+          'iataCodeM': 'AC',
+          'flightNumber': '164'
+        },
+        'origin': {
+          'locationType': 'airport',
+          'iataCode': 'YEG'
+        },
+        'destination': {
+          'locationType': 'airport',
+          'iataCode': 'YYZ'
+        },
+        'splittedDepartureTime': '09:00',
+        'splittedDepartureDate': '2020-09-14',
+        'splittedArrivalTime': '14:35',
+        'splittedArrivalDate': '2020-09-14',
+        'Departure': {
+          'AirportCode': 'YEG',
+          'Date': '2020-09-14',
+          'Time': '09:00',
+          'Terminal': {
+            'Name': ''
+          }
+        },
+        'Arrival': {
+          'AirportCode': 'YYZ',
+          'Date': '2020-09-14',
+          'Time': '14:35',
+          'Terminal': {
+            'Name': '1'
+          }
+        },
+        'MarketingCarrier': {
+          'AirlineID': 'AC',
+          'Name': 'Air Canada',
+          'FlightNumber': '164',
+          'ResBookDesigCode': 'B'
+        },
+        'OperatingCarrier': {
+          'Disclosures': {
+            'Description': {
+              'Text': 'yfq7H2nszqdvF8SySYd5TV8dpcsYUV67hhsPQkG0KtuMa/AmJRTN4jT+fplmszbFaGtED8EIJYrbScfNk5TdE2NWN/9d2yHWak/vPCpyfdjBFHiM+rPeiQ=='
+            }
+          }
+        },
+        'Equipment': {
+          'AircraftCode': '321'
+        },
+        'ClassOfService': {
+          'Code': 'B'
+        },
+        'FlightDetail': {
+          'FlightDuration': {
+            'Value': 'PT03H35M'
+          },
+          'Stops': {
+            'StopQuantity': '0'
+          }
+        }
+      }
+    ];
+
+    it('should to throw if wrong array has been passed', async () => {
+      (() => mergeHourAndDate(undefined)).should.to.throw;
+      (() => mergeHourAndDate('wrongType')).should.to.throw;
+      (() => mergeHourAndDate({})).should.to.throw;
+      (() => mergeHourAndDate([])).should.to.throw;
+    });
+
+    it('should merge hour and date', async () => {
+      const result = mergeHourAndDate(segments);
+      (result).should.be.an('array');
+      result.forEach((s, i) => {
+        const keys = Object.keys(s);
+        keys.forEach(k => {
+          if (!['departureTime', 'arrivalTime'].includes(k)) {
+            (s).should.to.have.property(k).to.deep.equal(segments[i][k]);
+          } else if (k === 'departureTime') {
+            const time = zonedTimeToUtc(
+              `${segments[i].splittedDepartureDate} ${segments[i].splittedDepartureTime}:00.000`,
+              airports[s.origin.iataCode]
+            ).toISOString();
+            (s.departureTime).should.to.equal(time);
+          } else if (k === 'arrivalTime') {
+            const time = zonedTimeToUtc(
+              `${segments[i].splittedArrivalDate} ${segments[i].splittedArrivalTime}:00.000`,
+              airports[s.destination.iataCode]
+            ).toISOString();
+            (s.arrivalTime).should.to.equal(time);
+          }
+        });
       });
     });
   });

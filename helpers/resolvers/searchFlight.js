@@ -41,7 +41,7 @@ const transformResponse = async (
     response.data,
     templates.response
   );
-
+  
   searchResults.itineraries.segments = mergeHourAndDate(
     searchResults.itineraries.segments
   );
