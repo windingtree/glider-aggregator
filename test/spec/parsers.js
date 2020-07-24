@@ -1,6 +1,6 @@
 // const { assertFailure } = require('../../helpers/assertions');
 const { zonedTimeToUtc } = require('date-fns-tz');
-const { airports } = require('../../../helpers/parsers/timeZoneByAirportCode');
+const { airports } = require('../../helpers/parsers/timeZoneByAirportCode');
 const {
   reduceObjectToProperty,
   splitPropertyBySpace,
@@ -13,7 +13,7 @@ const {
   reduceToProperty,
   roundCommissionDecimals,
   deepMerge
-} = require('../../../helpers/parsers');
+} = require('../../helpers/parsers');
 
 require('chai').should();
 

@@ -1,4 +1,4 @@
-const GliderError = require('../../../helpers/error');
+const GliderError = require('../../helpers/error');
 require('chai').should();
 
 describe('Helpers/error', () => {

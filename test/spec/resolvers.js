@@ -1,9 +1,9 @@
-const { assertFailure } = require('../../helpers/assertions');
+const { assertFailure } = require('../helpers/assertions');
 const {
   searchHotel
-} = require('../../../helpers/resolvers/searchHotel');
-const orderCreateWithOffer = require('../../../helpers/resolvers/hotel/orderCreateWithOffer');
-const { selectProvider } = require('../../../helpers/resolvers/utils/flightUtils');
+} = require('../../helpers/resolvers/searchHotel');
+const orderCreateWithOffer = require('../../helpers/resolvers/hotel/orderCreateWithOffer');
+const { selectProvider } = require('../../helpers/resolvers/utils/flightUtils');
 
 require('chai').should();
 

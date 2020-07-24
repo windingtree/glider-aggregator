@@ -1,13 +1,13 @@
-const GliderError = require('../../../helpers/error');
+const GliderError = require('../../helpers/error');
 const {
   getCardCode,
   cardCodesOTA,
   cardCodesIATA
-} = require('../../../helpers/transformInputData/utils/cardUtils');
+} = require('../../helpers/transformInputData/utils/cardUtils');
 const {
   uniqueObjectsList,
   flatOneDepth
-} = require('../../../helpers/transformInputData/utils/collections');
+} = require('../../helpers/transformInputData/utils/collections');
 
 require('chai').should();
 
