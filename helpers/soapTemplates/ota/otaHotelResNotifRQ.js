@@ -160,8 +160,8 @@ const mapAddress = OTA_Address => {
   }
   return `
 <Address Type="${OTA_Address.Type}">
-    <AddressLine>${OTA_Address.AddressLines[0]}</AddressLine>
-    <AddressLine>${OTA_Address.AddressLines[1]}</AddressLine>
+    <AddressLine>${OTA_Address.AddressLines ? OTA_Address.AddressLines[0] : ''}</AddressLine>
+    <AddressLine>${OTA_Address.AddressLines ? OTA_Address.AddressLines[1] : ''}</AddressLine>
     <CityName>${OTA_Address.CityName}</CityName>
     <PostalCode>${OTA_Address.PostalCode}</PostalCode>
     <StateProv>${OTA_Address.StateProv}</StateProv>
