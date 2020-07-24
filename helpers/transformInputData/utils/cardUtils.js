@@ -13,6 +13,7 @@ const cardCodesOTA = {
   unionpay: 'CU',
   electron: 'VE'
 };
+module.exports.cardCodesOTA = cardCodesOTA;
 
 const cardCodesIATA = {
   visa: 'VI',
@@ -23,6 +24,7 @@ const cardCodesIATA = {
   jcb: 'JC',
   uatp: 'TP',
 };
+module.exports.cardCodesIATA = cardCodesIATA;
 
 module.exports.getCardCode = (card, type) => {
   let cardCode;
