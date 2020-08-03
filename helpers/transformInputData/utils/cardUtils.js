@@ -39,9 +39,5 @@ module.exports.getCardCode = (card, type) => {
       throw new GliderError('Missing Card Code type', 500);
   }
 
-  if (!cardCode) {
-    throw new GliderError('Unknown claimed card brand', 500);
-  }
-
   return cardCode;
 };

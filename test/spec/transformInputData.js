@@ -16,6 +16,12 @@ const {
 const {
   mapNdcRequestData_AC: mapNdcRequestData_AC_offerPrice
 } = require('../../helpers/transformInputData/offerPrice');
+const {
+  mapNdcRequestData_AC: mapNdcRequestData_AC_seatAvailability
+} = require('../../helpers/transformInputData/seatAvailability');
+const {
+  mapNdcRequestData_AC: mapNdcRequestData_AC_fulfillOrder
+} = require('../../helpers/transformInputData/fulfillOrder');
 
 require('chai').should();
 
@@ -37,6 +43,200 @@ const validateHotelRef = hr => {
 };
 
 describe('transformInputData', () => {
+  const docIds = [
+    'OneWay',
+    'Return'
+  ];
+  const body = [
+    {
+      'code': 'divNonAir11.LGAC1',
+      'name': 'Lounge Access',
+      'description': 'An access to the Exclusive Lounge Access at the departure',
+      'segment': 'HW9EJ7XAC7-SEG1',
+      'passenger': 'PAX1',
+      'seatNumber': '12C',
+      'price': {
+        'currency': 'EUR',
+        'private': '40.00',
+        'public': '40.00',
+        'commission': '40.00',
+        'taxes': '40.00'
+      },
+      'taxes': [
+        {
+          'amount': '40.00',
+          'code': 'CA',
+          'description': 'Air Travellers Security Charge (ATSC)'
+        }
+      ]
+    }
+  ];
+  const offers = [
+    {
+      'provider': 'AC',
+      'airlineCode': 'AC',
+      'expiration': '2020-08-03T18:11:53.723Z',
+      'offerItems': {
+        'X77M7SVPDA-OfferItemID-1': {
+          'passengerReferences': '3E6B41DD '
+        },
+        'HFPDQ29PH7-OfferItemID-2': {
+          'passengerReferences': '1C966E35'
+        }
+      },
+      'amountAfterTax': '1036.83',
+      'currency': 'CAD',
+      'extraData': {
+        'offerId': 'H8Z42IS0F2-OfferID-1',
+        'segments': [
+          {
+            'id': 'B69B4WF4RW-SEG1',
+            'operator': {
+              'operatorType': 'airline',
+              'iataCode': 'AC',
+              'flightNumber': 'AC0134'
+            },
+            'Departure': {
+              'AirportCode': 'YYC',
+              'Date': '2020-09-14',
+              'Time': '07:00'
+            },
+            'Arrival': {
+              'AirportCode': 'YYZ',
+              'Date': '2020-09-14',
+              'Time': '12:50',
+              'Terminal': {
+                'Name': '1'
+              }
+            },
+            'MarketingCarrier': {
+              'AirlineID': 'AC',
+              'Name': 'Air Canada',
+              'FlightNumber': '134',
+              'ResBookDesigCode': 'L'
+            },
+            'OperatingCarrier': {
+              'Disclosures': {
+                'Description': {
+                  'Text': 'ssGCPeUH4oRvF8SySYd5TW2hGD96yqr9UnlLUkThnLG/17BjuAKyJRzQOOvKf1zI8ekioOTIFxjLK2Q44/2u8oD0eWQcKaLQSVSp+soTuqMcep+YABFdWqrYvC1N3Gl/5mTFuZAO5Ed6Ja5ZbLy4rw=='
+                }
+              }
+            },
+            'Equipment': {
+              'AircraftCode': '7M8'
+            },
+            'ClassOfService': {
+              'Code': 'L'
+            },
+            'FlightDetail': {
+              'FlightDuration': {
+                'Value': ''
+              },
+              'Stops': {
+                'StopQuantity': '0'
+              }
+            },
+            'origin': {
+              'locationType': 'airport',
+              'iataCode': 'YYC'
+            },
+            'destination': {
+              'locationType': 'airport',
+              'iataCode': 'YYZ'
+            },
+            'departureTime': '2020-09-14T13:00:00.000Z',
+            'arrivalTime': '2020-09-14T16:50:00.000Z',
+            'aggregationKey': 'ACAC01342020-09-14T13:00:00.000Z2020-09-14T16:50:00.000Z'
+          },
+          {
+            'id': 'G9OG66SX2J-SEG2',
+            'operator': {
+              'operatorType': 'airline',
+              'iataCode': 'RV',
+              'flightNumber': 'AC1544'
+            },
+            'Departure': {
+              'AirportCode': 'YYZ',
+              'Date': '2020-09-14',
+              'Time': '14:50',
+              'Terminal': {
+                'Name': '1'
+              }
+            },
+            'Arrival': {
+              'AirportCode': 'YYT',
+              'Date': '2020-09-14',
+              'Time': '19:19'
+            },
+            'MarketingCarrier': {
+              'AirlineID': 'AC',
+              'Name': 'Air Canada',
+              'FlightNumber': '1544',
+              'ResBookDesigCode': 'L'
+            },
+            'OperatingCarrier': {
+              'Disclosures': {
+                'Description': {
+                  'Text': 'ssGCPeUH4oRvF8SySYd5TV8dpcsYUV67DAplC3QvK8JRyNVshs872/HE8VDWF/tNaGtED8EIJYrlpn8XB8pRX6r+QhxHHDS4OduCOeU5xip/veYLBfhQ9w=='
+                }
+              }
+            },
+            'Equipment': {
+              'AircraftCode': '321'
+            },
+            'ClassOfService': {
+              'Code': 'L'
+            },
+            'FlightDetail': {
+              'FlightDuration': {
+                'Value': ''
+              },
+              'Stops': {
+                'StopQuantity': '0'
+              }
+            },
+            'origin': {
+              'locationType': 'airport',
+              'iataCode': 'YYZ'
+            },
+            'destination': {
+              'locationType': 'airport',
+              'iataCode': 'YYT'
+            },
+            'departureTime': '2020-09-14T18:50:00.000Z',
+            'arrivalTime': '2020-09-14T21:49:00.000Z',
+            'aggregationKey': 'ACAC15442020-09-14T18:50:00.000Z2020-09-14T21:49:00.000Z'
+          }
+        ],
+        'destinations': [
+          {
+            'id': 'ZDD89UNQMB-OD1',
+            'DepartureCode': 'YYC',
+            'ArrivalCode': 'YYT',
+            'FlightReferences': 'B69B4WF4RW-SEG1 G9OG66SX2J-SEG2'
+          }
+        ],
+        'passengers': {
+          'ADT': ['3E6B41DD'],
+          'CHD': ['1C966E35']
+        },
+        'mappedPassengers': {
+          '3E6B41DD': 'HZVZHYSXJY-T1',
+          'undefined': 'M70ZNQOMCV-T2',
+          '1C966E35': 'HPGK78FGON-T3'
+        }
+      }
+    }
+  ];
+  const card = {
+    accountNumber: '4444333322221111',
+    brand: 'visa',
+    cvv: '737',
+    expiryMonth: '10',
+    expiryYear: '2020',
+    id: 'e6266e16-eb45-4781-9788-271553dc6657',
+    type: 'debit'
+  };
 
   describe('#mapRequestData', () => {
     const hotelCodes = [
@@ -192,16 +392,7 @@ describe('transformInputData', () => {
         contactInformation: [ '+32123456789', 'contact@org.co.uk' ]
       }
     };
-    const card = {
-      accountNumber: '4444333322221111',
-      brand: 'visa',
-      cvv: '737',
-      expiryMonth: '10',
-      expiryYear: '2020',
-      id: 'e6266e16-eb45-4781-9788-271553dc6657',
-      type: 'debit'
-    };
-
+    
     it('should to trow if offer has not been provided', async () => {
       (() => mapFromOffer(undefined, passengers, card)).should.to.throw;
       (() => mapFromOffer({}, passengers, card)).should.to.throw;
@@ -312,10 +503,6 @@ describe('transformInputData', () => {
   });
 
   describe('#mapNdcRequestData_AC', () => {
-    const docIds = [
-      'OneWay',
-      'Return'
-    ];
     const body = {
       'itinerary': {
         'segments': [
@@ -384,39 +571,35 @@ describe('transformInputData', () => {
     });
   });
 
-  describe.skip('#mapNdcRequestData_AC:offerPrice', () => {
-    const docIds = [
-      'OneWay',
-      'Return'
-    ];
-    const body = [
-      {
-        'code': 'divNonAir11.LGAC1',
-        'name': 'Lounge Access',
-        'description': 'An access to the Exclusive Lounge Access at the departure',
-        'segment': 'HW9EJ7XAC7-SEG1',
-        'passenger': 'PAX1',
-        'seatNumber': '12C',
-        'price': {
-          'currency': 'EUR',
-          'private': '40.00',
-          'public': '40.00',
-          'commission': '40.00',
-          'taxes': '40.00'
-        },
-        'taxes': [
-          {
-            'amount': '40.00',
-            'code': 'CA',
-            'description': 'Air Travellers Security Charge (ATSC)'
-          }
-        ]
-      }
-    ];
-    const offers = [
+  describe('#mapNdcRequestData_AC:offerPrice', () => {
 
-    ];
+    it('should to throw if wrong config has been provided', async () => {
+      docIds.forEach(docType => {
+        (() => mapNdcRequestData_AC_offerPrice(undefined, offers, body, docType)).should.to.throw;
+        (() => mapNdcRequestData_AC_offerPrice('', offers, body, docType)).should.to.throw;
+        (() => mapNdcRequestData_AC_offerPrice([], offers, body, docType)).should.to.throw;
+      });
+    });
 
+    it('should to throw if wrong offers object has been provided', async () => {
+      docIds.forEach(docType => {
+        (() => mapNdcRequestData_AC_offerPrice(airCanadaConfig, undefined, body, docType)).should.to.throw;
+        (() => mapNdcRequestData_AC_offerPrice(airCanadaConfig, '', body, docType)).should.to.throw;
+        (() => mapNdcRequestData_AC_offerPrice(airCanadaConfig, {}, body, docType)).should.to.throw;
+      });
+    });
+
+    it('should to throw if wrong body has been provided', async () => {
+      const brokenBody = Object.assign({}, body, {
+        itinerary: undefined
+      });
+      docIds.forEach(docType => {
+        (() => mapNdcRequestData_AC_offerPrice(airCanadaConfig, offers, undefined, docType)).should.to.throw;
+        (() => mapNdcRequestData_AC_offerPrice(airCanadaConfig, offers, [], docType)).should.to.throw;
+        (() => mapNdcRequestData_AC_offerPrice(airCanadaConfig, offers, brokenBody, docType)).should.to.throw;
+      });
+    });
+    
     it('should map request data', async () => {
       docIds.forEach(docType => {
         const result = mapNdcRequestData_AC_offerPrice(
@@ -425,8 +608,98 @@ describe('transformInputData', () => {
           body,
           docType
         );
-        console.log(result);
+        // validate first level only
+        (result).should.to.be.an('object');
+        (result).should.to.have.property('PointOfSale').to.be.an('object');
+        (result).should.to.have.property('Party').to.be.an('object');
+        (result).should.to.have.property('Document').to.be.an('object')
+          .to.have.property('@id').to.equal(docType)
+          .to.be.oneOf(docIds);
+        (result).should.to.have.property('Query').to.be.an('object')
+          .to.have.property('Offer');
+        (result).should.to.have.property('DataLists').to.be.an('object');
       });
+    });
+  });
+
+  describe('#mapNdcRequestData_AC:seatAvailability', () => {
+
+    it('should to throw if wrong config has been provided', async () => {
+      docIds.forEach(docType => {
+        (() => mapNdcRequestData_AC_seatAvailability(undefined, offers, docType)).should.to.throw;
+        (() => mapNdcRequestData_AC_seatAvailability('', offers, docType)).should.to.throw;
+        (() => mapNdcRequestData_AC_seatAvailability([], offers, docType)).should.to.throw;
+      });
+    });
+
+    it('should to throw if wrong offers object has been provided', async () => {
+      docIds.forEach(docType => {
+        (() => mapNdcRequestData_AC_seatAvailability(airCanadaConfig, undefined, docType)).should.to.throw;
+        (() => mapNdcRequestData_AC_seatAvailability(airCanadaConfig, '', docType)).should.to.throw;
+        (() => mapNdcRequestData_AC_seatAvailability(airCanadaConfig, {}, docType)).should.to.throw;
+      });
+    });
+
+    it('should map request data', async () => {
+      docIds.forEach(docType => {
+        const result = mapNdcRequestData_AC_seatAvailability(
+          airCanadaConfig,
+          offers,
+          docType
+        );
+        // validate first level only
+        (result).should.to.be.an('object');
+        (result).should.to.have.property('PointOfSale').to.be.an('object');
+        (result).should.to.have.property('Party').to.be.an('object');
+        (result).should.to.have.property('Document').to.be.an('object')
+          .to.have.property('@id').to.equal(docType)
+          .to.be.oneOf(docIds);
+        (result).should.to.have.property('Query').to.be.an('object')
+          .to.have.property('Offer');
+        (result).should.to.have.property('DataLists').to.be.an('object');
+      });
+    });
+  });
+
+  describe('#mapNdcRequestData_AC:fulfillOrder', () => {
+    const guaranteeClaim = {
+      card
+    };
+    const order = {
+      orderId: 'e6266e16-eb45-4781-9788-271553dc6657',
+      order: {
+        order: {
+          price: {
+            currency: 'EN',
+            public: ''
+          }
+        }
+      }
+    };
+
+    it('should map request data', async () => {
+      const result = mapNdcRequestData_AC_fulfillOrder(
+        airCanadaConfig,
+        order,
+        {},
+        guaranteeClaim
+      );
+      // validate first level only
+      (result).should.to.be.an('object');
+      (result).should.to.have.property('apiKey').to.be.a('string');
+      (result).should.to.have.property('commission').to.be.a('string');
+      (result).should.to.have.property('baseUrl').to.be.a('string')
+        .to.equal('https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/');
+      (result).should.to.have.property('baseUrlPci').to.be.a('string')
+        .to.equal('https://pci.ndchub.mconnect.aero/messaging/v2/ndc-exchange/');
+      (result).should.to.have.property('PointOfSale').to.be.an('object');
+      (result).should.to.have.property('Document').to.be.an('object')
+        .to.have.property('@id').to.be.oneOf(docIds);
+      (result).should.to.have.property('Party').to.be.an('object');
+      (result).should.to.have.property('Query').to.be.an('object')
+        .to.have.property('OrderID').to.match(regex.uuid);
+      (result.Query).should.to.have.property('ActionContext').to.be.a('number');
+      (result.Query).should.to.have.property('Payments').to.be.an('object');
     });
   });
 });
