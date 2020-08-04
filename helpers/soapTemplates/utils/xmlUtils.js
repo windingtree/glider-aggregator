@@ -66,7 +66,7 @@ module.exports.convertObjectToXML = convertObjectToXML;
 
 // Determine the AC NDC System ID
 const getACSystemId = (isPCI) => {
-  switch(process.env.TESTING_ENV ? process.env.TESTING_ENV : environment) {
+  switch(process.env.TESTING_ENV !== undefined ? process.env.TESTING_ENV : environment) {
     case 'production':
       return (isPCI ? 'PROD-PCI' : 'PROD');
     default:

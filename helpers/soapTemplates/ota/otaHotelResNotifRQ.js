@@ -10,12 +10,14 @@ const mapGuestCount = OTA_GuestCount => {
   guestCount += ` Count="${OTA_GuestCount.Count}"`;
   return `<GuestCount${guestCount}/>`;
 };
+module.exports.mapGuestCount = mapGuestCount;
 
 const mapGuestCounts = OTA_GuestCounts => `
 <GuestCounts IsPerRoom="false">
   ${OTA_GuestCounts.reduce((guestCounts, guestCount) => guestCounts + mapGuestCount(guestCount), '')}
 </GuestCounts>
 `.trim();
+module.exports.mapGuestCounts = mapGuestCounts;
 
 /* Mapping for Rates */
 const mapRate = OTA_Rate => `
@@ -31,12 +33,14 @@ const mapRate = OTA_Rate => `
   />
 </Rate>
 `.trim();
+module.exports.mapRate = mapRate;
 
 const mapRates = OTA_Rates => `
 <Rates>
   ${OTA_Rates.reduce((rates, rate) => rates + mapRate(rate), '')}
 </Rates>
 `.trim();
+module.exports.mapRates = mapRates;
 
 const mapRoomRate = OTA_RoomRate => `
 <RoomRate
@@ -47,6 +51,7 @@ const mapRoomRate = OTA_RoomRate => `
   ${mapRates(OTA_RoomRate.Rates)}
 </RoomRate>
 `.trim();
+module.exports.mapRoomRate = mapRoomRate;
 
 /* Mapping for Guarantee */
 const mapPaymentCard = OTA_PaymentCard => {
@@ -75,6 +80,7 @@ const mapPaymentCard = OTA_PaymentCard => {
 
   return paymentCard;
 };
+module.exports.mapPaymentCard = mapPaymentCard;
 
 const mapGuarantee = OTA_Guarantee => `
 <Guarantee
@@ -89,6 +95,7 @@ const mapGuarantee = OTA_Guarantee => `
   </GuaranteeDescription>
 </Guarantee>
 `.trim();
+module.exports.mapGuarantee = mapGuarantee;
 
 const mapRoomStay = OTA_RoomStay => `
 <RoomStay>
@@ -136,6 +143,7 @@ const mapRoomStay = OTA_RoomStay => `
   </SpecialRequests>
 </RoomStay>
 `.trim();
+module.exports.mapRoomStay = mapRoomStay;
 
 const mapPOS = OTA_POS => `
 <POS>
@@ -153,6 +161,7 @@ const mapPOS = OTA_POS => `
   </Source>
 </POS>
 `.trim();
+module.exports.mapPOS = mapPOS;
 
 const mapAddress = OTA_Address => {
   if (OTA_Address === undefined) {
@@ -169,6 +178,7 @@ const mapAddress = OTA_Address => {
 </Address>
 `.trim();
 };
+module.exports.mapAddress = mapAddress;
 
 const mapPersonName = OTA_PersonName => {
   let personName = '';
@@ -182,6 +192,7 @@ const mapPersonName = OTA_PersonName => {
     personName += `<Surname>${OTA_PersonName.Surname}</Surname>`;
   return `<PersonName>${personName}</PersonName>`.trim();
 };
+module.exports.mapPersonName = mapPersonName;
 
 const mapProfile = OTA_Profile => `
 <Profile
@@ -200,6 +211,7 @@ const mapProfile = OTA_Profile => `
   </CompanyInfo>
 </Profile>
 `.trim();
+module.exports.mapProfile = mapProfile;
 
 const mapResGuest = OTA_ResGuest => `
 <ResGuest
@@ -212,6 +224,7 @@ const mapResGuest = OTA_ResGuest => `
   </Profiles>
 </ResGuest>
 `.trim();
+module.exports.mapResGuest = mapResGuest;
 
 const mapHotelReservationID = OTA_HotelReservationID => `
 <HotelReservationID
@@ -220,6 +233,7 @@ const mapHotelReservationID = OTA_HotelReservationID => `
   ResID_Value="${OTA_HotelReservationID.ResID_Value}"
 />
 `.trim();
+module.exports.mapHotelReservationID = mapHotelReservationID;
 
 const mapHotelReservation = OTA_HotelReservation => `
 <HotelReservation
@@ -243,6 +257,7 @@ const mapHotelReservation = OTA_HotelReservation => `
   </ResGlobalInfo>
 </HotelReservation>
 `.trim();
+module.exports.mapHotelReservation = mapHotelReservation;
 
 const mapHotelResNotif = OTA_HotelResNotifRQ => `
 <OTA_HotelResNotifRQ
@@ -259,6 +274,7 @@ const mapHotelResNotif = OTA_HotelResNotifRQ => `
   </HotelReservations>
 </OTA_HotelResNotifRQ>
 `.trim();
+module.exports.mapHotelResNotif = mapHotelResNotif;
 
 const mapSoapHeader = uuid => `
 <soap:Header xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
@@ -282,6 +298,7 @@ const mapSoapHeader = uuid => `
   </wss:Security>
 </soap:Header>
 `.trim();
+module.exports.mapSoapHeader = mapSoapHeader;
 
 const mapHotelResNotifSoap = ({ OTA_HotelResNotifRQ }) =>
   `<?xml version="1.0" ?>
@@ -296,5 +313,4 @@ const mapHotelResNotifSoap = ({ OTA_HotelResNotifRQ }) =>
     .replace(/(\s{4})/g, '')
     .replace(/ >/g, '>')
     .replace(/ \/>/g, '/>');
-
-module.exports = mapHotelResNotifSoap;
+module.exports.mapHotelResNotifSoap = mapHotelResNotifSoap;

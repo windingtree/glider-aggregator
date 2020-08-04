@@ -11,7 +11,7 @@ module.exports.offerPriceRequestTemplate_AC = data => `<soapenv:Envelope xmlns:s
       <Sender>
         <Address>
           <Company>WindingTree</Company>
-          <NDCSystemId>${environment(false)}</NDCSystemId>
+          <NDCSystemId>${getACSystemId(false)}</NDCSystemId>
         </Address>
       </Sender>
       <Recipient>

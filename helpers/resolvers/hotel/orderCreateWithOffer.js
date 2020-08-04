@@ -9,13 +9,15 @@ const GliderError = require('../../error');
 const responseTemplate = require('../../camaroTemplates/hotelResNotifRS').otaHotelResNotifRSTemplate;
 
 const hotelResNotif = require('../../transformInputData/hotelResNotif');
-const mapOTAHotelResNotifSoap = require('../../soapTemplates/ota/otaHotelResNotifRQ');
+const {
+  mapHotelResNotifSoap
+} = require('../../soapTemplates/ota/otaHotelResNotifRQ');
 const { v4: uuidv4 } = require('uuid');
 
 module.exports = async (offer, passengers, card) => {
   // Build the request
   const otaHotelResNotifRQData = hotelResNotif.mapFromOffer(offer, passengers, card);
-  const otaRequestBody = mapOTAHotelResNotifSoap(otaHotelResNotifRQData);
+  const otaRequestBody = mapHotelResNotifSoap(otaHotelResNotifRQData);
 
   let response;
 
