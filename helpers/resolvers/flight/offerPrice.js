@@ -1,3 +1,7 @@
+const { assertAmadeusFault } = require('../../amadeus/errors');
+const { offerPriceResponseProcessor }  = require('../../amadeus/offerPriceResponseProcessor');
+const fs = require('fs');
+
 const { transform } = require('camaro');
 const { v4: uuidv4 } = require('uuid');
 const GliderError = require('../../error');
@@ -13,6 +17,7 @@ const {
 } = require('../../models/offer');
 const {
   callProvider,
+  callProviderRest,
   fetchFlightsOffersByIds,
   dedupPassengersInOptions
 } = require('../../resolvers/utils/flightUtils');
@@ -28,6 +33,9 @@ const {
   ErrorsTransformTemplate_AC
 } = require('../../camaroTemplates/provideOfferPrice');
 const { setOrderStatus, assertOrderStatus } = require('../utils/offers');
+
+const { offerPriceRequestTemplate_1A } = require('../../amadeus/offerPriceRequestTemplate');
+
 
 // Convert response data to the object form
 const processResponse = async (data, template) => {
@@ -71,7 +79,7 @@ const processResponse = async (data, template) => {
   );
 
   offerResult.offer.terms = offerResult.offer.terms.join('\n');
-  
+
   offerResult.offer.itinerary.segments = mergeHourAndDate(
     offerResult.offer.itinerary.segments
   );
@@ -112,7 +120,7 @@ const processResponse = async (data, template) => {
       })
     )
   );
-  
+
   delete offerResult.offer.services;
 
   // offerResult.offer.price.commission =
@@ -126,7 +134,7 @@ const processResponse = async (data, template) => {
       (total, { value }) => total + parseFloat(value),
       0
     ).toFixed(2);
-  
+
   offerResult.offer.passengers = reduceToObjectByKey(
     offerResult.offer.passengers
   );
@@ -152,7 +160,7 @@ module.exports.offerPriceRQ = async (
   let errorsTransformTemplate;
   let faultsTransformTemplate;
   let SOAPAction;
-  
+
   if (!offerIds) {
     throw new GliderError(
       'Missing mandatory field: offerIds',
@@ -165,7 +173,7 @@ module.exports.offerPriceRQ = async (
 
   // Retrieve the offers
   const offers = await fetchFlightsOffersByIds(offerIds);
-
+  console.log('Offers fetched from DB',JSON.stringify(offers));
   // Assert order status in offers
   assertOrderStatus(offers);
 
@@ -178,8 +186,8 @@ module.exports.offerPriceRQ = async (
     if (offers.length > 1) {
       requestDocumentId = 'Return';
     }
-
-    switch (offers[0].provider) {
+    let provider=offers[0].provider;
+    switch (provider) {
       case 'AF':
         throw new GliderError(
           'Not implemented yet',
@@ -195,10 +203,15 @@ module.exports.offerPriceRQ = async (
         providerUrl = `${airCanadaConfig.baseUrl}/OfferPrice`;
         apiKey = airCanadaConfig.apiKey;
         ndcBody = offerPriceRequestTemplate_AC(ndcRequestData);
-        // console.log('###', ndcBody);
+        console.log('###', ndcBody);
         responseTransformTemplate = provideOfferPriceTransformTemplate_AC;
         errorsTransformTemplate = ErrorsTransformTemplate_AC;
         faultsTransformTemplate = FaultsTransformTemplate_AC;
+        break;
+      case '1A':
+        let rawOfferSearchResponse = offers.map(offer=>offer.extraData.rawOffer);
+        ndcBody = offerPriceRequestTemplate_1A(rawOfferSearchResponse);
+        SOAPAction='PRICEOFFERS';
         break;
       default:
         throw new GliderError(
@@ -206,28 +219,17 @@ module.exports.offerPriceRQ = async (
           400
         );
     }
-
-    const { response, error } = await callProvider(
-      offers[0].provider,
-      providerUrl,
-      apiKey,
-      ndcBody,
-      SOAPAction
-    );
-
-    await assertErrors(
-      error,
-      response,
-      faultsTransformTemplate,
-      errorsTransformTemplate
-    );
-
-    // console.log('@@@', response.data);
-
-    offerResult = await processResponse(
-      response.data,
-      responseTransformTemplate
-    );
+    console.log("offerPrice - 1");
+    const { response, error } = provider === '1A' ? await callProviderRest(provider, '', '', ndcBody, SOAPAction) : await callProvider(offers[0].provider, providerUrl, apiKey, ndcBody, SOAPAction);
+    fs.writeFileSync(`c://temp/${provider}-6offer-price-raw-provider-response.json`, JSON.stringify(response.data));
+    fs.writeFileSync(`c://temp/${provider}-6offer-price-raw-provider-response.xml`, response.data);
+    // fs.writeFileSync(`c://temp/${provider}-6offer-converter-template.xml`, responseTransformTemplate);
+    // fs.writeFileSync(`c://temp/${provider}-6offer-price-raw-provider-error.txt`, JSON.stringify(error));
+    provider === '1A' ? await assertAmadeusFault(response,error):await assertErrors(error,response,faultsTransformTemplate,errorsTransformTemplate);
+    offerResult = provider === '1A' ? await offerPriceResponseProcessor(response.data):await processResponse(response.data,responseTransformTemplate);
+    fs.writeFileSync(`c://temp/${provider}-7processed-response.json`, JSON.stringify(offerResult));
+    fs.writeFileSync(`c://temp/${provider}-7processed-response.xml`, offerResult);
+    fs.writeFileSync(`c://temp/${provider}-8offers-from_db_before_reduce.json`, JSON.stringify(offers));
 
     const mergedOldOffers = offers.reduce(
       (a, v) => {
@@ -254,7 +256,7 @@ module.exports.offerPriceRQ = async (
         mappedPassengers: {}
       }
     );
-
+    fs.writeFileSync(`c://temp/${provider}-9mergedOldOffers.json`, JSON.stringify(mergedOldOffers));
     // Update segments Ids to initially obtained with original offers
     const newSegmentsChanged = Object.entries(offerResult.offer.itinerary.segments)
       .reduce(
@@ -275,7 +277,7 @@ module.exports.offerPriceRQ = async (
       );
 
     offerResult.offer.itinerary.segments = newSegmentsChanged.segments;
-    
+
     // Update segments refs to initially obtained with original offers
     const newDestinationsChanged = offerResult.offer.destinations
       .map(d => ({
@@ -363,7 +365,7 @@ module.exports.offerPriceRQ = async (
               []
             )
             .join(' ');
-            
+
           delete o.passengerReferences;
           delete offerItem.taxes;
           delete offerItem.fare;
@@ -381,7 +383,7 @@ module.exports.offerPriceRQ = async (
         seats: body
       }
     );
-    
+
     offer.offerId = offerResult.offerId;
     offer.isPriced = true;
     offer.isReturnTrip = requestDocumentId === 'Return';

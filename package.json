@@ -29,6 +29,11 @@
     "now-build": "node ./scripts/build/now-build.js"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "7.8.0",
+    "@windingtree/org.id": "1.1.0",
+    "@windingtree/org.id-lif-deposit": "1.0.2",
+    "@windingtree/org.id-resolver": "1.4.0",
+    "amadeus": "^5.2.0",
     "axios": "0.19.2",
     "camaro": "6.0.3",
     "date-fns": "2.14.0",
@@ -36,15 +41,11 @@
     "email-validator": "2.0.4",
     "ethers": "4.0.47",
     "express": "4.17.1",
-    "redis": "3.0.2",
-    "uuid": "8.2.0",
-    "web3": "1.2.11",
-    "@windingtree/org.id": "1.1.0",
-    "@windingtree/org.id-resolver": "1.4.0",
-    "@windingtree/org.id-lif-deposit": "1.0.2",
     "jose": "1.27.2",
     "mongoose": "5.9.24",
-    "@elastic/elasticsearch": "7.8.0"
+    "redis": "3.0.2",
+    "uuid": "8.2.0",
+    "web3": "1.2.11"
   },
   "devDependencies": {
     "now": "19.2.0",

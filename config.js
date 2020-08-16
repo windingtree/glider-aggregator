@@ -5,7 +5,7 @@
  * - From an environment specific variable: STAGING_.., if any
  * - From the environment variable, if any
  * - From a default value configured in this file
- * 
+ *
  * Environment is determined from:
  * - The GLIDER_ENV variable, if any
  * - The Github's branch, if the deployment is made using the Vercel/Github integration
@@ -131,6 +131,11 @@ const airCanadaConfig = {
     }
   }
 };
+const amadeusGdsConfig = {
+  clientId: getConfigKey('GDS1A_CLIENT_ID'),
+  clientSecret: getConfigKey('GDS1A_CLIENT_SECRET'),
+  environment: environment === 'production' ? 'production' : 'test',
+};
 
 const erevmax = {
   availabilityUrl: getConfigKey('EREVMAX_AVAILABILITY_URL') || 'https://ota-simulator.now.sh/api?ota=getOTAHotelAvailability',
@@ -148,6 +153,7 @@ module.exports.debugInfo = () => {
 
 module.exports.airFranceConfig = airFranceConfig;
 module.exports.airCanadaConfig = airCanadaConfig;
+module.exports.amadeusGdsConfig = amadeusGdsConfig;
 module.exports.erevmax = erevmax;
 module.exports.redisUrl = getConfigKey('REDIS_URL') || 'redis://localhost:6379';
 module.exports.mongoUrl = getConfigKey('MONGO_URL') || 'mongodb://localhost/glider';

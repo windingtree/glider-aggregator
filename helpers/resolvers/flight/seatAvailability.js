@@ -81,7 +81,7 @@ const processResponse = async (data, offers, template) => {
         prices
       };
     }
-    
+
     return a;
   }, {});
 
@@ -137,6 +137,11 @@ module.exports.seatMapRQ = async (offerIds) => {
       errorsTransformTemplate = ErrorsTransformTemplate_AC;
       faultsTransformTemplate = FaultsTransformTemplate_AC;
       break;
+    case '1A':
+      throw new GliderError(
+        'Not implemented yet',
+        404
+      );
     default:
       throw new GliderError(
         'Unsupported flight operator',
