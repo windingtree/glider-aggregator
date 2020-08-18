@@ -1,0 +1,161 @@
+{
+    "PointOfSale": {
+        "Location": {
+            "CountryCode": {
+                "@value": "CA"
+            }
+        },
+        "TouchPoint": {
+            "Device": {
+                "Code": "0.AAA.X",
+                "TableName": {}
+            }
+        }
+    },
+    "Party": {
+        "Participants": {
+            "Participant": {
+                "EnabledSystemParticipant": {
+                    "@SequenceNumber": "1",
+                    "Name": "WindingTreePOSCA",
+                    "Category": "DC",
+                    "SystemID": {
+                        "@Owner": "ADS",
+                        "@value": "mcmEL4qB"
+                    }
+                }
+            }
+        }
+    },
+    "Document": {
+        "@id": "OneWay",
+        "Name": "NDC-Exchange",
+        "ReferenceVersion": "UAT-OTA-2010B"
+    },
+    "Query": {
+        "Offer": [
+            {
+                "@Owner": "AC",
+                "@OfferID": "HOT4YXITL4-OfferID-1",
+                "@ResponseID": "",
+                "PassengerID": [
+                    {
+                        "@value": "B1E9EC6A"
+                    }
+                ],
+                "SegmentID": [
+                    {
+                        "@value": "Z6AG2A6ZJL-SEG1"
+                    },
+                    {
+                        "@value": "TY7A1U7AIM-SEG2"
+                    }
+                ]
+            }
+        ]
+    },
+    "DataLists": {
+        "PassengerList": {
+            "Passenger": [
+                [
+                    {
+                        "@PassengerID": "B1E9EC6A",
+                        "PTC": "ADT"
+                    }
+                ]
+            ]
+        },
+        "FlightSegmentList": {
+            "FlightSegment": [
+                {
+                    "@SegmentKey": "Z6AG2A6ZJL-SEG1",
+                    "@refs": "M5E6W3S3VY-OD1",
+                    "Departure": {
+                        "AirportCode": "YYC",
+                        "Date": "2020-09-14",
+                        "Time": "07:00"
+                    },
+                    "Arrival": {
+                        "AirportCode": "YYZ",
+                        "Date": "2020-09-14",
+                        "Time": "12:50",
+                        "Terminal": {
+                            "Name": "1"
+                        }
+                    },
+                    "MarketingCarrier": {
+                        "AirlineID": "AC",
+                        "Name": "Air Canada",
+                        "FlightNumber": "134",
+                        "ResBookDesigCode": "T"
+                    },
+                    "OperatingCarrier": {
+                        "Disclosures": {
+                            "Description": {
+                                "Text": "pJyAxvTLWDVvF8SySYd5TW2hGD96yqr9UnlLUkThnLG/17BjuAKyJQLIS8+5KZ+nWZ+eCqjGklc8V50L+k74WbqNq9ZO3IpGls6u+xccVld4Gup4vlJ+Oye7VT9dQMN4k79o+QVRFEynPWYDs9X8BA=="
+                            }
+                        }
+                    },
+                    "Equipment": {
+                        "AircraftCode": "7M8"
+                    },
+                    "ClassOfService": {
+                        "Code": "T"
+                    },
+                    "FlightDetail": {
+                        "FlightDuration": {
+                            "Value": ""
+                        },
+                        "Stops": {
+                            "StopQuantity": "0"
+                        }
+                    }
+                },
+                {
+                    "@SegmentKey": "TY7A1U7AIM-SEG2",
+                    "@refs": "M5E6W3S3VY-OD1",
+                    "Departure": {
+                        "AirportCode": "YYZ",
+                        "Date": "2020-09-14",
+                        "Time": "14:50",
+                        "Terminal": {
+                            "Name": "1"
+                        }
+                    },
+                    "Arrival": {
+                        "AirportCode": "YYT",
+                        "Date": "2020-09-14",
+                        "Time": "19:19"
+                    },
+                    "MarketingCarrier": {
+                        "AirlineID": "AC",
+                        "Name": "Air Canada",
+                        "FlightNumber": "1544",
+                        "ResBookDesigCode": "T"
+                    },
+                    "OperatingCarrier": {
+                        "Disclosures": {
+                            "Description": {
+                                "Text": "pJyAxvTLWDVvF8SySYd5TV8dpcsYUV67DAplC3QvK8JCV20YIAxokyvip2BMSJ7daGtED8EIJYrlpn8XB8pRX6r+QhxHHDS4OduCOeU5xip/veYLBfhQ9w=="
+                            }
+                        }
+                    },
+                    "Equipment": {
+                        "AircraftCode": "321"
+                    },
+                    "ClassOfService": {
+                        "Code": "T"
+                    },
+                    "FlightDetail": {
+                        "FlightDuration": {
+                            "Value": ""
+                        },
+                        "Stops": {
+                            "StopQuantity": "0"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

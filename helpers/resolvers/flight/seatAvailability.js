@@ -81,7 +81,7 @@ const processResponse = async (data, offers, template) => {
         prices
       };
     }
-    
+
     return a;
   }, {});
 

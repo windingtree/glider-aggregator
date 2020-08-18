@@ -10,6 +10,7 @@ const mapGuestCounts = (guests) => guests
       <GuestCount AgeQualifyingCode="${AgeQualifyingCode}" Count="${Count}"/>`,
     ''
   );
+module.exports.mapGuestCounts = mapGuestCounts;
 
 const mapCriterions = (
   HotelSearchCriteria,
@@ -39,9 +40,9 @@ const mapCriterions = (
     </Criterion>`,
     ''
   );
+module.exports.mapCriterions = mapCriterions;
 
-
-const hotelAvailRequestTemplate = ({ OTA_HotelAvailRQ }) => `
+module.exports.hotelAvailRequestTemplate = ({ OTA_HotelAvailRQ }) => `
 <?xml version="1.0" ?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
 <SOAP-ENV:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
@@ -71,7 +72,3 @@ const hotelAvailRequestTemplate = ({ OTA_HotelAvailRQ }) => `
     </OTA_HotelAvailRQ>
 </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>`.trim();
-
-module.exports = {
-  hotelAvailRequestTemplate
-};
