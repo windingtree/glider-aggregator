@@ -11,7 +11,9 @@ const expandPassengers = (passengers) => {
 
     // Otherwise create one for each count
     else {
-      for(let i=0; i<p.count; i++) {
+      const count = p.count;
+      delete p.count;
+      for(let i=0; i<count; i++) {
         res.push(p);
       }
     }
@@ -19,8 +21,10 @@ const expandPassengers = (passengers) => {
   
   return res;
 };
+module.exports.expandPassengers = expandPassengers;
 
 // Build request data for the request to the AirFrance provider
+/* istanbul ignore next */
 module.exports.mapNdcRequestData_AF = (config, { itinerary, passengers }) => ({
   ...(JSON.parse(JSON.stringify(config))),
   PointOfSale: {

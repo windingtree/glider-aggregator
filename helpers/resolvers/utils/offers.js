@@ -28,7 +28,7 @@ module.exports.setOrderStatus = async (offers, orderStatus) => Promise.all(
   )
 );
 
-module.exports.assertOrgerStatus = offers => offers.forEach(offer => {
+module.exports.assertOrderStatus = offers => offers.forEach(offer => {
   if (offer.extraData && offer.extraData.orderStatus === 'CREATING') {
     throw new GliderError(
       'Order creation ongoing for this offer',

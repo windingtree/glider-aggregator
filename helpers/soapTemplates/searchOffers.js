@@ -2,9 +2,10 @@ const { convertObjectToXML, getACSystemId } = require('./utils/xmlUtils');
 // For documentation, https://github.com/windingtree/simard-schemas/blob/master/ndc/data-mapping.mds
 
 // The Passenger object
+/* istanbul ignore next */
 const mapPassengers = (passengers) => passengers.reduce(
   (list, { Passenger }) => {
-    return `${list} 
+    return `${list}
     <edis:Passenger>
       <edis:PTC>${Passenger.PTC}</edis:PTC>
     </edis:Passenger>
@@ -14,9 +15,10 @@ const mapPassengers = (passengers) => passengers.reduce(
 );
 
 // The OriginDestination object
+/* istanbul ignore next */
 const mapOriginDestinations = (OriginDestinations) => OriginDestinations.reduce(
   (list, { OriginDestination }) => {
-    return `${list} 
+    return `${list}
     <edis:OriginDestination>
       <edis:Departure>
           <edis:AirportCode>${OriginDestination.Departure.AirportCode}</edis:AirportCode>
@@ -33,6 +35,7 @@ const mapOriginDestinations = (OriginDestinations) => OriginDestinations.reduce(
 );
 
 // The AirFrance request template
+/* istanbul ignore next */
 module.exports.provideShoppingRequestTemplate_AF = data => `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:edis="http://www.iata.org/IATA/EDIST/2017.1">
   <soapenv:Header>
     <trackingMessageHeader xmlns="http://www.af-klm.com/soa/xsd/MessageHeader-V1_0">

@@ -27,7 +27,7 @@ const {
   FaultsTransformTemplate_AC,
   ErrorsTransformTemplate_AC
 } = require('../../camaroTemplates/provideOfferPrice');
-const { setOrderStatus, assertOrgerStatus } = require('../utils/offers');
+const { setOrderStatus, assertOrderStatus } = require('../utils/offers');
 
 // Convert response data to the object form
 const processResponse = async (data, template) => {
@@ -167,7 +167,7 @@ module.exports.offerPriceRQ = async (
   const offers = await fetchFlightsOffersByIds(offerIds);
 
   // Assert order status in offers
-  assertOrgerStatus(offers);
+  assertOrderStatus(offers);
 
   try {
     await setOrderStatus(offers, 'CREATING');
@@ -255,7 +255,7 @@ module.exports.offerPriceRQ = async (
       }
     );
 
-    // Update serments Ids to initially obtained with original offers
+    // Update segments Ids to initially obtained with original offers
     const newSegmentsChanged = Object.entries(offerResult.offer.itinerary.segments)
       .reduce(
         (a, v) => {
@@ -276,7 +276,7 @@ module.exports.offerPriceRQ = async (
 
     offerResult.offer.itinerary.segments = newSegmentsChanged.segments;
     
-    // Update serments refs to initially obtained with original offers
+    // Update segments refs to initially obtained with original offers
     const newDestinationsChanged = offerResult.offer.destinations
       .map(d => ({
         ...d,
@@ -287,7 +287,7 @@ module.exports.offerPriceRQ = async (
       }));
     delete offerResult.offer.destinations;
 
-    // Update passengers Ids to initally assigned during offers search
+    // Update passengers Ids to initially assigned during offers search
     const newPassengersChanged = Object.entries(offerResult.offer.passengers)
       .reduce(
         (a, v) => {

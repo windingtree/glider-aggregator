@@ -12,7 +12,7 @@ const {
 } = require('../../../helpers/guarantee');
 const hotelResolver = require('../../../helpers/resolvers/hotel/orderCreateWithOffer');
 const flightResolver = require('../../../helpers/resolvers/flight/orderCreateWithOffer');
-const { setOrderStatus, assertOrgerStatus } = require('../../../helpers/resolvers/utils/offers');
+const { setOrderStatus, assertOrderStatus } = require('../../../helpers/resolvers/utils/offers');
 
 module.exports = basicDecorator(async (req, res) => {
   const requestBody = req.body;
@@ -28,8 +28,13 @@ module.exports = basicDecorator(async (req, res) => {
   const storedOffer = await offerManager.getOffer(requestBody.offerId);
 
   let originOffers = [];
-
-  if (storedOffer instanceof FlightOffer) {
+  
+  // in case of not priced offer
+  // there possible situation when storedOffer.extraData.originOffers is undefined
+  if (storedOffer instanceof FlightOffer &&
+    storedOffer.extraData &&
+    storedOffer.extraData.originOffers) {
+    
     originOffers = await Promise.all(
       storedOffer.extraData.originOffers.map(
         offerId => offerManager.getOffer(offerId)
@@ -42,7 +47,7 @@ module.exports = basicDecorator(async (req, res) => {
     ...originOffers
   ];
 
-  assertOrgerStatus(allOffers);
+  assertOrderStatus(allOffers);
 
   try {
     await setOrderStatus(allOffers, 'CREATING');
@@ -59,7 +64,7 @@ module.exports = basicDecorator(async (req, res) => {
       guaranteeClaim = await claimGuaranteeWithCard(requestBody.guaranteeId);
     }
 
-    // Handle an Accomodation offer
+    // Handle an Accommodation offer
     if (storedOffer instanceof AccommodationOffer) {
 
       if (!guaranteeClaim) {

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const GliderError = require('../../helpers/error');
 const { basicDecorator } = require('../../decorators/basic');
 const { offerPriceRQ } = require('../../helpers/resolvers/flight/offerPrice');

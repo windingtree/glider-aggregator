@@ -102,7 +102,7 @@ const transformResponse = async (
       offer.pricePlansReferences = pricePlansReferences;
       delete(offer.flightsReferences);
     } else if (offer.pricePlansReferences) {
-      
+
       for (const priceRef of offer.pricePlansReferences) {
         priceRef.flights = priceRef.flights.split(' ');
       }
@@ -119,7 +119,7 @@ const transformResponse = async (
       type: p.type
     }))
   );
-  
+
   if (searchResults.checkedBaggages) {
     searchResults.checkedBaggages = reduceToObjectByKey(searchResults.checkedBaggages);
     searchResults.pricePlans = useDictionary(
@@ -135,7 +135,7 @@ const transformResponse = async (
 
     if (!searchResults.pricePlans[plan].checkedBaggages &&
         searchResults.pricePlans[plan].amenities) {
-      
+
       if (searchResults.pricePlans[plan].amenities.includes('Checked bags for a fee')) {
         searchResults.pricePlans[plan].checkedBaggages = {
           quantity: 0
@@ -159,11 +159,11 @@ const transformResponse = async (
   }
 
   let overriddenOffers = {};
-  
+
   // Store the offers
   let indexedOffers = {};
   let expirationDate = new Date(Date.now() + 60 * 30 * 1000).toISOString();// now + 30 min
-  
+
   // Process offers
   for (let offerId in searchResults.offers) {
 
@@ -179,7 +179,7 @@ const transformResponse = async (
     if (provider === 'AC') {
       let segments;
       let destinations;
-      
+
       // Extract segments and destinations associated with the offer
       for (const pricePlanId in searchResults.offers[offerId].pricePlansReferences) {
         const pricePlan = searchResults.offers[offerId].pricePlansReferences[pricePlanId];
@@ -283,7 +283,7 @@ const transformResponse = async (
       delete segment.aggregationKey;
     }
     searchResults.itineraries.segments = aggregatedSegments;
-    
+
     const updatedCombinations = {};
     const combinationsKeys= {};
 
@@ -301,7 +301,7 @@ const transformResponse = async (
     // Flights aggregation
     const aggregatedCombinations = {};
     const aggregatedCombinationsKeys = {};
-    
+
     for (const origCombinationId in searchResults.itineraries.combinations) {
       let combination = searchResults.itineraries.combinations[origCombinationId];
 
@@ -421,6 +421,7 @@ module.exports.searchFlight = async (body) => {
         ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, body, requestDocumentId);
         providerUrl = `${airCanadaConfig.baseUrl}/AirShopping`;
         apiKey = airCanadaConfig.apiKey;
+        console.log(JSON.stringify(ndcRequestData, null, 2));
         ndcBody = provideShoppingRequestTemplate_AC(ndcRequestData);
         // console.log('@@@', ndcBody);
         templates = {
@@ -474,7 +475,7 @@ module.exports.searchFlight = async (body) => {
       .map(async ({ provider, response, error, templates }) => {
 
         // fs.writeFileSync(`/home/kostysh/dev/glider-fork/temp/${provider}-shp-rs.xml`, response.data);
-        
+
         if (error && !error.isAxiosError) {
 
           // Request error
@@ -530,7 +531,7 @@ module.exports.searchFlight = async (body) => {
       })
   ))
     .filter(e => e !== null);
-  
+
   let searchResult = {};
 
   if (responseErrors.length === providers.length) {

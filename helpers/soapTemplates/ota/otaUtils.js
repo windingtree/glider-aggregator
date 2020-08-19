@@ -6,7 +6,6 @@ module.exports.mapGuestCounts = (guests) => guests
         AgeQualifyingCode,
         Count
       }
-    ) => `${guestCounts}
-    <GuestCount AgeQualifyingCode="${AgeQualifyingCode}" Count="${Count}"/>`,
+    ) => `${guestCounts}<GuestCount AgeQualifyingCode="${AgeQualifyingCode}" Count="${Count}"/>`,
     ''
   );

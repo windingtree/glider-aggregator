@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const redis = require('redis');
 const config = require('../../config');
 
