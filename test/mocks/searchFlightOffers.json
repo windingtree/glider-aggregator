@@ -1,0 +1,60 @@
+{
+    "PointOfSale": {
+        "Location": {
+            "CountryCode": {
+                "@value": "CA"
+            }
+        },
+        "TouchPoint": {
+            "Device": {
+                "Code": "0.AAA.X",
+                "TableName": {}
+            }
+        }
+    },
+    "Party": {
+        "Participants": {
+            "Participant": {
+                "EnabledSystemParticipant": {
+                    "@SequenceNumber": "1",
+                    "Name": "WindingTreePOSCA",
+                    "Category": "DC",
+                    "SystemID": {
+                        "@Owner": "ADS",
+                        "@value": "mcmEL4qB"
+                    }
+                }
+            }
+        }
+    },
+    "Document": {
+        "@id": "OneWay",
+        "Name": "NDC-Exchange",
+        "ReferenceVersion": "UAT-OTA-2010B"
+    },
+    "CoreQuery": {
+        "OriginDestinations": [
+            {
+                "OriginDestination": {
+                    "Departure": {
+                        "AirportCode": "YYC",
+                        "Date": "2020-09-14",
+                        "Time": "03:00"
+                    },
+                    "Arrival": {
+                        "AirportCode": "YYT"
+                    }
+                }
+            }
+        ]
+    },
+    "DataLists": {
+        "PassengerList": [
+            {
+                "Passenger": {
+                    "PTC": "ADT"
+                }
+            }
+        ]
+    }
+}
