@@ -1,5 +1,12 @@
+const { assertAmadeusFault } = require('../../amadeus/errors');
+const { seatmapResponseProcessor } = require('../../amadeus/seatmap/seatmapResponseProcessor');
+
+const { callProviderRest } = require('../utils/flightUtils');
+const { seatmapRequestTemplate } = require('../../amadeus/seatmap/seatmapRequestTemplate');
+
 const { transform } = require('camaro');
 const GliderError = require('../../error');
+const { logRQRS } = require('../../amadeus/logRQ');
 const { airCanadaConfig } = require('../../../config');
 const assertErrors = require('../utils/assertResponseErrors');
 const {
@@ -24,14 +31,15 @@ const { flatOneDepth } = require('../../transformInputData/utils/collections');
 
 // Convert response data to the object form
 const processResponse = async (data, offers, template) => {
-
+  logRQRS(data,'seatmap-NDC-response-3-data');
+  logRQRS(offers,'seatmap-NDC-response-3-offers');
   // Index segments from offers
   const indexedSegments = flatOneDepth(
     offers.map(offer => offer.extraData.segments.map(s => ({
       [`${s.Departure.AirportCode}-${s.Arrival.AirportCode}`]: s.id
     })))
   ).reduce((a, v) => ({ ...a, ...v }), {});
-
+  logRQRS(indexedSegments,'seatmap-NDC-response-3-indexedSegments');
   const seatMapResult = await transform(
     data,
     template
@@ -84,7 +92,6 @@ const processResponse = async (data, offers, template) => {
 
     return a;
   }, {});
-
   return seatMapResult.seatMaps;
 };
 
@@ -119,8 +126,8 @@ module.exports.seatMapRQ = async (offerIds) => {
   if (offers.length > 1) {
     requestDocumentId = 'Return';
   }
-
-  switch (offers[0].provider) {
+  let provider = offers[0].provider;
+  switch (provider) {
     case 'AF':
       throw new GliderError(
         'Not implemented yet',
@@ -138,45 +145,19 @@ module.exports.seatMapRQ = async (offerIds) => {
       faultsTransformTemplate = FaultsTransformTemplate_AC;
       break;
     case '1A':
-      throw new GliderError(
-        'Not implemented yet',
-        404
-      );
+      ndcBody=seatmapRequestTemplate(offers);
+      break;
     default:
       throw new GliderError(
         'Unsupported flight operator',
         400
       );
   }
-
-  const { response, error } = await callProvider(
-    offers[0].provider,
-    providerUrl,
-    apiKey,
-    ndcBody,
-    SOAPAction
-  );
-
-  // console.log('!!!!', error);
-
-  await assertErrors(
-    error,
-    response,
-    faultsTransformTemplate,
-    errorsTransformTemplate
-  );
-
-  // console.log('@@@', response.data);
-  // const fs = require('fs');
-  // fs.writeFileSync('/home/kostysh/dev/glider-fork/temp/seat-rs.xml', response.data);
-
-  seatMapResult = await processResponse(
-    response.data,
-    offers,
-    responseTransformTemplate
-  );
-
-  // console.log('###', JSON.stringify(seatMapResult, null, 2));
+console.log('before callProviderRest')
+  const { response, error } =  provider === '1A' ? await callProviderRest(provider,'','',ndcBody,'SEATMAP',''): await callProvider(offers[0].provider,providerUrl,apiKey,ndcBody,SOAPAction);
+  console.log('after callProviderRest')
+  provider === '1A' ? assertAmadeusFault(response, error) : await assertErrors(error,response,faultsTransformTemplate,errorsTransformTemplate);
+  seatMapResult = provider === '1A'? seatmapResponseProcessor(response.result, offers):await processResponse(response.data,offers,responseTransformTemplate);
 
   return seatMapResult;
 };

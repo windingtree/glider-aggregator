@@ -14,6 +14,5 @@ module.exports = basicDecorator(async (req, res) => {
   }
 
   const seatResult = await seatMapRQ(query.offerIds);
-
   res.status(200).json(seatResult);
 });

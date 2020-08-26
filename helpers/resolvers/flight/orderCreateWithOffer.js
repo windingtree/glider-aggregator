@@ -1,3 +1,10 @@
+const { orderCreateResponseProcessor } = require('../../amadeus/order/orderCreateResponseProcessor');
+
+const { transformAmadeusFault } = require('../../amadeus/errors');
+const { callProviderRest } = require('../utils/flightUtils');
+
+const { orderCreateRequestTemplate_1A } = require('../../amadeus/order/orderCreateRequestTemplate');
+
 const { transform } = require('camaro');
 const { airFranceConfig, airCanadaConfig } = require('../../../config');
 const GliderError = require('../../error');
@@ -30,9 +37,9 @@ const {
   reMapPassengersInRequestBody
 } = require('../utils/flightUtils');
 const { offerPriceRQ } = require('./offerPrice');
+const { logRQRS } = require('../../amadeus/logRQ');
 
 module.exports = async (offer, requestBody, guaranteeClaim) => {
-
   if (!offer.isPriced) {
     const offerPriceResult = await offerPriceRQ(
       requestBody.offerId,
@@ -64,8 +71,8 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   if (offer.isReturnTrip) {
     requestDocumentId = 'Return';
   }
-
-  switch (offer.provider) {
+  const provider = offer.provider;
+  switch (provider) {
     case 'AF':
       requestBody = reMapPassengersInRequestBody(offer, requestBody);
       ndcRequestData = mapNdcRequestData_AF(airFranceConfig, requestBody);
@@ -89,9 +96,13 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
       providerUrl = `${airCanadaConfig.baseUrlPci}/OrderCreate`;
       apiKey = airCanadaConfig.apiKey;
       ndcBody = orderCreateRequestTemplate_AC(ndcRequestHeaderData, ndcRequestData);
+
       responseTransformTemplate = provideOrderCreateTransformTemplate_AC;
       errorsTransformTemplate = ErrorsTransformTemplate_AC;
       faultsTransformTemplate = FaultsTransformTemplate_AC;
+      break;
+    case '1A':
+      ndcBody = orderCreateRequestTemplate_1A(offer,requestBody,guaranteeClaim,requestDocumentId);
       break;
     default:
       throw new GliderError(
@@ -100,20 +111,12 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
       );
   }
 
-  // console.log('BODY@@@', ndcBody);
+  // console.log('ORDER CREATE BODY', ndcBody);
 
-  const { response, error } = await callProvider(
-    offer.provider,
-    providerUrl,
-    apiKey,
-    ndcBody,
-    SOAPAction
-  );
-
-  // console.log('RESP0NSE@@@', response.data);
+  const { response, error } = provider === '1A' ? await callProviderRest('', '', '', ndcBody, 'ORDERCREATE') : await callProvider(provider, providerUrl, apiKey, ndcBody, SOAPAction);
 
   if (error && !error.isAxiosError) {
-    
+
     throw new GliderError(
       error.message,
       502
@@ -121,13 +124,13 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   }
 
   let faultsResult;
-  
+
   if (faultsTransformTemplate) {
     faultsResult = await transform(response.data, faultsTransformTemplate);
   }
 
   // Attempt to parse as a an error
-  const errorsResult = await transform(response.data, errorsTransformTemplate);
+  const errorsResult = provider === '1A' ? transformAmadeusFault(response.result) : await transform(response.data, errorsTransformTemplate);
 
   // Because of two types of errors can be returned: NDCMSG_Fault and Errors
   const combinedErrors = [
@@ -149,15 +152,8 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   }
 
   // Otherwise parse as a result
-  const createResults = await transform(
-    response.data,
-    responseTransformTemplate
-  );
-
-  createResults.order.itinerary.segments = mergeHourAndDate(
-    createResults.order.itinerary.segments
-  );
-
+  const createResults = provider === '1A'? orderCreateResponseProcessor(response.result): await transform(response.data,responseTransformTemplate);
+  createResults.order.itinerary.segments = mergeHourAndDate(createResults.order.itinerary.segments);
   createResults.order.itinerary.segments = createResults.order.itinerary.segments
     .map(s => {
       const operator = s.operator;
@@ -167,55 +163,33 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
       delete operator.iataCodeM;
       return s;
     });
-
-  createResults.order.itinerary.segments = reduceToObjectByKey(
-    createResults.order.itinerary.segments
-  );
-
-  createResults.order.price.commission =
-    createResults.order.price.commission.reduce(
+  createResults.order.itinerary.segments = reduceToObjectByKey(createResults.order.itinerary.segments);
+  if(typeof createResults.order.price.commission === 'object') {
+    createResults.order.price.commission = createResults.order.price.commission.reduce(
       (total, { value }) => total + parseFloat(value),
       0
     ).toString();
-
-  createResults.order.price.taxes =
-    createResults.order.price.taxes.reduce(
-      (total, { value }) => total + parseFloat(value),
-      0
-    ).toString();
-  
-  createResults.order.contactList = reduceToObjectByKey(
-    createResults.order.contactList
-  );
-  createResults.order.passengers = useDictionary(
-    createResults.order.passengers,
-    createResults.order.contactList,
-    'contactInformation'
-  );
-  createResults.order.passengers = splitPropertyBySpace(
-    createResults.order.passengers,
-    'firstnames'
-  );
-  createResults.order.passengers = splitPropertyBySpace(
-    createResults.order.passengers,
-    'lastnames'
-  );
-  createResults.order.passengers = reduceContactInformation(
-    createResults.order.passengers
-  );
-  createResults.order.passengers = reduceToObjectByKey(
-    createResults.order.passengers
-  );
-
+  }
+  if(typeof createResults.order.price.commission === 'object') {
+    createResults.order.price.taxes =
+      createResults.order.price.taxes.reduce(
+        (total, { value }) => total + parseFloat(value),
+        0
+      ).toString();
+  }
+  createResults.order.contactList = reduceToObjectByKey(createResults.order.contactList );
+  createResults.order.passengers = useDictionary(createResults.order.passengers, createResults.order.contactList, 'contactInformation');
+  createResults.order.passengers = splitPropertyBySpace(createResults.order.passengers, 'firstnames');
+  createResults.order.passengers = splitPropertyBySpace(createResults.order.passengers, 'lastnames');
+  createResults.order.passengers = reduceContactInformation(createResults.order.passengers);
+  createResults.order.passengers = reduceToObjectByKey(createResults.order.passengers);
   if (guaranteeClaim &&
       createResults.travelDocuments &&
       Array.isArray(createResults.travelDocuments.bookings) &&
       createResults.travelDocuments.bookings.length > 0) {
-    
     createResults.travelDocuments.etickets = reduceToObjectByKey(
       createResults.travelDocuments.etickets
     );
-  
     createResults.travelDocuments.etickets = reduceToProperty(
       createResults.travelDocuments.etickets,
       '_passenger_'
@@ -227,6 +201,5 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   delete createResults.order.contactList;
 
   createResults.order.options = offer.extraData.options;
-  
   return createResults;
 };

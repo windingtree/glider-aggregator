@@ -1,13 +1,14 @@
+const { logRQRS } = require('../../amadeus/logRQ');
+
 const axios = require('axios');
 // const caDestinations = require('./cadest.json');
 const GliderError = require('../../error');
 const {
   offerManager,
-  FlightOffer
+  FlightOffer,
 } = require('../../models/offer');
 
 const { getAmadeusClient } = require('../../amadeus/amadeusClient');
-
 // Send a request to the provider
 module.exports.callProvider = async (
   provider,
@@ -15,17 +16,20 @@ module.exports.callProvider = async (
   apiKey,
   ndcBody,
   SOAPAction,
-  templates
+  templates,
 ) => {
   let response;
+  let urlParts = apiEndpoint.split('/');
+  let endpointId = urlParts[urlParts.length-1];
   try {
     // Request connection timeouts can be handled via CancelToken only
     const timeout = 60 * 1000; // 60 sec
     const source = axios.CancelToken.source();
     const connectionTimeout = setTimeout(() => source.cancel(
-      `Cannot connect to the source: ${apiEndpoint}`
+      `Cannot connect to the source: ${apiEndpoint}`,
     ), timeout);// connection timeout
-
+    logRQRS(ndcBody, `${endpointId}-ndc-request`);
+    console.log('apiEndpoint:', apiEndpoint);
     response = await axios.post(
       apiEndpoint,
       ndcBody,
@@ -37,26 +41,28 @@ module.exports.callProvider = async (
           'Connection': 'keep-alive',
           'api_key': apiKey,
           'X-apiKey': apiKey,
-          ...(SOAPAction ? { SOAPAction } : {})
+          ...(SOAPAction ? { SOAPAction } : {}),
         },
         cancelToken: source.token, // Request timeout
-        timeout // Response timeout
-      }
+        timeout, // Response timeout
+      },
     );
+    logRQRS(response.data, `${endpointId}-ndc-response`);
     clearTimeout(connectionTimeout);
   } catch (error) {
+    logRQRS(error, `${endpointId}-ndc-response-error`);
     return {
       provider,
       templates,
       response: error.response,
-      error
+      error,
     };
   }
 
   return {
     provider,
     templates,
-    response
+    response,
   };
 };
 
@@ -68,31 +74,45 @@ module.exports.callProviderRest = async (
   apiKey,
   ndcBody,
   SOAPAction,
-  templates
+  templates,
 ) => {
   let response;
-
   try {
+    logRQRS(ndcBody, `${SOAPAction}-amadeus-request`);
     const amadeusClient = getAmadeusClient();
-    console.log('callProviderRest, action:', SOAPAction, '\nRequest Body:', JSON.stringify(ndcBody));
     if (SOAPAction === 'SEARCHOFFERS')
       response = await amadeusClient.shopping.flightOffersSearch.post(JSON.stringify(ndcBody));
     else if (SOAPAction === 'PRICEOFFERS')
       response = await amadeusClient.shopping.flightOffers.pricing.post(JSON.stringify(ndcBody));
-    else {
+    else if (SOAPAction === 'ORDERCREATE')
+      response = await amadeusClient.booking.flightOrders.post(JSON.stringify(ndcBody));
+    else if (SOAPAction === 'SEATMAP') {
+      console.log('seatmap request');
+      response = await amadeusClient.shopping.seatmaps.post(JSON.stringify(ndcBody));
+      console.log('seatmap response');
+    }else {
       throw new Error('Unknown action:' + SOAPAction);
     }
-    console.log('callProviderRest, response:', JSON.stringify(response));
+    console.log('seatmap else');
+
+    logRQRS(response, `${SOAPAction}-amadeus-response`);
   } catch (error) {
-    console.error('callProviderRest, error:', error);
+    logRQRS(error.response, `${SOAPAction}-amadeus-response-error`);
+    let defaultErr = {
+      'title': 'UNKNOWN ERROR HAS OCCURED',
+      'status': 500,
+    };
+
+    //extract list of errors from response (or return default - unknown error)
+    let errors = (error && error.response && error.response.result && error.response.result.errors) ? error.response.result.errors : [defaultErr];
+
     return {
       provider,
       templates,
-      response: error.response,
-      error
+      response: {},
+      error:errors
     };
   }
-
   return {
     provider,
     templates,
@@ -108,12 +128,12 @@ module.exports.selectProvider = (origin, destination) => {
   const sdMapping = [
     {
       provider: '1A',
-      destinations: ['LHR']
+      destinations: ['LHR','NCE'],
     },
     {
       provider: 'AC',
-      destinations: ['YUL']
-    }
+      destinations: ['YUL'],
+    },
     // {
     //   provider: 'AC',
     //   destinations: caDestinations
@@ -125,7 +145,7 @@ module.exports.selectProvider = (origin, destination) => {
 
       if (
         (v.destinations.filter(d => origin.includes(d)).length > 0 ||
-        v.destinations.filter(d => destination.includes(d)).length > 0) &&
+          v.destinations.filter(d => destination.includes(d)).length > 0) &&
         !a.includes(v.provider)
       ) {
         a.push(v.provider);
@@ -147,7 +167,7 @@ module.exports.reMapPassengersInRequestBody = (offer, body) => {
       })
       .reduce((a, v) => ({
         ...a,
-        [v[0]]: v[1]
+        [v[0]]: v[1],
       }), {});
     body.passengers = Object.entries(body.passengers)
       .map(p => {
@@ -156,12 +176,12 @@ module.exports.reMapPassengersInRequestBody = (offer, body) => {
       })
       .reduce((a, v) => ({
         ...a,
-        [v[0]]: v[1]
+        [v[0]]: v[1],
       }), {});
   } else {
     throw new GliderError(
       'Mapped passengers Ids not found in the offer',
-      500
+      500,
     );
   }
 
@@ -172,7 +192,7 @@ module.exports.reMapPassengersInRequestBody = (offer, body) => {
 module.exports.fetchFlightsOffersByIds = async offerIds => {
   // Retrieve the offers
   const offers = (await Promise.all(offerIds.map(
-    offerId => offerManager.getOffer(offerId)
+    offerId => offerManager.getOffer(offerId),
   )))
     // Should be FlightOffer of type and have same provider
     .filter((offer, i, array) => (
@@ -183,7 +203,7 @@ module.exports.fetchFlightsOffersByIds = async offerIds => {
   if (offers.length === 0) {
     throw new GliderError(
       'Offer not found',
-      400
+      400,
     );
   }
 
@@ -200,15 +220,15 @@ module.exports.dedupPassengersInOptions = (options) => options
         option[0].passenger = [
           ...new Set([
             ...option[0].passenger.split(' '),
-            ...v.passenger.split(' ')
-          ])
+            ...v.passenger.split(' '),
+          ]),
         ].join(' ');
       } else {
         a.push(v);
       }
       return a;
     },
-    []
+    [],
   )
   .reduce(
     (a, v) => {
@@ -217,10 +237,10 @@ module.exports.dedupPassengersInOptions = (options) => options
         .forEach(passenger => {
           a.push({
             ...v,
-            passenger
+            passenger,
           });
         });
       return a;
     },
-    []
+    [],
   );

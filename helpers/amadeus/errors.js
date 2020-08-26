@@ -1,9 +1,9 @@
 const GliderError = require('../error');
 
-const transformAmadeusFault = (response) => {
+const transformAmadeusFault = (result) => {
   let errors = [];
-  if (response && response.errors) {
-    errors = response.errors.map(error => {
+  if (result && result.errors) {
+    errors = result.errors.map(error => {
       return { message: error.title, code: error.code, type: error.status };
     });
   }
@@ -15,7 +15,8 @@ const transformAmadeusFault = (response) => {
 // Look for all types of response errors
 const assertAmadeusFault = (response, error) => {
   if (error) {
-    throw new GliderError(error.message, 502);
+    let message = error.map(e=>e.title).join(';');
+    throw new GliderError(message, 502);
   }
 };
 

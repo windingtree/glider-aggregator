@@ -1,14 +1,14 @@
 const { v4: uuidv4 } = require('uuid');
-const GliderError = require('../error');
+const GliderError = require('../../error');
 
 
-const createSegment = (segmentId, segment) => {
-  const { carrierCode: marketingCarrier, operating, number: flightNumber, departure, arrival } = segment;
+const createSegment = (segment) => {
+  const { id, carrierCode: marketingCarrier, operating, number: flightNumber, departure, arrival } = segment;
   const { iataCode: originIataCode, at: departureTime } = departure;
   const { iataCode: destinationIataCode, at: arrivalTime } = arrival;
   const operatingCarrier = operating ? operating.carrierCode : marketingCarrier;
   return {
-    _id_: segmentId,
+    _id_: id,
     operator: {
       operatorType: 'airline',
       iataCode: operatingCarrier,
@@ -58,22 +58,43 @@ const createPrice = (price,commission = 0) => {
     taxes: Number(tax).toFixed(2),
   };
 };
-const convertPassengerTypeToGliderType = (type) => {
+const convertGenderFromAmadeusToGlider = (gender) => {
+  if (gender === 'MALE') return 'Male';
+  else if (gender === 'FEMALE') return 'Female';
+  else throw new GliderError('invalid gender:' + gender, 400);
+};
+const convertGenderFromGliderToAmadeus = (gender) => {
+  if (gender === 'Male') return 'MALE';
+  else if (gender === 'Female') return 'FEMALE';
+  else throw new GliderError('invalid gender:' + gender, 400);
+};
+const convertPassengerTypeFromAmadeusToGlider = (type) => {
   if (type === 'ADULT') return 'ADT';
   else if (type === 'CHILD') return 'CHD';
   else if (type === 'INFANT') return 'INF';
   else throw new GliderError('invalid passenger type:' + type, 400);
 };
+const convertPassengerTypeFromGliderToAmadeus = (type) => {
+  if (type === 'ADT') return 'ADULT';
+  else if (type === 'CHD') return 'CHILD';
+  else if (type === 'INF') return 'INFANT';
+  else throw new GliderError('invalid passenger type:' + type, 400);
+};
 const createPassenger  = (travelerPricing) => {
-  const { travelerType } = travelerPricing;
+  const { travelerId, travelerType } = travelerPricing;
   return {
-    _id_: 'pax-' + uuidv4(),
-    type: convertPassengerTypeToGliderType(travelerType)
+    _id_: travelerId,
+    type: convertPassengerTypeFromAmadeusToGlider(travelerType)
   };
 };
+
+
 module.exports={
   createSegment:createSegment,
   createPrice:createPrice,
-  convertPassengerTypeToGliderType:convertPassengerTypeToGliderType,
+  convertPassengerTypeToGliderType:convertPassengerTypeFromAmadeusToGlider,
+  convertPassengerTypeFromGliderToAmadeus:convertPassengerTypeFromGliderToAmadeus,
+  convertGenderFromAmadeusToGlider:convertGenderFromAmadeusToGlider,
+  convertGenderFromGliderToAmadeus:convertGenderFromGliderToAmadeus,
   createPassenger:createPassenger
 }

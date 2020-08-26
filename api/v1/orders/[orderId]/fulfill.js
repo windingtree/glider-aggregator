@@ -1,3 +1,7 @@
+const { transformAmadeusFault } = require('../../../../helpers/amadeus/errors');
+
+const { fulfillOrderTemplate_1A }  = require('../../../../helpers/amadeus/fulfillOrderRequestTemplate');
+const { fulfillOrderResponseProcessor }  = require('../../../../helpers/amadeus/order/fulfillOrderResponseProcessor');
 const { ready, transform } = require('camaro');
 const { basicDecorator } = require('../../../../decorators/basic');
 const GliderError = require('../../../../helpers/error');
@@ -32,8 +36,9 @@ const {
   claimGuaranteeWithCard
 } = require('../../../../helpers/guarantee');
 const {
-  callProvider
+  callProvider, callProviderRest
 } = require('../../../../helpers/resolvers/utils/flightUtils');
+
 
 module.exports = basicDecorator(async (req, res) => {
   const { body, query } = req;
@@ -41,6 +46,7 @@ module.exports = basicDecorator(async (req, res) => {
 
   // Get the order
   const order = await ordersManager.getOrder(query.orderId);
+
 
   if (order.offer && order.offer.extraData && order.offer.extraData.mappedPassengers) {
     body.passengerReferences = body.passengerReferences
@@ -67,8 +73,8 @@ module.exports = basicDecorator(async (req, res) => {
   let responseTransformTemplate;
   let errorsTransformTemplate;
   let faultsTransformTemplate;
-
-  switch (order.provider) {
+  let provider = order.provider;
+  switch (provider) {
     case 'AF':
       ndcRequestData = mapNdcRequestData_AF(airFranceConfig, body, query);
       providerUrl = 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001489v01/EXT';
@@ -91,28 +97,30 @@ module.exports = basicDecorator(async (req, res) => {
       errorsTransformTemplate = ErrorsTransformTemplate_AC;
       faultsTransformTemplate = FaultsTransformTemplate_AC;
       break;
+
+    case '1A':
+      guaranteeClaim = await claimGuaranteeWithCard(body.guaranteeId);
+      // ndcRequestHeaderData = mapNdcRequestHeaderData_AC(guaranteeClaim);
+      // ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, order, body, guaranteeClaim);
+      // providerUrl = `${airCanadaConfig.baseUrlPci}/OrderCreate`;
+      // apiKey = airCanadaConfig.apiKey;
+      ndcBody = fulfillOrderTemplate_1A(order, body, guaranteeClaim);
+      // console.log('@@@', ndcBody);
+      // responseTransformTemplate = fulfillOrderTransformTemplate_AC;
+      // errorsTransformTemplate = ErrorsTransformTemplate_AC;
+      // faultsTransformTemplate = FaultsTransformTemplate_AC;
+      break;
     default:
       return Promise.reject('Unsupported flight operator');
   }
-
-  const { response, error } = await callProvider(
-    order.provider,
-    providerUrl,
-    apiKey,
-    ndcBody,
-    SOAPAction
-  );
+  console.log('provider=', provider);
+  const { response, error } = (provider==='1A') ? await callProviderRest(provider,'','',ndcBody,'ORDERCREATE'):await callProvider(provider,providerUrl,apiKey,ndcBody,SOAPAction);
 
   if (error && !error.isAxiosError) {
-    
-    throw new GliderError(
-      response.error.message,
-      502
-    );
+    throw new GliderError(response.error.message,502);
   }
 
   let faultsResult;
-
   if (faultsTransformTemplate) {
     await ready();
     faultsResult = await transform(response.data, faultsTransformTemplate);
@@ -120,7 +128,7 @@ module.exports = basicDecorator(async (req, res) => {
 
   // Attempt to parse as a an error
   await ready();
-  const errorsResult = await transform(response.data, errorsTransformTemplate);
+  const errorsResult = provider === '1A'? transformAmadeusFault(response.result): await transform(response.data, errorsTransformTemplate);
 
   // Because of two types of errors can be returned: NDCMSG_Fault and Errors
   const combinedErrors = [
@@ -142,19 +150,10 @@ module.exports = basicDecorator(async (req, res) => {
   }
 
   await ready();
-  const fulfillResults = await transform(
-    response.data,
-    responseTransformTemplate
-  );
+  const fulfillResults = provider==='1A'? fulfillOrderResponseProcessor(response.result) : await transform(response.data, responseTransformTemplate);
 
-  fulfillResults.travelDocuments.etickets = reduceToObjectByKey(
-    fulfillResults.travelDocuments.etickets
-  );
-
-  fulfillResults.travelDocuments.etickets = reduceToProperty(
-    fulfillResults.travelDocuments.etickets,
-    '_passenger_'
-  );
+  fulfillResults.travelDocuments.etickets = reduceToObjectByKey(fulfillResults.travelDocuments.etickets);
+  fulfillResults.travelDocuments.etickets = reduceToProperty(fulfillResults.travelDocuments.etickets,'_passenger_');
 
   if (!guaranteeClaim) {
     guaranteeClaim = await claimGuarantee(body.guaranteeId);

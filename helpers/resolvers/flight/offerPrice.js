@@ -1,6 +1,5 @@
 const { assertAmadeusFault } = require('../../amadeus/errors');
-const { offerPriceResponseProcessor }  = require('../../amadeus/offerPriceResponseProcessor');
-const fs = require('fs');
+const { offerPriceResponseProcessor }  = require('../../amadeus/price/offerPriceResponseProcessor');
 
 const { transform } = require('camaro');
 const { v4: uuidv4 } = require('uuid');
@@ -34,7 +33,7 @@ const {
 } = require('../../camaroTemplates/provideOfferPrice');
 const { setOrderStatus, assertOrderStatus } = require('../utils/offers');
 
-const { offerPriceRequestTemplate_1A } = require('../../amadeus/offerPriceRequestTemplate');
+const { offerPriceRequestTemplate_1A } = require('../../amadeus/price/offerPriceRequestTemplate');
 
 
 // Convert response data to the object form
@@ -173,7 +172,7 @@ module.exports.offerPriceRQ = async (
 
   // Retrieve the offers
   const offers = await fetchFlightsOffersByIds(offerIds);
-  console.log('Offers fetched from DB',JSON.stringify(offers));
+  // console.log('Offers fetched from DB',JSON.stringify(offers));
   // Assert order status in offers
   assertOrderStatus(offers);
 
@@ -203,7 +202,7 @@ module.exports.offerPriceRQ = async (
         providerUrl = `${airCanadaConfig.baseUrl}/OfferPrice`;
         apiKey = airCanadaConfig.apiKey;
         ndcBody = offerPriceRequestTemplate_AC(ndcRequestData);
-        console.log('###', ndcBody);
+        // console.log('###', ndcBody);
         responseTransformTemplate = provideOfferPriceTransformTemplate_AC;
         errorsTransformTemplate = ErrorsTransformTemplate_AC;
         faultsTransformTemplate = FaultsTransformTemplate_AC;
@@ -219,17 +218,9 @@ module.exports.offerPriceRQ = async (
           400
         );
     }
-    console.log("offerPrice - 1");
     const { response, error } = provider === '1A' ? await callProviderRest(provider, '', '', ndcBody, SOAPAction) : await callProvider(offers[0].provider, providerUrl, apiKey, ndcBody, SOAPAction);
-    fs.writeFileSync(`c://temp/${provider}-6offer-price-raw-provider-response.json`, JSON.stringify(response.data));
-    fs.writeFileSync(`c://temp/${provider}-6offer-price-raw-provider-response.xml`, response.data);
-    // fs.writeFileSync(`c://temp/${provider}-6offer-converter-template.xml`, responseTransformTemplate);
-    // fs.writeFileSync(`c://temp/${provider}-6offer-price-raw-provider-error.txt`, JSON.stringify(error));
-    provider === '1A' ? await assertAmadeusFault(response,error):await assertErrors(error,response,faultsTransformTemplate,errorsTransformTemplate);
-    offerResult = provider === '1A' ? await offerPriceResponseProcessor(response.data):await processResponse(response.data,responseTransformTemplate);
-    fs.writeFileSync(`c://temp/${provider}-7processed-response.json`, JSON.stringify(offerResult));
-    fs.writeFileSync(`c://temp/${provider}-7processed-response.xml`, offerResult);
-    fs.writeFileSync(`c://temp/${provider}-8offers-from_db_before_reduce.json`, JSON.stringify(offers));
+    provider === '1A' ? assertAmadeusFault(response, error) : await assertErrors(error, response, faultsTransformTemplate, errorsTransformTemplate);
+    offerResult = provider === '1A' ? offerPriceResponseProcessor(response.result) : await processResponse(response.data, responseTransformTemplate);
 
     const mergedOldOffers = offers.reduce(
       (a, v) => {
@@ -248,15 +239,18 @@ module.exports.offerPriceRQ = async (
           ...a.mappedPassengers,
           ...v.extraData.mappedPassengers
         };
+        a.rawOffer = {
+          ... v.extraData.rawOffer
+        };
         return a;
       },
       {
         segments: [],
         passengers: {},
-        mappedPassengers: {}
+        mappedPassengers: {},
+        rawOffer:{}
       }
     );
-    fs.writeFileSync(`c://temp/${provider}-9mergedOldOffers.json`, JSON.stringify(mergedOldOffers));
     // Update segments Ids to initially obtained with original offers
     const newSegmentsChanged = Object.entries(offerResult.offer.itinerary.segments)
       .reduce(
@@ -380,7 +374,8 @@ module.exports.offerPriceRQ = async (
         mappedPassengers: mergedOldOffers.mappedPassengers,
         passengers: mergedOldOffers.passengers,
         options: offerResult.offer.options,
-        seats: body
+        seats: body,
+        rawOffer: mergedOldOffers.rawOffer
       }
     );
 

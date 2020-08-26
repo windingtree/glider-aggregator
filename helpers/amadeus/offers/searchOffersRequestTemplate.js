@@ -1,4 +1,4 @@
-const GliderError = require('../error');
+const GliderError = require('../../error');
 
 const splitIsoDateTime = (isoDateString) => {
   return { 'date': isoDateString.substr(0, 10), 'time': isoDateString.substr(11, 8) };
@@ -14,7 +14,7 @@ const convertPassengerTypeToAmadeus = (type) => {
 
 
 
-module.exports.provideShoppingRequestTemplate_1A = (config, body) => {
+module.exports.createRequest = (config, body) => {
   const { itinerary, passengers } = body;
   //transform itinerary criteria to Amadeus format
   let itineraryId = 1;
@@ -46,8 +46,16 @@ module.exports.provideShoppingRequestTemplate_1A = (config, body) => {
       'GDS',
     ],
     searchCriteria: {
-      maxFlightOffers: 5, //TODO remove hardcoded total results count
-    },
+      allowAlternativeFareOptions: true,
+      maxFlightOffers: 30,
+      additionalInformation:{
+        chargeableCheckedBags:true,
+        brandedFares:true
+      },
+      pricingOptions:{
+
+      }
+    }
   };
   return request;
 };

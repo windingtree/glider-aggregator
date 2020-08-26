@@ -1,8 +1,11 @@
+const { logRQRS } = require( '../helpers/amadeus/logRQ');
+
 const GliderError = require('../helpers/error');
 const { verifyJWT } = require('../helpers/jwt');
 const { indexException, indexEvent } = require('../helpers/elasticsearch');
 
 const basicDecorator = (fn, isAdmin = false) => async (req, res) => {
+  logRQRS(req.body,'API request');
   // start timer
   req.start = process.hrtime();
 
@@ -30,7 +33,7 @@ const basicDecorator = (fn, isAdmin = false) => async (req, res) => {
     if (!headers.authorization) {
       throw new GliderError('Authorization missing', 403);
     }
-    
+
     const [ authType, authJwt ] = headers.authorization.split(' ');
     req.verificationResult = await verifyJWT(authType, authJwt, isAdmin);
     await fn(req, res);

@@ -1,8 +1,6 @@
-// const data = require('./1A-raw-response-offerprice.json');
 const { v4: uuidv4 } = require('uuid');
-const { createSegment, createPrice, createPassenger } = require('./utils');
-// const GliderError = require('../error');
-
+const { createSegment, createPrice, createPassenger } = require('../utils/amadeusFormatUtils');
+const taxDefinitions = require('../../../assets/taxDefinitions.json') || {};
 const createPricedItem = (pricedItemId, passengerReferences, taxes, fares) => {
   return {
     _id_: pricedItemId,
@@ -58,12 +56,12 @@ const createFareItemComponent = (name, fareBasisCode, fareClass, conditions = ' 
 
 
 const offerPriceResponseProcessor = (response) => {
-  const { flightOffers } = response;
+  const { flightOffers } = response.data;
   let pricedOffers = [];
 
   //iterate over offers
   flightOffers.map(_flightOffer => {
-    let { lastTicketingDate: _lastTicketingDate, itineraries: _itineraries, price: _price, travelerPricings: _travelerPricings } = _flightOffer;
+    let { lastTicketingDate: _lastTicketingDate, itineraries: _itineraries, price: _price,  travelerPricings: _travelerPricings } = _flightOffer;
 
     //TODO - add commission calculation
     let offerPrice = createPrice(_price);
@@ -73,7 +71,10 @@ const offerPriceResponseProcessor = (response) => {
     _itineraries.map(_itinerary => {
       _itinerary.segments.map(_segment => {
         //build segment object
-        let segment = createSegment('seg-' + uuidv4(), _segment);
+        let segment = createSegment( _segment);
+        console.log('segment',segment);
+        console.log('segment._id_',segment._id_);
+        console.log('segment.id',segment.id);
         currentOffer.offer.itinerary.segments[segment._id_] = segment;
       });
     });
@@ -92,9 +93,12 @@ const offerPriceResponseProcessor = (response) => {
       let baseFare = createFareItem('base', _price.base, '', baseFareItemComponents);
       let taxes = [];
       _travelerPricing.price.taxes.map(_tax => {
-        taxes.push(createTaxItem(_tax.code, _tax.amount, ''));
+        taxes.push(createTaxItem(_tax.code, _tax.amount, getTaxDefinition(_tax.code)));
       });
       let pricedItem = createPricedItem('offeritem-' + uuidv4(), [passenger._id_], taxes, [baseFare]);
+
+
+
       currentOffer.offer.pricedItems.push(pricedItem);
 
     });
@@ -104,11 +108,9 @@ const offerPriceResponseProcessor = (response) => {
   return pricedOffers[0];//FIXME - shouldn't we return list?
 };
 
-/*
-let result = offerPriceResponseProcessor(data);
-const fs = require('fs');
-fs.writeFileSync(`output.json`, JSON.stringify(result));
-// console.log(JSON.stringify(result));
-*/
+const getTaxDefinition = (taxCode) =>{
+  let description = taxDefinitions[taxCode]?taxDefinitions[taxCode]:'Tax';
+  return description;
+};
 
 module.exports.offerPriceResponseProcessor = offerPriceResponseProcessor;

@@ -9,7 +9,6 @@ const {
   provideShoppingRequestTemplate_AC
 } = require('../soapTemplates/searchOffers');
 
-const { provideShoppingRequestTemplate_1A } = require('../amadeus/searchOffersRequestTemplate');
 
 const {
   provideAirShoppingTransformTemplate_AF,
@@ -27,7 +26,8 @@ const {
   deepMerge
 } = require('../parsers');
 
-const { searchOffersResponseTransform } = require('../amadeus/searchOffersResponseProcessor');
+const { transformAmadeusResponse } = require('../amadeus/offers/searchOffersResponseProcessor');
+const { createRequest } = require('../amadeus/offers/searchOffersRequestTemplate');
 
 const {
   airFranceConfig,
@@ -36,7 +36,6 @@ const {
 } = require('../../config');
 
 const GliderError = require('../error');
-const fs = require('fs');
 const offerModel = require('../models/offer');
 const { selectProvider, callProvider, callProviderRest } = require('./utils/flightUtils');
 const { transformAmadeusFault } = require('../amadeus/errors');
@@ -45,11 +44,7 @@ const transformResponse = async (
   { provider, response, templates },
   passengersIds
 ) => {
-  const searchResults = (provider === '1A')? await searchOffersResponseTransform(response.data):await transform(response.data, templates.response);
-  // console.log("RAW",JSON.stringify(searchResults))
-  fs.writeFileSync(`c://temp/${provider}-1raw-response-from-provider.xml`, response.data);
-  fs.writeFileSync(`c://temp/${provider}-1raw-response-from-provider.json`, JSON.stringify(response.data));
-  fs.writeFileSync(`c://temp/${provider}-2raw-transformed-to-json.json`, JSON.stringify(searchResults));
+  const searchResults = (provider === '1A')? await transformAmadeusResponse(response.data):await transform(response.data, templates.response);
 
   if(provider !== '1A') {
     searchResults.itineraries.segments = mergeHourAndDate(searchResults.itineraries.segments);
@@ -359,8 +354,6 @@ const transformResponse = async (
     delete searchResults.offers[offerId].offerItems;
     delete searchResults.offers[offerId].extraData;
   }
-  fs.writeFileSync(`c://temp/${provider}-3data_to_be_stored_in_db.json`, JSON.stringify(indexedOffers));
-  fs.writeFileSync(`c://temp/${provider}-4search-results-before-removed_supporting_info.json`, JSON.stringify(searchResults));
   // Store offers to the database
   await offerModel.offerManager.storeOffers(indexedOffers);
 
@@ -377,8 +370,6 @@ const transformResponse = async (
     delete searchResults.itineraries.segments[segment].ClassOfService;
     delete searchResults.itineraries.segments[segment].FlightDetail;
   }
-  fs.writeFileSync(`c://temp/${provider}-5final_search_response.json`, JSON.stringify(searchResults));
-
   return searchResults;
 };
 
@@ -390,7 +381,6 @@ module.exports.searchFlight = async (body) => {
     body.itinerary.segments[0].origin.iataCode,
     body.itinerary.segments[0].destination.iataCode
   );
-  console.log('providers:', providers);
   if (providers.length === 0) {
     throw new GliderError(
       'Flight providers not found for the given origin and destination',
@@ -449,14 +439,14 @@ module.exports.searchFlight = async (body) => {
       case '1A':
         type='REST';
         providerUrl = amadeusGdsConfig.urlOffers;
-        ndcBody = provideShoppingRequestTemplate_1A(amadeusGdsConfig, body);
+        ndcBody = createRequest(amadeusGdsConfig, body);
         SOAPAction='SEARCHOFFERS';
         break;
       default:
         return Promise.reject('Unsupported flight operator');
     }
 
-    let result =  (type === 'REST'?callProviderRest(provider, providerUrl, apiKey, ndcBody, SOAPAction, templates):callProvider(provider, providerUrl, apiKey, ndcBody, SOAPAction, templates));
+    let result = (type === 'REST' ? callProviderRest(provider, providerUrl, apiKey, ndcBody, SOAPAction, templates) : callProvider(provider, providerUrl, apiKey, ndcBody, SOAPAction, templates));
     return result;
   }));
 
@@ -464,8 +454,6 @@ module.exports.searchFlight = async (body) => {
   const responseErrors = (await Promise.all(
     responses
       .map(async ({ provider, response, error, templates }) => {
-        fs.writeFileSync(`c://temp/${provider}-1response-data.json`, JSON.stringify(response.data));
-        fs.writeFileSync(`c://temp/${provider}-1response-data.xml`, response.data);
         if (error && !error.isAxiosError) {
           // Request error
           return {
@@ -478,11 +466,11 @@ module.exports.searchFlight = async (body) => {
 
           let faultsResult;
           if (templates && templates.faults) {
-            faultsResult = (provider === '1A') ? transformAmadeusFault(response.data) : await transform(response.data, templates.faults);
+            faultsResult = (provider === '1A') ? transformAmadeusFault(response.result) : await transform(response.data, templates.faults);
           }
           let errorsResult;
           if (templates && templates.errors) {
-            errorsResult = (provider === '1A') ? transformAmadeusFault(response.data) : await transform(response.data, templates.errors);
+            errorsResult = (provider === '1A') ? transformAmadeusFault(response.result) : await transform(response.data, templates.errors);
           }
           // Because of two types of errors can be returned: NDCMSG_Fault and Errors
           const combinedErrors = [
