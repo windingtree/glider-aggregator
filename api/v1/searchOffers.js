@@ -2,13 +2,14 @@ const { basicDecorator } = require('../../decorators/basic');
 const GliderError = require('../../helpers/error');
 const { searchHotel } = require('../../helpers/resolvers/searchHotel');
 const { searchFlight } = require('../../helpers/resolvers/searchFlight');
+const { validateSearchCriteria } = require('../../payload/validators');
 const {
   checkCallsTrustRequirements
 } = require('../../helpers/requirements/apiCallsLimits');
 
 module.exports = basicDecorator(async (req, res) => {
   const { body } = req;
-
+  validateSearchCriteria(body);
   await checkCallsTrustRequirements(
     '/api/v1/searchOffers',
     req.verificationResult.didResult.id,
