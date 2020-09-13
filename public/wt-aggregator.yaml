@@ -112,9 +112,9 @@ paths:
                   }
               hotelSearchByPolygon:
                 summary: A search for hotels by polygon
-                description: > 
-                  For getting of polygon coordinates for testing purposes 
-                  can be used online visual tool 
+                description: >
+                  For getting of polygon coordinates for testing purposes
+                  can be used online visual tool
                   [https://www.keene.edu/campus/maps/tool/](https://www.keene.edu/campus/maps/tool/)
                 value:
                   {
@@ -203,7 +203,7 @@ paths:
             - read:orders
         - orgid_token: []
       x-codegen-request-body-name: body
-  
+
   /offers/{offerIds}/price:
     post:
       tags:
@@ -225,10 +225,7 @@ paths:
         content:
           application/json:
             schema:
-              description: An array of options selected
-              type: array
-              items:
-                $ref: "#/components/schemas/OptionSelection"
+              $ref: "#/components/schemas/OptionSelectionList"
       responses:
         200:
           description: Offer with confirmed price
@@ -276,7 +273,7 @@ paths:
         - orgid_auth:
             - read:offers
         - orgid_token: []
-  
+
   /offers/{offerIds}/seatmap:
     get:
       tags:
@@ -305,7 +302,7 @@ paths:
                     description: Contains the list of seatmaps indexed by segment
                     additionalProperties:
                       $ref: "#/components/schemas/SeatMap"
-                  prices: 
+                  prices:
                     description: Contains the list of seat prices indexed by option code
                     additionalProperties:
                       $ref: "#/components/schemas/Price"
@@ -362,17 +359,8 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                offerId:
-                  $ref: "#/components/schemas/UUID"
-                passengers:
-                  description: Indexed dictionnary of the passengers
-                  type: object
-                  additionalProperties:
-                    $ref: "#/components/schemas/Passenger"
-                guaranteeId:
-                  $ref: "#/components/schemas/UUID"
-              example:
+              $ref: "#/components/schemas/CreateOfferBody"
+            example:
                 {
                   "offerId": "11111111-2222-3333-4444-000000000001",
                   "guaranteeId": "02a1a7c0-3ff8-4e12-a3ba-65d57e1e9276",
@@ -509,7 +497,7 @@ paths:
                         items:
                           type: string
                           pattern: "^[0-9]{3}-[0-9]{10}$"
-                          example: "057-1438027611"                
+                          example: "057-1438027611"
         400:
           description: Invalid ID supplied
           content:
@@ -591,7 +579,7 @@ components:
       minLength: 64
       maxLength: 64
       example: "0xc0fbc1348b43d50c948edf1818b0abfdd7466b9e"
-      
+
     Amount:
       description: An amount
       type: string
@@ -599,7 +587,7 @@ components:
       minLength: 1
       maxLength: 99
       example: "40.00"
-      
+
     Currency:
       description: The ISO4217 currency code
       type: string
@@ -664,17 +652,18 @@ components:
       type: string
       pattern: '^\+[0-9]+$'
       example: "+32123456789"
-      
+
     Name:
       description: First, middle or last name
       type: string
       minLength: 1
       maxLength: 42
       example: "Bob"
-      
+
     Passenger:
       description: A representation of a passenger
       type: object
+      required: ["type"]
       properties:
         type:
           description: The passenger type code as per IATA definitions
@@ -711,14 +700,14 @@ components:
           minItems: 1
           maxItems: 5
           items:
-            $ref: "#/components/schemas/Name"            
+            $ref: "#/components/schemas/Name"
         middlenames:
           description: The list of middle names of this passenger
           type: array
           minItems: 1
           maxItems: 5
           items:
-            $ref: "#/components/schemas/Name"        
+            $ref: "#/components/schemas/Name"
         gender:
           description: The gender of the passenger
           type: string
@@ -734,11 +723,12 @@ components:
         contactInformation:
           description: The contact informations of the passenger
           type: array
+          minItems: 1
           items:
             oneOf:
               - $ref: "#/components/schemas/PhoneNumber"
-              - $ref: "#/components/schemas/Email"              
-      example: 
+              - $ref: "#/components/schemas/Email"
+      example:
         {
           "type": "ADT",
           "lastnames": ["Marley"],
@@ -748,9 +738,10 @@ components:
           "contactInformation": ["+32123456789", "contact@org.co.uk"]
         }
 
-    Location:
-      description: "The location of a specific place"
+    LocationAirport:
+      description: "Object that specifies a location as an airport/railstation/city"
       type: object
+      required: ["locationType","iataCode"]
       properties:
         locationType:
           description: "The type of location, for explicit filtering"
@@ -767,13 +758,18 @@ components:
           minLength: 3
           maxLength: 3
           example: "LHR"
+
+    Location:
+      description: "The location of a specific place"
+      type: object
+      properties:
         rectangle:
           $ref: "#/components/schemas/LocationRectangle"
         circle:
           $ref: "#/components/schemas/LocationCircle"
         polygon:
           $ref: "#/components/schemas/LocationPolygon"
-                
+
     LocationRectangle:
       description: "The coordinates of a rectangle area"
       type: object
@@ -814,8 +810,10 @@ components:
     LocationPolygon:
       description: "The coordinates of a polygon area"
       type: array
-      items: 
-        type: number 
+      items:
+        type: array
+        items: number
+
       example:
         [
           [
@@ -892,17 +890,21 @@ components:
     Segment:
       description: A section of a travel itinerary
       type: object
+      required: ["origin","destination","departureTime"]
       properties:
         operator:
           $ref: "#/components/schemas/TravelOperator"
         origin:
-          $ref: "#/components/schemas/Location"
+          required: true
+          $ref: "#/components/schemas/LocationAirport"
         destination:
-          $ref: "#/components/schemas/Location"
+          required: true
+          $ref: "#/components/schemas/LocationAirport"
         departureTime:
           description: The departure time of the segment
           type: string
           format: date-time
+          required: true
           example: "2021-04-12T23:20:50.52Z"
         arrivalTime:
           description: The arrival time of the segment
@@ -1091,6 +1093,7 @@ components:
     Itinerary:
       description: The itinerary of transportation
       type: object
+      required: ["segments"]
       properties:
         segments:
           description: An ordered list of segments
@@ -1099,7 +1102,7 @@ components:
           maxItems: 12
           items:
             $ref: "#/components/schemas/Segment"
-    
+
     TaxItem:
       description: A tax item
       type: object
@@ -1122,7 +1125,7 @@ components:
           description: The service code
           type: string
           example: "LGAC"
-        name: 
+        name:
           description: The service name
           type: string
           example: "Lounge Access"
@@ -1130,7 +1133,7 @@ components:
           description: Description of the service
           type: string
           example: "Lounge Access"
-        segments: 
+        segments:
           description: List of segments in which this service is provided
           type: array
           items:
@@ -1177,11 +1180,11 @@ components:
                       properties:
                         amount:
                           $ref: "#/components/schemas/Amount"
-                      
+
                         description:
                           type: string
                           example: Navigation Surcharge
-                          
+
                         usage:
                           description: The usage of the fare item
                           type: string
@@ -1189,13 +1192,13 @@ components:
                             - base      # Base Fare
                             - surcharge # Surcharge
                           default: base
-                          
+
                         code:
                           description: The optional code of the fare item
                           type: string
                           pattern: "^[A-Z0-9]{2}$"
                           example: S1
-  
+
                         components:
                           description: A fare component
                           type: array
@@ -1446,38 +1449,51 @@ components:
                       description: An option code to reference the seat selection
                       type: string
                       example: ASPW_01
-        prices: 
+        prices:
           description: Contains the list of seat prices indexed by option code
           additionalProperties:
             $ref: "#/components/schemas/Price"
-            
+
+    OptionSelectionList:
+      description: A list of selected options
+      type: array
+      items:
+        $ref: "#/components/schemas/OptionSelection"
+
     OptionSelection:
       description: A selected option
       type: object
+      required: ["code"]
       properties:
         code:
           description: The option code
           type: string
+          minLength: 1
           example: divNonAir11.LGAC1
-        name: 
+        name:
           description: The option name
           type: string
+          minLength: 1
           example: "Lounge Access"
         description:
           description: Description of the option
           type: string
+          minLength: 1
           example: "An access to the Exclusive Lounge Access at the departure"
-        segment: 
+        segment:
           description: Segment for which this option is available
           type: string
+          minLength: 1
           example: "HW9EJ7XAC7-SEG1"
         passenger:
           description: Passenger for which this option is selected
           type: string
+          minLength: 1
           example: "PAX1"
         seatNumber:
           description: For seats options, the seat number selected with this option
           type: string
+          minLength: 1
           example: 12C
         price:
           $ref: "#/components/schemas/Price"
@@ -1560,10 +1576,28 @@ components:
           items:
             $ref: "#/components/schemas/OptionSelection"
 
+    CreateOfferBody:
+      description: An object to provide order details
+      type: object
+      required: ["offerId","passengers"]
+      properties:
+          offerId:
+            $ref: "#/components/schemas/UUID"
+          passengers:
+            description: Indexed dictionary of the passengers
+            type: object
+            required: true
+            additionalProperties:
+              $ref: "#/components/schemas/Passenger"
+          guaranteeId:
+            $ref: "#/components/schemas/UUID"
+
+
     # Contains the parameters for a search
     SearchCriteria:
       description: An object to provide search criteria
       type: object
+      required: ["passengers"]
       properties:
         # The option of the itinerary being searched
         itinerary:
@@ -1579,16 +1613,17 @@ components:
             arrival:
               type: string
               description: arrival day in the accommodation
-              format: datetime
+              format: date-time
             departure:
               type: string
               description: departure day from the accommodation
-              format: datetime
+              format: date-time
 
         # The passengers involved in the search
         passengers:
           description: The passengers involved in the search. Allows personalization and custom offers.
           type: array
+          required: true
           minItems: 1
           maxItems: 99
           items:
