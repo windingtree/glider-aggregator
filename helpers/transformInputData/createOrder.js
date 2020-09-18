@@ -5,7 +5,7 @@ const { getACSystemId } = require('../soapTemplates/utils/xmlUtils');
 module.exports.mapNdcRequestData_AF = (config, { offerId, offerItems, passengers }) => ({
   ...(JSON.parse(JSON.stringify(config))),
   trackingMessageHeader: {
-    consumerRef : {
+    consumerRef: {
       consumerTime: (new Date(Date.now())).toISOString(),
     },
   },
@@ -27,31 +27,31 @@ module.exports.mapNdcRequestData_AF = (config, { offerId, offerItems, passengers
 const getACSystemIdOrderCreateRQ = (isPci) => {
   let systemId = getACSystemId(isPci);
   // Exception case for OrderCreateRQ
-  if(systemId === 'PROD-PCI') {
-    systemId = 'PROD'
+  if (systemId === 'PROD-PCI') {
+    systemId = 'PROD';
   }
   return systemId;
-}
+};
 
 module.exports.mapNdcRequestHeaderData_AC = guaranteeClaim => ({
   Function: 'OrderCreateRQ',
   SchemaType: 'NDC',
   SchemaVersion: 'YY.2017.2',
   ...(!guaranteeClaim ? {
-    RichMedia: true
+    RichMedia: true,
   } : {}),
   Sender: {
     Address: {
       Company: 'WindingTree',
-      NDCSystemId: getACSystemId(guaranteeClaim !== undefined)
-    }
+      NDCSystemId: getACSystemId(guaranteeClaim !== undefined),
+    },
   },
   Recipient: {
     Address: {
       Company: 'AC',
-      NDCSystemId: getACSystemIdOrderCreateRQ(guaranteeClaim !== undefined)
-    }
-  }
+      NDCSystemId: getACSystemIdOrderCreateRQ(guaranteeClaim !== undefined),
+    },
+  },
 });
 
 module.exports.mapNdcRequestData_AC = (
@@ -60,11 +60,11 @@ module.exports.mapNdcRequestData_AC = (
   offer,
   body,
   guaranteeClaim,
-  documentId = 'OneWay'
+  documentId = 'OneWay',
 ) => {
   // Clone offer to avoid mutability effects
   offer = JSON.parse(JSON.stringify(offer));
-  
+
   // Convert passengers Ids to AirCanada format
   offer.extraData.mappedPassengers = Object.entries(offer.extraData.mappedPassengers)
     .reduce(
@@ -72,7 +72,7 @@ module.exports.mapNdcRequestData_AC = (
         a[v[0]] = `TravelerRefNumber${i + 1}`;
         return a;
       },
-      {}
+      {},
     );
 
   // Convert segments Ids to AirCanada format
@@ -82,14 +82,14 @@ module.exports.mapNdcRequestData_AC = (
       a.mapping[v.id] = id;
       a.segments.push({
         ...v,
-        id
+        id,
       });
       return a;
     },
     {
       segments: [],
-      mapping: {}
-    }
+      mapping: {},
+    },
   );
   offer.extraData.segments = segmentsChanged.segments;
   offer.extraData.destinations = offer.extraData.destinations.map(
@@ -98,20 +98,20 @@ module.exports.mapNdcRequestData_AC = (
       FlightReferences: d.FlightReferences
         .split(' ')
         .map(f => segmentsChanged.mapping[f])
-        .join(' ')
-    })
+        .join(' '),
+    }),
   );
   offer.extraData.options = offer.extraData.options.map(
     o => ({
       ...o,
-      segment: segmentsChanged.mapping[o.segment]
-    })
+      segment: segmentsChanged.mapping[o.segment],
+    }),
   );
-  offer.extraData.seats = offer.extraData.seats.map(
+  offer.extraData.seats = Array.isArray(offer.extraData.seats) && offer.extraData.seats.map(
     s => ({
       ...s,
-      segment: segmentsChanged.mapping[s.segment]
-    })
+      segment: segmentsChanged.mapping[s.segment],
+    }),
   );
 
   return {
@@ -120,8 +120,8 @@ module.exports.mapNdcRequestData_AC = (
       Document: {
         '@id': documentId,
         Name: Document.Name,
-        ReferenceVersion: Document.ReferenceVersion
-      }
+        ReferenceVersion: Document.ReferenceVersion,
+      },
     }),
     Query: {
       Order: {
@@ -136,16 +136,16 @@ module.exports.mapNdcRequestData_AC = (
                 '@ResponseID': '',
                 TotalOfferPrice: {
                   '@Code': offer.currency,
-                  '@value': offer.amountAfterTax
+                  '@value': offer.amountAfterTax,
                 },
                 OfferItem: Object.entries(offer.offerItems).map(o => ({
                   '@OfferItemID': o[0],
                   PassengerRefs: o[1].passengerReferences
                     .split(' ')
                     .map(p => offer.extraData.mappedPassengers[p])
-                    .join(' ')
-                }))
-              }
+                    .join(' '),
+                })),
+              },
             }
             : {}
         ),
@@ -167,23 +167,23 @@ module.exports.mapNdcRequestData_AC = (
                             }
                             return a;
                           },
-                          ''
-                        )
+                          '',
+                        ),
                     },
                     OfferItemType: {
                       SeatItem: {
                         Location: {
                           Row: {
-                            Number: s.seatNumber
-                          }
-                        }
-                      }
-                    }
-                  })
-                )
+                            Number: s.seatNumber,
+                          },
+                        },
+                      },
+                    },
+                  }),
+                ),
             }
             : {}
-        )
+        ),
       },
       ...(body.guaranteeId ? {
         Payments: {
@@ -195,7 +195,7 @@ module.exports.mapNdcRequestData_AC = (
                 CardCode: getCardCode(guaranteeClaim.card, 'iata'),
                 CardNumber: guaranteeClaim.card.accountNumber,
                 ...(guaranteeClaim.card.cvv ? {
-                  SeriesCode: guaranteeClaim.card.cvv
+                  SeriesCode: guaranteeClaim.card.cvv,
                 } : {}),
                 CardHolderName: 'Simard OU',
                 CardHolderBillingAddress: {
@@ -204,19 +204,19 @@ module.exports.mapNdcRequestData_AC = (
                   CityName: 'Tallinn',
                   StateProv: 'Harju',
                   PostalCode: '10115',
-                  CountryCode: 'EE'
+                  CountryCode: 'EE',
                 },
                 EffectiveExpireDate: {
-                  Expiration: `${guaranteeClaim.card.expiryMonth}${guaranteeClaim.card.expiryYear.substr(-2)}`
-                }
-              }
+                  Expiration: `${guaranteeClaim.card.expiryMonth}${guaranteeClaim.card.expiryYear.substr(-2)}`,
+                },
+              },
             },
             Amount: {
               '@Code': offer.currency,
-              '@value': offer.amountAfterTax
-            }
-          }
-        }
+              '@value': offer.amountAfterTax,
+            },
+          },
+        },
       } : {}),
       DataLists: {
         PassengerList: {
@@ -228,10 +228,10 @@ module.exports.mapNdcRequestData_AC = (
               Gender: p[1].gender,
               NameTitle: p[1].civility,
               GivenName: p[1].firstnames.join(' '),
-              Surname: p[1].lastnames.join(' ')
+              Surname: p[1].lastnames.join(' '),
             },
-            ContactInfoRef: 'CTC1'
-          }))
+            ContactInfoRef: 'CTC1',
+          })),
         },
         ContactList: {
           ContactInformation: Object.entries(body.passengers).map((p, i) => ({
@@ -241,8 +241,8 @@ module.exports.mapNdcRequestData_AC = (
               if (c.indexOf('@') !== -1) {
                 return {
                   EmailAddress: {
-                    EmailAddressValue: c
-                  }
+                    EmailAddressValue: c,
+                  },
                 };
               } else if (c.indexOf('+') !== -1) {
                 const phone = c.match(/^\+(\d{1})(\d{3})(\d+)$/);
@@ -251,14 +251,14 @@ module.exports.mapNdcRequestData_AC = (
                     Label: '8.PLT',
                     CountryDialingCode: phone[1],
                     AreaCode: phone[2],
-                    PhoneNumber: phone[3]
-                  }
+                    PhoneNumber: phone[3],
+                  },
                 };
               } else {
                 return null;
               }
-            }).filter(c => c !== null)
-          }))
+            }).filter(c => c !== null),
+          })),
         },
         FlightSegmentList: {
           FlightSegment: offer.extraData.segments.map(s => ({
@@ -273,7 +273,7 @@ module.exports.mapNdcRequestData_AC = (
                   }
                   return a;
                 },
-                []
+                [],
               )
               .join(' '),
             Departure: s.Departure,
@@ -288,33 +288,33 @@ module.exports.mapNdcRequestData_AC = (
                 s.FlightDetail.FlightDuration &&
                 s.FlightDetail.FlightDuration.Value !== ''
                   ? {
-                    FlightDuration: s.FlightDetail.FlightDuration
+                    FlightDuration: s.FlightDetail.FlightDuration,
                   }
                   : {}
               ),
-              Stops: s.FlightDetail.Stops
-            }
-          }))
+              Stops: s.FlightDetail.Stops,
+            },
+          })),
         },
         OriginDestinationList: {
           OriginDestination: offer.extraData.destinations.map(d => ({
             '@OriginDestinationKey': d.id,
             DepartureCode: d.DepartureCode,
             ArrivalCode: d.ArrivalCode,
-            FlightReferences: d.FlightReferences
-          }))
+            FlightReferences: d.FlightReferences,
+          })),
         },
         ...(!body.guaranteeId ? {
           InstructionsList: {
             Instruction: {
               '@ListKey': 'eTicket',
               FreeFormTextInstruction: {
-                Remark: '1.TST'
-              }
-            }
-          }
-        } : {})
-      }
-    }
+                Remark: '1.TST',
+              },
+            },
+          },
+        } : {}),
+      },
+    },
   };
 };

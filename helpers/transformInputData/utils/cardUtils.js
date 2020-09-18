@@ -11,7 +11,7 @@ const cardCodesOTA = {
   maestro: 'MA',
   uatp: 'TP',
   unionpay: 'CU',
-  electron: 'VE'
+  electron: 'VE',
 };
 
 const cardCodesIATA = {
@@ -26,11 +26,11 @@ const cardCodesIATA = {
 
 module.exports.getCardCode = (card, type) => {
   let cardCode;
-  switch(type) {
-    case 'iata': 
+  switch (type) {
+    case 'iata':
       cardCode = cardCodesIATA[card.brand.toLowerCase()];
       break;
-    case 'ota': 
+    case 'ota':
       cardCode = cardCodesOTA[card.brand.toLowerCase()];
       break;
     default:
