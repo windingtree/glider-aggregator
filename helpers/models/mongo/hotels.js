@@ -177,7 +177,6 @@ class HotelsManager {
       if (limit) {
         query = query.limit(limit);
       }
-
       hotels = await query
         .map(result => result.map(HotelsManager.mapResult))
         .exec();

@@ -1,40 +1,21 @@
 /* istanbul ignore file */
 const { basicDecorator } = require('../../decorators/basic');
-const GliderError = require('../../helpers/error');
 const { searchHotel } = require('../../helpers/resolvers/searchHotel');
 const { searchFlight } = require('../../helpers/resolvers/searchFlight');
-const {
-  checkCallsTrustRequirements
-} = require('../../helpers/requirements/apiCallsLimits');
-
+const { checkCallsTrustRequirements } = require('../../helpers/requirements/apiCallsLimits');
+const { validateSearchCriteria } = require('../../payload/validators');
 module.exports = basicDecorator(async (req, res) => {
-  const { body } = req;
-
-  await checkCallsTrustRequirements(
-    '/api/v1/searchOffers',
-    req.verificationResult.didResult.id,
-    req.verificationResult.didResult.lifDeposit.deposit
-  );
-
-  let resolver = () => {
-    throw new GliderError(
-      'accommodation or itinerary missing in body',
-      400
-    );
-  };
-
-  if (body.accommodation) {
-    resolver = searchHotel;
-  } else if (body.itinerary) {
-    resolver = searchFlight;
-  } else {
-    throw new GliderError(
-      'Invalid search criteria: missing itinerary or accommodation objects',
-      400
-    );
+  let { body } = req;
+  body = validateSearchCriteria(body);
+  await checkCallsTrustRequirements('/api/v1/searchOffers', req.verificationResult.didResult.id, req.verificationResult.didResult.lifDeposit.deposit);
+  // const controller = new OfferController();
+  let result;
+  const { itinerary, accommodation/*, passengers */ } = body;
+  if (accommodation) {
+    result = await searchHotel(body);
+  } else if (itinerary) {
+    // result = await controller.flightsSearch(itinerary,passengers);
+    result = await searchFlight(body);
   }
-
-  const result = await resolver(body);
-
   res.status(200).json(result);
 });

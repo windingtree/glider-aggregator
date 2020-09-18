@@ -1,0 +1,7 @@
+
+class FlightSearchController{
+  constructor(){
+
+  }
+
+}

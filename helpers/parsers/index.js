@@ -89,6 +89,15 @@ module.exports.splitSegments = (combinations) => combinations
     })
   );
 
+/**
+ * Convert an array of objects (each having '_id_' property), into associative array which key is '_id_' and value is object that had '_id_' property.
+ * Example:
+ * input: [{_id_:'Key1',name:'Object1'},{_id_:'Key2',name:'Object2'}]
+ * output: {'Key1':{name:'Object1'},'Key2':{name:'Object2'}}
+ *
+ * @param array
+ * @return {*}
+ */
 module.exports.reduceToObjectByKey = (array) => array
   .reduce(
     (segments, { _id_, ...others }) => ({
@@ -147,7 +156,7 @@ module.exports.reduceRoomStays = (_roomStays_ => {
       let offer = {
         // Reference from other elements
         pricePlansReferences: pricePlansReferences,
-  
+
         // Build price
         price: {
           currency: roomRate.price.currency,
@@ -165,9 +174,9 @@ module.exports.reduceRoomStays = (_roomStays_ => {
 
 // Deep merge of two objects
 const deepMerge = (target, source) => {
-  
+
   for (const key of Object.keys(source)) {
-    
+
     if (source[key].constructor === Object && target[key]) {
       Object.assign(source[key], deepMerge(target[key], source[key]));
     } else {

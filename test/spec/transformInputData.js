@@ -9,16 +9,17 @@ const {
   mapFromOffer,
   buildCustomerAddress
 } = require('../../helpers/transformInputData/hotelResNotif');
+const { expandPassengers } = require('../../helpers/providers/flights/ndc/transformInputData/expandPassengers');
 const {
-  expandPassengers,
+  // expandPassengers,
   mapNdcRequestData_AC
-} = require('../../helpers/transformInputData/searchOffers');
+} = require('../../helpers/providers/flights/ac/transformInputData/searchOffers');
 const {
   mapNdcRequestData_AC: mapNdcRequestData_AC_offerPrice
-} = require('../../helpers/transformInputData/offerPrice');
+} = require('../../helpers/providers/flights/ac/transformInputData/offerPrice');
 const {
   mapNdcRequestData_AC: mapNdcRequestData_AC_seatAvailability
-} = require('../../helpers/transformInputData/seatAvailability');
+} = require('../../helpers/providers/flights/ac/transformInputData/seatAvailability');
 const {
   mapNdcRequestData_AC: mapNdcRequestData_AC_fulfillOrder
 } = require('../../helpers/transformInputData/fulfillOrder');
@@ -26,7 +27,7 @@ const {
   getACSystemIdOrderCreateRQ,
   mapNdcRequestHeaderData_AC,
   mapNdcRequestData_AC: mapNdcRequestData_AC_createOrder
-} = require('../../helpers/transformInputData/createOrder');
+} = require('../../helpers/providers/flights/ac/transformInputData/createOrder');
 
 require('chai').should();
 
@@ -39,7 +40,7 @@ const validateHotelRef = hr => {
   (hr.StayDateRange.RoomStayCandidates).should.to.have.property('RoomStayCandidate').to.be.an('object');
   (hr.StayDateRange.RoomStayCandidates.RoomStayCandidate).should.to.have.property('Quantity');
   (hr.StayDateRange.RoomStayCandidates.RoomStayCandidate).should.to.have.property('GuestCounts').to.be.an('array');
-  
+
   hr.StayDateRange.RoomStayCandidates.RoomStayCandidate.GuestCounts.forEach(g => {
     (g).should.be.an('object');
     (g).should.to.have.property('AgeQualifyingCode').to.be.a('number');
@@ -325,7 +326,7 @@ describe('transformInputData', () => {
 
     it('should map request data', async () => {
       const result = mapRequestData(hotelCodes, body);
-      
+
       (result).should.be.an('object').to.have.property('OTA_HotelAvailRQ').to.be.an('object');
       (result.OTA_HotelAvailRQ).should.to.have.property('TimeStamp').to.match(regex.dateISO);
       (result.OTA_HotelAvailRQ).should.to.have.property('Version').to.match(regex.dotVersioning);
@@ -338,7 +339,7 @@ describe('transformInputData', () => {
       (result.OTA_HotelAvailRQ).should.to.have.property('POS').to.be.an('object');
       (result.OTA_HotelAvailRQ).should.to.have.property('AvailRequestSegments').to.be.an('object');
       (result.OTA_HotelAvailRQ).should.to.have.property('TPA_Extensions').to.be.an('object');
-      
+
       (result.OTA_HotelAvailRQ.POS).should.to.have.property('Source').to.be.an('object');
       (result.OTA_HotelAvailRQ.POS.Source).should.to.have.property('RequestorID').to.be.an('object');
       (result.OTA_HotelAvailRQ.POS.Source).should.to.have.property('BookingChannel').to.be.an('object');
@@ -397,7 +398,7 @@ describe('transformInputData', () => {
         contactInformation: [ '+32123456789', 'contact@org.co.uk' ]
       }
     };
-    
+
     it('should to trow if offer has not been provided', async () => {
       (() => mapFromOffer(undefined, passengers, card)).should.to.throw;
       (() => mapFromOffer({}, passengers, card)).should.to.throw;
@@ -587,7 +588,7 @@ describe('transformInputData', () => {
           (() => mapNdcRequestData_AC_offerPrice([], offers, body, docType)).should.to.throw;
         });
       });
-  
+
       it('should to throw if wrong offers object has been provided', async () => {
         docIds.forEach(docType => {
           (() => mapNdcRequestData_AC_offerPrice(airCanadaConfig, undefined, body, docType)).should.to.throw;
@@ -595,7 +596,7 @@ describe('transformInputData', () => {
           (() => mapNdcRequestData_AC_offerPrice(airCanadaConfig, {}, body, docType)).should.to.throw;
         });
       });
-  
+
       it('should to throw if wrong body has been provided', async () => {
         const brokenBody = Object.assign({}, body, {
           itinerary: undefined
@@ -606,7 +607,7 @@ describe('transformInputData', () => {
           (() => mapNdcRequestData_AC_offerPrice(airCanadaConfig, offers, brokenBody, docType)).should.to.throw;
         });
       });
-      
+
       it('should map request data', async () => {
         docIds.forEach(docType => {
           const result = mapNdcRequestData_AC_offerPrice(
@@ -641,7 +642,7 @@ describe('transformInputData', () => {
           (() => mapNdcRequestData_AC_seatAvailability([], offers, docType)).should.to.throw;
         });
       });
-  
+
       it('should to throw if wrong offers object has been provided', async () => {
         docIds.forEach(docType => {
           (() => mapNdcRequestData_AC_seatAvailability(airCanadaConfig, undefined, docType)).should.to.throw;
@@ -649,7 +650,7 @@ describe('transformInputData', () => {
           (() => mapNdcRequestData_AC_seatAvailability(airCanadaConfig, {}, docType)).should.to.throw;
         });
       });
-  
+
       it('should map request data', async () => {
         docIds.forEach(docType => {
           const result = mapNdcRequestData_AC_seatAvailability(
@@ -695,7 +696,7 @@ describe('transformInputData', () => {
         (() => mapNdcRequestData_AC_fulfillOrder('', order, {}, guaranteeClaim)).should.to.throw;
         (() => mapNdcRequestData_AC_fulfillOrder([], order, {}, guaranteeClaim)).should.to.throw;
       });
-  
+
       it('should to throw if wrong order object has been provided', async () => {
         (() => mapNdcRequestData_AC_fulfillOrder(airCanadaConfig, undefined, {}, guaranteeClaim)).should.to.throw;
         (() => mapNdcRequestData_AC_fulfillOrder(airCanadaConfig, '', {}, guaranteeClaim)).should.to.throw;
@@ -707,7 +708,7 @@ describe('transformInputData', () => {
         (() => mapNdcRequestData_AC_fulfillOrder(airCanadaConfig, order, {}, '')).should.to.throw;
         (() => mapNdcRequestData_AC_fulfillOrder(airCanadaConfig, order, {}, {})).should.to.throw;
       });
-  
+
       it('should map request data', async () => {
         const result = mapNdcRequestData_AC_fulfillOrder(
           airCanadaConfig,
@@ -739,7 +740,7 @@ describe('transformInputData', () => {
     const guaranteeClaim = {
       card
     };
-    
+
     describe('#getACSystemIdOrderCreateRQ', () => {
       const environments = [
         {

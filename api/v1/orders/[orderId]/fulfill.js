@@ -1,42 +1,42 @@
-const { transformAmadeusFault } = require('../../../../helpers/amadeus/errors');
+const { transformAmadeusFault } = require('../../../../helpers/providers/flights/amadeus/errors');
 
-const { fulfillOrderTemplate_1A }  = require('../../../../helpers/amadeus/fulfillOrderRequestTemplate');
-const { fulfillOrderResponseProcessor }  = require('../../../../helpers/amadeus/order/fulfillOrderResponseProcessor');
+const { fulfillOrderTemplate_1A } = require('../../../../helpers/amadeus/fulfillOrderRequestTemplate');
+const { fulfillOrderResponseProcessor } = require('../../../../helpers/providers/flights/amadeus/resolvers/fulfillOrderResponseProcessor');
 const { ready, transform } = require('camaro');
 const { basicDecorator } = require('../../../../decorators/basic');
 const GliderError = require('../../../../helpers/error');
 const {
   airFranceConfig,
-  airCanadaConfig
+  airCanadaConfig,
 } = require('../../../../config');
 const { ordersManager } = require('../../../..//helpers/models/order');
 const {
   mapNdcRequestData_AF,
   mapNdcRequestHeaderData_AC,
-  mapNdcRequestData_AC
+  mapNdcRequestData_AC,
 } = require('../../../../helpers/transformInputData/fulfillOrder');
 const {
   fulfillOrderTemplate_AF,
-  fulfillOrderTemplate_AC
+  fulfillOrderTemplate_AC,
 } = require('../../../../helpers/soapTemplates/fulfillOrder');
 const {
   ErrorsTransformTemplate_AF,
   ErrorsTransformTemplate_AC,
   FaultsTransformTemplate_AC,
   fulfillOrderTransformTemplate_AF,
-  fulfillOrderTransformTemplate_AC
+  fulfillOrderTransformTemplate_AC,
 } = require('../../../../helpers/camaroTemplates/fulfillOrder');
 const {
   reduceToObjectByKey,
-  reduceToProperty
+  reduceToProperty,
 } = require('../../../../helpers/parsers');
 const {
   getGuarantee,
   claimGuarantee,
-  claimGuaranteeWithCard
+  claimGuaranteeWithCard,
 } = require('../../../../helpers/guarantee');
 const {
-  callProvider, callProviderRest
+  callProvider, callProviderRest,
 } = require('../../../../helpers/resolvers/utils/flightUtils');
 
 
@@ -54,14 +54,14 @@ module.exports = basicDecorator(async (req, res) => {
   } else {
     throw new GliderError(
       'Mapped passengers Ids not found in the offer',
-      500
+      500,
     );
   }
 
   // Get the guarantee and verify
   const guarantee = await getGuarantee(body.guaranteeId, {
     currency: order.order.order.price.currency,
-    amountAfterTax: order.order.order.price.public
+    amountAfterTax: order.order.order.price.public,
   });
 
   let ndcRequestHeaderData;
@@ -114,10 +114,10 @@ module.exports = basicDecorator(async (req, res) => {
       return Promise.reject('Unsupported flight operator');
   }
   console.log('provider=', provider);
-  const { response, error } = (provider==='1A') ? await callProviderRest(provider,'','',ndcBody,'ORDERCREATE'):await callProvider(provider,providerUrl,apiKey,ndcBody,SOAPAction);
+  const { response, error } = (provider === '1A') ? await callProviderRest(provider, '', '', ndcBody, 'ORDERCREATE') : await callProvider(provider, providerUrl, apiKey, ndcBody, SOAPAction);
 
   if (error && !error.isAxiosError) {
-    throw new GliderError(response.error.message,502);
+    throw new GliderError(response.error.message, 502);
   }
 
   let faultsResult;
@@ -128,32 +128,32 @@ module.exports = basicDecorator(async (req, res) => {
 
   // Attempt to parse as a an error
   await ready();
-  const errorsResult = provider === '1A'? transformAmadeusFault(response.result): await transform(response.data, errorsTransformTemplate);
+  const errorsResult = provider === '1A' ? transformAmadeusFault(response.result) : await transform(response.data, errorsTransformTemplate);
 
   // Because of two types of errors can be returned: NDCMSG_Fault and Errors
   const combinedErrors = [
     ...(faultsResult ? faultsResult.errors : []),
-    ...errorsResult.errors
+    ...errorsResult.errors,
   ];
 
   // If an error is found, stop here
   if (combinedErrors.length) {
     throw new GliderError(
       combinedErrors.map(e => e.message).join('; '),
-      502
+      502,
     );
   } else if (error) {
     throw new GliderError(
       error.message,
-      502
+      502,
     );
   }
 
   await ready();
-  const fulfillResults = provider==='1A'? fulfillOrderResponseProcessor(response.result) : await transform(response.data, responseTransformTemplate);
+  const fulfillResults = provider === '1A' ? fulfillOrderResponseProcessor(response.result) : await transform(response.data, responseTransformTemplate);
 
   fulfillResults.travelDocuments.etickets = reduceToObjectByKey(fulfillResults.travelDocuments.etickets);
-  fulfillResults.travelDocuments.etickets = reduceToProperty(fulfillResults.travelDocuments.etickets,'_passenger_');
+  fulfillResults.travelDocuments.etickets = reduceToProperty(fulfillResults.travelDocuments.etickets, '_passenger_');
 
   if (!guaranteeClaim) {
     guaranteeClaim = await claimGuarantee(body.guaranteeId);
@@ -166,8 +166,8 @@ module.exports = basicDecorator(async (req, res) => {
       guarantee: guarantee,
       guaranteeClaim: guaranteeClaim,
       order: fulfillResults,
-      offer: order.offer
-    }
+      offer: order.offer,
+    },
   );
 
   res.status(200).json(fulfillResults);

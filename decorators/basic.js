@@ -1,11 +1,8 @@
-const { logRQRS } = require( '../helpers/amadeus/logRQ');
-
 const GliderError = require('../helpers/error');
 const { verifyJWT } = require('../helpers/jwt');
 const { indexException, indexEvent } = require('../helpers/elasticsearch');
 
 const basicDecorator = (fn, isAdmin = false) => async (req, res) => {
-  logRQRS(req.body,'API request');
   // start timer
   req.start = process.hrtime();
 

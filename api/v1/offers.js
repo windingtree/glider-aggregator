@@ -7,10 +7,7 @@ module.exports = basicDecorator(async (req, res) => {
   const { method, query, body } = req;
 
   if (method !== 'POST') {
-    throw new GliderError(
-      'Method not allowed',
-      405
-    );
+    throw new GliderError('Method not allowed', 405);
   }
 
   const offerResult = await offerPriceRQ(query.offerIds, body);
