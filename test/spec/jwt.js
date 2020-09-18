@@ -9,8 +9,8 @@ const { verifyJWT } = require('../../helpers/jwt');
 require('chai').should();
 
 describe('JWT', () => {
-  const aud = 'did:orgid:0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0';
-  const iss = 'did:orgid:0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0';
+  const aud = 'did:orgid:0x94bf5a57b850a35b4d1d7b59f663ce3a8a76fd9928ef2067cc772fc97fb0ad75';
+  const iss = 'did:orgid:0xd28ed661a8619301ed6cb7048142c1a356c662bb96ba9d1c0b4c88f135363d26';
   const exp = '24 hours';
   let priv = privPem;
   let pub = pubPem;
@@ -25,7 +25,7 @@ describe('JWT', () => {
           alg: 'ES256K',
           aud,
           iss,
-          fragment: 'secondkey',
+          fragment: 'test',
           exp
         };
 
@@ -61,7 +61,7 @@ describe('JWT', () => {
       alg: 'ES256K',
       aud,
       iss,
-      fragment: 'secondkey',
+      fragment: 'test',
       exp
     };
     let secp256k1Jwt;

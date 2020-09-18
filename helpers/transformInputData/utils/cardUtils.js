@@ -11,8 +11,9 @@ const cardCodesOTA = {
   maestro: 'MA',
   uatp: 'TP',
   unionpay: 'CU',
-  electron: 'VE',
+  electron: 'VE'
 };
+module.exports.cardCodesOTA = cardCodesOTA;
 
 const cardCodesIATA = {
   visa: 'VI',
@@ -23,10 +24,11 @@ const cardCodesIATA = {
   jcb: 'JC',
   uatp: 'TP',
 };
+module.exports.cardCodesIATA = cardCodesIATA;
 
 module.exports.getCardCode = (card, type) => {
   let cardCode;
-  switch (type) {
+  switch(type) {
     case 'iata':
       cardCode = cardCodesIATA[card.brand.toLowerCase()];
       break;
@@ -35,10 +37,6 @@ module.exports.getCardCode = (card, type) => {
       break;
     default:
       throw new GliderError('Missing Card Code type', 500);
-  }
-
-  if (!cardCode) {
-    throw new GliderError('Unknown claimed card brand', 500);
   }
 
   return cardCode;

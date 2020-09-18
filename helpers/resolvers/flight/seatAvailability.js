@@ -1,47 +1,52 @@
+
+const { assertAmadeusFault } = require('../../providers/flights/amadeus/errors');
+const { seatmapResponseProcessor } = require('../../providers/flights/amadeus/resolvers/seatmapResponseProcessor');
+
+const { callProviderRest } = require('../utils/flightUtils');
+const { seatmapRequestTemplate } = require('../../providers/flights/amadeus/resolvers/seatmapRequestTemplate');
+
 const { transform } = require('camaro');
 const GliderError = require('../../error');
 const { airCanadaConfig } = require('../../../config');
 const assertErrors = require('../utils/assertResponseErrors');
 const {
   callProvider,
-  fetchFlightsOffersByIds
+  fetchFlightsOffersByIds,
 } = require('../utils/flightUtils');
 const {
-  mapNdcRequestData_AC
-} = require('../../transformInputData/seatAvailability');
+  mapNdcRequestData_AC,
+} = require('../../providers/flights/ac/transformInputData/seatAvailability');
 const {
-  seatAvailabilityRequestTemplate_AC
-} = require('../../soapTemplates/seatAvailability');
+  seatAvailabilityRequestTemplate_AC,
+} = require('../../providers/flights/ac/soapTemplates/seatAvailability');
 const {
   provideSeatAvailabilityTransformTemplate_AC,
   FaultsTransformTemplate_AC,
-  ErrorsTransformTemplate_AC
-} = require('../../camaroTemplates/provideSeatAvailability');
+  ErrorsTransformTemplate_AC,
+} = require('../../providers/flights/ac/camaroTemplates/provideSeatAvailability');
 const {
-  reduceToObjectByKey
+  reduceToObjectByKey,
 } = require('../../parsers');
 const { flatOneDepth } = require('../../transformInputData/utils/collections');
 
 // Convert response data to the object form
 const processResponse = async (data, offers, template) => {
-
   // Index segments from offers
   const indexedSegments = flatOneDepth(
     offers.map(offer => offer.extraData.segments.map(s => ({
-      [`${s.Departure.AirportCode}-${s.Arrival.AirportCode}`]: s.id
-    })))
+      [`${s.Departure.AirportCode}-${s.Arrival.AirportCode}`]: s.id,
+    }))),
   ).reduce((a, v) => ({ ...a, ...v }), {});
-
   const seatMapResult = await transform(
     data,
-    template
+    template,
   );
 
   seatMapResult.services = reduceToObjectByKey(seatMapResult.services);
 
   seatMapResult.offers = seatMapResult.offers.map(o => {
     o.offerItems = reduceToObjectByKey(
-      o.offerItems
+      o.offerItems,
     );
     return o;
   });
@@ -53,7 +58,7 @@ const processResponse = async (data, offers, template) => {
         c.rows.map(r => r.seats.map(s => ({
           ...s,
           ...({
-            number: `${r.number}${s.number}`
+            number: `${r.number}${s.number}`,
           }),
           ...({
             optionCode: seatMapResult.offers.reduce((acc, val) => {
@@ -63,13 +68,13 @@ const processResponse = async (data, offers, template) => {
                 prices[acc] = {
                   currency: val.offerItems[s.optionCode].currency,
                   public: val.offerItems[s.optionCode].public,
-                  taxes: val.offerItems[s.optionCode].taxes
+                  taxes: val.offerItems[s.optionCode].taxes,
                 };
               }
               return acc;
-            }, undefined)
-          })
-        })))
+            }, undefined),
+          }),
+        }))),
       );
       delete c.rows;
       return c;
@@ -78,13 +83,12 @@ const processResponse = async (data, offers, template) => {
     if (indexedSegments[v.segmentKey]) {
       a[indexedSegments[v.segmentKey]] = {
         cabins: v.cabins,
-        prices
+        prices,
       };
     }
-    
+
     return a;
   }, {});
-
   return seatMapResult.seatMaps;
 };
 
@@ -103,7 +107,7 @@ module.exports.seatMapRQ = async (offerIds) => {
   if (!offerIds) {
     throw new GliderError(
       'Missing mandatory field: offerIds',
-      400
+      400,
     );
   }
 
@@ -119,12 +123,12 @@ module.exports.seatMapRQ = async (offerIds) => {
   if (offers.length > 1) {
     requestDocumentId = 'Return';
   }
-
-  switch (offers[0].provider) {
+  let provider = offers[0].provider;
+  switch (provider) {
     case 'AF':
       throw new GliderError(
         'Not implemented yet',
-        500
+        500,
       );
     case 'AC':
       ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, offers, requestDocumentId);
@@ -137,41 +141,18 @@ module.exports.seatMapRQ = async (offerIds) => {
       errorsTransformTemplate = ErrorsTransformTemplate_AC;
       faultsTransformTemplate = FaultsTransformTemplate_AC;
       break;
+    case '1A':
+      ndcBody = seatmapRequestTemplate(offers);
+      break;
     default:
       throw new GliderError(
         'Unsupported flight operator',
-        400
+        400,
       );
   }
 
-  const { response, error } = await callProvider(
-    offers[0].provider,
-    providerUrl,
-    apiKey,
-    ndcBody,
-    SOAPAction
-  );
-
-  // console.log('!!!!', error);
-
-  await assertErrors(
-    error,
-    response,
-    faultsTransformTemplate,
-    errorsTransformTemplate
-  );
-
-  // console.log('@@@', response.data);
-  // const fs = require('fs');
-  // fs.writeFileSync('/home/kostysh/dev/glider-fork/temp/seat-rs.xml', response.data);
-
-  seatMapResult = await processResponse(
-    response.data,
-    offers,
-    responseTransformTemplate
-  );
-
-  // console.log('###', JSON.stringify(seatMapResult, null, 2));
-
+  const { response, error } = provider === '1A' ? await callProviderRest(provider, '', '', ndcBody, 'SEATMAP', '') : await callProvider(offers[0].provider, providerUrl, apiKey, ndcBody, SOAPAction);
+  provider === '1A' ? assertAmadeusFault(response, error) : await assertErrors(error, response, faultsTransformTemplate, errorsTransformTemplate);
+  seatMapResult = provider === '1A' ? seatmapResponseProcessor(response.result, offers) : await processResponse(response.data, offers, responseTransformTemplate);
   return seatMapResult;
 };

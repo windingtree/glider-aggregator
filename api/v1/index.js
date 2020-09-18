@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const { name, description, version } = require('../package.json');
 
 module.exports = async (req, res) => {

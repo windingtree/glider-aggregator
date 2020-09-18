@@ -1,0 +1,140 @@
+{
+  "type": "flight-offers-pricing",
+  "flightOffers": [
+    {
+      "type": "flight-offer",
+      "id": "1",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "paymentCardRequired": false,
+      "lastTicketingDate": "2020-08-16",
+      "itineraries": [
+        {
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2020-09-16T15:55:00"
+              },
+              "arrival": {
+                "iataCode": "LHR",
+                "terminal": "5",
+                "at": "2020-09-16T16:05:00"
+              },
+              "carrierCode": "BA",
+              "number": "397",
+              "aircraft": {
+                "code": "319"
+              },
+              "operating": {
+                "carrierCode": "BA"
+              },
+              "duration": "PT1H10M",
+              "id": "3",
+              "numberOfStops": 0,
+              "co2Emissions": [
+                {
+                  "weight": 57,
+                  "weightUnit": "KG",
+                  "cabin": "ECONOMY"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "USD",
+        "total": "185.06",
+        "base": "112.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          },
+          {
+            "amount": "0.00",
+            "type": "FORM_OF_PAYMENT"
+          }
+        ],
+        "grandTotal": "185.06",
+        "billingCurrency": "USD"
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": false
+      },
+      "validatingAirlineCodes": [
+        "BA"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "USD",
+            "total": "92.53",
+            "base": "56.00",
+            "taxes": [
+              {
+                "amount": "36.53",
+                "code": "BE"
+              }
+            ],
+            "refundableTaxes": "36.53"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "OZ0HO",
+              "brandedFare": "NOBAG",
+              "class": "O",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "2",
+          "fareOption": "STANDARD",
+          "travelerType": "CHILD",
+          "price": {
+            "currency": "USD",
+            "total": "92.53",
+            "base": "56.00",
+            "taxes": [
+              {
+                "amount": "36.53",
+                "code": "BE"
+              }
+            ],
+            "refundableTaxes": "36.53"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "OZ0HO",
+              "brandedFare": "NOBAG",
+              "class": "O",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "bookingRequirements": {}
+}

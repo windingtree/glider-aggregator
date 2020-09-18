@@ -1,0 +1,15 @@
+{
+  "records": [
+    {
+      "id": "5e7cf0d4d8d8d45aeeac7890",
+      "provider": "EREVMAX",
+      "ref": "02034",
+      "longitude": 11.91391245,
+      "latitude": 57.70109464,
+      "currency": "SEK"
+    }
+  ],
+  "total": 1,
+  "skip": 0,
+  "limit": null
+}

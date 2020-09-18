@@ -8,15 +8,13 @@ module.exports = async (
   faultsTransformTemplate,
   errorsTransformTemplate
 ) => {
-
   if (error && !error.isAxiosError) {
-    
+    console.log('Error:', error);
     throw new GliderError(
       error.message,
       502
     );
   }
-
   let faultsResult;
 
   if (faultsTransformTemplate) {

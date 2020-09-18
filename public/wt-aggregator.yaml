@@ -225,7 +225,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OptionSelectionList"
+              description: An array of options selected
+              type: array
+              items:
+                $ref: "#/components/schemas/OptionSelection"
       responses:
         200:
           description: Offer with confirmed price
@@ -359,8 +362,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateOfferBody"
-            example:
+              properties:
+                offerId:
+                  $ref: "#/components/schemas/UUID"
+                passengers:
+                  description: Indexed dictionnary of the passengers
+                  type: object
+                  additionalProperties:
+                    $ref: "#/components/schemas/Passenger"
+                guaranteeId:
+                  $ref: "#/components/schemas/UUID"
+              example:
                 {
                   "offerId": "11111111-2222-3333-4444-000000000001",
                   "guaranteeId": "02a1a7c0-3ff8-4e12-a3ba-65d57e1e9276",
@@ -663,7 +675,6 @@ components:
     Passenger:
       description: A representation of a passenger
       type: object
-      required: ["type"]
       properties:
         type:
           description: The passenger type code as per IATA definitions
@@ -723,7 +734,6 @@ components:
         contactInformation:
           description: The contact informations of the passenger
           type: array
-          minItems: 1
           items:
             oneOf:
               - $ref: "#/components/schemas/PhoneNumber"
@@ -738,10 +748,9 @@ components:
           "contactInformation": ["+32123456789", "contact@org.co.uk"]
         }
 
-    LocationAirport:
-      description: "Object that specifies a location as an airport/railstation/city"
+    Location:
+      description: "The location of a specific place"
       type: object
-      required: ["locationType","iataCode"]
       properties:
         locationType:
           description: "The type of location, for explicit filtering"
@@ -758,11 +767,6 @@ components:
           minLength: 3
           maxLength: 3
           example: "LHR"
-
-    Location:
-      description: "The location of a specific place"
-      type: object
-      properties:
         rectangle:
           $ref: "#/components/schemas/LocationRectangle"
         circle:
@@ -890,21 +894,17 @@ components:
     Segment:
       description: A section of a travel itinerary
       type: object
-      required: ["origin","destination","departureTime"]
       properties:
         operator:
           $ref: "#/components/schemas/TravelOperator"
         origin:
-          required: true
-          $ref: "#/components/schemas/LocationAirport"
+          $ref: "#/components/schemas/Location"
         destination:
-          required: true
-          $ref: "#/components/schemas/LocationAirport"
+          $ref: "#/components/schemas/Location"
         departureTime:
           description: The departure time of the segment
           type: string
           format: date-time
-          required: true
           example: "2021-04-12T23:20:50.52Z"
         arrivalTime:
           description: The arrival time of the segment
@@ -1093,7 +1093,6 @@ components:
     Itinerary:
       description: The itinerary of transportation
       type: object
-      required: ["segments"]
       properties:
         segments:
           description: An ordered list of segments
@@ -1454,46 +1453,33 @@ components:
           additionalProperties:
             $ref: "#/components/schemas/Price"
 
-    OptionSelectionList:
-      description: A list of selected options
-      type: array
-      items:
-        $ref: "#/components/schemas/OptionSelection"
-
     OptionSelection:
       description: A selected option
       type: object
-      required: ["code"]
       properties:
         code:
           description: The option code
           type: string
-          minLength: 1
           example: divNonAir11.LGAC1
         name:
           description: The option name
           type: string
-          minLength: 1
           example: "Lounge Access"
         description:
           description: Description of the option
           type: string
-          minLength: 1
           example: "An access to the Exclusive Lounge Access at the departure"
         segment:
           description: Segment for which this option is available
           type: string
-          minLength: 1
           example: "HW9EJ7XAC7-SEG1"
         passenger:
           description: Passenger for which this option is selected
           type: string
-          minLength: 1
           example: "PAX1"
         seatNumber:
           description: For seats options, the seat number selected with this option
           type: string
-          minLength: 1
           example: 12C
         price:
           $ref: "#/components/schemas/Price"
@@ -1576,28 +1562,10 @@ components:
           items:
             $ref: "#/components/schemas/OptionSelection"
 
-    CreateOfferBody:
-      description: An object to provide order details
-      type: object
-      required: ["offerId","passengers"]
-      properties:
-          offerId:
-            $ref: "#/components/schemas/UUID"
-          passengers:
-            description: Indexed dictionary of the passengers
-            type: object
-            required: true
-            additionalProperties:
-              $ref: "#/components/schemas/Passenger"
-          guaranteeId:
-            $ref: "#/components/schemas/UUID"
-
-
     # Contains the parameters for a search
     SearchCriteria:
       description: An object to provide search criteria
       type: object
-      required: ["passengers"]
       properties:
         # The option of the itinerary being searched
         itinerary:

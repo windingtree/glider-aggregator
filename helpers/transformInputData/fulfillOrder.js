@@ -2,6 +2,7 @@
 const { getCardCode } = require('./utils/cardUtils');
 const { getACSystemId } = require('../soapTemplates/utils/xmlUtils');
 
+/* istanbul ignore next */
 module.exports.mapNdcRequestData_AF = (config, { orderItems, passengerReferences }, { orderId }) => ({
   ...(JSON.parse(JSON.stringify(config))),
   requestTime: (new Date(Date.now())).toISOString(),

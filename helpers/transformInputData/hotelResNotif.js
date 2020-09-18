@@ -5,6 +5,34 @@ const { v4: uuidv4 } = require('uuid');
 const emailValidator = require('email-validator');
 const { getCardCode } = require('./utils/cardUtils');
 
+const buildCustomerAddress = pax => {
+  let address;
+
+  if (pax.address) {
+    address = {};
+    address.Type = '1';
+
+    if (pax.address.lines !== undefined) {
+      address.AddressLines = pax.address.lines;
+    }
+    if (pax.address.city !== undefined) {
+      address.CityName = pax.address.city;
+    }
+    if (pax.address.postalCode !== undefined) {
+      address.PostalCode = pax.address.postalCode;
+    }
+    if (pax.address.subdivision !== undefined) {
+      address.StateProv = pax.address.subdivision;
+    }
+    if (pax.address.country !== undefined) address.CountryName = {
+      Code: pax.address.country
+    };
+  }
+
+  return address;
+};
+module.exports.buildCustomerAddress = buildCustomerAddress;
+
 /*
   Maps an offer and passengers to an OTA HotelResNotifRQ structure
 */
@@ -136,18 +164,8 @@ const mapFromOffer = (offer, passengers, card) => {
   }
 
   // Handle the passenger address
-  if (pax.address !== undefined) {
-    customer.Address = {};
-    customer.Address.Type = '1';
-    if (pax.address.lines !== undefined) customer.Address.AddressLines = pax.address.lines;
-    if (pax.address.city !== undefined) customer.Address.CityName = pax.address.city;
-    if (pax.address.postalCode !== undefined) customer.Address.PostalCode = pax.address.postalCode;
-    if (pax.address.subdivision !== undefined) customer.Address.StateProv = pax.address.subdivision;
-    if (pax.address.country !== undefined) customer.Address.CountryName = {
-      Code: pax.address.country
-    };
-  }
-
+  customer.Address = buildCustomerAddress(pax);
+  
   return {
     'OTA_HotelResNotifRQ': {
       ResStatus: 'Commit',

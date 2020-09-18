@@ -30,7 +30,7 @@ const basicDecorator = (fn, isAdmin = false) => async (req, res) => {
     if (!headers.authorization) {
       throw new GliderError('Authorization missing', 403);
     }
-    
+
     const [ authType, authJwt ] = headers.authorization.split(' ');
     req.verificationResult = await verifyJWT(authType, authJwt, isAdmin);
     await fn(req, res);

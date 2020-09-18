@@ -2,7 +2,26 @@ const format = require('date-fns/format');
 const differenceInCalendarDays = require('date-fns/differenceInCalendarDays');
 const parseISO = require('date-fns/parseISO');
 
-const mapRequestData = (hotelCodes, { accommodation: { arrival, departure }, passengers }) => {
+const buildHotelRef = (
+  hotelCode, arrival, duration, guestCounts
+) => ({
+  HotelRef: {
+    HotelCode: hotelCode,
+    StayDateRange: {
+      Start:  format(new Date(arrival), 'yyyy-MM-dd'),
+      Duration: duration,
+      RoomStayCandidates: {
+        RoomStayCandidate: {
+          Quantity: '1',
+          GuestCounts: guestCounts,
+        }
+      }
+    }
+  }
+});
+module.exports.buildHotelRef = buildHotelRef;
+
+module.exports.mapRequestData = (hotelCodes, { accommodation: { arrival, departure }, passengers }) => {
   const duration = differenceInCalendarDays(parseISO(departure), parseISO(arrival));
   const guestCounts = passengers
     .map(
@@ -14,21 +33,9 @@ const mapRequestData = (hotelCodes, { accommodation: { arrival, departure }, pas
 
   const hotelSearchCriteria = hotelCodes
     .map(
-      hotelCode => ({
-        HotelRef: {
-          HotelCode: hotelCode,
-          StayDateRange: {
-            Start:  format(new Date(arrival), 'yyyy-MM-dd'),
-            Duration: duration,
-            RoomStayCandidates: {
-              RoomStayCandidate: {
-                Quantity: '1',
-                GuestCounts: guestCounts,
-              }
-            }
-          }
-        }
-      })
+      hotelCode => buildHotelRef(
+        hotelCode, arrival, duration, guestCounts
+      )
     );
 
   return {
@@ -80,8 +87,4 @@ const mapRequestData = (hotelCodes, { accommodation: { arrival, departure }, pas
       }
     }
   };
-};
-
-module.exports = {
-  mapRequestData
 };

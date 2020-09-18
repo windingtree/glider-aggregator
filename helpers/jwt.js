@@ -58,7 +58,10 @@ module.exports.verifyJWT = async (type, jwt, isAdmin = false) => {
   let didResult;
   const cachedDidResult = JSON.parse(await redisClient.asyncGet(`didResult_${did}`));
 
-  if (cachedDidResult && typeof cachedDidResult.didDocument === 'object') {
+  if (!process.env.TESTING &&
+    cachedDidResult &&
+    typeof cachedDidResult.didDocument === 'object') {
+    /* istanbul ignore next */
     didResult = cachedDidResult;
   } else {
     didResult = await orgIdResolver.resolve(did);

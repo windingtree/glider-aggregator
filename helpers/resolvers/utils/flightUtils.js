@@ -3,9 +3,10 @@ const caDestinations = require('./cadest.json');
 const GliderError = require('../../error');
 const {
   offerManager,
-  FlightOffer
+  FlightOffer,
 } = require('../../models/offer');
 
+const { getAmadeusClient } = require('../../providers/flights/amadeus/amadeusUtils');
 // Send a request to the provider
 module.exports.callProvider = async (
   provider,
@@ -13,18 +14,18 @@ module.exports.callProvider = async (
   apiKey,
   ndcBody,
   SOAPAction,
-  templates
+  templates,
 ) => {
   let response;
-
+  // let urlParts = apiEndpoint.split('/');
+  // let endpointId = urlParts[urlParts.length - 1];
   try {
     // Request connection timeouts can be handled via CancelToken only
     const timeout = 60 * 1000; // 60 sec
     const source = axios.CancelToken.source();
     const connectionTimeout = setTimeout(() => source.cancel(
-      `Cannot connect to the source: ${apiEndpoint}`
+      `Cannot connect to the source: ${apiEndpoint}`,
     ), timeout);// connection timeout
-
     response = await axios.post(
       apiEndpoint,
       ndcBody,
@@ -36,26 +37,70 @@ module.exports.callProvider = async (
           'Connection': 'keep-alive',
           'api_key': apiKey,
           'X-apiKey': apiKey,
-          ...(SOAPAction ? { SOAPAction } : {})
+          ...(SOAPAction ? { SOAPAction } : {}),
         },
         cancelToken: source.token, // Request timeout
-        timeout // Response timeout
-      }
+        timeout, // Response timeout
+      },
     );
-
     clearTimeout(connectionTimeout);
   } catch (error) {
     return {
       provider,
       templates,
       response: error.response,
-      error
+      error,
     };
   }
 
   return {
     provider,
     templates,
+    response,
+  };
+};
+
+
+// Send a request to REST endpoint
+module.exports.callProviderRest = async (
+  provider,
+  apiEndpoint,
+  apiKey,
+  ndcBody,
+  SOAPAction,
+) => {
+  let response;
+  console.log('Legacy callProviderRest');
+  try {
+    const amadeusClient = getAmadeusClient();
+    if (SOAPAction === 'SEARCHOFFERS')
+      response = await amadeusClient.shopping.flightOffersSearch.post(JSON.stringify(ndcBody));
+    else if (SOAPAction === 'PRICEOFFERS')
+      response = await amadeusClient.shopping.flightOffers.pricing.post(JSON.stringify(ndcBody));
+    else if (SOAPAction === 'ORDERCREATE')
+      response = await amadeusClient.booking.flightOrders.post(JSON.stringify(ndcBody));
+    else if (SOAPAction === 'SEATMAP') {
+      response = await amadeusClient.shopping.seatmaps.post(JSON.stringify(ndcBody));
+    } else {
+      throw new Error('Unknown action:' + SOAPAction);
+    }
+  } catch (error) {
+    let defaultErr = {
+      'title': 'UNKNOWN ERROR HAS OCCURED',
+      'status': 500,
+    };
+
+    //extract list of errors from response (or return default - unknown error)
+    let errors = (error && error.response && error.response.result && error.response.result.errors) ? error.response.result.errors : [defaultErr];
+
+    return {
+      provider,
+      response: {},
+      error: errors
+    };
+  }
+  return {
+    provider,
     response
   };
 };
@@ -66,194 +111,30 @@ module.exports.selectProvider = (origin, destination) => {
   destination = Array.isArray(destination) ? destination : [destination];
 
   const sdMapping = [
-    // {
-    //   provider: 'AF',
-    //   destinations: []
-    // },
     {
-      provider: 'AC',
-      destinations: caDestinations
-    }
+      provider: '1A',
+      destinations: caDestinations,
+    },
+    /*    {
+          provider: 'AC',
+          destinations: caDestinations,
+        },*/
+    /*    {
+          provider: 'AF',
+          destinations: caDestinations,
+        },*/
+    // {
+    //   provider: 'AC',
+    //   destinations: caDestinations
+    // }
   ];
-
-  // const sdMapping = [
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YQQ'],
-  //     destination: ['YXU'],
-  //     area: 'CA'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YTO'],
-  //     destination: ['YVR'],
-  //     area: 'CA'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YMM'],
-  //     destination: ['YXU', 'YYT'],
-  //     area: 'CA'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YHZ'],
-  //     destination: ['YQR', 'YYJ'],
-  //     area: 'CA'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YEA'],
-  //     destination: ['YXE', 'YYC', 'YZR'],
-  //     area: 'CA'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YYC'],
-  //     destination: ['YVR', 'YWG', 'YYT', 'YTO'],
-  //     area: 'CA'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YMQ'],
-  //     destination: ['YVR', 'YWG', 'YYT', 'YTO'],
-  //     area: 'CA'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YOB'],
-  //     destination: ['LAS'],
-  //     area: 'US'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YWG'],
-  //     destination: ['DEN', 'STL'],
-  //     area: 'US'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YVR'],
-  //     destination: ['CHI', 'LAS', 'LAX'],
-  //     area: 'US'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YTO'],
-  //     destination: ['CHI', 'DFW', 'FLL', 'LAX'],
-  //     area: 'US'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YMQ'],
-  //     destination: ['BOS', 'CHI', 'DEN', 'LAS', 'LAX', 'SFO'],
-  //     area: 'US'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YVR'],
-  //     destination: ['SIN'],
-  //     area: 'PA'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YVR'],
-  //     destination: ['BKK'],
-  //     area: 'PA'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YVR'],
-  //     destination: ['SYD'],
-  //     area: 'PA'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YVR'],
-  //     destination: ['TYO'],
-  //     area: 'PA'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YWG', 'YTO'],
-  //     destination: ['LON'],
-  //     area: 'AT'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YWG', 'YTO'],
-  //     destination: ['PAR'],
-  //     area: 'AT'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YWG', 'YTO'],
-  //     destination: ['FRA'],
-  //     area: 'AT'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YWG', 'YTO'],
-  //     destination: ['FCO'],
-  //     area: 'AT'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YWG', 'YTO'],
-  //     destination: ['MUC'],
-  //     area: 'AT'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YTO'],
-  //     destination: ['BGI'],
-  //     area: 'WH'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YTO'],
-  //     destination: ['CUN'],
-  //     area: 'WH'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YTO'],
-  //     destination: ['POS'],
-  //     area: 'WH'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YTO'],
-  //     destination: ['SKB'],
-  //     area: 'WH'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YTO'],
-  //     destination: ['SVD'],
-  //     area: 'WH'
-  //   },
-  //   {
-  //     provider: 'AC',
-  //     origin: ['YTO'],
-  //     destination: ['PTY'],
-  //     area: 'WH'
-  //   }
-  // ];
-
-  // return sdMapping
-  //   .filter(m => (
-  //     m.origin.includes(origin) && m.destination.includes(destination)
-  //   ))
-  //   .map(m => m.provider)
-  //   .filter((p, i, s) => s.indexOf(p) === i);
 
   return sdMapping
     .reduce((a, v) => {
 
       if (
         (v.destinations.filter(d => origin.includes(d)).length > 0 ||
-        v.destinations.filter(d => destination.includes(d)).length > 0) &&
+          v.destinations.filter(d => destination.includes(d)).length > 0) &&
         !a.includes(v.provider)
       ) {
         a.push(v.provider);
@@ -275,7 +156,7 @@ module.exports.reMapPassengersInRequestBody = (offer, body) => {
       })
       .reduce((a, v) => ({
         ...a,
-        [v[0]]: v[1]
+        [v[0]]: v[1],
       }), {});
     body.passengers = Object.entries(body.passengers)
       .map(p => {
@@ -284,12 +165,12 @@ module.exports.reMapPassengersInRequestBody = (offer, body) => {
       })
       .reduce((a, v) => ({
         ...a,
-        [v[0]]: v[1]
+        [v[0]]: v[1],
       }), {});
   } else {
     throw new GliderError(
       'Mapped passengers Ids not found in the offer',
-      500
+      500,
     );
   }
 
@@ -300,7 +181,7 @@ module.exports.reMapPassengersInRequestBody = (offer, body) => {
 module.exports.fetchFlightsOffersByIds = async offerIds => {
   // Retrieve the offers
   const offers = (await Promise.all(offerIds.map(
-    offerId => offerManager.getOffer(offerId)
+    offerId => offerManager.getOffer(offerId),
   )))
     // Should be FlightOffer of type and have same provider
     .filter((offer, i, array) => (
@@ -311,7 +192,7 @@ module.exports.fetchFlightsOffersByIds = async offerIds => {
   if (offers.length === 0) {
     throw new GliderError(
       'Offer not found',
-      400
+      400,
     );
   }
 
@@ -328,15 +209,15 @@ module.exports.dedupPassengersInOptions = (options) => options
         option[0].passenger = [
           ...new Set([
             ...option[0].passenger.split(' '),
-            ...v.passenger.split(' ')
-          ])
+            ...v.passenger.split(' '),
+          ]),
         ].join(' ');
       } else {
         a.push(v);
       }
       return a;
     },
-    []
+    [],
   )
   .reduce(
     (a, v) => {
@@ -345,10 +226,10 @@ module.exports.dedupPassengersInOptions = (options) => options
         .forEach(passenger => {
           a.push({
             ...v,
-            passenger
+            passenger,
           });
         });
       return a;
     },
-    []
+    [],
   );
