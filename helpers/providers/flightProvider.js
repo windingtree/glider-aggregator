@@ -14,6 +14,11 @@ module.exports = class FlightProvider {
   }
 
   // eslint-disable-next-line no-unused-vars
+  async retrieveSeatmaps (offers) {
+    throw new Error('This method must be implemented in subclass');
+  }
+
+  // eslint-disable-next-line no-unused-vars
   async priceOffers (body, offers){
     throw new Error('This method must be implemented in subclass');
   }

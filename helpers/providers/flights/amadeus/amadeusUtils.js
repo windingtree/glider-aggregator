@@ -1,3 +1,4 @@
+const { logRQRS } = require('../../../amadeus/logRQ');
 
 const Amadeus = require('amadeus');
 const { amadeusGdsConfig } = require('../../../../config');
@@ -21,7 +22,7 @@ const getAmadeusClient = () => {
   amadeusClient = new Amadeus({
     clientId: amadeusGdsConfig.clientId,
     clientSecret: amadeusGdsConfig.clientSecret,
-    hostname: amadeusGdsConfig.hostname
+    hostname: amadeusGdsConfig.hostname,
   });
 
   return amadeusClient;
@@ -37,6 +38,7 @@ const callProviderRest = async (
 ) => {
   let response;
   try {
+    logRQRS(ndcBody, `${SOAPAction}-request`);
     const amadeusClient = getAmadeusClient();
     if (SOAPAction === 'SEARCHOFFERS')
       response = await amadeusClient.shopping.flightOffersSearch.post(JSON.stringify(ndcBody));
@@ -49,7 +51,9 @@ const callProviderRest = async (
     } else {
       throw new Error('Unknown action:' + SOAPAction);
     }
+    logRQRS(ndcBody, `${SOAPAction}-response`);
   } catch (error) {
+    logRQRS(error, `${SOAPAction}-error`);
     let defaultErr = {
       'title': 'UNKNOWN ERROR HAS OCCURED',
       'status': 500,
@@ -95,5 +99,5 @@ module.exports = {
   assertAmadeusFault,
   getAmadeusClient,
   callProviderRest,
-  REQUESTS
+  REQUESTS,
 };

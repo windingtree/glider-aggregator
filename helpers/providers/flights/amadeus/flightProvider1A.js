@@ -8,6 +8,10 @@ const { orderCreateResponseProcessor } = require('./resolvers/orderCreateRespons
 const GliderError = require('../../../error');
 const { orderCreateRequestTemplate_1A } = require('./resolvers/orderCreateRequestTemplate');
 
+const { seatmapResponseProcessor } = require('./resolvers/seatmapResponseProcessor');
+const { seatmapRequestTemplate } = require('./resolvers/seatmapRequestTemplate');
+
+
 const FlightProvider = require('../../flightProvider');
 
 module.exports = class FlightProvider1A extends FlightProvider {
@@ -22,6 +26,14 @@ module.exports = class FlightProvider1A extends FlightProvider {
     //TODO fix error handling
     let searchResults = transformAmadeusResponse(response.data);
     return { provider: this.getProviderID(), response: searchResults, errors: errorsResult ? errorsResult.errors : [] };
+  }
+
+  async retrieveSeatmaps (offers) {
+    let ndcBody = seatmapRequestTemplate(offers);
+    const { response, error } = await callProviderRest(this.getProviderID(), '', '', ndcBody, 'SEATMAP', '');
+    assertAmadeusFault(response, error);
+    let seatMapResult = seatmapResponseProcessor(response.result, offers);
+    return seatMapResult;
   }
 
   async priceOffers (body, offers) {

@@ -3,6 +3,12 @@ const { ndcRequest } = require('../ndc/ndcUtils');
 const { airCanadaConfig } = require('../../../../config');
 const { transform } = require('camaro');
 const GliderError = require('../../../error');
+//TODO move utils to a separate package
+const { flatOneDepth } = require('../../../transformInputData/utils/collections');
+const { dedupPassengersInOptions } = require('../../../resolvers/utils/flightUtils');
+const {
+  mergeHourAndDate, reduceToObjectByKey,
+} = require('../../../parsers');
 
 // shopping templates
 const { mapNdcRequestData_AC: mapNdcShoppingRequestData_AC } = require('./transformInputData/searchOffers');
@@ -36,13 +42,15 @@ const {
   FaultsTransformTemplate_AC: CreateOfferFaultsTransformTemplate_AC,
 } = require('./camaroTemplates/provideOrderCreate');
 
+//seatmap templates
+const { mapNdcRequestData_AC: mapNdcSeatmapRequestData_AC } = require('./transformInputData/seatAvailability');
+const { seatAvailabilityRequestTemplate_AC } = require('./soapTemplates/seatAvailability');
+const {
+  provideSeatAvailabilityTransformTemplate_AC,
+  FaultsTransformTemplate_AC: SeatMapFaultsTransformTemplate_AC,
+  ErrorsTransformTemplate_AC: SeatMapErrorsTransformTemplate_AC,
+} = require('./camaroTemplates/provideSeatAvailability');
 
-const {
-  dedupPassengersInOptions,
-} = require('../../../resolvers/utils/flightUtils');
-const {
-  mergeHourAndDate, reduceToObjectByKey,
-} = require('../../../parsers');
 
 const assertErrors = require('../../../resolvers/utils/assertResponseErrors');
 module.exports = class FlightProviderAC extends FlightProviderNDCCommon {
@@ -51,7 +59,6 @@ module.exports = class FlightProviderAC extends FlightProviderNDCCommon {
   }
 
   async flightSearch (itinerary, passengers) {
-    console.log('AC searching.....');
     let ndcRequestData;
     let providerUrl;
     let apiKey;
@@ -63,6 +70,7 @@ module.exports = class FlightProviderAC extends FlightProviderNDCCommon {
     apiKey = airCanadaConfig.apiKey;
     ndcBody = provideShoppingRequestTemplate_AC(ndcRequestData);
     let { response } = await ndcRequest(providerUrl, apiKey, ndcBody);
+    //TODO unify response error processing
     let faultsResult = await transform(response.data, ShoppingFaultsTransformTemplate_AC);
     let errorsResult = await transform(response.data, ShoppingErrorsTransformTemplate_AC);
     const combinedErrors = [
@@ -72,6 +80,28 @@ module.exports = class FlightProviderAC extends FlightProviderNDCCommon {
 
     let searchResults = await transform(response.data, provideAirShoppingTransformTemplate_AC);
     return { provider: this.getProviderID(), response: searchResults, errors: combinedErrors };
+  }
+
+  async retrieveSeatmaps (offers) {
+    let ndcRequestData;
+    let providerUrl;
+    let apiKey;
+    let ndcBody;
+    // Check the type of request: OneWay or Return
+    let requestDocumentId = 'OneWay';
+
+    if (offers.length > 1) {
+      requestDocumentId = 'Return';
+    }
+    ndcRequestData = mapNdcSeatmapRequestData_AC(airCanadaConfig, offers, requestDocumentId);
+    // console.log('@@@', JSON.stringify(ndcRequestData, null, 2));
+    providerUrl = `${airCanadaConfig.baseUrlPci}/SeatAvailability`;
+    apiKey = airCanadaConfig.apiKey;
+    ndcBody = seatAvailabilityRequestTemplate_AC(ndcRequestData);
+    const { response, error } = await ndcRequest(providerUrl, apiKey, ndcBody);
+    await assertErrors(error, response, SeatMapFaultsTransformTemplate_AC, SeatMapErrorsTransformTemplate_AC);
+    let seatMapResult = await processSeatmapResponse(response.data, offers, provideSeatAvailabilityTransformTemplate_AC);
+    return seatMapResult;
   }
 
   async priceOffers (body, offers) {
@@ -299,4 +329,68 @@ const processOfferPriceResponse = async (data, template) => {
   delete offerResult.offer.priceClassList;
 
   return offerResult;
+};
+
+
+// Convert response data to the object form
+const processSeatmapResponse = async (data, offers, template) => {
+  // Index segments from offers
+  const indexedSegments = flatOneDepth(
+    offers.map(offer => offer.extraData.segments.map(s => ({
+      [`${s.Departure.AirportCode}-${s.Arrival.AirportCode}`]: s.id,
+    }))),
+  ).reduce((a, v) => ({ ...a, ...v }), {});
+  const seatMapResult = await transform(
+    data,
+    template,
+  );
+
+  seatMapResult.services = reduceToObjectByKey(seatMapResult.services);
+
+  seatMapResult.offers = seatMapResult.offers.map(o => {
+    o.offerItems = reduceToObjectByKey(
+      o.offerItems,
+    );
+    return o;
+  });
+
+  seatMapResult.seatMaps = seatMapResult.seatMaps.reduce((a, v) => {
+    const prices = {};
+    v.cabins = v.cabins.map(c => {
+      c.seats = flatOneDepth(
+        c.rows.map(r => r.seats.map(s => ({
+          ...s,
+          ...({
+            number: `${r.number}${s.number}`,
+          }),
+          ...({
+            optionCode: seatMapResult.offers.reduce((acc, val) => {
+              if (val.offerItems[s.optionCode]) {
+                const serviceRef = val.offerItems[s.optionCode].serviceRef;
+                acc = `${serviceRef}.${seatMapResult.services[serviceRef].name}`;
+                prices[acc] = {
+                  currency: val.offerItems[s.optionCode].currency,
+                  public: val.offerItems[s.optionCode].public,
+                  taxes: val.offerItems[s.optionCode].taxes,
+                };
+              }
+              return acc;
+            }, undefined),
+          }),
+        }))),
+      );
+      delete c.rows;
+      return c;
+    });
+
+    if (indexedSegments[v.segmentKey]) {
+      a[indexedSegments[v.segmentKey]] = {
+        cabins: v.cabins,
+        prices,
+      };
+    }
+
+    return a;
+  }, {});
+  return seatMapResult.seatMaps;
 };

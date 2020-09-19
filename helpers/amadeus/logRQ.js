@@ -1,10 +1,8 @@
-// const fs = require('fs');
-// const FOLDER = 'C:\\projects\\windingtree\\glider-aggregator-amadeus\\logs';
-// const FOLDER = '/tmp/logs';
+const fs = require('fs');
+const FOLDER = '/home/kurt/projects/glider-aggregator/temp';
 
 // eslint-disable-next-line no-unused-vars
 const logRQRS = (data = '', suffix = '', provider = '') => {
-/*
   // console.log('log:', suffix);
   let ts = Date.now();
   let extension = 'json';
@@ -22,8 +20,6 @@ const logRQRS = (data = '', suffix = '', provider = '') => {
   } catch (e) {
     console.error('Cant log request', e);
   }
-*/
-
 
 };
 

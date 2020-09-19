@@ -49,6 +49,10 @@ module.exports = class FlightProviderAF extends FlightProviderNDCCommon {
   }
 
   // eslint-disable-next-line no-unused-vars
+  async retrieveSeatmaps (offers) {
+    throw new Error('This method must be implemented in subclass');
+  }
+  // eslint-disable-next-line no-unused-vars
   async orderCreate (offer, requestBody, guaranteeClaim){
     let ndcRequestData;
     let providerUrl;
