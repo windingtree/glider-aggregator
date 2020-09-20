@@ -1,6 +1,20 @@
 const { reduceToObjectByKey } = require('../../../../parsers');
 
-const seatmapResponseProcessor = (response) => {
+const createRetrieveSeatmapRequest = (offers) => {
+  // fs.writeFileSync(`c://temp/log-${ts}-seatmap-rq-offers.json`, JSON.stringify(offers));
+  let request = {
+    data: [],
+  };
+
+  offers.map(offer => {
+    request.data.push(offer.extraData.rawOffer);
+  });
+
+  return request;
+};
+
+
+const processRetrieveSeatmapResponse = (response) => {
   const { data: _flights } = response;
   let flightSeatmaps = {};
 
@@ -140,4 +154,4 @@ const hashValuesToArray = (hashMap) => {
 };
 
 
-module.exports.seatmapResponseProcessor = seatmapResponseProcessor;
+module.exports = { processRetrieveSeatmapResponse, createRetrieveSeatmapRequest };

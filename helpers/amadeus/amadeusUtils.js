@@ -1,8 +1,8 @@
-const { logRQRS } = require('../../../amadeus/logRQ');
+const { logRQRS } = require('../log/logRQ');
 
 const Amadeus = require('amadeus');
-const { amadeusGdsConfig } = require('../../../../config');
-const GliderError = require('../../../error');
+const { amadeusGdsConfig } = require('../../config');
+const GliderError = require('../error');
 
 const REQUESTS = {
   SEARCHOFFERS: 'SEARCHOFFERS',
@@ -11,65 +11,53 @@ const REQUESTS = {
   SEATMAP: 'SEATMAP',
 };
 
+/**
+ * Create, configure and return instance of amadeus client.
+ * @returns {} Singleton instance of Amadeus client.
+ */
 
 const getAmadeusClient = () => {
   let amadeusClient;
-
   if (amadeusClient) {
     return amadeusClient;
   }
-
   amadeusClient = new Amadeus({
     clientId: amadeusGdsConfig.clientId,
     clientSecret: amadeusGdsConfig.clientSecret,
     hostname: amadeusGdsConfig.hostname,
   });
-
   return amadeusClient;
 };
 
 
-const callProviderRest = async (
-  provider,
-  apiEndpoint,
-  apiKey,
-  ndcBody,
-  SOAPAction,
-) => {
+const amadeusEndpointRequest = async (ndcBody, SOAPAction) => {
   let response;
   try {
     logRQRS(ndcBody, `${SOAPAction}-request`);
     const amadeusClient = getAmadeusClient();
-    if (SOAPAction === 'SEARCHOFFERS')
-      response = await amadeusClient.shopping.flightOffersSearch.post(JSON.stringify(ndcBody));
-    else if (SOAPAction === 'PRICEOFFERS')
-      response = await amadeusClient.shopping.flightOffers.pricing.post(JSON.stringify(ndcBody));
-    else if (SOAPAction === 'ORDERCREATE')
-      response = await amadeusClient.booking.flightOrders.post(JSON.stringify(ndcBody));
-    else if (SOAPAction === 'SEATMAP') {
-      response = await amadeusClient.shopping.seatmaps.post(JSON.stringify(ndcBody));
-    } else {
-      throw new Error('Unknown action:' + SOAPAction);
+    switch (SOAPAction) {
+      case REQUESTS.SEARCHOFFERS:
+        response = await amadeusClient.shopping.flightOffersSearch.post(JSON.stringify(ndcBody));
+        break;
+      case REQUESTS.PRICEOFFERS:
+        response = await amadeusClient.shopping.flightOffers.pricing.post(JSON.stringify(ndcBody));
+        break;
+      case REQUESTS.ORDERCREATE:
+        response = await amadeusClient.booking.flightOrders.post(JSON.stringify(ndcBody));
+        break;
+      case REQUESTS.SEATMAP:
+        response = await amadeusClient.shopping.seatmaps.post(JSON.stringify(ndcBody));
+        break;
+      default:
+        throw new GliderError(`Unknown webservice call:${SOAPAction}`, 500);
     }
     logRQRS(ndcBody, `${SOAPAction}-response`);
   } catch (error) {
     logRQRS(error, `${SOAPAction}-error`);
-    let defaultErr = {
-      'title': 'UNKNOWN ERROR HAS OCCURED',
-      'status': 500,
-    };
-
     //extract list of errors from response (or return default - unknown error)
-    let errors = (error && error.response && error.response.result && error.response.result.errors) ? error.response.result.errors : [defaultErr];
-
-    return {
-      response: {},
-      error: errors,
-    };
+    throw new GliderError(error, 500);
   }
-  return {
-    response,
-  };
+  return response;
 };
 
 
@@ -98,6 +86,6 @@ module.exports = {
   transformAmadeusFault,
   assertAmadeusFault,
   getAmadeusClient,
-  callProviderRest,
+  amadeusEndpointRequest: amadeusEndpointRequest,
   REQUESTS,
 };

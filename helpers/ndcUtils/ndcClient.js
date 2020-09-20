@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { logRQRS } = require('../amadeus/logRQ');
+const { logRQRS } = require('../log/logRQ');
 const GliderError = require('../error');
 
 const webserviceDefinition = (webserviceName, url, soapAction, apiKey, timeout) => {

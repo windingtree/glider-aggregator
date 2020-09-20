@@ -58,7 +58,7 @@ module.exports = class FlightProviderAF extends FlightProviderNDCCommon {
   }
 
   getProviderID () {
-    return 'AC';
+    return 'AF';
   }
 };
 

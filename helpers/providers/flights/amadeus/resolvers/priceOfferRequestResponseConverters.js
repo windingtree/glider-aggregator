@@ -1,6 +1,8 @@
 const { v4: uuidv4 } = require('uuid');
 const { createSegment, createPrice, createPassenger } = require('../utils/amadeusFormatUtils');
 const taxDefinitions = require('../../../../../assets/taxDefinitions.json') || {};
+
+
 const createPricedItem = (pricedItemId, passengerReferences, taxes, fares) => {
   return {
     _id_: pricedItemId,
@@ -54,8 +56,19 @@ const createFareItemComponent = (name, fareBasisCode, fareClass, conditions = ' 
   };
 };
 
+const createOfferPriceRequest = (offers) => {
+  let request = {
+    data: {
+      type: 'flight-offers-pricing',
+      flightOffers: [],
+    },
+  };
+  request.data.flightOffers.push(...offers);
+  return request;
+};
 
-const offerPriceResponseProcessor = (response) => {
+
+const processPriceOfferResponse = (response) => {
   const { flightOffers } = response.data;
   let pricedOffers = [];
 
@@ -112,4 +125,4 @@ const getTaxDefinition = (taxCode) => {
   return description;
 };
 
-module.exports.offerPriceResponseProcessor = offerPriceResponseProcessor;
+module.exports = { processPriceOfferResponse, createOfferPriceRequest };

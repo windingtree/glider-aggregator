@@ -6,7 +6,7 @@ const {
   FlightOffer,
 } = require('../../models/offer');
 
-const { getAmadeusClient } = require('../../providers/flights/amadeus/amadeusUtils');
+const { getAmadeusClient } = require('../../amadeus/amadeusUtils');
 // Send a request to the provider
 module.exports.callProvider = async (
   provider,
@@ -112,7 +112,7 @@ module.exports.selectProvider = (origin, destination) => {
 
   const sdMapping = [
     {
-      provider: 'AC',
+      provider: '1A',
       destinations: caDestinations,
     },
     /*    {
