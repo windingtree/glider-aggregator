@@ -44,7 +44,7 @@ module.exports = class HotelProviderRevMax extends HotelProvider {
 
   async retrieveHotelsAvailability (context, hotels, departure, arrival, guests) {
     if (hotels.total === 0) {
-      throw new GliderError('No Hotels were found with the provided criteria',404);
+      throw new GliderError('No Hotels were found with the provided criteria', 404);
     }
     const hotelCodes = hotels.records.map(r => r.ref);
     if (!hotelCodes.length) {

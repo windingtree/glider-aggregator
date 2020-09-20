@@ -10,7 +10,7 @@ module.exports.searchHotel = async (body) => {
   const { accommodation, passengers: guests } = body;
   let context = {};
 
-  let providerHandlers = createHotelProviders(['revmax','1A']);
+  let providerHandlers = createHotelProviders(['revmax', '1A']);
 
   //search for hotels with each provider and collect responses (each response is having following structure: {provider, response, errors}
   let responses = await Promise.all(providerHandlers.map(async providerImpl => {
@@ -31,8 +31,8 @@ module.exports.searchHotel = async (body) => {
   const responseErrors = responses.map(({ provider, error }) => {
     if (error) {
       return {
-        provider:provider,
-        error: error.message
+        provider: provider,
+        error: error.message,
       };
     } else {
       return null;
@@ -44,7 +44,7 @@ module.exports.searchHotel = async (body) => {
 
   if (responseErrors.length === providerHandlers.length) {
     // If all providers returned errors then send error with API response
-    throw new GliderError(responseErrors.map(e => `Provider [${e.provider}]: ${e.error}`).join('; '),502);
+    throw new GliderError(responseErrors.map(e => `Provider [${e.provider}]: ${e.error}`).join('; '), 502);
   } else if (responseErrors.length > 0) {
     // If at least one provider returned offers
     // then pul all errors to the warnings section

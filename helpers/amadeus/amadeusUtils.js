@@ -1,5 +1,5 @@
 const { logRQRS } = require('../log/logRQ');
-const _ = require('lodash')
+const _ = require('lodash');
 const Amadeus = require('amadeus');
 const { amadeusGdsConfig } = require('../../config');
 const GliderError = require('../error');
@@ -62,9 +62,9 @@ const amadeusEndpointRequest = async (ndcBody, action) => {
   } catch (error) {
     logRQRS(error, `${action}-error`);
     let errorMessage = 'Unknown error occured'; //default error message
-    let errors = _.get(error,'response.result.errors');
-    if(errors)
-      errorMessage = errors.map(err=>err.title);
+    let errors = _.get(error, 'response.result.errors');
+    if (errors)
+      errorMessage = errors.map(err => err.title);
     throw new GliderError(errorMessage, 500);
   }
   return response;
