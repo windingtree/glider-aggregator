@@ -29,7 +29,7 @@ module.exports.expandPassengers = expandPassengers;
 
 // Build request data for the request to the AirFrance provider
 /* istanbul ignore next */
-module.exports.mapNdcRequestData_AF = (config, { itinerary, passengers }) => ({
+module.exports.mapNdcRequestData_AF = (config, itinerary, passengers) => ({
   ...(JSON.parse(JSON.stringify(config))),
   PointOfSale: {
     RequestTime: (new Date(Date.now())).toISOString(),

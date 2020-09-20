@@ -390,45 +390,40 @@ module.exports.searchFlight = async (body) => {
   const { itinerary, passengers } = body;
   // Request all providers
 
-  const responses = await Promise.all(providerHandlers.map(providerImpl => {
-    let result = providerImpl.flightSearch(itinerary, passengers);
+  const responses = await Promise.all(providerHandlers.map(async providerImpl => {
+    let result = {
+      provider: providerImpl.getProviderID(),
+      response: undefined,
+      error: undefined,
+    };
+    try {
+      result.response = await providerImpl.flightSearch(itinerary, passengers);
+    } catch (error) {
+      result.error = error;
+    }
     return result;
   }));
   // Check responses for errors
   const responseErrors = (await Promise.all(
-    responses
-      .map(async ({ provider, errors/*, templates*/ }) => {
-        try {
-          if (errors && errors.length) {
-            return {
-              provider,
-              error: errors.map(e => e.message).join('; '),
-            };
-          } else {
-            return null;
-          }
-        } catch (e) {
-          // Transformation error
-          return {
-            provider: provider,
-            error: e.message,
-          };
-        }
-      }),
+    responses.map(({ provider, error }) => {
+      if (error) {
+        return {
+          provider,
+          error: error.message,
+        };
+      } else {
+        return null;
+      }
+    }),
   ))
     .filter(e => e !== null);
 
   let searchResult = {};
   if (responseErrors.length === providers.length) {
-    // If all providers returned errors
-    // then send error with API response
-    throw new GliderError(
-      responseErrors.map(e => `Provider "${e.provider}": ${e.error}`).join('; '),
-      502,
-    );
+    // If all providers returned errors then send error with API response
+    throw new GliderError(responseErrors.map(e => `Provider [${e.provider}]: ${e.error}`).join('; '), 502);
   } else if (responseErrors.length > 0) {
-    // If at least one provider returned offers
-    // then pul all errors to the warnings section
+    // If at least one provider returned offers then put all errors to the warnings section
     searchResult.warnings = responseErrors;
   }
   // Build mapped passengers by types

@@ -60,17 +60,10 @@ class NDCCLient {
       logRQRS(response.data, `${action} - response`);
     } catch (error) {
       logRQRS(error, `${action} - response error`);
-      return {
-        response: error.response,
-        error,
-      };
+      throw new GliderError(error.message, 500);
     }
-    return {
-      response,
-    };
-  };
-
-
+    return response;
+  }
 }
 
 
