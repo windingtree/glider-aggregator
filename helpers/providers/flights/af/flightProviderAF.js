@@ -1,5 +1,5 @@
 const FlightProviderNDCCommon = require('../ndc/flightProviderNDCCommon');
-const { ndcRequest } = require('../ndc/ndcUtils');
+const { flightSearchRQ, fulfillOrderRQ, createOrderRQ } = require('./ndcClientAF');
 const { transform } = require('camaro');
 const { airFranceConfig } = require('../../../../config');
 const GliderError = require('../../../error');
@@ -14,7 +14,7 @@ const { mapNdcRequestData_AF: mapNdcOrderCreateRequestData_AF } = require('../ac
 const { orderCreateRequestTemplate_AF } = require('./soapTemplates/createOrder');
 const {
   provideOrderCreateTransformTemplate_AF,
-  ErrorsTransformTemplate_AF:OrderCreateErrorsTransformTemplate_AF,
+  ErrorsTransformTemplate_AF: OrderCreateErrorsTransformTemplate_AF,
 } = require('./camaroTemplates/provideOrderCreate');
 
 
@@ -36,24 +36,18 @@ module.exports = class FlightProviderAF extends FlightProviderNDCCommon {
 
   async flightSearch (itinerary, passengers) {
     let ndcRequestData;
-    let providerUrl;
-    let apiKey;
-    let SOAPAction;
     let ndcBody;
     let body = { itinerary: itinerary, passengers: passengers };
     ndcRequestData = mapNdcRequestData_AF(airFranceConfig, body);
-    providerUrl = 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001448v01/EXT';
-    apiKey = airFranceConfig.apiKey;
-    SOAPAction = '"http://www.af-klm.com/services/passenger/ProvideAirShopping/provideAirShopping"';
     ndcBody = provideShoppingRequestTemplate_AF(ndcRequestData);
-    let { response } = await ndcRequest(providerUrl, apiKey, ndcBody, SOAPAction);
+    let { response } = await flightSearchRQ(ndcBody);
     let errorsResult = await transform(response.data, ErrorsTransformTemplate_AF);
     let searchResults = await transform(response.data, provideAirShoppingTransformTemplate_AF);
     return { provider: this.getProviderID(), response: searchResults, errors: errorsResult ? errorsResult.errors : [] };
   }
 
   // eslint-disable-next-line no-unused-vars
-  async priceOffers (body, offers){
+  async priceOffers (body, offers) {
     throw new Error('Not implemented');
   }
 
@@ -61,21 +55,16 @@ module.exports = class FlightProviderAF extends FlightProviderNDCCommon {
   async retrieveSeatmaps (offers) {
     throw new Error('Not implemented');
   }
+
   // eslint-disable-next-line no-unused-vars
-  async orderCreate (offer, requestBody, guaranteeClaim){
+  async orderCreate (offer, requestBody, guaranteeClaim) {
     let ndcRequestData;
-    let providerUrl;
-    let apiKey;
-    let SOAPAction;
     let ndcBody;
 
     requestBody = reMapPassengersInRequestBody(offer, requestBody);
     ndcRequestData = mapNdcOrderCreateRequestData_AF(airFranceConfig, requestBody);
-    providerUrl = 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001451v01/EXT';
-    apiKey = airFranceConfig.apiKey;
-    SOAPAction = '"http://www.af-klm.com/services/passenger/ProvideOrderCreate/provideOrderCreate"';
     ndcBody = orderCreateRequestTemplate_AF(ndcRequestData);
-    const { response, error } = await ndcRequest(providerUrl, apiKey, ndcBody, SOAPAction);
+    const { response, error } = await createOrderRQ(ndcBody);
     if (error && !error.isAxiosError) {
 
       throw new GliderError(
@@ -108,18 +97,12 @@ module.exports = class FlightProviderAF extends FlightProviderNDCCommon {
   }
 
   // eslint-disable-next-line no-unused-vars
-  async orderFulfill (orderId, order, body, guaranteeClaim){
+  async orderFulfill (orderId, order, body, guaranteeClaim) {
     let ndcRequestData;
-    let providerUrl;
-    let apiKey;
-    let SOAPAction;
     let ndcBody;
     ndcRequestData = mapNdcFulfillRequestData_AF(airFranceConfig, body, orderId);
-    providerUrl = 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001489v01/EXT';
-    apiKey = airFranceConfig.apiKey;
-    SOAPAction = '"http://www.af-klm.com/services/passenger/AirDocIssue/airDocIssue"';
     ndcBody = fulfillOrderTemplate_AF(ndcRequestData);
-    const { response, error } = await ndcRequest(providerUrl, apiKey, ndcBody, SOAPAction);
+    const { response, error } = await fulfillOrderRQ(ndcBody);
 
     if (error && !error.isAxiosError) {
       throw new GliderError(response.error.message, 502);
