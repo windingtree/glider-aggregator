@@ -4,11 +4,11 @@ const {
 } = require('../../config');
 const {
   mapRequestData
-} = require('../../helpers/transformInputData/hotelAvail');
+} = require('../../helpers/providers/hotels/erevmax/transformInputData/hotelAvail');
 const {
   mapFromOffer,
   buildCustomerAddress
-} = require('../../helpers/transformInputData/hotelResNotif');
+} = require('../../helpers/providers/hotels/erevmax/transformInputData/hotelResNotif');
 const { expandPassengers } = require('../../helpers/providers/flights/ndc/transformInputData/expandPassengers');
 const {
   // expandPassengers,

@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const { createSegment, createPrice, createPassenger } = require('../utils/amadeusFormatUtils');
+const { createSegment, createPrice, createPassenger } = require('./amadeusFormatUtils');
 const GliderError = require('../../../../error');
 
 
@@ -15,7 +15,6 @@ const convertPassengerTypeToAmadeus = (type) => {
   else if (type === 'INF') return 'INFANT';
   else throw new GliderError('invalid passenger type:' + type, 400);
 };
-
 
 
 const createFlightSearchRequest = (itinerary, passengers) => {
@@ -35,12 +34,12 @@ const createFlightSearchRequest = (itinerary, passengers) => {
   //transform passenger details to too
   let paxId = 1;
   let travelers = [];
-  passengers.forEach(passenger=>{
+  passengers.forEach(passenger => {
     const { type, count = 1 } = passenger;
-    for(let i=0;i<count;i++) {
+    for (let i = 0; i < count; i++) {
       travelers.push({
         id: paxId++,
-        travelerType: convertPassengerTypeToAmadeus(type)
+        travelerType: convertPassengerTypeToAmadeus(type),
       });
     }
   });
@@ -49,21 +48,19 @@ const createFlightSearchRequest = (itinerary, passengers) => {
   let request = {
     // currencyCode: 'USD', //TODO remove hardcoded currency code
     originDestinations: originDestinations,
-    travelers:travelers,
+    travelers: travelers,
     sources: [
       'GDS',
     ],
     searchCriteria: {
       allowAlternativeFareOptions: true,
       maxFlightOffers: 30,
-      additionalInformation:{
-        chargeableCheckedBags:true,
-        brandedFares:true
+      additionalInformation: {
+        chargeableCheckedBags: true,
+        brandedFares: true,
       },
-      pricingOptions:{
-
-      }
-    }
+      pricingOptions: {},
+    },
   };
   return request;
 };
@@ -229,4 +226,4 @@ const processFlightSearchResponse = (response) => {
 };
 
 
-module.exports = { processFlightSearchResponse,createFlightSearchRequest };
+module.exports = { processFlightSearchResponse, createFlightSearchRequest };

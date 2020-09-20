@@ -11,16 +11,16 @@ const { transform } = require('camaro');
 const { reduceToObjectByKey, reduceObjectToProperty, reduceAccommodation } = require('../../../parsers');
 
 //search templates
-const { mapRequestData } = require('../../../transformInputData/hotelAvail');
-const { hotelAvailRequestTemplate } = require('../../../soapTemplates/hotelAvail');
-const { hotelAvailTransformTemplate, errorsTransformTemplate } = require('../../../camaroTemplates/hotelAvail');
+const { mapRequestData } = require('./transformInputData/hotelAvail');
+const { hotelAvailRequestTemplate } = require('./soapTemplates/hotelAvail');
+const { hotelAvailTransformTemplate, errorsTransformTemplate } = require('./camaroTemplates/hotelAvail');
 
 //order create templates
-const responseTemplate = require('../../../camaroTemplates/hotelResNotifRS').otaHotelResNotifRSTemplate;
-const hotelResNotif = require('../../../transformInputData/hotelResNotif');
+const responseTemplate = require('./camaroTemplates/hotelResNotifRS').otaHotelResNotifRSTemplate;
+const hotelResNotif = require('./transformInputData/hotelResNotif');
 const {
   mapHotelResNotifSoap,
-} = require('../../../soapTemplates/ota/otaHotelResNotifRQ');
+} = require('./camaroTemplates/ota/otaHotelResNotifRQ');
 
 
 module.exports = class HotelProviderRevMax extends HotelProvider {

@@ -1,15 +1,12 @@
-
-const { createSearchRequest } = require('./resolvers/searchRequestCreator');
+const { createSearchRequest, processSearchResponse } = require('./resolvers/searchHotelsRequestResponseConverters');
+const { processOrderResponse, createOrderRequest } = require('./resolvers/orderCreateRequestResponseConverters');
 const { convertPolygonToCircle } = require('./enclosingCircle');
-const { amadeusRequest } = require('./amadeusUtils');
-const { processResponse } = require('./resolvers/searchResponseProcessor');
-const { createOrderRequest } = require('./resolvers/orderRequestCreator');
-const { processOrderResponse } = require('./resolvers/orderResponseProcessor');
 
 
 const HotelProvider = require('../../hotelProvider');
 const GliderError = require('../../../../helpers/error');
 const offer = require('../../../models/offer');
+const { amadeusEndpointRequest, REQUESTS, assertAmadeusFault } = require('../../../amadeus/amadeusUtils');
 
 module.exports = class HotelProviderAmadeus extends HotelProvider {
   constructor () {
@@ -33,19 +30,11 @@ module.exports = class HotelProviderAmadeus extends HotelProvider {
   async _searchHotel (context, location, departure, arrival, guests) {
     //Build the request
     const request = createSearchRequest(location, departure, arrival, guests);
-    console.log('Request:', request);
     //Make a call to API endpoint
-    let { response, error } = await amadeusRequest(request, 'SEARCH');
-
-    // If an error is found, stop here
-    if (error && error.length) {
-      throw new GliderError(
-        error.map(e => e.title).join('; '),
-        502,
-      );
-    }
+    let response = await amadeusEndpointRequest(request, REQUESTS.HOTEL_SEARCH);
+    assertAmadeusFault(response);
     //process response
-    let searchResults = processResponse(response);
+    let searchResults = processSearchResponse(response);
     let offersToStore = [];
     let guestCounts = getGuestCounts(guests);
     Object.keys(searchResults.offers).forEach(offerId => {
@@ -66,24 +55,14 @@ module.exports = class HotelProviderAmadeus extends HotelProvider {
       );
     });
     await offer.offerManager.storeOffers(offersToStore);
-    return { response: searchResults, errors: error && error.length ? error : [] };
+    return searchResults;
   }
 
   async createOrder (offer, passengers, card) {
     let orderRequest = createOrderRequest(offer, passengers, card);
-    let { response, error } = await amadeusRequest(orderRequest, 'ORDER');
-
-    // If an error is found, stop here
-    if (error && error.length) {
-      throw new GliderError(
-        error.map(e => e.title).join('; '),
-        502,
-      );
-    }
-    let order = processOrderResponse(response);
-
-    return order;
-
+    let response = await amadeusEndpointRequest(orderRequest, REQUESTS.HOTEL_ORDER_CREATE);
+    assertAmadeusFault(response);
+    return processOrderResponse(response);
   }
 
   getProviderID () {
@@ -95,8 +74,7 @@ const getRatePlan = (offerId, results) => {
   let pricePlansReferences = results.offers[offerId].pricePlansReferences;
   let pricePlanRefId = Object.keys(pricePlansReferences)[0];
   let pricePlanRef = pricePlansReferences[pricePlanRefId];
-  let result = Object.assign({ pricePlanRefId: pricePlanRefId }, pricePlanRef);
-  return result;
+  return Object.assign({ pricePlanRefId: pricePlanRefId }, pricePlanRef);
 };
 
 
@@ -123,10 +101,7 @@ const getGuestCounts = passengers => {
   }
 
   if (guestCounts[0].count === 0) {
-    throw new GliderError(
-      'At least one adult passenger is required to search properties',
-      400,
-    );
+    throw new GliderError('At least one adult passenger is required to search properties', 400);
   }
 
   return guestCounts;

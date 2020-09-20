@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const { createSegment, createPrice, createPassenger } = require('../utils/amadeusFormatUtils');
+const { createSegment, createPrice, createPassenger } = require('./amadeusFormatUtils');
 const taxDefinitions = require('../../../../../assets/taxDefinitions.json') || {};
 
 

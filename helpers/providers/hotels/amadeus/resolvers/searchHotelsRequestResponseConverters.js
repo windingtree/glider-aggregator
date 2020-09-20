@@ -1,6 +1,24 @@
 const { reduceToObjectByKey } = require('../../../../parsers');
 
-const processResponse = (response) => {
+//request
+
+// eslint-disable-next-line no-unused-vars
+const createSearchRequest = (location, departure, arrival, guests) => {
+  //TODO remove hardcoded radius
+  let request = {
+    latitude: location.lat, longitude: location.long, radius: 30, radiusUnit: 'KM',
+    currency: 'EUR',
+    bestRateOnly: false,
+    lang: 'EN',
+  };
+  return request;
+};
+
+
+
+//response
+
+const processSearchResponse = (response) => {
   const { data } = response;
   const accommodations = {};
   const pricePlans = {};
@@ -313,5 +331,5 @@ const ROOM_TYPE_CODES = {
 */
 
 module.exports = {
-  processResponse: processResponse,
+  processSearchResponse, createSearchRequest
 };

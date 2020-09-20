@@ -1,6 +1,6 @@
-const { createPrice, convertGenderFromAmadeusToGlider } = require('../utils/amadeusFormatUtils');
+const { createPrice, convertGenderFromAmadeusToGlider } = require('./amadeusFormatUtils');
 //request
-const { convertGenderFromGliderToAmadeus } = require('../utils/amadeusFormatUtils');
+const { convertGenderFromGliderToAmadeus } = require('./amadeusFormatUtils');
 const GliderError = require('../../../../error');
 const config = require('../../../../../config').amadeusGdsConfig;
 

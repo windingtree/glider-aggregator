@@ -6,12 +6,12 @@ const axios = require('axios');
 const { transform } = require('camaro');
 const config = require('../../../config');
 const GliderError = require('../../error');
-const responseTemplate = require('../../camaroTemplates/hotelResNotifRS').otaHotelResNotifRSTemplate;
+const responseTemplate = require('../../providers/hotels/erevmax/camaroTemplates/hotelResNotifRS').otaHotelResNotifRSTemplate;
 
-const hotelResNotif = require('../../transformInputData/hotelResNotif');
+const hotelResNotif = require('../../providers/hotels/erevmax/transformInputData/hotelResNotif');
 const {
   mapHotelResNotifSoap
-} = require('../../soapTemplates/ota/otaHotelResNotifRQ');
+} = require('../../providers/hotels/erevmax/camaroTemplates/ota/otaHotelResNotifRQ');
 const { v4: uuidv4 } = require('uuid');
 
 module.exports = async (offer, passengers, card) => {

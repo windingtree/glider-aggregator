@@ -3,7 +3,7 @@ const format = require('date-fns/format');
 // const parseISO = require('date-fns/parseISO');
 const { v4: uuidv4 } = require('uuid');
 const emailValidator = require('email-validator');
-const { getCardCode } = require('./utils/cardUtils');
+const { getCardCode } = require('../../../../transformInputData/utils/cardUtils');
 
 const buildCustomerAddress = pax => {
   let address;
@@ -165,7 +165,7 @@ const mapFromOffer = (offer, passengers, card) => {
 
   // Handle the passenger address
   customer.Address = buildCustomerAddress(pax);
-  
+
   return {
     'OTA_HotelResNotifRQ': {
       ResStatus: 'Commit',

@@ -17,7 +17,7 @@ const {
   // mapHotelResNotif,
   // mapSoapHeader,
   // mapHotelResNotifSoap
-} = require('../../helpers/soapTemplates/ota/otaHotelResNotifRQ');
+} = require('../../helpers/providers/hotels/erevmax/camaroTemplates/ota/otaHotelResNotifRQ');
 
 require('chai').should();
 
@@ -64,7 +64,7 @@ describe('soapTemplates', () => {
     };
 
     describe('#mapGuestCount', () => {
-            
+
       it('should map data', async () => {
         const result = mapGuestCount(OTA_GuestCount);
         (result).should.equal('<GuestCount AgeQualifyingCode="10" Count="1"/>');
@@ -79,7 +79,7 @@ describe('soapTemplates', () => {
     });
 
     describe('#mapGuestCounts', () => {
-            
+
       it('should map data', async () => {
         const result = mapGuestCounts([
           OTA_GuestCount,
@@ -117,7 +117,7 @@ describe('soapTemplates', () => {
     });
 
     describe('#mapPaymentCard', () => {
-      
+
       it('should map data', async () => {
         const result = mapPaymentCard(OTA_PaymentCard);
         (result).should.equal('<PaymentCard CardCode="VI" CardNumber="4444333322221111" CardType="1" ExpireDate="1024" SeriesCode="111"><CardHolderName>TEST</CardHolderName></PaymentCard>');
@@ -125,7 +125,7 @@ describe('soapTemplates', () => {
     });
 
     describe('#mapGuarantee', () => {
-      
+
       it('should map data', async () => {
         const result = mapGuarantee(OTA_Guarantee);
         (result).should.equal('<Guarantee\n  GuaranteeType="GuaranteeRequired"\n  GuaranteeCode="GCC"\n>\n  <GuaranteesAccepted>\n      <GuaranteeAccepted><PaymentCard CardCode="VI" CardNumber="4444333322221111" CardType="1" ExpireDate="1024" SeriesCode="111"><CardHolderName>TEST</CardHolderName></PaymentCard></GuaranteeAccepted>\n  </GuaranteesAccepted>\n  <GuaranteeDescription>\n      <Text>Credit Card Guarantee</Text>\n  </GuaranteeDescription>\n</Guarantee>');

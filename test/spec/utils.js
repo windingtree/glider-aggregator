@@ -10,7 +10,7 @@ const {
 } = require('../../helpers/transformInputData/utils/collections');
 const {
   mapGuestCounts
-} = require('../../helpers/soapTemplates/ota/otaUtils');
+} = require('../../helpers/providers/hotels/erevmax/camaroTemplates/ota/otaUtils');
 
 require('chai').should();
 

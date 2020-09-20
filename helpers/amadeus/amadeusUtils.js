@@ -9,6 +9,8 @@ const REQUESTS = {
   PRICEOFFERS: 'PRICEOFFERS',
   ORDERCREATE: 'ORDERCREATE',
   SEATMAP: 'SEATMAP',
+  HOTEL_SEARCH: 'HOTEL_SEARCH',
+  HOTEL_ORDER_CREATE: 'HOTEL_ORDER_CREATE',
 };
 
 /**
@@ -30,30 +32,37 @@ const getAmadeusClient = () => {
 };
 
 
-const amadeusEndpointRequest = async (ndcBody, SOAPAction) => {
+const amadeusEndpointRequest = async (ndcBody, action) => {
   let response;
   try {
-    logRQRS(ndcBody, `${SOAPAction}-request`);
+    logRQRS(ndcBody, `${action}-request`);
     const amadeusClient = getAmadeusClient();
-    switch (SOAPAction) {
+    let requestStr = JSON.stringify(ndcBody);
+    switch (action) {
       case REQUESTS.SEARCHOFFERS:
-        response = await amadeusClient.shopping.flightOffersSearch.post(JSON.stringify(ndcBody));
+        response = await amadeusClient.shopping.flightOffersSearch.post(requestStr);
         break;
       case REQUESTS.PRICEOFFERS:
-        response = await amadeusClient.shopping.flightOffers.pricing.post(JSON.stringify(ndcBody));
+        response = await amadeusClient.shopping.flightOffers.pricing.post(requestStr);
         break;
       case REQUESTS.ORDERCREATE:
-        response = await amadeusClient.booking.flightOrders.post(JSON.stringify(ndcBody));
+        response = await amadeusClient.booking.flightOrders.post(requestStr);
         break;
       case REQUESTS.SEATMAP:
-        response = await amadeusClient.shopping.seatmaps.post(JSON.stringify(ndcBody));
+        response = await amadeusClient.shopping.seatmaps.post(requestStr);
+        break;
+      case REQUESTS.HOTEL_SEARCH:
+        response = await amadeusClient.shopping.hotelOffers.get(requestStr);
+        break;
+      case REQUESTS.HOTEL_ORDER_CREATE:
+        response = await amadeusClient.booking.hotelBookings.post(requestStr);
         break;
       default:
-        throw new GliderError(`Unknown webservice call:${SOAPAction}`, 500);
+        throw new GliderError(`Unknown webservice call:${action}`, 500);
     }
-    logRQRS(ndcBody, `${SOAPAction}-response`);
+    logRQRS(ndcBody, `${action}-response`);
   } catch (error) {
-    logRQRS(error, `${SOAPAction}-error`);
+    logRQRS(error, `${action}-error`);
     //extract list of errors from response (or return default - unknown error)
     throw new GliderError(error, 500);
   }
