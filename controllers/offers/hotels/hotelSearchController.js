@@ -1,7 +1,0 @@
-
-class HotelSearchController{
-  constructor(){
-
-  }
-
-}

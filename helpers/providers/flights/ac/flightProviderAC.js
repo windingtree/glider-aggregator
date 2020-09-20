@@ -1,4 +1,4 @@
-const FlightProviderNDCCommon = require('../ndc/flightProviderNDCCommon');
+const FlightProvider = require('../../flightProvider');
 const { flightSearchRQ, offerPriceRQ, createOrderRQ, fulfillOrderRQ, retrieveSeatMapRQ } = require('./ndcClientAC');
 const { createFlightSearchRequest, createRetrieveSeatmapRequest, createPriceOffersRequest, createOrderCreateRequest, createFulfillOrderRequest } = require('./requestResponseConverters');
 const { processFlightSearchResponse, processSeatmapResponse, processOfferPriceResponse, processOrderCreateResponse, processOrderFulfillmentResponse } = require('./requestResponseConverters');
@@ -35,7 +35,7 @@ const {
   FaultsTransformTemplate_AC: FulfillFaultsTransformTemplate_AC,
 } = require('./camaroTemplates/fulfillOrder');
 
-module.exports = class FlightProviderAC extends FlightProviderNDCCommon {
+module.exports = class FlightProviderAC extends FlightProvider {
   constructor () {
     super();
   }

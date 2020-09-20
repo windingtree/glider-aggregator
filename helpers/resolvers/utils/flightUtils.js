@@ -115,6 +115,10 @@ module.exports.selectProvider = (origin, destination) => {
       provider: '1A',
       destinations: caDestinations,
     },
+    {
+      provider: 'AC',
+      destinations: caDestinations,
+    },
     /*    {
           provider: 'AC',
           destinations: caDestinations,
