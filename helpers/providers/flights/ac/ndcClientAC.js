@@ -1,6 +1,6 @@
 const { airCanadaConfig } = require('../../../../config');
-const { webserviceDefinition } = require('../../../ndcUtils/ndcClient');
-const NDCCLient = require('../../../ndcUtils/ndcClient').NDCCLient;
+const { webserviceDefinition } = require('../../../webservice/webserviceClient');
+const WebserviceClient = require('../../../webservice/webserviceClient').WebserviceClient;
 
 const WEBSERVICES = {
   FLIGHTS_SEARCH: 'FLIGHTS_SEARCH',
@@ -9,42 +9,45 @@ const WEBSERVICES = {
   CREATE_ORDER: 'CREATE_ORDER',
   ORDER_FULFILL: 'CREATE_ORDER',
 };
-
+const customHeaders = {
+  api_key: airCanadaConfig.apiKey,
+  'X-apiKey': airCanadaConfig.apiKey,
+};
 const WEBSERVICES_CONFIG = [
-  webserviceDefinition(WEBSERVICES.FLIGHTS_SEARCH, `${airCanadaConfig.baseUrl}/AirShopping`, undefined, airCanadaConfig.apiKey),
-  webserviceDefinition(WEBSERVICES.SEATMAP_RETRIEVE, `${airCanadaConfig.baseUrlPci}/SeatAvailability`, undefined, airCanadaConfig.apiKey),
-  webserviceDefinition(WEBSERVICES.PRICE_OFFER, `${airCanadaConfig.baseUrl}/OfferPrice`, undefined, airCanadaConfig.apiKey),
-  webserviceDefinition(WEBSERVICES.CREATE_ORDER, `${airCanadaConfig.baseUrlPci}/OrderCreate`, undefined, airCanadaConfig.apiKey),
-  webserviceDefinition(WEBSERVICES.ORDER_FULFILL, `${airCanadaConfig.baseUrlPci}/OrderCreate`, undefined, airCanadaConfig.apiKey),
+  webserviceDefinition(WEBSERVICES.FLIGHTS_SEARCH, `${airCanadaConfig.baseUrl}/AirShopping`, undefined, customHeaders),
+  webserviceDefinition(WEBSERVICES.SEATMAP_RETRIEVE, `${airCanadaConfig.baseUrlPci}/SeatAvailability`, undefined, customHeaders),
+  webserviceDefinition(WEBSERVICES.PRICE_OFFER, `${airCanadaConfig.baseUrl}/OfferPrice`, undefined, customHeaders),
+  webserviceDefinition(WEBSERVICES.CREATE_ORDER, `${airCanadaConfig.baseUrlPci}/OrderCreate`, undefined, customHeaders),
+  webserviceDefinition(WEBSERVICES.ORDER_FULFILL, `${airCanadaConfig.baseUrlPci}/OrderCreate`, undefined, customHeaders),
 ];
 
-let ndcClient;
+let wbsClient;
 
-const getNdcClient = () => {
-  if (!ndcClient) {
-    ndcClient = new NDCCLient(WEBSERVICES_CONFIG);
+const getWbsClient = () => {
+  if (!wbsClient) {
+    wbsClient = new WebserviceClient(WEBSERVICES_CONFIG);
   }
-  return ndcClient;
+  return wbsClient;
 };
 
 const flightSearchRQ = async (request) => {
-  return await getNdcClient().ndcRequest(WEBSERVICES.FLIGHTS_SEARCH, request);
+  return await getWbsClient().wbsRequest(WEBSERVICES.FLIGHTS_SEARCH, request);
 };
 
 const retrieveSeatMapRQ = async (request) => {
-  return await getNdcClient().ndcRequest(WEBSERVICES.SEATMAP_RETRIEVE, request);
+  return await getWbsClient().wbsRequest(WEBSERVICES.SEATMAP_RETRIEVE, request);
 };
 
 const offerPriceRQ = async (request) => {
-  return await getNdcClient().ndcRequest(WEBSERVICES.PRICE_OFFER, request);
+  return await getWbsClient().wbsRequest(WEBSERVICES.PRICE_OFFER, request);
 };
 
 const createOrderRQ = async (request) => {
-  return await getNdcClient().ndcRequest(WEBSERVICES.CREATE_ORDER, request);
+  return await getWbsClient().wbsRequest(WEBSERVICES.CREATE_ORDER, request);
 };
 
 const fulfillOrderRQ = async (request) => {
-  return await getNdcClient().ndcRequest(WEBSERVICES.ORDER_FULFILL, request);
+  return await getWbsClient().wbsRequest(WEBSERVICES.ORDER_FULFILL, request);
 };
 
 module.exports = {

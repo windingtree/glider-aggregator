@@ -61,7 +61,7 @@ const amadeusEndpointRequest = async (ndcBody, action) => {
     logRQRS(ndcBody, `${action}-response`);
   } catch (error) {
     logRQRS(error, `${action}-error`);
-    let errorMessage = 'Unknown error occured'; //default error message
+    let errorMessage = 'Unknown error occurred'; //default error message
     let errors = _.get(error, 'response.result.errors');
     if (errors)
       errorMessage = errors.map(err => err.title);

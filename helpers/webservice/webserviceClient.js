@@ -2,17 +2,18 @@ const axios = require('axios');
 const { logRQRS } = require('../log/logRQ');
 const GliderError = require('../error');
 
-const webserviceDefinition = (webserviceName, url, soapAction, apiKey, timeout) => {
+const webserviceDefinition = (webserviceName, url, soapAction, customHeaders = {}, timeout = -1) => {
+
   return {
     webserviceName: webserviceName,
     url: url,
     soapAction: soapAction,
-    apiKey: apiKey,
+    customHeaders: customHeaders,
     timeout: timeout,
   };
 };
 
-class NDCCLient {
+class WebserviceClient {
   constructor (webservices) {
     this._webservices = webservices;
   }
@@ -25,19 +26,19 @@ class NDCCLient {
   };
 
   _createHeaders (wbsConfig) {
-    const { soapAction: SOAPAction, apiKey } = wbsConfig;
-    return {
+    const { soapAction: SOAPAction, customHeaders } = wbsConfig;
+    let commonHeaders = {
       'Content-Type': 'application/xml;charset=UTF-8',
       'Accept-Encoding': 'gzip,deflate',
       'Cache-Control': 'no-cache',
       'Connection': 'keep-alive',
-      'api_key': apiKey,
-      'X-apiKey': apiKey,
       ...(SOAPAction ? { SOAPAction } : {}),
     };
+    let headers = Object.assign({}, commonHeaders, customHeaders);
+    return headers;
   }
 
-  async ndcRequest (webserviceName, ndcBody) {
+  async wbsRequest (webserviceName, ndcBody) {
     const wbsConfig = this._getWebserviceConfiguration(webserviceName);
     const { url } = wbsConfig;
 
@@ -69,5 +70,5 @@ class NDCCLient {
 
 module.exports = {
   webserviceDefinition: webserviceDefinition,
-  NDCCLient: NDCCLient,
+  WebserviceClient: WebserviceClient,
 };

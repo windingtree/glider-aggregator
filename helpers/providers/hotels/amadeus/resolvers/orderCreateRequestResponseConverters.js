@@ -41,10 +41,6 @@ const createOrderRequest = (offer, passengers, card) => {
 };
 
 
-module.exports = { createOrderRequest: createOrderRequest };
-
-
-
 //response
 const processOrderResponse = (response) => {
   const { data } = response;
@@ -74,6 +70,6 @@ const processOrderResponse = (response) => {
 
 
 module.exports = {
-  processOrderResponse: processOrderResponse,
+  processOrderResponse, createOrderRequest,
 };
 
