@@ -139,6 +139,13 @@
         "INFURA_PROJECT_ID": "@infura_project_id",
 
         "ETHEREUM_NETWORK": "@staging.ethereum_network",
-        "PRODUCTION_ETHEREUM_NETWORK": "@production.ethereum_network"
+        "PRODUCTION_ETHEREUM_NETWORK": "@production.ethereum_network",
+
+        "AMADEUS_CLIENT_ID": "@staging.glider-aggregator.amadeus_client_id",
+        "AMADEUS_CLIENT_SECRET": "@staging.glider-aggregator.amadeus_client_secret",
+        "AMADEUS_ENVIRONMENT": "@staging.glider-aggregator.amadeus_environment",
+        "AMADEUS_QUEUE_OFFICE_ID": "@staging.glider-aggregator.amadeus_queue_office_id",
+        "AMADEUS_OWNERSHIP_OFFICE_ID": "@staging.glider-aggregator.amadeus_ownership_office_id"
+
     }
 }
