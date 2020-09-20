@@ -1,26 +1,7 @@
 // const format = require('date-fns/format');
-const { getCardCode } = require('./utils/cardUtils');
-const { getACSystemId } = require('../soapTemplates/utils/xmlUtils');
+const { getCardCode } = require('../../../../transformInputData/utils/cardUtils');
+const { getACSystemId } = require('../../../../soapTemplates/utils/xmlUtils');
 
-/* istanbul ignore next */
-module.exports.mapNdcRequestData_AF = (config, { orderItems, passengerReferences }, { orderId }) => ({
-  ...(JSON.parse(JSON.stringify(config))),
-  requestTime: (new Date(Date.now())).toISOString(),
-  Query: {
-    TicketDocInfo: {
-      OrderReference: {
-        OrderID: {
-          id: orderId,
-          Owner: config.airFranceConfig.AirlineID
-        },
-        OrderItemIDs: orderItems,
-      },
-    },
-    DataLists: {
-      PassengerList: passengerReferences,
-    }
-  },
-});
 
 module.exports.mapNdcRequestHeaderData_AC = guaranteeClaim => ({
   Function: 'OrderChangeRQ',

@@ -112,7 +112,7 @@ module.exports.selectProvider = (origin, destination) => {
 
   const sdMapping = [
     {
-      provider: '1A',
+      provider: 'AC',
       destinations: caDestinations,
     },
     /*    {

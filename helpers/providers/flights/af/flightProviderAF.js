@@ -17,6 +17,16 @@ const {
   ErrorsTransformTemplate_AF:OrderCreateErrorsTransformTemplate_AF,
 } = require('./camaroTemplates/provideOrderCreate');
 
+
+//fulfill order templates
+const { mapNdcRequestData_AF: mapNdcFulfillRequestData_AF } = require('./transformInputData/fulfillOrder');
+const { fulfillOrderTemplate_AF } = require('./soapTemplates/fulfillOrder');
+const {
+  ErrorsTransformTemplate_AF: FulfillErrorsTransformTemplate_AF,
+  fulfillOrderTransformTemplate_AF,
+} = require('./camaroTemplates/fulfillOrder');
+
+
 const { reMapPassengersInRequestBody } = require('../../../resolvers/utils/flightUtils');
 
 module.exports = class FlightProviderAF extends FlightProviderNDCCommon {
@@ -25,7 +35,6 @@ module.exports = class FlightProviderAF extends FlightProviderNDCCommon {
   }
 
   async flightSearch (itinerary, passengers) {
-    console.log('AF searching.....');
     let ndcRequestData;
     let providerUrl;
     let apiKey;
@@ -50,7 +59,7 @@ module.exports = class FlightProviderAF extends FlightProviderNDCCommon {
 
   // eslint-disable-next-line no-unused-vars
   async retrieveSeatmaps (offers) {
-    throw new Error('This method must be implemented in subclass');
+    throw new Error('Not implemented');
   }
   // eslint-disable-next-line no-unused-vars
   async orderCreate (offer, requestBody, guaranteeClaim){
@@ -59,10 +68,6 @@ module.exports = class FlightProviderAF extends FlightProviderNDCCommon {
     let apiKey;
     let SOAPAction;
     let ndcBody;
-    let responseTransformTemplate;
-    let errorsTransformTemplate;
-    let faultsTransformTemplate;
-
 
     requestBody = reMapPassengersInRequestBody(offer, requestBody);
     ndcRequestData = mapNdcOrderCreateRequestData_AF(airFranceConfig, requestBody);
@@ -70,9 +75,6 @@ module.exports = class FlightProviderAF extends FlightProviderNDCCommon {
     apiKey = airFranceConfig.apiKey;
     SOAPAction = '"http://www.af-klm.com/services/passenger/ProvideOrderCreate/provideOrderCreate"';
     ndcBody = orderCreateRequestTemplate_AF(ndcRequestData);
-    responseTransformTemplate = provideOrderCreateTransformTemplate_AF;
-    errorsTransformTemplate = OrderCreateErrorsTransformTemplate_AF;
-    faultsTransformTemplate = null;
     const { response, error } = await ndcRequest(providerUrl, apiKey, ndcBody, SOAPAction);
     if (error && !error.isAxiosError) {
 
@@ -81,16 +83,11 @@ module.exports = class FlightProviderAF extends FlightProviderNDCCommon {
         502,
       );
     }
-    let faultsResult;
-    if (faultsTransformTemplate) {
-      faultsResult = await transform(response.data, faultsTransformTemplate);
-    }
     // Attempt to parse as a an error
-    const errorsResult = await transform(response.data, errorsTransformTemplate);
+    const errorsResult = await transform(response.data, OrderCreateErrorsTransformTemplate_AF);
 
     // Because of two types of errors can be returned: NDCMSG_Fault and Errors
     const combinedErrors = [
-      ...(faultsResult ? faultsResult.errors : []),
       ...errorsResult.errors,
     ];
 
@@ -107,13 +104,51 @@ module.exports = class FlightProviderAF extends FlightProviderNDCCommon {
       );
     }
     // Otherwise parse as a result
-    const createResults = await transform(response.data, responseTransformTemplate);
-    return createResults;
-
-
+    return await transform(response.data, provideOrderCreateTransformTemplate_AF);
   }
 
+  // eslint-disable-next-line no-unused-vars
+  async orderFulfill (orderId, order, body, guaranteeClaim){
+    let ndcRequestData;
+    let providerUrl;
+    let apiKey;
+    let SOAPAction;
+    let ndcBody;
+    ndcRequestData = mapNdcFulfillRequestData_AF(airFranceConfig, body, orderId);
+    providerUrl = 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001489v01/EXT';
+    apiKey = airFranceConfig.apiKey;
+    SOAPAction = '"http://www.af-klm.com/services/passenger/AirDocIssue/airDocIssue"';
+    ndcBody = fulfillOrderTemplate_AF(ndcRequestData);
+    const { response, error } = await ndcRequest(providerUrl, apiKey, ndcBody, SOAPAction);
 
+    if (error && !error.isAxiosError) {
+      throw new GliderError(response.error.message, 502);
+    }
+
+    // Attempt to parse as a an error
+    // await ready();
+    const errorsResult = await transform(response.data, FulfillErrorsTransformTemplate_AF);
+
+    // Because of two types of errors can be returned: NDCMSG_Fault and Errors
+    const combinedErrors = [
+      ...errorsResult.errors,
+    ];
+
+    // If an error is found, stop here
+    if (combinedErrors.length) {
+      throw new GliderError(
+        combinedErrors.map(e => e.message).join('; '),
+        502,
+      );
+    } else if (error) {
+      throw new GliderError(
+        error.message,
+        502,
+      );
+    }
+    // await ready();
+    return await transform(response.data, fulfillOrderTransformTemplate_AF);
+  }
 
   getProviderID () {
     return 'AC';

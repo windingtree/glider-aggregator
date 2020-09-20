@@ -1,18 +1,19 @@
+const GliderError = require('../../../error');
+const FlightProvider = require('../../flightProvider');
 
 const { createRequest, transformAmadeusResponse } = require('./resolvers');
 const { callProviderRest, transformAmadeusFault, REQUESTS } = require('./amadeusUtils');
 const { assertAmadeusFault } = require('./errors');
+
 const { offerPriceResponseProcessor } = require('./resolvers/offerPriceResponseProcessor');
 const { offerPriceRequestTemplate_1A } = require('./resolvers/offerPriceRequestTemplate');
+
 const { orderCreateResponseProcessor } = require('./resolvers/orderCreateResponseProcessor');
-const GliderError = require('../../../error');
 const { orderCreateRequestTemplate_1A } = require('./resolvers/orderCreateRequestTemplate');
 
 const { seatmapResponseProcessor } = require('./resolvers/seatmapResponseProcessor');
 const { seatmapRequestTemplate } = require('./resolvers/seatmapRequestTemplate');
 
-
-const FlightProvider = require('../../flightProvider');
 
 module.exports = class FlightProvider1A extends FlightProvider {
   constructor () {
@@ -32,8 +33,7 @@ module.exports = class FlightProvider1A extends FlightProvider {
     let ndcBody = seatmapRequestTemplate(offers);
     const { response, error } = await callProviderRest(this.getProviderID(), '', '', ndcBody, 'SEATMAP', '');
     assertAmadeusFault(response, error);
-    let seatMapResult = seatmapResponseProcessor(response.result, offers);
-    return seatMapResult;
+    return seatmapResponseProcessor(response.result, offers);
   }
 
   async priceOffers (body, offers) {
@@ -41,8 +41,7 @@ module.exports = class FlightProvider1A extends FlightProvider {
     const { response, error } = await callProviderRest('', '', '', priceRQ, 'PRICEOFFERS');
     //TODO fix error handling
     assertAmadeusFault(response, error);
-    let offerResult = offerPriceResponseProcessor(response.result);
-    return offerResult;
+    return offerPriceResponseProcessor(response.result);
   }
 
   async orderCreate (offer, requestBody, guaranteeClaim) {
@@ -66,8 +65,12 @@ module.exports = class FlightProvider1A extends FlightProvider {
       );
     }
     // Otherwise parse as a result
-    const createResults = orderCreateResponseProcessor(response.result);
-    return createResults;
+    return orderCreateResponseProcessor(response.result);
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  async orderFulfill (orderId, order, body, guaranteeClaim){
+    throw new Error('Not implemented');
   }
 
   getProviderID () {

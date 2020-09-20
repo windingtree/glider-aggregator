@@ -51,6 +51,18 @@ const {
   ErrorsTransformTemplate_AC: SeatMapErrorsTransformTemplate_AC,
 } = require('./camaroTemplates/provideSeatAvailability');
 
+//fulfillment templates
+const {
+  mapNdcRequestHeaderData_AC: mapNdcFulfillRequestHeaderData_AC,
+  mapNdcRequestData_AC: mapNdcFulfillRequestData_AC,
+} = require('./transformInputData/fulfillOrder');
+const { fulfillOrderTemplate_AC } = require('./soapTemplates/fulfillOrder');
+const {
+  ErrorsTransformTemplate_AC: FulfillErrorsTransformTemplate_AC,
+  FaultsTransformTemplate_AC: FulfillFaultsTransformTemplate_AC,
+  fulfillOrderTransformTemplate_AC,
+} = require('./camaroTemplates/fulfillOrder');
+
 
 const assertErrors = require('../../../resolvers/utils/assertResponseErrors');
 module.exports = class FlightProviderAC extends FlightProviderNDCCommon {
@@ -94,14 +106,12 @@ module.exports = class FlightProviderAC extends FlightProviderNDCCommon {
       requestDocumentId = 'Return';
     }
     ndcRequestData = mapNdcSeatmapRequestData_AC(airCanadaConfig, offers, requestDocumentId);
-    // console.log('@@@', JSON.stringify(ndcRequestData, null, 2));
     providerUrl = `${airCanadaConfig.baseUrlPci}/SeatAvailability`;
     apiKey = airCanadaConfig.apiKey;
     ndcBody = seatAvailabilityRequestTemplate_AC(ndcRequestData);
     const { response, error } = await ndcRequest(providerUrl, apiKey, ndcBody);
     await assertErrors(error, response, SeatMapFaultsTransformTemplate_AC, SeatMapErrorsTransformTemplate_AC);
-    let seatMapResult = await processSeatmapResponse(response.data, offers, provideSeatAvailabilityTransformTemplate_AC);
-    return seatMapResult;
+    return await processSeatmapResponse(response.data, offers, provideSeatAvailabilityTransformTemplate_AC);
   }
 
   async priceOffers (body, offers) {
@@ -110,22 +120,15 @@ module.exports = class FlightProviderAC extends FlightProviderNDCCommon {
     let providerUrl;
     let apiKey;
     let ndcBody;
-    let responseTransformTemplate;
-    let errorsTransformTemplate;
-    let faultsTransformTemplate;
     // Check the type of request: OneWay or Return
     let requestDocumentId = (offers.length === 0) ? 'OneWay' : 'Return';
     ndcRequestData = mapNdcOfferPriceRequestData_AC(airCanadaConfig, offers, body, requestDocumentId);
     providerUrl = `${airCanadaConfig.baseUrl}/OfferPrice`;
     apiKey = airCanadaConfig.apiKey;
     ndcBody = offerPriceRequestTemplate_AC(ndcRequestData);
-    responseTransformTemplate = provideOfferPriceTransformTemplate_AC;
-    errorsTransformTemplate = OfferPriceErrorsTransformTemplate_AC;
-    faultsTransformTemplate = OfferPriceFaultsTransformTemplate_AC;
     const { response, error } = await ndcRequest(providerUrl, apiKey, ndcBody);
-    await assertErrors(error, response, faultsTransformTemplate, errorsTransformTemplate);
-    let offerResult = await processOfferPriceResponse(response.data, responseTransformTemplate);
-    return offerResult;
+    await assertErrors(error, response, OfferPriceFaultsTransformTemplate_AC, OfferPriceErrorsTransformTemplate_AC);
+    return await processOfferPriceResponse(response.data, provideOfferPriceTransformTemplate_AC);
   };
 
   async orderCreate (offer, requestBody, guaranteeClaim) {
@@ -136,9 +139,6 @@ module.exports = class FlightProviderAC extends FlightProviderNDCCommon {
     let apiKey;
     let SOAPAction;
     let ndcBody;
-    let responseTransformTemplate;
-    let errorsTransformTemplate;
-    let faultsTransformTemplate;
 
     // Check the type of request: OneWay or Return
     let requestDocumentId = 'OneWay';
@@ -157,24 +157,16 @@ module.exports = class FlightProviderAC extends FlightProviderNDCCommon {
     providerUrl = `${airCanadaConfig.baseUrlPci}/OrderCreate`;
     apiKey = airCanadaConfig.apiKey;
     ndcBody = orderCreateRequestTemplate_AC(ndcRequestHeaderData, ndcRequestData);
-
-    responseTransformTemplate = provideOrderCreateTransformTemplate_AC;
-    errorsTransformTemplate = CreateOfferErrorsTransformTemplate_AC;
-    faultsTransformTemplate = CreateOfferFaultsTransformTemplate_AC;
     const { response, error } = await ndcRequest(providerUrl, apiKey, ndcBody, SOAPAction);
     if (error && !error.isAxiosError) {
-
       throw new GliderError(
         error.message,
         502,
       );
     }
-    let faultsResult;
-    if (faultsTransformTemplate) {
-      faultsResult = await transform(response.data, faultsTransformTemplate);
-    }
+    let faultsResult = await transform(response.data, CreateOfferFaultsTransformTemplate_AC);
     // Attempt to parse as a an error
-    const errorsResult = await transform(response.data, errorsTransformTemplate);
+    const errorsResult = await transform(response.data, CreateOfferErrorsTransformTemplate_AC);
 
     // Because of two types of errors can be returned: NDCMSG_Fault and Errors
     const combinedErrors = [
@@ -195,10 +187,54 @@ module.exports = class FlightProviderAC extends FlightProviderNDCCommon {
       );
     }
     // Otherwise parse as a result
-    const createResults = await transform(response.data, responseTransformTemplate);
-    return createResults;
+    return await transform(response.data, provideOrderCreateTransformTemplate_AC);
   }
 
+  async orderFulfill (orderId, order, body, guaranteeClaim){
+    let ndcRequestHeaderData;
+    let ndcRequestData;
+    let providerUrl;
+    let apiKey;
+    let ndcBody;
+    // guaranteeClaim = await claimGuaranteeWithCard(body.guaranteeId);
+    ndcRequestHeaderData = mapNdcFulfillRequestHeaderData_AC(guaranteeClaim);
+    ndcRequestData = mapNdcFulfillRequestData_AC(airCanadaConfig, order, body, guaranteeClaim);
+    providerUrl = `${airCanadaConfig.baseUrlPci}/OrderCreate`;
+    apiKey = airCanadaConfig.apiKey;
+    ndcBody = fulfillOrderTemplate_AC(ndcRequestHeaderData, ndcRequestData);
+    const { response, error } = await ndcRequest(providerUrl, apiKey, ndcBody, undefined);
+
+    if (error && !error.isAxiosError) {
+      throw new GliderError(response.error.message, 502);
+    }
+
+    let faultsResult  = await transform(response.data, FulfillFaultsTransformTemplate_AC);
+    // Attempt to parse as a an error
+    // await ready();
+    const errorsResult = await transform(response.data, FulfillErrorsTransformTemplate_AC);
+
+    // Because of two types of errors can be returned: NDCMSG_Fault and Errors
+    const combinedErrors = [
+      ...(faultsResult ? faultsResult.errors : []),
+      ...errorsResult.errors,
+    ];
+
+    // If an error is found, stop here
+    if (combinedErrors.length) {
+      throw new GliderError(
+        combinedErrors.map(e => e.message).join('; '),
+        502,
+      );
+    } else if (error) {
+      throw new GliderError(
+        error.message,
+        502,
+      );
+    }
+    // await ready();
+    return await transform(response.data, fulfillOrderTransformTemplate_AC);
+
+  }
 
   getProviderID () {
     return 'AC';

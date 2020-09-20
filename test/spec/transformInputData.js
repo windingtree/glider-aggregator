@@ -22,7 +22,7 @@ const {
 } = require('../../helpers/providers/flights/ac/transformInputData/seatAvailability');
 const {
   mapNdcRequestData_AC: mapNdcRequestData_AC_fulfillOrder
-} = require('../../helpers/transformInputData/fulfillOrder');
+} = require('../../helpers/providers/flights/ac/transformInputData/fulfillOrder');
 const {
   getACSystemIdOrderCreateRQ,
   mapNdcRequestHeaderData_AC,
@@ -332,7 +332,7 @@ describe('transformInputData', () => {
       (result.OTA_HotelAvailRQ).should.to.have.property('Version').to.match(regex.dotVersioning);
       (result.OTA_HotelAvailRQ).should.to.have.property('PrimaryLangID').to.match(regex.langCode);
       (result.OTA_HotelAvailRQ).should.to.have.property('AvailRatesOnly').to.be.a('boolean');
-      (result.OTA_HotelAvailRQ).should.to.have.property('RequestedCurrency').to.match(regex.currencyCode);;
+      (result.OTA_HotelAvailRQ).should.to.have.property('RequestedCurrency').to.match(regex.currencyCode);
       (result.OTA_HotelAvailRQ).should.to.have.property('Type').to.be.a('string');
       (result.OTA_HotelAvailRQ).should.to.have.property('ID').to.be.a('string');
       (result.OTA_HotelAvailRQ).should.to.have.property('xmlns').to.equal('http://www.opentravel.org/OTA/2003/05');

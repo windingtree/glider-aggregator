@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { logRQRS } = require('../../../amadeus/logRQ');
 const { transform } = require('camaro');
 
 const transformNDCFault = (response, template) => {
@@ -12,8 +13,10 @@ const transformNdcResponse = (response, templates) => {
 
 const ndcRequest = async (apiEndpoint, apiKey, ndcBody, SOAPAction) => {
   let response;
-  console.log('will make a call to NDC endpoint:', apiEndpoint);
+  let urlParts = apiEndpoint.split('/');
+  let action=urlParts[urlParts.length-1];
   try {
+    logRQRS(ndcBody, `${action} - request`);
     // Request connection timeouts can be handled via CancelToken only
     const timeout = 60 * 1000; // 60 sec
     const source = axios.CancelToken.source();
@@ -38,14 +41,14 @@ const ndcRequest = async (apiEndpoint, apiKey, ndcBody, SOAPAction) => {
       },
     );
     clearTimeout(connectionTimeout);
+    logRQRS(response.data, `${action} - response`);
   } catch (error) {
-    console.log('Got error from NDC endpoint', error);
+    logRQRS(error, `${action} - response error`);
     return {
       response: error.response,
       error,
     };
   }
-  console.log('No errors from NDC endpoint');
   return {
     response,
   };

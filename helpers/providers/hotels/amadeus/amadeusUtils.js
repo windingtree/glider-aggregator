@@ -1,4 +1,3 @@
-
 const Amadeus = require('amadeus');
 const { amadeusGdsConfig } = require('../../../../config');
 const { GliderError } = require('../../../error');
@@ -17,7 +16,6 @@ const getAmadeusClient = () => {
 
   return amadeusClient;
 };
-
 
 const amadeusRequest = async (request, action) => {
   let response;

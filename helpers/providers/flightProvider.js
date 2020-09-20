@@ -27,6 +27,11 @@ module.exports = class FlightProvider {
     throw new Error('This method must be implemented in subclass');
   }
 
+  // eslint-disable-next-line no-unused-vars
+  async orderFulfill (orderId, order, body, guaranteeClaim){
+    throw new Error('This method must be implemented in subclass');
+  }
+
   getProviderID (){
     throw new Error('This method must be implemented in subclass');
   }
