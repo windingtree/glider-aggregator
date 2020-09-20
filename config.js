@@ -132,11 +132,11 @@ const airCanadaConfig = {
   }
 };
 const amadeusGdsConfig = {  //TEST
-  clientId: getConfigKey('GDS1A_CLIENT_ID') ,
-  clientSecret: getConfigKey('GDS1A_CLIENT_SECRET'),
-  hostname: getConfigKey('GDS1A_ENVIRONMENT') || 'test',
-  queueingOfficeId: getConfigKey('GDS1A_QUEUE_OFFICE_ID') ,
-  ownerOfficeId: getConfigKey('GDS1A_OWNERSHIP_OFFICE_ID'),
+  clientId: getConfigKey('AMADEUS_CLIENT_ID') ,
+  clientSecret: getConfigKey('AMADEUS_CLIENT_SECRET'),
+  hostname: getConfigKey('AMADEUS_ENVIRONMENT') || 'test',
+  queueingOfficeId: getConfigKey('AMADEUS_QUEUE_OFFICE_ID') ,
+  ownerOfficeId: getConfigKey('AMADEUS_OWNERSHIP_OFFICE_ID'),
 };
 
 const erevmax = {

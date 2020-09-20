@@ -59,7 +59,7 @@ const createOrderCreateRequest = (order, body) => {
     },
   };
   //caution - during testing it was failing if request.data.ownerOfficeId was specified!
-  if(config.ownerOfficeId){
+  if(config.ownerOfficeId && config.ownerOfficeId.length>0){
     console.log(`ownerOfficeId is specified - using that to create a booking:${config.ownerOfficeId}`);
     request.data.ownerOfficeId=config.ownerOfficeId;
   }
