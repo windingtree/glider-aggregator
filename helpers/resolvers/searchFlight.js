@@ -408,7 +408,7 @@ module.exports.searchFlight = async (body) => {
     responses.map(({ provider, error }) => {
       if (error) {
         return {
-          provider,
+          provider:provider,
           error: error.message,
         };
       } else {

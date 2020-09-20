@@ -16,8 +16,7 @@ module.exports = class HotelProvider {
     } else {
       throw new GliderError('A location area of type rectangle, circle or polygon is required', 400);
     }
-    const { response, errors } = results;
-    return { provider: this.getProviderID(), response: response, errors: errors };
+    return results;
   }
 
   // eslint-disable-next-line no-unused-vars

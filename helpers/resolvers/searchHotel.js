@@ -10,19 +10,29 @@ module.exports.searchHotel = async (body) => {
   const { accommodation, passengers: guests } = body;
   let context = {};
 
-  let providerHandlers = createHotelProviders(['1A', 'revmax']);
+  let providerHandlers = createHotelProviders(['revmax','1A']);
 
   //search for hotels with each provider and collect responses (each response is having following structure: {provider, response, errors}
-  let responses = await Promise.all(providerHandlers.map(providerImpl => {
-    return providerImpl.search(context, accommodation, guests);
+  let responses = await Promise.all(providerHandlers.map(async providerImpl => {
+    let result = {
+      provider: providerImpl.getProviderID(),
+      response: undefined,
+      error: undefined,
+    };
+    try {
+      result.response = await providerImpl.search(context, accommodation, guests);
+    } catch (error) {
+      result.error = error;
+    }
+    return result;
   }));
 
   // Check responses for errors
-  const responseErrors = responses.map(({ provider, errors }) => {
-    if (errors && errors.length) {
+  const responseErrors = responses.map(({ provider, error }) => {
+    if (error) {
       return {
-        provider,
-        error: errors.map(e => e.message).join('; '),
+        provider:provider,
+        error: error.message
       };
     } else {
       return null;
@@ -34,10 +44,7 @@ module.exports.searchHotel = async (body) => {
 
   if (responseErrors.length === providerHandlers.length) {
     // If all providers returned errors then send error with API response
-    throw new GliderError(
-      responseErrors.map(e => `Provider "${e.provider}": ${e.error}`).join('; '),
-      502,
-    );
+    throw new GliderError(responseErrors.map(e => `Provider [${e.provider}]: ${e.error}`).join('; '),502);
   } else if (responseErrors.length > 0) {
     // If at least one provider returned offers
     // then pul all errors to the warnings section

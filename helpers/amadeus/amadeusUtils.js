@@ -1,5 +1,5 @@
 const { logRQRS } = require('../log/logRQ');
-
+const _ = require('lodash')
 const Amadeus = require('amadeus');
 const { amadeusGdsConfig } = require('../../config');
 const GliderError = require('../error');
@@ -52,19 +52,20 @@ const amadeusEndpointRequest = async (ndcBody, action) => {
         response = await amadeusClient.shopping.seatmaps.post(requestStr);
         break;
       case REQUESTS.HOTEL_SEARCH:
-        response = await amadeusClient.shopping.hotelOffers.get(requestStr);
+        response = await amadeusClient.shopping.hotelOffers.get(ndcBody);
         break;
       case REQUESTS.HOTEL_ORDER_CREATE:
         response = await amadeusClient.booking.hotelBookings.post(requestStr);
         break;
-      default:
-        throw new GliderError(`Unknown webservice call:${action}`, 500);
     }
     logRQRS(ndcBody, `${action}-response`);
   } catch (error) {
     logRQRS(error, `${action}-error`);
-    //extract list of errors from response (or return default - unknown error)
-    throw new GliderError(error, 500);
+    let errorMessage = 'Unknown error occured'; //default error message
+    let errors = _.get(error,'response.result.errors');
+    if(errors)
+      errorMessage = errors.map(err=>err.title);
+    throw new GliderError(errorMessage, 500);
   }
   return response;
 };

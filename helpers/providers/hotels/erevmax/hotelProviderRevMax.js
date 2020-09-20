@@ -18,9 +18,7 @@ const { hotelAvailTransformTemplate, errorsTransformTemplate } = require('./cama
 //order create templates
 const responseTemplate = require('./camaroTemplates/hotelResNotifRS').otaHotelResNotifRSTemplate;
 const hotelResNotif = require('./transformInputData/hotelResNotif');
-const {
-  mapHotelResNotifSoap,
-} = require('./camaroTemplates/ota/otaHotelResNotifRQ');
+const { mapHotelResNotifSoap } = require('./camaroTemplates/ota/otaHotelResNotifRQ');
 
 
 module.exports = class HotelProviderRevMax extends HotelProvider {
@@ -46,10 +44,7 @@ module.exports = class HotelProviderRevMax extends HotelProvider {
 
   async retrieveHotelsAvailability (context, hotels, departure, arrival, guests) {
     if (hotels.total === 0) {
-      throw new GliderError(
-        'No Hotels were found with the provided criteria',
-        404,
-      );
+      throw new GliderError('No Hotels were found with the provided criteria',404);
     }
     const hotelCodes = hotels.records.map(r => r.ref);
     if (!hotelCodes.length) {
@@ -76,8 +71,8 @@ module.exports = class HotelProviderRevMax extends HotelProvider {
     }
 
     // Go through the Room Stays to build the offers and gather the room types
-    var accommodationRoomTypes = {};
-    var offers = {};
+    const accommodationRoomTypes = {};
+    const offers = {};
     let offersToStore = {};
     searchResults._roomStays_.forEach(roomStay => {
 
@@ -183,7 +178,7 @@ module.exports = class HotelProviderRevMax extends HotelProvider {
       /* istanbul ignore next */
       await offer.offerManager.storeOffers(offersToStore);
     }
-    return { response: searchResults, errors: errors && errors.length ? errors : [] };
+    return searchResults;
   }
 
   async createOrder (offer, passengers, card) {
@@ -214,7 +209,6 @@ module.exports = class HotelProviderRevMax extends HotelProvider {
         502,
       );
     }
-
 
     // Transform the XML answer
     const responseData = await transform(response.data, responseTemplate);
