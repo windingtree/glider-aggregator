@@ -1,4 +1,4 @@
-const { validateSearchCriteria } = require('../../../payload/validators/searchCriteriaValidator');
+const { validateSearchCriteria } = require('../../../helpers/payload/validators/searchCriteriaValidator');
 const { SearchCriteriaFixtures } = require('../../fixtures/testfixtures.test');
 const GliderError = require('../../../helpers/error');
 const assert = require('chai').assert;
