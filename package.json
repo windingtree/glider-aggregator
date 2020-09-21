@@ -27,7 +27,7 @@
     "coverage": "COVERAGE=true ./scripts/test.sh",
     "lint": "npx eslint test admin api decorators helpers",
     "now-build": "node ./scripts/build/now-build.js",
-    "build-schemas": "npx js-yaml ./public/wt-aggregator.yaml > ./payload/schemas/wt-aggregator-schema.json"
+    "build-schemas": "npx js-yaml ./public/wt-aggregator.yaml > helpers/payload/schemas/wt-aggregator-schema.json"
   },
   "dependencies": {
     "@elastic/elasticsearch": "7.8.0",

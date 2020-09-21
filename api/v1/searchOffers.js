@@ -3,7 +3,7 @@ const { basicDecorator } = require('../../decorators/basic');
 const { searchHotel } = require('../../helpers/resolvers/searchHotel');
 const { searchFlight } = require('../../helpers/resolvers/searchFlight');
 const { checkCallsTrustRequirements } = require('../../helpers/requirements/apiCallsLimits');
-const { validateSearchCriteria } = require('../../payload/validators');
+const { validateSearchCriteria } = require('../../helpers/payload/validators');
 module.exports = basicDecorator(async (req, res) => {
   let { body } = req;
   body = validateSearchCriteria(body);

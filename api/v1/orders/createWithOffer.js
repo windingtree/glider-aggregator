@@ -13,7 +13,7 @@ const {
 const hotelResolver = require('../../../helpers/resolvers/hotel/orderCreateWithOffer');
 const flightResolver = require('../../../helpers/resolvers/flight/orderCreateWithOffer');
 const { setOrderStatus, assertOrderStatus } = require('../../../helpers/resolvers/utils/offers');
-
+const { validateCreateOfferPayload } = require('../../../helpers/payload/validators');
 module.exports = basicDecorator(async (req, res) => {
   const requestBody = req.body;
 
@@ -23,25 +23,26 @@ module.exports = basicDecorator(async (req, res) => {
       400
     );
   }
+  validateCreateOfferPayload(requestBody);
 
   // Retrieve the offer
   const storedOffer = await offerManager.getOffer(requestBody.offerId);
 
   let originOffers = [];
-  
+
   // in case of not priced offer
   // there possible situation when storedOffer.extraData.originOffers is undefined
   if (storedOffer instanceof FlightOffer &&
     storedOffer.extraData &&
     storedOffer.extraData.originOffers) {
-    
+
     originOffers = await Promise.all(
       storedOffer.extraData.originOffers.map(
         offerId => offerManager.getOffer(offerId)
       )
     );
   }
-  
+
   const allOffers = [
     storedOffer,
     ...originOffers
@@ -59,7 +60,7 @@ module.exports = basicDecorator(async (req, res) => {
     if (requestBody.guaranteeId) {
       // Get the guarantee
       guarantee = await getGuarantee(requestBody.guaranteeId, storedOffer);
-    
+
       // Claim the guarantee
       guaranteeClaim = await claimGuaranteeWithCard(requestBody.guaranteeId);
     }
@@ -130,7 +131,7 @@ module.exports = basicDecorator(async (req, res) => {
             }
           );
       orderCreationResults.order.passengers = changedPassengers.passengers;
-      
+
       // Change passengers Ids in travelDocuments to internal values
       if (orderCreationResults.travelDocuments) {
         orderCreationResults.travelDocuments.etickets =
@@ -168,7 +169,7 @@ module.exports = basicDecorator(async (req, res) => {
             {}
           );
     }
-    
+
     await ordersManager.saveOrder(
       orderCreationResults.orderId,
       {

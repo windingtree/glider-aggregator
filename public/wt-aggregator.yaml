@@ -124,24 +124,24 @@ paths:
                           {
                             "polygon": [
                               [
-                                24.8963928,
-                                60.1749466
+                                  24.8963928,
+                                  60.1749466
                               ],
                               [
-                                24.9700356,
-                                60.1763126
+                                  24.9700356,
+                                  60.1763126
                               ],
                               [
-                                24.9720097,
-                                60.1475721
+                                  24.9720097,
+                                  60.1475721
                               ],
                               [
-                                24.8987961,
-                                60.1442394
+                                  24.8987961,
+                                  60.1442394
                               ],
                               [
-                                24.896307,
-                                60.1748612
+                                  24.896307,
+                                  60.1748612
                               ]
                             ]
                           },
@@ -225,10 +225,7 @@ paths:
         content:
           application/json:
             schema:
-              description: An array of options selected
-              type: array
-              items:
-                $ref: "#/components/schemas/OptionSelection"
+              $ref: "#/components/schemas/OptionSelectionList"
       responses:
         200:
           description: Offer with confirmed price
@@ -362,35 +359,26 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                offerId:
-                  $ref: "#/components/schemas/UUID"
-                passengers:
-                  description: Indexed dictionnary of the passengers
-                  type: object
-                  additionalProperties:
-                    $ref: "#/components/schemas/Passenger"
-                guaranteeId:
-                  $ref: "#/components/schemas/UUID"
-              example:
-                {
-                  "offerId": "11111111-2222-3333-4444-000000000001",
-                  "guaranteeId": "02a1a7c0-3ff8-4e12-a3ba-65d57e1e9276",
-                  "passengers":
-                    {
-                      "PAX1":
-                        {
-                          "type": "ADT",
-                          "civility": "MR",
-                          "lastnames": ["Marley"],
-                          "firstnames": ["Bob"],
-                          "gender": "Male",
-                          "birthdate": "1980-03-21T00:00:00Z",
-                          "contactInformation":
-                            ["+32123456789", "contact@org.co.uk"],
-                        },
-                    },
-                }
+              $ref: "#/components/schemas/CreateOfferBody"
+            example:
+              {
+                "offerId": "11111111-2222-3333-4444-000000000001",
+                "guaranteeId": "02a1a7c0-3ff8-4e12-a3ba-65d57e1e9276",
+                "passengers":
+                  {
+                    "PAX1":
+                      {
+                        "type": "ADT",
+                        "civility": "MR",
+                        "lastnames": ["Marley"],
+                        "firstnames": ["Bob"],
+                        "gender": "Male",
+                        "birthdate": "1980-03-21T00:00:00Z",
+                        "contactInformation":
+                          ["+32123456789", "contact@org.co.uk"],
+                      },
+                  },
+              }
         required: true
       responses:
         200:
@@ -446,110 +434,6 @@ paths:
             - write:orders
         - orgid_token: []
       x-codegen-request-body-name: body
-
-  # Fulfill an Order
-  /orders/{orderId}/fulfill:
-    post:
-      tags:
-        - orders
-      summary: Fulfills an order in Aggregator
-      description: Confirms an order, providing travel documents if relevant
-      operationId: fulfillOrder
-      parameters:
-        - name: orderId
-          in: path
-          description: ID of the order to sign
-          required: true
-          schema:
-            oneOf:
-              - $ref: "#/components/schemas/UUID"
-              - $ref: "#/components/schemas/ShortOrderId"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                orderItems:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/UUID"
-                passengerReferences:
-                  type: array
-                  items:
-                    description: The identifier of a passenger
-                    type: string
-                    example: PAX1
-                guaranteeId:
-                  $ref: "#/components/schemas/UUID"
-      responses:
-        200:
-          description: Order sucessfully signed
-          content:
-            application/json:
-              schema:
-                properties:
-                  orderId:
-                    $ref: "#/components/schemas/UUID"
-                  order:
-                    $ref: "#/components/schemas/Order"
-                  travelDocuments:
-                    description: The travel documents provided by the supplier
-                    type: object
-                    properties:
-                      bookings:
-                        description: The booking references
-                        type: array
-                        items:
-                          type: string
-                          pattern: "^[A-Z0-9]{6}$"
-                          example: "LCHTB4"
-                      etickets:
-                        description: The electronic ticket references
-                        type: array
-                        items:
-                          type: string
-                          pattern: "^[0-9]{3}-[0-9]{10}$"
-                          example: "057-1438027611"
-        400:
-          description: Invalid ID supplied
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        401:
-          description: Authorization required
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        403:
-          description: Not authorized to retrieve this order
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        404:
-          description: Order not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        415:
-          description: Content should be application/json
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        429:
-          description: Too many requests, rate limit has been reached
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - orgid_auth:
-            - write:orders
-        - orgid_token: []
 
 components:
   schemas:
@@ -675,6 +559,7 @@ components:
     Passenger:
       description: A representation of a passenger
       type: object
+      required: ["type"]
       properties:
         type:
           description: The passenger type code as per IATA definitions
@@ -734,6 +619,7 @@ components:
         contactInformation:
           description: The contact informations of the passenger
           type: array
+          minItems: 1
           items:
             oneOf:
               - $ref: "#/components/schemas/PhoneNumber"
@@ -748,9 +634,10 @@ components:
           "contactInformation": ["+32123456789", "contact@org.co.uk"]
         }
 
-    Location:
-      description: "The location of a specific place"
+    LocationAirport:
+      description: "Object that specifies a location as an airport/railstation/city"
       type: object
+      required: ["locationType","iataCode"]
       properties:
         locationType:
           description: "The type of location, for explicit filtering"
@@ -767,6 +654,11 @@ components:
           minLength: 3
           maxLength: 3
           example: "LHR"
+
+    Location:
+      description: "The location of a specific place"
+      type: object
+      properties:
         rectangle:
           $ref: "#/components/schemas/LocationRectangle"
         circle:
@@ -821,24 +713,24 @@ components:
       example:
         [
           [
-            24.8963928,
-            60.1749466
+              24.8963928,
+              60.1749466
           ],
           [
-            24.9700356,
-            60.1763126
+              24.9700356,
+              60.1763126
           ],
           [
-            24.9720097,
-            60.1475721
+              24.9720097,
+              60.1475721
           ],
           [
-            24.8987961,
-            60.1442394
+              24.8987961,
+              60.1442394
           ],
           [
-            24.896307,
-            60.1748612
+              24.896307,
+              60.1748612
           ]
         ]
 
@@ -894,17 +786,21 @@ components:
     Segment:
       description: A section of a travel itinerary
       type: object
+      required: ["origin","destination","departureTime"]
       properties:
         operator:
           $ref: "#/components/schemas/TravelOperator"
         origin:
-          $ref: "#/components/schemas/Location"
+          required: true
+          $ref: "#/components/schemas/LocationAirport"
         destination:
-          $ref: "#/components/schemas/Location"
+          required: true
+          $ref: "#/components/schemas/LocationAirport"
         departureTime:
           description: The departure time of the segment
           type: string
           format: date-time
+          required: true
           example: "2021-04-12T23:20:50.52Z"
         arrivalTime:
           description: The arrival time of the segment
@@ -1093,6 +989,7 @@ components:
     Itinerary:
       description: The itinerary of transportation
       type: object
+      required: ["segments"]
       properties:
         segments:
           description: An ordered list of segments
@@ -1139,7 +1036,7 @@ components:
             type: string
           example:
             [
-              "HW9EJ7XAC7-SEG1"
+                "HW9EJ7XAC7-SEG1"
             ]
 
     PricedOffer:
@@ -1308,25 +1205,25 @@ components:
               },
               "options":
                 [
-                  "code": "LGAC",
-                  "name": "Lounge Access",
-                  "description": "Lounge Access",
-                  "application": "surcharge",
-                  "segment": "SEG1",
-                  "passenger": "PAX1",
-                  "price": {
-                    "currency": "CAD",
-                    "public": "30.00",
-                    "taxes": "5.08"
-                  },
-                  "taxes" : [
-                    {
-                      "code": "XG",
-                      "amount": "5.08",
-                      "description": "Goods and Services Tax"
-                    }
-                  ],
-                  "conditions": "Non transferable.\nNon refundable"
+                    "code": "LGAC",
+                    "name": "Lounge Access",
+                    "description": "Lounge Access",
+                    "application": "surcharge",
+                    "segment": "SEG1",
+                    "passenger": "PAX1",
+                    "price": {
+                      "currency": "CAD",
+                      "public": "30.00",
+                      "taxes": "5.08"
+                    },
+                    "taxes" : [
+                      {
+                        "code": "XG",
+                        "amount": "5.08",
+                        "description": "Goods and Services Tax"
+                      }
+                    ],
+                    "conditions": "Non transferable.\nNon refundable"
                 ]
             }
           }
@@ -1453,33 +1350,46 @@ components:
           additionalProperties:
             $ref: "#/components/schemas/Price"
 
+    OptionSelectionList:
+      description: A list of selected options
+      type: array
+      items:
+        $ref: "#/components/schemas/OptionSelection"
+
     OptionSelection:
       description: A selected option
       type: object
+      required: ["code"]
       properties:
         code:
           description: The option code
           type: string
+          minLength: 1
           example: divNonAir11.LGAC1
         name:
           description: The option name
           type: string
+          minLength: 1
           example: "Lounge Access"
         description:
           description: Description of the option
           type: string
+          minLength: 1
           example: "An access to the Exclusive Lounge Access at the departure"
         segment:
           description: Segment for which this option is available
           type: string
+          minLength: 1
           example: "HW9EJ7XAC7-SEG1"
         passenger:
           description: Passenger for which this option is selected
           type: string
+          minLength: 1
           example: "PAX1"
         seatNumber:
           description: For seats options, the seat number selected with this option
           type: string
+          minLength: 1
           example: 12C
         price:
           $ref: "#/components/schemas/Price"
@@ -1562,10 +1472,28 @@ components:
           items:
             $ref: "#/components/schemas/OptionSelection"
 
+    CreateOfferBody:
+      description: An object to provide order details
+      type: object
+      required: ["offerId","passengers"]
+      properties:
+        offerId:
+          $ref: "#/components/schemas/UUID"
+        passengers:
+          description: Indexed dictionary of the passengers
+          type: object
+          required: true
+          additionalProperties:
+            $ref: "#/components/schemas/Passenger"
+        guaranteeId:
+          $ref: "#/components/schemas/UUID"
+
+
     # Contains the parameters for a search
     SearchCriteria:
       description: An object to provide search criteria
       type: object
+      required: ["passengers"]
       properties:
         # The option of the itinerary being searched
         itinerary:
