@@ -2,7 +2,7 @@
 const { zonedTimeToUtc } = require('date-fns-tz');
 const { airports } = require('./timeZoneByAirportCode');
 
-module.exports.reduceObjectToProperty = (object, property) => Object.entries(object)
+module.exports.reduceObjectToProperty = (array, property) => Object.entries(array)
   .reduce(
     (result, [key, value])=> ({
       ...result,
@@ -68,7 +68,7 @@ module.exports.mergeHourAndDate = array => array
     })
   );
 
-module.exports.convertDateToIrportTime = (date, time, iataCode) => zonedTimeToUtc(
+module.exports.convertDateToAirportTime = (date, time, iataCode) => zonedTimeToUtc(
   `${date} ${time}:00.000`,
   airports[iataCode]
 );
@@ -80,6 +80,7 @@ module.exports.reduceToProperty = (object, property) =>  Object.keys(object)
     };
   });
 
+/* istanbul ignore next */
 module.exports.splitSegments = (combinations) => combinations
   .map(
     ({ _items_, ...others }) => ({
@@ -88,6 +89,15 @@ module.exports.splitSegments = (combinations) => combinations
     })
   );
 
+/**
+ * Convert an array of objects (each having '_id_' property), into associative array which key is '_id_' and value is object that had '_id_' property.
+ * Example:
+ * input: [{_id_:'Key1',name:'Object1'},{_id_:'Key2',name:'Object2'}]
+ * output: {'Key1':{name:'Object1'},'Key2':{name:'Object2'}}
+ *
+ * @param array
+ * @return {*}
+ */
 module.exports.reduceToObjectByKey = (array) => array
   .reduce(
     (segments, { _id_, ...others }) => ({
@@ -108,7 +118,7 @@ module.exports.roundCommissionDecimals = (offers) => offers
     })
   );
 
-module.exports.reduceAcomodation = (accommodation) => accommodation
+module.exports.reduceAccommodation = (accommodation) => accommodation
   .reduce(
     (ac, { _provider_, _id_, ...others }) => {
       const key = `${_provider_}.${_id_}`;
@@ -120,6 +130,7 @@ module.exports.reduceAcomodation = (accommodation) => accommodation
     {}
   );
 
+/* istanbul ignore next */
 module.exports.reduceRoomStays = (_roomStays_ => {
   // The offer dicts will contain all offers
   let offers = {};
@@ -145,7 +156,7 @@ module.exports.reduceRoomStays = (_roomStays_ => {
       let offer = {
         // Reference from other elements
         pricePlansReferences: pricePlansReferences,
-  
+
         // Build price
         price: {
           currency: roomRate.price.currency,
@@ -163,9 +174,9 @@ module.exports.reduceRoomStays = (_roomStays_ => {
 
 // Deep merge of two objects
 const deepMerge = (target, source) => {
-  
+
   for (const key of Object.keys(source)) {
-    
+
     if (source[key].constructor === Object && target[key]) {
       Object.assign(source[key], deepMerge(target[key], source[key]));
     } else {

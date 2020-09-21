@@ -1,4 +1,4 @@
-const { enviroment } = require('../../../config');
+const { environment } = require('../../../config');
 
 // Convert the given formatted object to the XML form
 const convertObjectToXML = data => Object.entries(JSON.parse(JSON.stringify(data))).map(p => {
@@ -16,12 +16,12 @@ const convertObjectToXML = data => Object.entries(JSON.parse(JSON.stringify(data
       a => typeof a === 'string'
         ? convertObjectToXML({
           [p[0]]: {
-            '@value': a,
-          },
+            '@value': a
+          }
         }).join('')
         : convertObjectToXML({
-          [p[0]]: a,
-        }).join(''),
+          [p[0]]: a
+        }).join('')
     );
     value = values.join('');
   } else if (typeof p[1] === 'object') {
@@ -66,7 +66,7 @@ module.exports.convertObjectToXML = convertObjectToXML;
 
 // Determine the AC NDC System ID
 const getACSystemId = (isPCI) => {
-  switch (enviroment) {
+  switch(process.env.TESTING_ENV !== undefined ? process.env.TESTING_ENV : environment) {
     case 'production':
       return (isPCI ? 'PROD-PCI' : 'PROD');
     default:

@@ -1,0 +1,10 @@
+{
+  "all": true,
+  "extension": [
+    ".js"
+  ],
+  "include": [
+    "api/**",
+    "helpers/**"
+  ]
+}
