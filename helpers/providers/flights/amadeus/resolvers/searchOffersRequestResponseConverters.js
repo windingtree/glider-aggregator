@@ -135,7 +135,7 @@ const processFlightSearchResponse = (response) => {
     //collect all segments and itineraries of an offer
     _itineraries.map(_itinerary => {
       let itinerarySegments = [];
-      let itineraryId = 'itin-' + uuidv4();
+      let itineraryId = uuidv4();
       _itinerary.segments.map(_segment => {
         //build segment object
         let segment = createSegment(_segment);
@@ -151,7 +151,7 @@ const processFlightSearchResponse = (response) => {
 
     //TODO - add commission calculation
     let offerPrice = createPrice(_price);
-    let currentOffer = createOffer('offer-' + uuidv4(), _lastTicketingDate, offerPrice, _flightOffer, offerSegments);
+    let currentOffer = createOffer(uuidv4(), _lastTicketingDate, offerPrice, _flightOffer, offerSegments);
 
     //extract offer items (passengers)
     let offerItems = [];
@@ -160,7 +160,7 @@ const processFlightSearchResponse = (response) => {
     _travelerPricings.map(_travelerPricing => {
       let passenger = createPassenger(_travelerPricing);
       passengersSet[passenger._id_] = passenger;
-      offerItems.push(createOfferItem('offeritem-' + uuidv4(), passenger._id_));
+      offerItems.push(createOfferItem(uuidv4(), passenger._id_));
     });
     currentOffer.offerItems.push(...offerItems);
     //extract price plans
@@ -194,7 +194,7 @@ const processFlightSearchResponse = (response) => {
         if (checkedBags === 2) amenities.push('2 checked bags free');
         if (ancillaries.length > 0)
           amenities.push(...ancillaries);
-        currentPricePlan = createPricePlan('plan-' + uuidv4() + '-' + brandedFareName, brandedFareName, amenities, checkedBags);
+        currentPricePlan = createPricePlan(uuidv4() + '-' + brandedFareName, brandedFareName, amenities, checkedBags);
         offerPricePlans.push(currentPricePlan);
         currentOffer.pricePlansReferences.push(createPricePlansReference(currentPricePlan._id_));
       }
