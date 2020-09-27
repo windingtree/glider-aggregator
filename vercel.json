@@ -115,8 +115,10 @@
 
         "STAGING_EREVMAX_RESERVATION_URL": "@staging.glider-aggregator.erevmax_reservation_url",
         "STAGING_EREVMAX_AVAILABILITY_URL": "@staging.glider-aggregator.erevmax_availability_url",
+        "STAGING_EREVMAX_CANCELLATION_URL": "@staging.glider-aggregator.erevmax_cancellation_url",
         "PRODUCTION_EREVMAX_RESERVATION_URL": "@production.glider-aggregator.erevmax_reservation_url",
         "PRODUCTION_EREVMAX_AVAILABILITY_URL": "@production.glider-aggregator.erevmax_availability_url",
+        "PRODUCTION_EREVMAX_CANCELLATION_URL": "@production.glider-aggregator.erevmax_cancellation_url",
 
         "SIMARD_JWT": "@staging.glider-aggregator.jwt",
         "GLIDER_ORGID": "@staging.glider-aggregator.orgid",
