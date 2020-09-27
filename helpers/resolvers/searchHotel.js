@@ -10,7 +10,7 @@ module.exports.searchHotel = async (body) => {
   const { accommodation, passengers: guests } = body;
   let context = {};
 
-  let providerHandlers = createHotelProviders(['revmax']);
+  let providerHandlers = createHotelProviders(['revmax', '1A']);
 
   //search for hotels with each provider and collect responses (each response is having following structure: {provider, response, errors}
   let responses = await Promise.all(providerHandlers.map(async providerImpl => {
