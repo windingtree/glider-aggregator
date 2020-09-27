@@ -26,7 +26,7 @@ const createSearchRequest = (hotelCodes, arrival, departure, guests) => {
 const processSearchResponse = async (response, guestCounts, offersToStore) => {
 // Handle the search results if there are no errors
   let searchResults = await transform(response.data, hotelAvailTransformTemplate);
-  logRQRS(searchResults,'search_results_raw');
+  logRQRS(searchResults, 'search_results_raw');
   // Go through the Room Stays to build the offers and gather the room types
   const accommodationRoomTypes = {};
   const offers = {};
@@ -149,4 +149,11 @@ const processHotelBookingCancellation = async (response) => {
   return await transform(response.data, responseTemplate);
 };
 
-module.exports = { createSearchRequest, createHotelBookRequest, processSearchResponse, processHotelBookResponse, createHotelBookingCancellation, processHotelBookingCancellation};
+module.exports = {
+  createSearchRequest,
+  createHotelBookRequest,
+  processSearchResponse,
+  processHotelBookResponse,
+  createHotelBookingCancellation,
+  processHotelBookingCancellation,
+};

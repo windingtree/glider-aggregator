@@ -74,13 +74,13 @@ module.exports = class HotelProviderRevMax extends HotelProvider {
   }
 
   async cancelOrder (order, offer, passengers, card) {
-    const { order:{response, reservationNumber} } = order;
+    const { order: { response, reservationNumber } } = order;
     let otaRequestBody = createHotelBookingCancellation(offer, passengers, card, reservationNumber);
     console.log('Request', JSON.stringify(otaRequestBody));
     let revMaxResponse = await erevmaxHotelBookingCancel(otaRequestBody);
     await assertRevmaxErrors(revMaxResponse);
     let result = await processHotelBookingCancellation(revMaxResponse);
-    let { response:resResponseType, reservationNumber:cancelledReservationId } = result;
+    let { response: resResponseType, reservationNumber: cancelledReservationId } = result;
     if (resResponseType !== 'Cancelled') {
       throw new GliderError(`Unrecognized resResponseType from provider - expected [Cancelled], received [${response}]`);
     }
