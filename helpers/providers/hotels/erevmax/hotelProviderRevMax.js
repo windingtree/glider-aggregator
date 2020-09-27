@@ -2,14 +2,14 @@ const HotelProvider = require('../../hotelProvider');
 const { manager: hotelsManager } = require('../../../models/mongo/hotels');
 const GliderError = require('../../../error');
 const offer = require('../../../models/offer');
-const { createSearchRequest, processSearchResponse, createHotelBookRequest, processHotelBookResponse } = require('./requestResponseConverters');
+const { createSearchRequest, processSearchResponse, createHotelBookRequest, processHotelBookResponse, createHotelBookingCancellation, processHotelBookingCancellation } = require('./requestResponseConverters');
 const { transform } = require('camaro');
 
 //search templates
 const { errorsTransformTemplate } = require('./camaroTemplates/hotelAvail');
 
 //order create templates
-const { erevmaxHotelBook, erevmaxHotelSearch } = require('./revmaxClient');
+const { erevmaxHotelBook, erevmaxHotelSearch, erevmaxHotelBookingCancel } = require('./revmaxClient');
 
 
 module.exports = class HotelProviderRevMax extends HotelProvider {
@@ -61,9 +61,37 @@ module.exports = class HotelProviderRevMax extends HotelProvider {
   async createOrder (offer, passengers, card) {
     // Build the request
     let otaRequestBody = createHotelBookRequest(offer, passengers, card);
+
     let response = await erevmaxHotelBook(otaRequestBody);
     await assertRevmaxErrors(response);
     let result = await processHotelBookResponse(response);
+    //remove unnecessary properties
+    delete result.success;
+    delete result.errors;
+
+    // Transform the XML answer
+    return result;
+  }
+
+  async cancelOrder (order, offer, passengers, card) {
+    const { order:{response, reservationNumber} } = order;
+    let otaRequestBody = createHotelBookingCancellation(offer, passengers, card, reservationNumber);
+    console.log('Request', JSON.stringify(otaRequestBody));
+    let revMaxResponse = await erevmaxHotelBookingCancel(otaRequestBody);
+    await assertRevmaxErrors(revMaxResponse);
+    let result = await processHotelBookingCancellation(revMaxResponse);
+    let { response:resResponseType, reservationNumber:cancelledReservationId } = result;
+    if (resResponseType !== 'Cancelled') {
+      throw new GliderError(`Unrecognized resResponseType from provider - expected [Cancelled], received [${response}]`);
+    }
+
+    if (!cancelledReservationId || cancelledReservationId !== reservationNumber) {
+      throw new GliderError(`Hotel provider did not provide cancelled reservationID, expected:${reservationNumber}, received:${cancelledReservationId}`);
+    }
+    //remove unnecessary properties
+    delete result.success;
+    delete result.errors;
+
     // Transform the XML answer
     return result;
   }

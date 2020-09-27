@@ -111,8 +111,10 @@ module.exports = basicDecorator(async (req, res) => {
       );
 
     if (storedOffer instanceof AccommodationOffer) {
+/*
       delete orderCreationResults.order.success;
       delete orderCreationResults.order.errors;
+*/
     } else if (storedOffer instanceof FlightOffer) {
       const changedPassengers =
         Object.entries(orderCreationResults.order.passengers)
@@ -179,7 +181,8 @@ module.exports = basicDecorator(async (req, res) => {
         guaranteeClaim: guaranteeClaim,
         order: orderCreationResults,
         offer: storedOffer
-      }
+      },
+      'CREATED'
     );
 
     await setOrderStatus(allOffers, 'CREATED');

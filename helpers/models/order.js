@@ -4,7 +4,7 @@ const ordersModelResolver = require('./mongo/orders');
 class OrdersManager {
   constructor () { }
 
-  async saveOrder (orderId, options) {
+  async saveOrder (orderId, options, status) {
     const model = await ordersModelResolver();
     const result = await model.replaceOne(
       {
@@ -12,6 +12,7 @@ class OrdersManager {
       },
       {
         orderId,
+        orderStatus:status,
         ...options
       },
       {
@@ -56,6 +57,22 @@ class OrdersManager {
     }
 
     return order;
+  }
+
+  async updateOrderStatus (orderId,status) {
+    const model = await ordersModelResolver();
+    const result = await model.updateOne(
+      {
+        orderId
+      },
+      {
+        orderStatus:status
+      },
+      {
+        upsert: false
+      }
+    );
+    return result;
   }
 }
 
