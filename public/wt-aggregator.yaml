@@ -489,7 +489,7 @@ components:
       format: uuid
       minLength: 8
       maxLength: 36
-      pattern: "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$"
+#      pattern: "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$"
       example: "11111111-2222-3333-4444-000000000001"
 
     ShortOrderId:
