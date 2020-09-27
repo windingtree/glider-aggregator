@@ -435,6 +435,38 @@ paths:
         - orgid_token: []
       x-codegen-request-body-name: body
 
+  # ** Orders **
+  /orders/cancel:
+    post:
+      tags:
+        - orders
+      summary: Cancel an existing order
+      operationId: cancelOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId:
+                  $ref: "#/components/schemas/UUID"
+      responses:
+        200:
+          description: Order cancelled succesfully
+          content:
+            application/json:
+              schema:
+                properties:
+                  orderId:
+                    description: Order ID
+                    $ref: "#/components/schemas/UUID"
+                  status:
+                    description: Result of cancellation
+                    type: string
+                example: {
+                  "orderId": "11111111-2222-3333-4444-000000000001",
+                  "status": "CANCELLED"
+                }
 components:
   schemas:
     Error:
@@ -1408,42 +1440,43 @@ components:
         - distributor
       type: object
       properties:
-        # A version
-        version:
-          description: A major/minor version pattern for forward compatibility
-          type: string
-          pattern: '^[0-9]+(\.[0-9]+)+$'
-          minLength: 3
-          maxLength: 12
-          example: "1.0.0"
-
-        # The ORG.ID of the supplier
-        supplier:
-          $ref: "#/components/schemas/OrgId"
-
-        # The ORG.ID of the distributor
-        distributor:
-          $ref: "#/components/schemas/OrgId"
-
-        # The type of travel service in the order
-        type:
-          description: Type of travel service
-          type: string
-          enum:
-            - transportation
-            - accommodation
-            - lounge
-            - fasttrack
-            - parking
-          example: "transportation"
-
-        # The sub-type of service
-        subtype:
-          description: The sub-type of service
-          oneOf:
-            - $ref: "#/components/schemas/TransportationType"
-            - $ref: "#/components/schemas/AccommodationType"
-          example: "flight"
+# BELOW BLOCK IS COMMENTED AS TODAY WE DON'T YET PROVIDE RESPONSE IN FORESEEN FORMAT - TO BE ADDED IN THE FUTURE, THUS KEEPING IT COMMENTED OUT
+#        # A version
+#        version:
+#          description: A major/minor version pattern for forward compatibility
+#          type: string
+#          pattern: '^[0-9]+(\.[0-9]+)+$'
+#          minLength: 3
+#          maxLength: 12
+#          example: "1.0.0"
+#
+#        # The ORG.ID of the supplier
+#        supplier:
+#          $ref: "#/components/schemas/OrgId"
+#
+#        # The ORG.ID of the distributor
+#        distributor:
+#          $ref: "#/components/schemas/OrgId"
+#
+#        # The type of travel service in the order
+#        type:
+#          description: Type of travel service
+#          type: string
+#          enum:
+#            - transportation
+#            - accommodation
+#            - lounge
+#            - fasttrack
+#            - parking
+#          example: "transportation"
+#
+#        # The sub-type of service
+#        subtype:
+#          description: The sub-type of service
+#          oneOf:
+#            - $ref: "#/components/schemas/TransportationType"
+#            - $ref: "#/components/schemas/AccommodationType"
+#          example: "flight"
 
         # The price of the service
         price:
@@ -1471,6 +1504,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OptionSelection"
+
+        status:
+          description: Status of an order
+          type: string
 
     CreateOfferBody:
       description: An object to provide order details
