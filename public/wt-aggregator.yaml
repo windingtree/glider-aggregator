@@ -487,7 +487,7 @@ components:
       description: Unique identifier for Offers and Orders
       type: string
       format: uuid
-      minLength: 36
+      minLength: 8
       maxLength: 36
       pattern: "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$"
       example: "11111111-2222-3333-4444-000000000001"

@@ -629,6 +629,54 @@
         ],
         "x-codegen-request-body-name": "body"
       }
+    },
+    "/orders/cancel": {
+      "post": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Cancel an existing order",
+        "operationId": "cancelOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "orderId": {
+                    "$ref": "#/components/schemas/UUID"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Order cancelled succesfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "orderId": {
+                      "description": "Order ID",
+                      "$ref": "#/components/schemas/UUID"
+                    },
+                    "status": {
+                      "description": "Result of cancellation",
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "orderId": "11111111-2222-3333-4444-000000000001",
+                    "status": "CANCELLED"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -654,7 +702,7 @@
         "description": "Unique identifier for Offers and Orders",
         "type": "string",
         "format": "uuid",
-        "minLength": 36,
+        "minLength": 8,
         "maxLength": 36,
         "pattern": "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$",
         "example": "11111111-2222-3333-4444-000000000001"
@@ -1837,44 +1885,6 @@
         ],
         "type": "object",
         "properties": {
-          "version": {
-            "description": "A major/minor version pattern for forward compatibility",
-            "type": "string",
-            "pattern": "^[0-9]+(\\.[0-9]+)+$",
-            "minLength": 3,
-            "maxLength": 12,
-            "example": "1.0.0"
-          },
-          "supplier": {
-            "$ref": "#/components/schemas/OrgId"
-          },
-          "distributor": {
-            "$ref": "#/components/schemas/OrgId"
-          },
-          "type": {
-            "description": "Type of travel service",
-            "type": "string",
-            "enum": [
-              "transportation",
-              "accommodation",
-              "lounge",
-              "fasttrack",
-              "parking"
-            ],
-            "example": "transportation"
-          },
-          "subtype": {
-            "description": "The sub-type of service",
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/TransportationType"
-              },
-              {
-                "$ref": "#/components/schemas/AccommodationType"
-              }
-            ],
-            "example": "flight"
-          },
           "price": {
             "$ref": "#/components/schemas/Price"
           },
@@ -1899,6 +1909,10 @@
             "items": {
               "$ref": "#/components/schemas/OptionSelection"
             }
+          },
+          "status": {
+            "description": "Status of an order",
+            "type": "string"
           }
         }
       },
