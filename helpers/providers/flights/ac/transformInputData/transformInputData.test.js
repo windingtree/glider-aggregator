@@ -1,28 +1,28 @@
-const regex = require('../../../../helpers/matches');
+const regex = require('../../../../../test/helpers/matches');
 const {
   airCanadaConfig,
 } = require('../../../../../config');
 const { expandPassengers } = require('../../../../../helpers/providers/flights/ndc/transformInputData/expandPassengers');
-const { mapNdcRequestData_AC } = require('../../../../../helpers/providers/flights/ac/transformInputData/searchOffers');
+const { mapNdcRequestData_AC } = require('./searchOffers');
 const {
   mapNdcRequestData_AC: mapNdcRequestData_AC_offerPrice,
-} = require('../../../../../helpers/providers/flights/ac/transformInputData/offerPrice');
+} = require('./offerPrice');
 const {
   mapNdcRequestData_AC: mapNdcRequestData_AC_seatAvailability,
-} = require('../../../../../helpers/providers/flights/ac/transformInputData/seatAvailability');
+} = require('./seatAvailability');
 const {
   mapNdcRequestData_AC: mapNdcRequestData_AC_fulfillOrder,
-} = require('../../../../../helpers/providers/flights/ac/transformInputData/fulfillOrder');
+} = require('./fulfillOrder');
 const {
   getACSystemIdOrderCreateRQ,
   mapNdcRequestHeaderData_AC,
   mapNdcRequestData_AC: mapNdcRequestData_AC_createOrder,
-} = require('../../../../../helpers/providers/flights/ac/transformInputData/createOrder');
+} = require('./createOrder');
 
 require('chai').should();
 
 
-describe('flights/ac/transformInputData', () => {
+describe('providers/flights/ac/transformInputData', () => {
   const docIds = [
     'OneWay',
     'Return',

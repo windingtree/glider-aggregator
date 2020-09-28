@@ -9,10 +9,10 @@ const { transform } = require('camaro');
 const { errorsTransformTemplate } = require('./camaroTemplates/hotelAvail');
 
 //order create templates
-const { erevmaxHotelBook, erevmaxHotelSearch, erevmaxHotelBookingCancel } = require('./revmaxClient');
+const revmaxclient = require('./revmaxClient');
 
 
-module.exports = class HotelProviderRevMax extends HotelProvider {
+class HotelProviderRevMax extends HotelProvider {
   constructor () {
     super();
   }
@@ -44,7 +44,7 @@ module.exports = class HotelProviderRevMax extends HotelProvider {
     }
     const guestCounts = getGuestCounts(guests);
     let requestBody = createSearchRequest(hotelCodes, arrival, departure, guests);
-    let response = await erevmaxHotelSearch(requestBody);
+    let response = await revmaxclient.erevmaxHotelSearch(requestBody);
     await assertRevmaxErrors(response);
     let offersToStore = {};
     let searchResults = await processSearchResponse(response, guestCounts, offersToStore);
@@ -62,7 +62,7 @@ module.exports = class HotelProviderRevMax extends HotelProvider {
     // Build the request
     let otaRequestBody = createHotelBookRequest(offer, passengers, card);
 
-    let response = await erevmaxHotelBook(otaRequestBody);
+    let response = await revmaxclient.erevmaxHotelBook(otaRequestBody);
     await assertRevmaxErrors(response);
     let result = await processHotelBookResponse(response);
     //remove unnecessary properties
@@ -77,7 +77,7 @@ module.exports = class HotelProviderRevMax extends HotelProvider {
     const { order: { response, reservationNumber } } = order;
     let otaRequestBody = createHotelBookingCancellation(offer, passengers, card, reservationNumber);
     console.log('Request', JSON.stringify(otaRequestBody));
-    let revMaxResponse = await erevmaxHotelBookingCancel(otaRequestBody);
+    let revMaxResponse = await revmaxclient.erevmaxHotelBookingCancel(otaRequestBody);
     await assertRevmaxErrors(revMaxResponse);
     let result = await processHotelBookingCancellation(revMaxResponse);
     let { response: resResponseType, reservationNumber: cancelledReservationId } = result;
@@ -165,4 +165,4 @@ const getGuestCounts = passengers => {
 
   return guestCounts;
 };
-
+module.exports = { rectangleToPolygon, getGuestCounts, HotelProviderRevMax };

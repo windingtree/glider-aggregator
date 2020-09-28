@@ -117,31 +117,31 @@ const hotelSearchFixtureRectangle_1ADT = {
   passengers: [passengerCriteriaFixture1ADT],
 };
 
-const hotelSearchFixtureCircle_2ADT_1INF = {
+const hotelSearchFixtureCircle_2ADT = {
   accommodation: accommodationCircleFixture,
-  passengers: [passengerCriteriaFixture2ADT, passengerCriteriaFixture1INF],
+  passengers: [passengerCriteriaFixture2ADT],
 };
 
-const hotelSearchFixturePolygon_2ADT_1INF = {
+const hotelSearchFixturePolygon_2ADT = {
   accommodation: accommodationPolygonFixture,
-  passengers: [passengerCriteriaFixture2ADT, passengerCriteriaFixture1INF],
+  passengers: [passengerCriteriaFixture2ADT],
 };
 
 const SearchCriteriaFixtures = {
-  flightSearchFixtureJFKDFW_OneWay_1ADT: flightSearchFixtureJFKDFW_OneWay_1ADT,
-  flightSearchFixtureJFKDFW_Return_2ADT_1INF: flightSearchFixtureJFKDFW_Return_2ADT_1INF,
-  hotelSearchFixtureRectangle_1ADT: hotelSearchFixtureRectangle_1ADT,
-  hotelSearchFixtureCircle_2ADT_1INF: hotelSearchFixtureCircle_2ADT_1INF,
-  hotelSearchFixturePolygon_2ADT_1INF:hotelSearchFixturePolygon_2ADT_1INF
+  flightSearchFixtureJFKDFW_OneWay_1ADT,
+  flightSearchFixtureJFKDFW_Return_2ADT_1INF,
+  hotelSearchFixtureRectangle_1ADT,
+  hotelSearchFixtureCircle_2ADT,
+  hotelSearchFixturePolygon_2ADT
 };
 
 
 module.exports = {
-  LocationFixtures: LocationFixtures,
-  DateFixtures: DateFixtures,
-  SegmentFixtures: SegmentFixtures,
-  PassengerFixtures: PassengerFixtures,
-  ItineraryFixtures: ItineraryFixtures,
-  AccommodationFixtures: AccommodationFixtures,
-  SearchCriteriaFixtures: SearchCriteriaFixtures,
+  LocationFixtures,
+  DateFixtures,
+  SegmentFixtures,
+  PassengerFixtures,
+  ItineraryFixtures,
+  AccommodationFixtures,
+  SearchCriteriaFixtures,
 };

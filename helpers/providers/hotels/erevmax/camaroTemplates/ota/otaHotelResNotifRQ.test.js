@@ -6,11 +6,11 @@ const {
   mapRoomRate,
   mapPaymentCard,
   mapGuarantee,
-} = require('../../../../../helpers/providers/hotels/erevmax/camaroTemplates/ota/otaHotelResNotifRQ');
+} = require('./otaHotelResNotifRQ');
 
 require('chai').should();
 
-describe('soapTemplates', () => {
+describe('providers/hotels/erevmax/camaroTemplates', () => {
   // const ageCodes = [10, 8];
 
   describe('otaHotelResNotifRQ', () => {

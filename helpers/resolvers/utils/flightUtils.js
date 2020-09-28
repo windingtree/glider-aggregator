@@ -5,6 +5,14 @@ const {
   FlightOffer,
 } = require('../../models/offer');
 
+const getACDestinations = () =>{
+  return caDestinations;
+};
+
+const get1ADestinations = () =>{
+  return caDestinations;
+};
+
 // Fetching of the flight operators associated with the given origin and destination
 module.exports.selectProvider = (origin, destination) => {
   origin = Array.isArray(origin) ? origin : [origin];
@@ -13,24 +21,12 @@ module.exports.selectProvider = (origin, destination) => {
   const sdMapping = [
     {
       provider: '1A',
-      destinations: caDestinations,
+      destinations: get1ADestinations(),
     },
     {
       provider: 'AC',
-      destinations: caDestinations,
+      destinations: getACDestinations(),
     },
-    /*    {
-          provider: 'AC',
-          destinations: caDestinations,
-        },*/
-    /*    {
-          provider: 'AF',
-          destinations: caDestinations,
-        },*/
-    // {
-    //   provider: 'AC',
-    //   destinations: caDestinations
-    // }
   ];
 
   return sdMapping

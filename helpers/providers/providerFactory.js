@@ -1,9 +1,9 @@
-const FlightSearchACClient = require('./flights/ac/flightProviderAC');
-const FlightSearchAFClient = require('./flights/af/flightProviderAF');
-const FlightSearchAmadeusClient = require('./flights/amadeus/flightProvider1A');
-const HotelProviderRevMax = require('./hotels/erevmax/hotelProviderRevMax');
-const HotelProviderRevMaxSimulator = require('./hotels/simulator/hotelProviderRevMaxSimulator');
-const HotelProviderAmadeus = require('./hotels/amadeus/hotelProviderAmadeus');
+const { FlightSearchACClient } = require('./flights/ac/flightProviderAC');
+const { FlightSearchAFClient } = require('./flights/af/flightProviderAF');
+const { FlightSearchAmadeusClient } = require('./flights/amadeus/flightProvider1A');
+const { HotelProviderRevMax } = require('./hotels/erevmax/hotelProviderRevMax');
+const { HotelProviderRevMaxSimulator } = require('./hotels/simulator/hotelProviderRevMaxSimulator');
+const { HotelProviderAmadeus } = require('./hotels/amadeus/hotelProviderAmadeus');
 const GliderError = require('../error');
 
 /**
@@ -65,7 +65,7 @@ const createHotelProvider = (providerId) => {
   return providerImpl;
 };
 
-/**
+/**revmax
  * Same as #createHotelProvider but takes an array of providerIDs as a parameter and returns array of hotel providers
  * @param providerIDs
  * @returns [] array of instances of HotelProvider implementations
@@ -78,11 +78,9 @@ const createHotelProviders = (providerIDs) => {
 };
 
 
-
-
 module.exports = {
-  createFlightProviders: createFlightProviders,
-  createFlightProvider: createFlightProvider,
-  createHotelProvider: createHotelProvider,
-  createHotelProviders: createHotelProviders,
+  createFlightProviders,
+  createFlightProvider,
+  createHotelProvider,
+  createHotelProviders,
 };

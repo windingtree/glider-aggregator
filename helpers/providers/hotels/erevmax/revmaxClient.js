@@ -39,5 +39,5 @@ const erevmaxHotelBookingCancel = async (request) => {
 
 
 module.exports = {
-  erevmaxHotelSearch, erevmaxHotelBook, erevmaxHotelBookingCancel,
+  erevmaxHotelSearch, erevmaxHotelBook, erevmaxHotelBookingCancel
 };

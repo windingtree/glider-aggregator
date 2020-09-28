@@ -1,5 +1,5 @@
 require('chai').should();
-const { selectTierByDepositRate } = require('../../helpers/requirements/apiCallsLimitsHelpers');
+const { selectTierByDepositRate } = require('./apiCallsLimitsHelpers');
 
 describe('Trust Requirements', () => {
   const tiers = [
@@ -36,7 +36,7 @@ describe('Trust Requirements', () => {
       7000,
       20000
     ];
-    
+
     it('should select proper tier according to deposit', async () => {
       const results = deposits.map(d => selectTierByDepositRate(tiers, d));
       results.forEach((r, i) => (r.max).should.equal(tiers[i].max));

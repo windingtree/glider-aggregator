@@ -1,10 +1,10 @@
 const { JWK, JWT } = require('jose');
 require('dotenv').config();
 
-const { assertFailure } = require('../helpers/assertions');
-const { privPem, pubPem } = require('../helpers/constants');
-const { createToken } = require('../helpers/create');
-const { verifyJWT } = require('../../helpers/jwt');
+const { assertFailure } = require('../test/helpers/assertions');
+const { privPem, pubPem } = require('../test/helpers/constants');
+const { createToken } = require('../test/helpers/create');
+const { verifyJWT } = require('./jwt');
 
 require('chai').should();
 
@@ -14,47 +14,42 @@ describe('JWT', () => {
   const exp = '24 hours';
   let priv = privPem;
   let pub = pubPem;
+  describe('#createJWT', () => {
 
-  describe('Test helpers', () => {
+    it('should create a valid JWT token signed with secp256k1', async () => {
+      const options = {
+        priv,
+        alg: 'ES256K',
+        aud,
+        iss,
+        fragment: 'test',
+        exp,
+      };
 
-    describe('#createJWT', () => {
+      const jwt = await createToken(options);
+      const pubKey = JWK.asKey(
+        pub,
+        {
+          alg: options.alg,
+          use: 'sig',
+        },
+      );
+      const token = JWT.verify(
+        jwt,
+        pubKey,
+        {
+          typ: 'JWT',
+          audience: options.aud,
+          clockTolerance: '1 min',
+        },
+      );
 
-      it('should create a valid JWT token signed with secp256k1', async () => {
-        const options = {
-          priv,
-          alg: 'ES256K',
-          aud,
-          iss,
-          fragment: 'test',
-          exp
-        };
-
-        const jwt = await createToken(options);
-        const pubKey = JWK.asKey(
-          pub,
-          {
-            alg: options.alg,
-            use: 'sig'
-          }
-        );
-        const token = JWT.verify(
-          jwt,
-          pubKey,
-          {
-            typ: 'JWT',
-            audience: options.aud,
-            clockTolerance: '1 min'
-          }
-        );
-
-        (token).should.be.an('object');
-        (token).should.has.property('iss').to.equal(`${options.iss}#${options.fragment}`);
-        (token).should.has.property('aud').to.equal(options.aud);
-        (token).should.has.property('exp').to.be.a('number');
-      });
+      (token).should.be.an('object');
+      (token).should.has.property('iss').to.equal(`${options.iss}#${options.fragment}`);
+      (token).should.has.property('aud').to.equal(options.aud);
+      (token).should.has.property('exp').to.be.a('number');
     });
   });
-
   describe('#verifyJWT', () => {
     const secp256k1Options = {
       priv,
@@ -62,7 +57,7 @@ describe('JWT', () => {
       aud,
       iss,
       fragment: 'test',
-      exp
+      exp,
     };
     let secp256k1Jwt;
 
@@ -74,7 +69,7 @@ describe('JWT', () => {
       await assertFailure(
         verifyJWT('Unknown', secp256k1Jwt),
         'Unknown authorization method',
-        403
+        403,
       );
     });
 
@@ -82,40 +77,40 @@ describe('JWT', () => {
       await assertFailure(
         verifyJWT('Bearer', 'wrong' + secp256k1Jwt),
         'JWT is malformed',
-        403
+        403,
       );
     });
 
     it('should fail if expired token provided', async () => {
       const token = await createToken(
-        Object.assign({}, secp256k1Options, { exp: '0 s' })
+        Object.assign({}, secp256k1Options, { exp: '0 s' }),
       );
       await assertFailure(
         verifyJWT('Bearer', token),
         'JWT is expired',
-        403
+        403,
       );
     });
 
     it('should fail if token not meant for Glider', async () => {
       const token = await createToken(
-        Object.assign({}, secp256k1Options, { aud: 'not:glider' })
+        Object.assign({}, secp256k1Options, { aud: 'not:glider' }),
       );
       await assertFailure(
         verifyJWT('Bearer', token),
         'JWT recipient is not Glider',
-        403
+        403,
       );
     });
 
     it('should fail if issuer not provided', async () => {
       const token = await createToken(
-        Object.assign({}, secp256k1Options, { iss: '', fragment: '' })
+        Object.assign({}, secp256k1Options, { iss: '', fragment: '' }),
       );
       await assertFailure(
         verifyJWT('Bearer', token),
         'JWT is missing issuing ORG.ID',
-        403
+        403,
       );
     });
 
@@ -123,7 +118,7 @@ describe('JWT', () => {
       await assertFailure(
         verifyJWT('Bearer', secp256k1Jwt + 'wrong=='),
         'JWT signature verification failed',
-        403
+        403,
       );
     });
 
