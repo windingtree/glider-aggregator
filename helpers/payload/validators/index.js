@@ -36,7 +36,7 @@ const _validate = (payload, schemaRef) => {
   let result = ajv.validate({ $ref: 'swagger.json' + schemaRef }, payload);
 
   if (!result) {
-    console.log('invalid, original payload:', JSON.stringify(payload));
+    // console.log('invalid, original payload:', JSON.stringify(payload));
     let error = ajv.errors[0];
     let message = `Validation error. Property:[${error.dataPath}], problem:[${error.message}]`;
     throw new GliderError(message, 400);

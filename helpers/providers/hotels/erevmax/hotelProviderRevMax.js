@@ -49,12 +49,7 @@ class HotelProviderRevMax extends HotelProvider {
     let offersToStore = {};
     let searchResults = await processSearchResponse(response, guestCounts, offersToStore);
 
-    // Store the offers
-    if (!process.env.TESTING) {
-      /* istanbul ignore next */
-      await offer.offerManager.storeOffers(offersToStore);
-    }
-
+    context.offersToStore=offersToStore;
     return searchResults;
   }
 

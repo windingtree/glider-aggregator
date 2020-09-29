@@ -55,7 +55,7 @@ class HotelProviderAmadeus extends HotelProvider {
         accOffer.price.currency,
       );
     });
-    await offer.offerManager.storeOffers(offersToStore);
+    context.offersToStore=offersToStore;
     return searchResults;
   }
 

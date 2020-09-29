@@ -457,7 +457,7 @@ describe('providers/flights/ac/transformInputData', () => {
         );
         // validate first level only
         (result).should.to.be.an('object');
-        (result).should.to.have.property('apiKey').to.be.a('string');
+        // (result).should.to.have.property('apiKey').to.be.a('string');
         (result).should.to.have.property('commission').to.be.a('string');
         (result).should.to.have.property('baseUrl').to.be.a('string')
           .to.equal('https://ndchub.mconnect.aero/messaging/v2/ndc-exchange/');

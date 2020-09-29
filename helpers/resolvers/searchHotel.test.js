@@ -6,10 +6,10 @@ require('chai').should();
 const sinon = require('sinon');
 
 
-//we need to stub 'createHotelProviders' function to return provider implementation that we need
+//we need to stub 'createHotelProviders' function to return provider implementation that we need to test (revmax or amadeus)
 const providerFactory = require('../providers/providerFactory');
 
-//we need to mock revmax and amadeus clients so that it returns mocked responses (/test/mockresponses folder)
+//we need to mock revmax and amadeus clients so that it returns mocked responses (/test/mockresponses folder) instead of calling actual API
 const revmaxclient = require('../providers/hotels/erevmax/revmaxClient');
 const amadeusClient = require('../amadeus/amadeusUtils');
 const { HotelProviderAmadeus } = require('../providers/hotels/amadeus/hotelProviderAmadeus');
@@ -17,16 +17,32 @@ const { HotelProviderRevMax } = require('../providers/hotels/erevmax/hotelProvid
 
 //for revmax implementation we need also to stub calls to mongo which return hotels at given location
 const { manager: hotelsManager } = require('../models/mongo/hotels');
+const offersModel = require('../models/offer');
 
 
 describe('Resolvers/searchHotel', async () => {
+  let createHotelProvidersStub;
+  let storeOffersStub;
+
+  beforeEach(function () {
+    //prepare stub of hotel providers factory so that we can instruct it to always return specific implementation of hotel provider (e.g. revmax or amadeus)
+    createHotelProvidersStub = sinon.stub(providerFactory, 'createHotelProviders');
+
+    //we need to stub mongo model - to fake call to 'storeOffers' - no need to call mongo from unit tests
+    storeOffersStub = sinon.stub(offersModel.offerManager, 'storeOffers');
+    storeOffersStub.returns({});
+  });
+
+
+  afterEach(function () {
+    createHotelProvidersStub.restore();
+    storeOffersStub.restore();
+  });
 
   describe('#searchHotel with revmax', () => {
     let erevmaxHotelSearchStub;
     let hotelsManagerSearchByLocationStub;
     let hotelsManagersearchWithinStub;
-    let createHotelProvidersStub;
-
     beforeEach(function () {
       //prepare stubs of revmaxclient
       erevmaxHotelSearchStub = sinon.stub(revmaxclient, 'erevmaxHotelSearch');
@@ -40,17 +56,14 @@ describe('Resolvers/searchHotel', async () => {
       hotelsManagerSearchByLocationStub.returns(Promise.resolve(hotels));
       hotelsManagersearchWithinStub.returns(Promise.resolve(hotels));
 
-      //now we need to make sure always revmax implementation is created by factory
-      createHotelProvidersStub = sinon.stub(providerFactory, 'createHotelProviders');
+      //in this suite we want to only test revmax implementation - thus providerFactory should always return HotelProviderRevMax
       createHotelProvidersStub.returns([new HotelProviderRevMax()]);
-
 
     });
     afterEach(function () {
       erevmaxHotelSearchStub.restore();
       hotelsManagerSearchByLocationStub.restore();
       hotelsManagersearchWithinStub.restore();
-      createHotelProvidersStub.restore();
     });
 
     it('should correctly process correct revmax response and return results', async () => {
@@ -110,13 +123,11 @@ describe('Resolvers/searchHotel', async () => {
 
   describe('#searchHotel with amadeus', () => {
     let amadeusHotelSearchStub;
-    let createHotelProvidersStub;
     beforeEach(function () {
       //prepare stubs of revmaxclient
       amadeusHotelSearchStub = sinon.stub(amadeusClient, 'hotelSearch');
 
-      //now we need to make sure always revmax implementation is created by factory
-      createHotelProvidersStub = sinon.stub(providerFactory, 'createHotelProviders');
+      //in this suite  we need to make sure always revmax implementation is created by factory
       createHotelProvidersStub.returns([new HotelProviderAmadeus()]);
 
     });
