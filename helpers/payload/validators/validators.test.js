@@ -3,7 +3,7 @@ const GliderError = require('../../../helpers/error');
 const assert = require('chai').assert;
 
 describe('/createWithOffer payload validator', () => {
-  let payloads = require('./createWithOffer.json');
+  let payloads = require('./testdata/createWithOffer.json');
 
   describe('valid payload', () => {
     payloads.valid.forEach(payload => {
@@ -26,7 +26,7 @@ describe('/createWithOffer payload validator', () => {
 
 
 describe('/searchOffers payload validator', () => {
-  let payloads = require('./searchOffers.json');
+  let payloads = require('./testdata/searchOffers.json');
   describe('valid payload', () => {
     payloads.valid.forEach(payload => {
       it('should pass validation on valid payload', () => {
@@ -47,7 +47,7 @@ describe('/searchOffers payload validator', () => {
 });
 
 describe('/offers payload validator', () => {
-  let payloads = require('./offersPrice.json');
+  let payloads = require('./testdata/offersPrice.json');
   describe('valid payload', () => {
     payloads.valid.forEach(payload => {
       it('should pass validation on valid payload', () => {

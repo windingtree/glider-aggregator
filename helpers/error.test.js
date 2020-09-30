@@ -1,7 +1,7 @@
-const GliderError = require('../../helpers/error');
+const GliderError = require('./error');
 require('chai').should();
 
-describe('Helpers/error', () => {
+describe('GliderError', () => {
   const message = 'Error message';
   const status = 404;
   const code = 'KIND_OF_ERROR';

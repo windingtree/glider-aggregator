@@ -1,6 +1,6 @@
 // const { assertFailure } = require('../../helpers/assertions');
 const { zonedTimeToUtc } = require('date-fns-tz');
-const { airports } = require('../../helpers/parsers/timeZoneByAirportCode');
+const { airports } = require('./timeZoneByAirportCode');
 const {
   reduceObjectToProperty,
   splitPropertyBySpace,
@@ -17,7 +17,7 @@ const {
 
 require('chai').should();
 
-describe('Helpers/parsers', () => {
+describe('Parsers', () => {
 
   describe('#reduceObjectToProperty', () => {
     const arr = [
@@ -413,7 +413,7 @@ describe('Helpers/parsers', () => {
         (typeof a[prop]).should.to.equal('undefined');
       });
     });
-    
+
     it('should fulfill', async () => {
       const result = reduceToProperty(data, 'prop');
       result.forEach(a => {

@@ -39,7 +39,7 @@ module.exports.getGuarantee = async (id, offer) => {
     );
 
     guarantee = response.data;
-    
+
     // Check guarantee currency
     if (guarantee.currency !== offer.currency) {
       throw new GliderError(
@@ -111,4 +111,26 @@ module.exports.claimGuaranteeWithCard = async (id) => {
   }
 
   return claim;
+};
+
+// refund
+module.exports.refundSettlement = async (settlementId, amount, currency) => {
+  let result;
+  try {
+    const response = await axios.post(
+      `${config.SIMARD_URL}//balances/refund`,
+      {
+        'currency': currency,
+        'amount': amount,
+        'settlementId': settlementId,
+      },
+      {
+        headers: simardHeaders,
+      }
+    );
+    result = response.data;
+  } catch (e) {
+    processSimardError(e);
+  }
+  return result;
 };

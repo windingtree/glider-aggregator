@@ -6,22 +6,11 @@ const {
   mapRoomRate,
   mapPaymentCard,
   mapGuarantee,
-  // mapRoomStay,
-  // mapPOS,
-  // mapAddress,
-  // mapPersonName,
-  // mapProfile,
-  // mapResGuest,
-  // mapHotelReservationID,
-  // mapHotelReservation,
-  // mapHotelResNotif,
-  // mapSoapHeader,
-  // mapHotelResNotifSoap
-} = require('../../helpers/providers/hotels/erevmax/camaroTemplates/ota/otaHotelResNotifRQ');
+} = require('./otaHotelResNotifRQ');
 
 require('chai').should();
 
-describe('soapTemplates', () => {
+describe('providers/hotels/erevmax/camaroTemplates', () => {
   // const ageCodes = [10, 8];
 
   describe('otaHotelResNotifRQ', () => {
@@ -131,5 +120,6 @@ describe('soapTemplates', () => {
         (result).should.equal('<Guarantee\n  GuaranteeType="GuaranteeRequired"\n  GuaranteeCode="GCC"\n>\n  <GuaranteesAccepted>\n      <GuaranteeAccepted><PaymentCard CardCode="VI" CardNumber="4444333322221111" CardType="1" ExpireDate="1024" SeriesCode="111"><CardHolderName>TEST</CardHolderName></PaymentCard></GuaranteeAccepted>\n  </GuaranteesAccepted>\n  <GuaranteeDescription>\n      <Text>Credit Card Guarantee</Text>\n  </GuaranteeDescription>\n</Guarantee>');
       });
     });
+
   });
 });

@@ -140,8 +140,9 @@ const amadeusGdsConfig = {  //TEST
 };
 
 const erevmax = {
-  availabilityUrl: getConfigKey('EREVMAX_AVAILABILITY_URL') || 'https://ota-simulator.now.sh/api?ota=getOTAHotelAvailability',
-  reservationUrl: getConfigKey('EREVMAX_RESERVATION_URL') || 'https://ota-simulator.now.sh/api?ota=getOTAHotelReservation',
+  availabilityUrl: getConfigKey('EREVMAX_AVAILABILITY_URL') || 'https://ota-simulator.now.sh/api?ota=OTA_HotelAvailRS.xml',
+  reservationUrl: getConfigKey('EREVMAX_RESERVATION_URL') || 'https://ota-simulator.now.sh/api?ota=OTA_HotelResNotifRS_commit.xml',
+  cancellationUrl: getConfigKey('EREVMAX_CANCELLATION_URL') || 'https://ota-simulator.now.sh/api?ota=OTA_HotelResNotifRS_cancel.xml',
 };
 
 module.exports.debugInfo = () => {

@@ -4,6 +4,7 @@ const format = require('date-fns/format');
 const { v4: uuidv4 } = require('uuid');
 const emailValidator = require('email-validator');
 const { getCardCode } = require('../../../../transformInputData/utils/cardUtils');
+const GliderError = require('../../../../error');
 
 const buildCustomerAddress = pax => {
   let address;
@@ -33,13 +34,31 @@ const buildCustomerAddress = pax => {
 };
 module.exports.buildCustomerAddress = buildCustomerAddress;
 
+
 /*
   Maps an offer and passengers to an OTA HotelResNotifRQ structure
 */
-const mapFromOffer = (offer, passengers, card) => {
 
-  const orderId = uuidv4();
-  const resId = orderId.substr(24);
+
+//prepare booking cancellation data
+const mapCancelRequest = (offer, passengers, card, resId) => {
+  //when we want to cancel existing booking, resId needs to be provided
+  return _mapHotelResNotifRQ(offer, passengers, card, resId, 'Cancel');
+};
+
+
+//prepare booking creation data
+const mapBookRequest = (offer, passengers, card) => {
+  //when we create a new booking, we need to generate it's ID
+  const resId = uuidv4().substr(24);
+  return _mapHotelResNotifRQ(offer, passengers, card, resId, 'Commit');
+};
+
+const _mapHotelResNotifRQ = (offer, passengers, card, resId, operation) => {
+  if (!['Commit', 'Cancel'].includes(operation)) {
+    throw new GliderError(`Unknown mode ${operation}, should be one of 'Commit' or 'Cancel'`, 500);
+  }
+
 
   // Build the POS
   const pos = {
@@ -168,7 +187,7 @@ const mapFromOffer = (offer, passengers, card) => {
 
   return {
     'OTA_HotelResNotifRQ': {
-      ResStatus: 'Commit',
+      ResStatus: operation,
       Version: '2.000',
       TimeStamp: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"), // eslint-disable-line quotes
       xmlns: 'http://www.opentravel.org/OTA/2003/05',
@@ -178,7 +197,7 @@ const mapFromOffer = (offer, passengers, card) => {
         HotelReservation: {
           CreateDateTime: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"), // eslint-disable-line quotes
           CreatorID: 'WindingTree',
-          ResStatus: 'Commit',
+          ResStatus: operation,
           UniqueID: {
             ID: resId,
             Type: '14',
@@ -218,4 +237,7 @@ const mapFromOffer = (offer, passengers, card) => {
   };
 };
 
-module.exports.mapFromOffer = mapFromOffer;
+module.exports =
+  {
+    mapBookRequest: mapBookRequest, mapCancelRequest: mapCancelRequest, buildCustomerAddress,
+  };

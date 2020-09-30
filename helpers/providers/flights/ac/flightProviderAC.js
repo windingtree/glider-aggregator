@@ -35,7 +35,7 @@ const {
   FaultsTransformTemplate_AC: FulfillFaultsTransformTemplate_AC,
 } = require('./camaroTemplates/fulfillOrder');
 
-module.exports = class FlightProviderAC extends FlightProvider {
+class FlightProviderAC extends FlightProvider {
   constructor () {
     super();
   }
@@ -82,3 +82,5 @@ module.exports = class FlightProviderAC extends FlightProvider {
   }
 };
 
+
+module.exports = { FlightProviderAC };

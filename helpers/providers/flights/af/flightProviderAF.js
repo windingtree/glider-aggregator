@@ -16,7 +16,7 @@ const { ErrorsTransformTemplate_AF: OrderCreateErrorsTransformTemplate_AF } = re
 const { ErrorsTransformTemplate_AF: FulfillErrorsTransformTemplate_AF } = require('./camaroTemplates/fulfillOrder');
 
 
-module.exports = class FlightProviderAF extends FlightProvider {
+class FlightProviderAF extends FlightProvider {
   constructor () {
     super();
   }
@@ -62,3 +62,4 @@ module.exports = class FlightProviderAF extends FlightProvider {
   }
 };
 
+module.exports = { FlightProviderAF };

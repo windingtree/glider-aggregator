@@ -1,4 +1,5 @@
 const { reduceToObjectByKey } = require('../../../../parsers');
+const { format, parseISO } = require('date-fns');
 
 //request
 
@@ -10,6 +11,8 @@ const createSearchRequest = (location, departure, arrival, guests) => {
     currency: 'EUR',
     bestRateOnly: false,
     lang: 'EN',
+    checkInDate: format(parseISO(arrival), 'yyyy-MM-dd'),
+    checkOutDate: format(parseISO(departure), 'yyyy-MM-dd'),
   };
   return request;
 };
@@ -19,11 +22,10 @@ const createSearchRequest = (location, departure, arrival, guests) => {
 //response
 
 const processSearchResponse = (response) => {
-  const { data } = response;
   const accommodations = {};
   const pricePlans = {};
   const offers = {};
-  data.forEach(hotelOffer => {
+  response.result && response.result.data.forEach(hotelOffer => {
     try {
       let singleHotelResponse = convertHotelOffers(hotelOffer);
       Object.assign(accommodations, singleHotelResponse.accommodations);

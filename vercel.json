@@ -115,8 +115,10 @@
 
         "STAGING_EREVMAX_RESERVATION_URL": "@staging.glider-aggregator.erevmax_reservation_url",
         "STAGING_EREVMAX_AVAILABILITY_URL": "@staging.glider-aggregator.erevmax_availability_url",
+        "STAGING_EREVMAX_CANCELLATION_URL": "@staging.glider-aggregator.erevmax_cancellation_url",
         "PRODUCTION_EREVMAX_RESERVATION_URL": "@production.glider-aggregator.erevmax_reservation_url",
         "PRODUCTION_EREVMAX_AVAILABILITY_URL": "@production.glider-aggregator.erevmax_availability_url",
+        "PRODUCTION_EREVMAX_CANCELLATION_URL": "@production.glider-aggregator.erevmax_cancellation_url",
 
         "SIMARD_JWT": "@staging.glider-aggregator.jwt",
         "GLIDER_ORGID": "@staging.glider-aggregator.orgid",
@@ -141,9 +143,16 @@
         "ETHEREUM_NETWORK": "@staging.ethereum_network",
         "PRODUCTION_ETHEREUM_NETWORK": "@production.ethereum_network",
 
-        "AMADEUS_CLIENT_ID": "@staging.glider-aggregator.amadeus_client_id",
-        "AMADEUS_CLIENT_SECRET": "@staging.glider-aggregator.amadeus_client_secret",
-        "AMADEUS_ENVIRONMENT": "@staging.glider-aggregator.amadeus_environment",
-        "AMADEUS_QUEUE_OFFICE_ID": "@staging.glider-aggregator.amadeus_queue_office_id"
+        "STAGING_AMADEUS_CLIENT_ID": "@staging.glider-aggregator.amadeus_client_id",
+        "STAGING_AMADEUS_CLIENT_SECRET": "@staging.glider-aggregator.amadeus_client_secret",
+        "STAGING_AMADEUS_ENVIRONMENT": "@staging.glider-aggregator.amadeus_environment",
+        "STAGING_AMADEUS_QUEUE_OFFICE_ID": "@staging.glider-aggregator.amadeus_queue_office_id",
+        "STAGING_AMADEUS_OWNERSHIP_OFFICE_ID": "@staging.glider-aggregator.amadeus_ownership_office_id",
+
+        "PRODUCTION_AMADEUS_CLIENT_ID": "@production.glider-aggregator.amadeus_client_id",
+        "PRODUCTION_AMADEUS_CLIENT_SECRET": "@production.glider-aggregator.amadeus_client_secret",
+        "PRODUCTION_AMADEUS_ENVIRONMENT": "@production.glider-aggregator.amadeus_environment",
+        "PRODUCTION_AMADEUS_QUEUE_OFFICE_ID": "@production.glider-aggregator.amadeus_queue_office_id",
+        "PRODUCTION_AMADEUS_OWNERSHIP_OFFICE_ID": "@production.glider-aggregator.amadeus_ownership_office_id"
     }
 }

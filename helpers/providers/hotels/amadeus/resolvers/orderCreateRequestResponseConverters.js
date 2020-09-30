@@ -47,6 +47,8 @@ const processOrderResponse = (response) => {
   const { id: _id, associatedRecords: _associatedRecords } = data[0];
   let order = {
     orderId: _id,
+    response:'Committed',
+    reservationNumber:data.providerConfirmationId,
     order: {
       price: undefined,
       passengers: [],

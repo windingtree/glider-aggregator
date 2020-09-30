@@ -1,9 +1,9 @@
-const FlightSearchACClient = require('./flights/ac/flightProviderAC');
-const FlightSearchAFClient = require('./flights/af/flightProviderAF');
-const FlightSearchAmadeusClient = require('./flights/amadeus/flightProvider1A');
-const HotelProviderRevMax = require('./hotels/erevmax/hotelProviderRevMax');
-const HotelProviderRevMaxSimulator = require('./hotels/simulator/hotelProviderRevMaxSimulator');
-const HotelProviderAmadeus = require('./hotels/amadeus/hotelProviderAmadeus');
+const { FlightProviderAC } = require('./flights/ac/flightProviderAC');
+const { FlightProviderAF } = require('./flights/af/flightProviderAF');
+const { FlightProvider1A } = require('./flights/amadeus/flightProvider1A');
+const { HotelProviderRevMax } = require('./hotels/erevmax/hotelProviderRevMax');
+const { HotelProviderRevMaxSimulator } = require('./hotels/simulator/hotelProviderRevMaxSimulator');
+const { HotelProviderAmadeus } = require('./hotels/amadeus/hotelProviderAmadeus');
 const GliderError = require('../error');
 
 /**
@@ -15,13 +15,13 @@ const createFlightProvider = (providerId) => {
   let providerImpl;
   switch (providerId) {
     case 'AF':
-      providerImpl = new FlightSearchAFClient();
+      providerImpl = new FlightProviderAF();
       break;
     case 'AC':
-      providerImpl = new FlightSearchACClient();
+      providerImpl = new FlightProviderAC();
       break;
     case '1A':
-      providerImpl = new FlightSearchAmadeusClient();
+      providerImpl = new FlightProvider1A();
       break;
     default:
       throw new GliderError(`Unknown flight provider ${providerId}`, 500);
@@ -65,7 +65,7 @@ const createHotelProvider = (providerId) => {
   return providerImpl;
 };
 
-/**
+/**revmax
  * Same as #createHotelProvider but takes an array of providerIDs as a parameter and returns array of hotel providers
  * @param providerIDs
  * @returns [] array of instances of HotelProvider implementations
@@ -78,11 +78,9 @@ const createHotelProviders = (providerIDs) => {
 };
 
 
-
-
 module.exports = {
-  createFlightProviders: createFlightProviders,
-  createFlightProvider: createFlightProvider,
-  createHotelProvider: createHotelProvider,
-  createHotelProviders: createHotelProviders,
+  createFlightProviders,
+  createFlightProvider,
+  createHotelProvider,
+  createHotelProviders,
 };

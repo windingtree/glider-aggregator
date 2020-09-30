@@ -1,6 +1,6 @@
 const HotelProvider = require('../../hotelProvider');
 
-module.exports = class HotelProviderRevMaxSimulator extends HotelProvider {
+class HotelProviderRevMaxSimulator extends HotelProvider {
   constructor () {
     super();
   }
@@ -32,3 +32,5 @@ module.exports = class HotelProviderRevMaxSimulator extends HotelProvider {
     'revmax-simulator';
   }
 };
+
+module.exports = { HotelProviderRevMaxSimulator };

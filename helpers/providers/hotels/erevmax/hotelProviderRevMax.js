@@ -2,17 +2,17 @@ const HotelProvider = require('../../hotelProvider');
 const { manager: hotelsManager } = require('../../../models/mongo/hotels');
 const GliderError = require('../../../error');
 const offer = require('../../../models/offer');
-const { createSearchRequest, processSearchResponse, createHotelBookRequest, processHotelBookResponse } = require('./requestResponseConverters');
+const { createSearchRequest, processSearchResponse, createHotelBookRequest, processHotelBookResponse, createHotelBookingCancellation, processHotelBookingCancellation } = require('./requestResponseConverters');
 const { transform } = require('camaro');
 
 //search templates
 const { errorsTransformTemplate } = require('./camaroTemplates/hotelAvail');
 
 //order create templates
-const { erevmaxHotelBook, erevmaxHotelSearch } = require('./revmaxClient');
+const revmaxclient = require('./revmaxClient');
 
 
-module.exports = class HotelProviderRevMax extends HotelProvider {
+class HotelProviderRevMax extends HotelProvider {
   constructor () {
     super();
   }
@@ -44,26 +44,49 @@ module.exports = class HotelProviderRevMax extends HotelProvider {
     }
     const guestCounts = getGuestCounts(guests);
     let requestBody = createSearchRequest(hotelCodes, arrival, departure, guests);
-    let response = await erevmaxHotelSearch(requestBody);
+    let response = await revmaxclient.erevmaxHotelSearch(requestBody);
     await assertRevmaxErrors(response);
     let offersToStore = {};
     let searchResults = await processSearchResponse(response, guestCounts, offersToStore);
 
-    // Store the offers
-    if (!process.env.TESTING) {
-      /* istanbul ignore next */
-      await offer.offerManager.storeOffers(offersToStore);
-    }
-
+    context.offersToStore=offersToStore;
     return searchResults;
   }
 
   async createOrder (offer, passengers, card) {
     // Build the request
     let otaRequestBody = createHotelBookRequest(offer, passengers, card);
-    let response = await erevmaxHotelBook(otaRequestBody);
+
+    let response = await revmaxclient.erevmaxHotelBook(otaRequestBody);
     await assertRevmaxErrors(response);
     let result = await processHotelBookResponse(response);
+    //remove unnecessary properties
+    delete result.success;
+    delete result.errors;
+
+    // Transform the XML answer
+    return result;
+  }
+
+  async cancelOrder (order, offer, passengers, card) {
+    const { order: { response, reservationNumber } } = order;
+    let otaRequestBody = createHotelBookingCancellation(offer, passengers, card, reservationNumber);
+    console.log('Request', JSON.stringify(otaRequestBody));
+    let revMaxResponse = await revmaxclient.erevmaxHotelBookingCancel(otaRequestBody);
+    await assertRevmaxErrors(revMaxResponse);
+    let result = await processHotelBookingCancellation(revMaxResponse);
+    let { response: resResponseType, reservationNumber: cancelledReservationId } = result;
+    if (resResponseType !== 'Cancelled') {
+      throw new GliderError(`Unrecognized resResponseType from provider - expected [Cancelled], received [${response}]`);
+    }
+
+    if (!cancelledReservationId || cancelledReservationId !== reservationNumber) {
+      throw new GliderError(`Hotel provider did not provide cancelled reservationID, expected:${reservationNumber}, received:${cancelledReservationId}`);
+    }
+    //remove unnecessary properties
+    delete result.success;
+    delete result.errors;
+
     // Transform the XML answer
     return result;
   }
@@ -137,4 +160,4 @@ const getGuestCounts = passengers => {
 
   return guestCounts;
 };
-
+module.exports = { rectangleToPolygon, getGuestCounts, HotelProviderRevMax };

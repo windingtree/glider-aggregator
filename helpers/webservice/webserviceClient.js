@@ -3,7 +3,6 @@ const { logRQRS } = require('../log/logRQ');
 const GliderError = require('../error');
 
 const webserviceDefinition = (webserviceName, url, soapAction, customHeaders = {}, timeout = -1) => {
-
   return {
     webserviceName: webserviceName,
     url: url,
@@ -58,7 +57,7 @@ class WebserviceClient {
           timeout, // Response timeout
         });
       clearTimeout(connectionTimeout);
-      logRQRS(response.data, `${action} - response`);
+      logRQRS(response, `${action} - response`);
     } catch (error) {
       logRQRS(error, `${action} - response error`);
       throw new GliderError(error.message, 500);
@@ -69,6 +68,6 @@ class WebserviceClient {
 
 
 module.exports = {
-  webserviceDefinition: webserviceDefinition,
-  WebserviceClient: WebserviceClient,
+  webserviceDefinition,
+  WebserviceClient,
 };

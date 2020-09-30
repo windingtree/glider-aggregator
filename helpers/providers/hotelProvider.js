@@ -39,7 +39,12 @@ module.exports = class HotelProvider {
   }
 
   // eslint-disable-next-line no-unused-vars
-  createOrder (offer, passengers, card) {
+  async createOrder (offer, passengers, card) {
+    throw new Error('This method must be implemented in subclass');
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  async cancelOrder (order, offer, passengers, card) {
     throw new Error('This method must be implemented in subclass');
   }
 };

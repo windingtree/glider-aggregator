@@ -55,6 +55,7 @@ module.exports = basicDecorator(async (req, res) => {
       order: fulfillResults,
       offer: order.offer,
     },
+    'CREATED'
   );
 
   res.status(200).json(fulfillResults);

@@ -2,9 +2,9 @@ require('chai').should();
 const {
   convertObjectToXML,
   getACSystemId
-} = require('../../helpers/soapTemplates/utils/xmlUtils');
+} = require('./xmlUtils');
 
-describe('XML Utils', () => {
+describe('soapTemplates/XML Utils', () => {
 
   describe('#convertObjectToXML', () => {
     const xml = '<Test id="123456"><tag1>tag1</tag1><tags><tag2 param1="param1" param2="param2">1</tag2><tag2 param1="param1" param2="param2">2</tag2></tags></Test>';
@@ -29,7 +29,7 @@ describe('XML Utils', () => {
         }
       }
     };
-        
+
     it('should convert object to XML', async () => {
       const result = convertObjectToXML(obj).join('');
       (result).should.equal(xml);

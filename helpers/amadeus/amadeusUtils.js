@@ -58,7 +58,7 @@ const amadeusEndpointRequest = async (ndcBody, action) => {
         response = await amadeusClient.booking.hotelBookings.post(requestStr);
         break;
     }
-    logRQRS(ndcBody, `${action}-response`);
+    logRQRS(response, `${action}-response`);
   } catch (error) {
     logRQRS(error, `${action}-error`);
     let errorMessage = 'Unknown error occurred'; //default error message
@@ -92,10 +92,39 @@ const assertAmadeusFault = (response, error) => {
 };
 
 
+const flightOffersSearch = async (request) => {
+  return await amadeusEndpointRequest(request, REQUESTS.SEARCHOFFERS);
+};
+
+const seatmapRequest = async (request) => {
+  return await amadeusEndpointRequest(request, REQUESTS.SEATMAP);
+};
+
+const flightOfferPrice = async (request) => {
+  return await amadeusEndpointRequest(request, REQUESTS.PRICEOFFERS);
+};
+
+const flightOrderCreate = async (request) => {
+  return await amadeusEndpointRequest(request, REQUESTS.ORDERCREATE);
+};
+
+const hotelSearch = async (request) => {
+  return await amadeusEndpointRequest(request, REQUESTS.HOTEL_SEARCH);
+};
+
+const hotelBook = async (request) => {
+  return await amadeusEndpointRequest(request, REQUESTS.HOTEL_ORDER_CREATE);
+};
+
 module.exports = {
   transformAmadeusFault,
   assertAmadeusFault,
   getAmadeusClient,
-  amadeusEndpointRequest: amadeusEndpointRequest,
-  REQUESTS,
+  amadeusEndpointRequest,
+  flightOffersSearch,
+  seatmapRequest,
+  flightOfferPrice,
+  flightOrderCreate,
+  hotelSearch,
+  hotelBook
 };

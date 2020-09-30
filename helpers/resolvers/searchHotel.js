@@ -1,16 +1,16 @@
-const { createHotelProviders } = require('../providers/providerFactory');
+const providerFactory = require('../providers/providerFactory');
 const GliderError = require('../error');
 const { deepMerge } = require('../parsers');
-
+const offer = require('../models/offer');
 module.exports.searchHotel = async (body) => {
   if (!body.passengers || !body.passengers.length) {
     throw new GliderError('Missing passenger types', 400);
   }
 
   const { accommodation, passengers: guests } = body;
-  let context = {};
 
-  let providerHandlers = createHotelProviders(['revmax']);
+
+  let providerHandlers = providerFactory.createHotelProviders(['revmax', '1A']);
 
   //search for hotels with each provider and collect responses (each response is having following structure: {provider, response, errors}
   let responses = await Promise.all(providerHandlers.map(async providerImpl => {
@@ -20,7 +20,11 @@ module.exports.searchHotel = async (body) => {
       error: undefined,
     };
     try {
+      let context = {};//FIXME - use class instead
       result.response = await providerImpl.search(context, accommodation, guests);
+      if(context.offersToStore) {
+        await offer.offerManager.storeOffers(context.offersToStore);
+      }
     } catch (error) {
       result.error = error;
     }

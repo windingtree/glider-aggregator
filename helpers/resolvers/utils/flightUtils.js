@@ -1,4 +1,3 @@
-const axios = require('axios');
 const caDestinations = require('./cadest.json');
 const GliderError = require('../../error');
 const {
@@ -6,103 +5,12 @@ const {
   FlightOffer,
 } = require('../../models/offer');
 
-const { getAmadeusClient } = require('../../amadeus/amadeusUtils');
-// Send a request to the provider
-module.exports.callProvider = async (
-  provider,
-  apiEndpoint,
-  apiKey,
-  ndcBody,
-  SOAPAction,
-  templates,
-) => {
-  let response;
-  // let urlParts = apiEndpoint.split('/');
-  // let endpointId = urlParts[urlParts.length - 1];
-  try {
-    // Request connection timeouts can be handled via CancelToken only
-    const timeout = 60 * 1000; // 60 sec
-    const source = axios.CancelToken.source();
-    const connectionTimeout = setTimeout(() => source.cancel(
-      `Cannot connect to the source: ${apiEndpoint}`,
-    ), timeout);// connection timeout
-    response = await axios.post(
-      apiEndpoint,
-      ndcBody,
-      {
-        headers: {
-          'Content-Type': 'application/xml;charset=UTF-8',
-          'Accept-Encoding': 'gzip,deflate',
-          'Cache-Control': 'no-cache',
-          'Connection': 'keep-alive',
-          'api_key': apiKey,
-          'X-apiKey': apiKey,
-          ...(SOAPAction ? { SOAPAction } : {}),
-        },
-        cancelToken: source.token, // Request timeout
-        timeout, // Response timeout
-      },
-    );
-    clearTimeout(connectionTimeout);
-  } catch (error) {
-    return {
-      provider,
-      templates,
-      response: error.response,
-      error,
-    };
-  }
-
-  return {
-    provider,
-    templates,
-    response,
-  };
+const getACDestinations = () =>{
+  return caDestinations;
 };
 
-
-// Send a request to REST endpoint
-module.exports.callProviderRest = async (
-  provider,
-  apiEndpoint,
-  apiKey,
-  ndcBody,
-  SOAPAction,
-) => {
-  let response;
-  console.log('Legacy callProviderRest');
-  try {
-    const amadeusClient = getAmadeusClient();
-    if (SOAPAction === 'SEARCHOFFERS')
-      response = await amadeusClient.shopping.flightOffersSearch.post(JSON.stringify(ndcBody));
-    else if (SOAPAction === 'PRICEOFFERS')
-      response = await amadeusClient.shopping.flightOffers.pricing.post(JSON.stringify(ndcBody));
-    else if (SOAPAction === 'ORDERCREATE')
-      response = await amadeusClient.booking.flightOrders.post(JSON.stringify(ndcBody));
-    else if (SOAPAction === 'SEATMAP') {
-      response = await amadeusClient.shopping.seatmaps.post(JSON.stringify(ndcBody));
-    } else {
-      throw new Error('Unknown action:' + SOAPAction);
-    }
-  } catch (error) {
-    let defaultErr = {
-      'title': 'UNKNOWN ERROR HAS OCCURED',
-      'status': 500,
-    };
-
-    //extract list of errors from response (or return default - unknown error)
-    let errors = (error && error.response && error.response.result && error.response.result.errors) ? error.response.result.errors : [defaultErr];
-
-    return {
-      provider,
-      response: {},
-      error: errors
-    };
-  }
-  return {
-    provider,
-    response
-  };
+const get1ADestinations = () =>{
+  return caDestinations;
 };
 
 // Fetching of the flight operators associated with the given origin and destination
@@ -113,24 +21,12 @@ module.exports.selectProvider = (origin, destination) => {
   const sdMapping = [
     {
       provider: '1A',
-      destinations: caDestinations,
+      destinations: get1ADestinations(),
     },
     {
       provider: 'AC',
-      destinations: caDestinations,
+      destinations: getACDestinations(),
     },
-    /*    {
-          provider: 'AC',
-          destinations: caDestinations,
-        },*/
-    /*    {
-          provider: 'AF',
-          destinations: caDestinations,
-        },*/
-    // {
-    //   provider: 'AC',
-    //   destinations: caDestinations
-    // }
   ];
 
   return sdMapping

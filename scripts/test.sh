@@ -16,24 +16,24 @@ cleanup() {
 
 # Build library before the testing
 if [ -z "$@" ]; then
-    testDir="./test/spec/**/*.js"
+    testDir="./helpers/**/*.js"
 else
     testDir="$@"
 fi
 
-if [ "$COVERAGE" = true ]; then 
+if [ "$COVERAGE" = true ]; then
     echo "Running tests with coverage"
-    npx nyc --reporter lcov mocha -r ./node_modules/dotenv/config --exit -R spec --timeout 70000 --recursive ./test/spec
+    npx nyc --reporter lcov mocha -r ./node_modules/dotenv/config --exit -R spec --timeout 70000 --recursive ./helpers/**/*.js
 
     if [ "$CONTINUOUS_INTEGRATION" = true ]; then
         cat coverage/lcov.info | npx coveralls
     fi
 
-else 
+else
     echo "Running tests without coverage"
 
     if [ -z "$@" ]; then
-        testDir="./test/spec/**/*.js"
+        testDir="./helpers/**/*.js"
     else
         testDir="$@"
     fi

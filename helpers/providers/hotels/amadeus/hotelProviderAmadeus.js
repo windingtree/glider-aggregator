@@ -6,9 +6,10 @@ const { convertPolygonToCircle } = require('./enclosingCircle');
 const HotelProvider = require('../../hotelProvider');
 const GliderError = require('../../../../helpers/error');
 const offer = require('../../../models/offer');
-const { amadeusEndpointRequest, REQUESTS, assertAmadeusFault } = require('../../../amadeus/amadeusUtils');
+const { assertAmadeusFault } = require('../../../amadeus/amadeusUtils');
+const amadeusClient = require('../../../amadeus/amadeusUtils');
 
-module.exports = class HotelProviderAmadeus extends HotelProvider {
+class HotelProviderAmadeus extends HotelProvider {
   constructor () {
     super();
   }
@@ -31,7 +32,7 @@ module.exports = class HotelProviderAmadeus extends HotelProvider {
     //Build the request
     const request = createSearchRequest(location, departure, arrival, guests);
     //Make a call to API endpoint
-    let response = await amadeusEndpointRequest(request, REQUESTS.HOTEL_SEARCH);
+    let response = await amadeusClient.hotelSearch(request);
     assertAmadeusFault(response);
     //process response
     let searchResults = processSearchResponse(response);
@@ -54,13 +55,13 @@ module.exports = class HotelProviderAmadeus extends HotelProvider {
         accOffer.price.currency,
       );
     });
-    await offer.offerManager.storeOffers(offersToStore);
+    context.offersToStore=offersToStore;
     return searchResults;
   }
 
   async createOrder (offer, passengers, card) {
     let orderRequest = createOrderRequest(offer, passengers, card);
-    let response = await amadeusEndpointRequest(orderRequest, REQUESTS.HOTEL_ORDER_CREATE);
+    let response = await amadeusClient.hotelBook(orderRequest);
     assertAmadeusFault(response);
     return processOrderResponse(response);
   }
@@ -107,3 +108,5 @@ const getGuestCounts = passengers => {
   return guestCounts;
 };
 
+
+module.exports = { HotelProviderAmadeus };
