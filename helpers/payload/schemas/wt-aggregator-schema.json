@@ -701,7 +701,6 @@
       "UUID": {
         "description": "Unique identifier for Offers and Orders",
         "type": "string",
-        "format": "uuid",
         "minLength": 8,
         "maxLength": 36,
         "example": "11111111-2222-3333-4444-000000000001"
