@@ -46,9 +46,17 @@ class FlightProvider1A extends FlightProvider {
     // create request
     let request = createOrderCreateRequest(offer, requestBody, guaranteeClaim);
     //make a call
-    const response = await amadeusClient.flightOrderCreate(request);
-    // process any potential errors
-    assertAmadeusFault(response);
+    let  response;
+    try {
+      response = await amadeusClient.flightOrderCreate(request);
+      // process any potential errors
+      assertAmadeusFault(response);
+    }catch(err){
+      console.log('Error while trying to create an order:', err);
+      //retry
+      response = await amadeusClient.flightOrderCreate(request);
+      assertAmadeusFault(response);
+    }
     // Otherwise parse as a result
     return orderCreateResponseProcessor(response.result);
   }
