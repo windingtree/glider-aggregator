@@ -30,8 +30,15 @@ class FlightProvider1A extends FlightProvider {
 
   async priceOffers (body, offers) {
     let priceRQ = createOfferPriceRequest(offers.map(offer => offer.extraData.rawOffer));
-    const response = await amadeusClient.flightOfferPrice(priceRQ);
-    assertAmadeusFault(response);
+    let response;
+    try {
+      response = await amadeusClient.flightOfferPrice(priceRQ);
+      assertAmadeusFault(response);
+    }catch(err){
+      console.log('Error while trying to price an offer:', err);
+      response = await amadeusClient.flightOfferPrice(priceRQ);
+      assertAmadeusFault(response);
+    }
     return processPriceOfferResponse(response.result);
   }
 
