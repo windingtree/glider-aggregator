@@ -11,7 +11,7 @@ describe('Resolvers/utils/flightUtils', () => {
       (providers).should.be.an('array').to.have.length(2);
       // (providers).should.be.an('array').to.have.length(2);
       (providers).should.include('AC');
-      (providers).should.include('1A');
+      (providers).should.include('AMADEUS');
     });
 
     it('should fetch an empty array in wrong origin and provided', async () => {

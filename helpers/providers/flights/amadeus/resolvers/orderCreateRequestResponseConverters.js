@@ -54,14 +54,13 @@ const createOrderCreateRequest = (order, body) => {
   let request = {
     data: {
       type: 'flight-order',
-      queuingOfficeId: config.queueingOfficeId,
       flightOffers: [rawOffer],
       travelers: [...passengers],
     },
   };
   //do we need to queue a PNR to a queue?
   let queuingOfficeId = getFeatureFlag('flights.amadeus.queuingOfficeId');
-  if (ownerOfficeId && ownerOfficeId.length > 0) {
+  if (queuingOfficeId && queuingOfficeId.length > 0) {
     request.data.queuingOfficeId = queuingOfficeId;
   }
 
