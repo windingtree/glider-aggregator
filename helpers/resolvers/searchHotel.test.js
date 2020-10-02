@@ -103,7 +103,7 @@ describe('Resolvers/searchHotel', async () => {
       erevmaxHotelSearchStub.returns(Promise.resolve(revmaxSearchResponseOK));
       await assertFailure(
         searchHotel(SearchCriteriaFixtures.hotelSearchFixtureRectangle_1ADT),
-        'Provider [revmax]: Invalid Start Date. Start Date Must Not Be Before Date', 502);
+        'Provider [EREVMAX]: Invalid Start Date. Start Date Must Not Be Before Date', 502);
     });
 
     it('should correctly process case where there are no hotels at a given location', async () => {
@@ -116,7 +116,7 @@ describe('Resolvers/searchHotel', async () => {
 
       await assertFailure(
         searchHotel(SearchCriteriaFixtures.hotelSearchFixtureRectangle_1ADT),
-        'Provider [revmax]: No matching hotels', 502);
+        'Provider [EREVMAX]: No matching hotels', 502);
     });
 
   });
