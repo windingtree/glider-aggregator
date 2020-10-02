@@ -3,7 +3,6 @@ const { createPrice, convertGenderFromAmadeusToGlider } = require('./amadeusForm
 const { convertGenderFromGliderToAmadeus } = require('./amadeusFormatUtils');
 const GliderError = require('../../../../error');
 const { getFeatureFlag } = require('../../../../../config');
-const config = require('../../../../../config').amadeusGdsConfig;
 
 const createTraveller = (id, pax) => {
   const { civility, firstnames, lastnames, birthdate, contactInformation } = pax;
