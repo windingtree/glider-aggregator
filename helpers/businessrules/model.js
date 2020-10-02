@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const config = require('../../config');
 
 const BRESchema = mongoose.Schema({
   topic: { type: String, required: true },

@@ -15,7 +15,7 @@ describe('Resolvers/utils/flightUtils', () => {
       getFeatureFlagStub.restore();
     });
     it('should select AirCanada and Amadeus providers for proper origin and destination', async () => {
-      getFeatureFlagStub.returns(['AMADEUS','AC']); //simulate that AMADEUS and AirCanada providers are enabled
+      getFeatureFlagStub.returns(['AMADEUS', 'AC']); //simulate that AMADEUS and AirCanada providers are enabled
       const providers = selectProvider('YEA', 'YYC');
       (providers).should.be.an('array').to.have.length(2);
       (providers).should.include('AC');
