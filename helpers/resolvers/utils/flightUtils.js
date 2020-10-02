@@ -4,7 +4,7 @@ const {
   offerManager,
   FlightOffer,
 } = require('../../models/offer');
-const { getFeatureFlag } = require('../../../config');
+const config = require('../../../config');
 
 
 const getACDestinations = () =>{
@@ -49,7 +49,7 @@ module.exports.selectProvider = (origin, destination) => {
     }, []);// temporary until we do not have a specific set for AF - ['AF']
 
   //of those providers that were found, only use those that are specified by business rules/feature flag
-  let enabledFlightProviders = getFeatureFlag('flights.providers') || [];
+  let enabledFlightProviders = config.getFeatureFlag('flights.providers') || [];
   providers = providers.filter(provider=>enabledFlightProviders.includes(provider));
   return providers;
 };

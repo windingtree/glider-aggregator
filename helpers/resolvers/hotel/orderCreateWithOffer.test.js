@@ -9,7 +9,7 @@ require('chai').should();
 describe('Resolvers/hotel', () => {
   describe('#orderCreateWithOffer', () => {
     const offer = {
-      provider: 'revmax',
+      provider: 'EREVMAX',
       hotelCode: '07119',
       rateCode: 'LSAVE',
       roomTypeCode: 'ND',
