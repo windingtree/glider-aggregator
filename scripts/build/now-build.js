@@ -4,7 +4,6 @@ const { getFeatureFlags } = require('../../helpers/businessrules/featureFlagEngi
 const githubBranch = process.env.VERCEL_GITHUB_COMMIT_REF || process.env.NOW_GITHUB_COMMIT_REF || 'undefined';
 const environment = (githubBranch === 'master' ? 'production' : 'staging');
 
-console.log('Generate env.json');
 // Write it to the env.json configuration file
 fs.writeFile('env.json', `${JSON.stringify({
   environment: environment,
@@ -25,7 +24,7 @@ getFeatureFlags().then(features => {
       throw err;
     }
   });
-}).catch(err=>{
-  console.error('Failed to retrieve feature flags!', err)
+}).catch(err => {
+  console.error('Failed to retrieve feature flags!', err);
   throw err;
 });

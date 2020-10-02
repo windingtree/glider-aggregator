@@ -153,5 +153,11 @@
 
         "STAGING_BUSINESS_RULES_MONGO_URL": "@staging.glider-aggregator.business_rules_mongo_url",
         "PRODUCTION_BUSINESS_RULES_MONGO_URL": "@production.glider-aggregator.business_rules_mongo_url"
+    },
+    "build": {
+        "env": {
+            "STAGING_BUSINESS_RULES_MONGO_URL": "@staging.glider-aggregator.business_rules_mongo_url",
+            "PRODUCTION_BUSINESS_RULES_MONGO_URL": "@production.glider-aggregator.business_rules_mongo_url"
+        }
     }
 }
