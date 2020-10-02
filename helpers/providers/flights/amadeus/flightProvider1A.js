@@ -9,6 +9,7 @@ const { orderCreateResponseProcessor, createOrderCreateRequest } = require('./re
 const { processRetrieveSeatmapResponse, createRetrieveSeatmapRequest } = require('./resolvers/seatmapRequestResponseConverters');
 
 
+
 class FlightProvider1A extends FlightProvider {
   constructor () {
     super();
@@ -67,7 +68,7 @@ class FlightProvider1A extends FlightProvider {
   }
 
   getProviderID () {
-    return '1A';
+    return 'AMADEUS';
   }
 };
 

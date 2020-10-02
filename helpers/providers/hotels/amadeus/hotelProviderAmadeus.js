@@ -67,7 +67,7 @@ class HotelProviderAmadeus extends HotelProvider {
   }
 
   getProviderID () {
-    return '1A';
+    return 'AMADEUS';
   }
 };
 

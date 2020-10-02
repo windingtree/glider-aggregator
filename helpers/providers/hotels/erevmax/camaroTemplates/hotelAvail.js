@@ -2,7 +2,7 @@ const hotelAvailTransformTemplate = {
   accommodations: [
     '/soap:Envelope/soap:Body/OTA_HotelAvailRS/HotelStays/HotelStay',
     {
-      _provider_: '#erevmax',
+      _provider_: '#EREVMAX',
       _id_: 'BasicPropertyInfo/@HotelCode',
       name: 'BasicPropertyInfo/@HotelName',
       type: '#hotel',
@@ -56,7 +56,7 @@ const hotelAvailTransformTemplate = {
   _roomStays_: [
     '/soap:Envelope/soap:Body/OTA_HotelAvailRS/RoomStays/RoomStay',
     {
-      _provider_: '#erevmax',
+      _provider_: '#REVMAX',
       _hotelCode_: 'BasicPropertyInfo/@HotelCode',
       _roomRates_: [
         'RoomRates/RoomRate',

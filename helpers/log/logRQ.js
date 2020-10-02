@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 const fs = require('fs');
+const { stringifyCircular } = require('../json');
 
 // eslint-disable-next-line no-unused-vars
 const logRQRS = (data = '', suffix = '', provider = '') => {
-/*
   const FOLDER = '/home/kurt/projects/glider-aggregator/temp';
   let ts = Date.now();
   let extension = 'json';
@@ -13,13 +13,14 @@ const logRQRS = (data = '', suffix = '', provider = '') => {
         extension = 'xml';
     }
     if (extension === 'json' && typeof data === 'object')
-      data = JSON.stringify(data);
+      // data = JSON.stringify(data);
+      data = stringifyCircular(data);
+
     let filename = `log-${ts}-${suffix}-${provider}.${extension}`;
     fs.writeFileSync(`${FOLDER}/${filename}`, data);
   } catch (e) {
     console.error('Cant log request', e);
   }
-*/
 
 };
 
