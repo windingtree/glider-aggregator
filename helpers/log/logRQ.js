@@ -1,9 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 const fs = require('fs');
-const { stringifyCircular } = require('../json');
+// const { stringifyCircular } = require('../json');
 
 // eslint-disable-next-line no-unused-vars
 const logRQRS = (data = '', suffix = '', provider = '') => {
+/*
   const FOLDER = '/home/kurt/projects/glider-aggregator/temp';
   let ts = Date.now();
   let extension = 'json';
@@ -21,6 +22,7 @@ const logRQRS = (data = '', suffix = '', provider = '') => {
   } catch (e) {
     console.error('Cant log request', e);
   }
+*/
 
 };
 
