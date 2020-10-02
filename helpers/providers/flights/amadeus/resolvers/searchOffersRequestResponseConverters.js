@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 const { createSegment, createPrice, createPassenger } = require('./amadeusFormatUtils');
 const GliderError = require('../../../../error');
+const { getFeatureFlag } = require('../../../../../config');
 
 
 //request
@@ -17,7 +18,7 @@ const convertPassengerTypeToAmadeus = (type) => {
 };
 
 
-const createFlightSearchRequest = (itinerary, passengers) => {
+const createFlightSearchRequest =  (itinerary, passengers) => {
   // const { itinerary, passengers } = body;
   //transform itinerary criteria to Amadeus format
   let itineraryId = 1;
@@ -53,15 +54,40 @@ const createFlightSearchRequest = (itinerary, passengers) => {
       'GDS',
     ],
     searchCriteria: {
-      allowAlternativeFareOptions: true,
-      maxFlightOffers: 30,
+      maxFlightOffers: 40,
+      excludeAllotments: true,
       additionalInformation: {
-        chargeableCheckedBags: true,
         brandedFares: true,
       },
-      pricingOptions: {},
+      flightFilters: {
+        returnToDepartureAirport: true,
+        railSegmentAllowed: false,
+        busSegmentAllowed: false,
+        carrierRestrictions: {},
+      },
+      connectionRestriction: {
+        airportChangeAllowed: false,
+      },
     },
   };
+  //check if we need to include or exclude certain validating carriers
+  let validatingCarriers = getFeatureFlag('flights.amadeus.validatingCarriers') || {};
+  let { included, excluded } = validatingCarriers;
+  if (included && included.length > 0) {
+    if (included.length > 99) {
+      console.warn('feature flights.amadeus.validatingCarriers.included is having too many items - Amadeus does not allow more than 99');
+    }
+    request.searchCriteria.flightFilters.carrierRestrictions.includedCarrierCodes = included;
+  }
+  if (excluded && excluded.length > 0) {
+    if (excluded.length > 99) {
+      console.warn('feature flights.amadeus.validatingCarriers.excluded is having too many items - Amadeus does not allow more than 99');
+    }
+    request.searchCriteria.flightFilters.carrierRestrictions.excludedCarrierCodes = excluded;
+  }
+  if(included && included.length>0 && excluded && excluded.length>0){
+    console.warn('Features flights.amadeus.validatingCarriers.excluded && flights.amadeus.validatingCarriers.included are mutually exclusive');
+  }
   return request;
 };
 
