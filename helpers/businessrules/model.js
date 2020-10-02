@@ -7,12 +7,12 @@ const BRESchema = mongoose.Schema({
   priority: { type: Number },
   event: { type: mongoose.Mixed, required: true },
   comment: { type: String },
-}, { collection: 'BRE' });
+}, { collection: 'b2b' });
 
 
 
 const loadBreRules = async (topic) => {
-  const conn = await mongoose.createConnection(config.mongoUrl, { useNewUrlParser: true });
+  const conn = await mongoose.createConnection(config.BUSINESS_RULES_MONGO_URL, { useNewUrlParser: true });
   const BREModel = conn.model('business-rules', BRESchema);
   let records = await BREModel.find({ topic: topic });
   await conn.close();

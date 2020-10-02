@@ -375,8 +375,8 @@
       "params": {
         "key": "hotels.providers",
         "value": [
-          "revmax",
-          "1A"
+          "EREVMAX",
+          "AMADEUS"
         ]
       }
     }
@@ -394,7 +394,7 @@
         "key": "flights.providers",
         "value": [
           "AC",
-          "1A"
+          "AMADEUS"
         ]
       }
     }

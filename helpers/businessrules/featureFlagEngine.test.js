@@ -42,6 +42,13 @@ let feat3_master_prio15 = {
   'priority': 15,
   'event': { 'type': 'configuration', 'params': { 'key': 'feat3', 'value': 'value for MASTER, priority=15' } },
 };
+let feat4_without_any_conditions = {
+  'comment': 'Sample feature#4, value to be used anywhere',
+  'conditions': { 'all': [] },
+  'name': 'feat4',
+  'priority': 15,
+  'event': { 'type': 'configuration', 'params': { 'key': 'feat4', 'value': 'feat4_value' } },
+};
 
 
 describe('FeatureFlagEngine', () => {
@@ -70,7 +77,6 @@ describe('FeatureFlagEngine', () => {
       expect(engine.getFeatureFlag('feat1')).to.be.undefined;
     });
 
-
     it('should match rule when branch in rule condition is same as requested', async () => {
       let rules = [feat1_develop, feat2_master];  //feat1 only if branch=develop, feat2 only if branch=maater
       await engine.evaluateRules(rules, 'develop', 'dummy'); //branch=develop
@@ -95,5 +101,14 @@ describe('FeatureFlagEngine', () => {
       expect(engine.getFeatureFlag('feat3')).to.be.equal(feat3_default.event.params.value); //lowest priority should take precedence
     });
 
+
+    it('should retrieve rule without any conditions', async () => {
+      let rules = [feat4_without_any_conditions];
+      await engine.evaluateRules(rules, undefined, undefined); //undefined should be replaced with 'undefined' and treated as string
+      expect(engine.getFeatureFlag('feat4')).to.be.equal('feat4_value');
+
+      await engine.evaluateRules(rules, 'develop', undefined);
+      expect(engine.getFeatureFlag('feat4')).to.be.equal('feat4_value');
+    });
   });
 });

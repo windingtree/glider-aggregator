@@ -146,13 +146,12 @@
         "STAGING_AMADEUS_CLIENT_ID": "@staging.glider-aggregator.amadeus_client_id",
         "STAGING_AMADEUS_CLIENT_SECRET": "@staging.glider-aggregator.amadeus_client_secret",
         "STAGING_AMADEUS_ENVIRONMENT": "@staging.glider-aggregator.amadeus_environment",
-        "STAGING_AMADEUS_QUEUE_OFFICE_ID": "@staging.glider-aggregator.amadeus_queue_office_id",
-        "STAGING_AMADEUS_OWNERSHIP_OFFICE_ID": "@staging.glider-aggregator.amadeus_ownership_office_id",
 
         "PRODUCTION_AMADEUS_CLIENT_ID": "@production.glider-aggregator.amadeus_client_id",
         "PRODUCTION_AMADEUS_CLIENT_SECRET": "@production.glider-aggregator.amadeus_client_secret",
         "PRODUCTION_AMADEUS_ENVIRONMENT": "@production.glider-aggregator.amadeus_environment",
-        "PRODUCTION_AMADEUS_QUEUE_OFFICE_ID": "@production.glider-aggregator.amadeus_queue_office_id",
-        "PRODUCTION_AMADEUS_OWNERSHIP_OFFICE_ID": "@production.glider-aggregator.amadeus_ownership_office_id"
+
+        "STAGING_BUSINESS_RULES_MONGO_URL": "@staging.glider-aggregator.business_rules_mongo_url",
+        "PRODUCTION_BUSINESS_RULES_MONGO_URL": "@production.glider-aggregator.business_rules_mongo_url"
     }
 }
