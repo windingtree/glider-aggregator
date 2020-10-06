@@ -8,7 +8,7 @@ const { createOfferPriceRequest, processPriceOfferResponse } = require('./resolv
 const { orderCreateResponseProcessor, createOrderCreateRequest } = require('./resolvers/orderCreateRequestResponseConverters');
 const { processRetrieveSeatmapResponse, createRetrieveSeatmapRequest } = require('./resolvers/seatmapRequestResponseConverters');
 const GliderError = require('../../../error');
-const { getFeatureFlag } = require('../../../businessrules/featureFlagEngine');
+const { getFeatureFlag } = require('../../../../config');
 
 
 class FlightProvider1A extends FlightProvider {
