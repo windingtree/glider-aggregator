@@ -56,7 +56,7 @@ const hotelAvailTransformTemplate = {
   _roomStays_: [
     '/soap:Envelope/soap:Body/OTA_HotelAvailRS/RoomStays/RoomStay',
     {
-      _provider_: '#REVMAX',
+      _provider_: '#EREVMAX',
       _hotelCode_: 'BasicPropertyInfo/@HotelCode',
       _roomRates_: [
         'RoomRates/RoomRate',
