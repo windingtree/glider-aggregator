@@ -428,5 +428,20 @@
         "value": ""
       }
     }
+  },
+  {
+    "topic": "featureFlag",
+    "comment": "Seatmap display enabled for offers from Amadeus",
+    "conditions": {
+      "all": []
+    },
+    "priority": 100,
+    "event": {
+      "type": "featureFlag",
+      "params": {
+        "key": "flights.amadeus.seatmap.enabled",
+        "value": false
+      }
+    }
   }
 ]

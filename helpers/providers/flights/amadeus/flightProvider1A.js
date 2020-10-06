@@ -6,8 +6,9 @@ const amadeusClient = require('../../../amadeus/amadeusUtils');
 
 const { createOfferPriceRequest, processPriceOfferResponse } = require('./resolvers/priceOfferRequestResponseConverters');
 const { orderCreateResponseProcessor, createOrderCreateRequest } = require('./resolvers/orderCreateRequestResponseConverters');
-// const { processRetrieveSeatmapResponse, createRetrieveSeatmapRequest } = require('./resolvers/seatmapRequestResponseConverters');
-
+const { processRetrieveSeatmapResponse, createRetrieveSeatmapRequest } = require('./resolvers/seatmapRequestResponseConverters');
+const GliderError = require('../../../error');
+const { getFeatureFlag } = require('../../../businessrules/featureFlagEngine');
 
 
 class FlightProvider1A extends FlightProvider {
@@ -25,12 +26,13 @@ class FlightProvider1A extends FlightProvider {
 
   // eslint-disable-next-line no-unused-vars
   async retrieveSeatmaps (offers) {
-    // eslint-disable-next-line no-undef
-    throw new GliderError('Seatmap display for this flight is not possible');   //for now we will not display seatmap for Amadeus
-    /*let ndcBody = createRetrieveSeatmapRequest(offers);
+    let seatmapEnabled = getFeatureFlag('flights.amadeus.seatmap.enabled');
+    if(!seatmapEnabled)
+      throw new GliderError('Seatmap display for this flight is not possible');   //for now we will not display seatmap for Amadeus
+    let ndcBody = createRetrieveSeatmapRequest(offers);
     const response = await amadeusClient.seatmapRequest(ndcBody);
     assertAmadeusFault(response);
-    return processRetrieveSeatmapResponse(response.result, offers);*/
+    return processRetrieveSeatmapResponse(response.result, offers);
   }
 
   async priceOffers (body, offers) {
