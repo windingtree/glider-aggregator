@@ -10,7 +10,7 @@ module.exports.searchHotel = async (body) => {
 
   const { accommodation, passengers: guests } = body;
 
-  let enabledHotelProviders = getFeatureFlag('hotel.providers') || [];
+  let enabledHotelProviders = getFeatureFlag('hotels.providers') || [];
   let providerHandlers = providerFactory.createHotelProviders(enabledHotelProviders);
 
   //search for hotels with each provider and collect responses (each response is having following structure: {provider, response, errors}
