@@ -16,8 +16,7 @@ const { selectProvider } = require('./utils/flightUtils');
 const transformResponse = async (
   { provider, response: searchResults }, passengersIds,
 ) => {
-  // const searchResults = (provider === '1A') ? await transformAmadeusResponse(response.data) : await transformNdcResponse(response, templates);
-  if (provider !== '1A') {
+  if (provider !== 'AMADEUS') {
     searchResults.itineraries.segments = mergeHourAndDate(searchResults.itineraries.segments);
   }
 
@@ -228,7 +227,7 @@ const transformResponse = async (
         mappedPassengers,
       };
     }
-    if (provider === '1A') {
+    if (provider === 'AMADEUS') {
       searchResults.offers[offerId].extraData = {
         rawOffer: searchResults.offers[offerId].extraData.rawOffer,
         segments: searchResults.offers[offerId].extraData.segments,

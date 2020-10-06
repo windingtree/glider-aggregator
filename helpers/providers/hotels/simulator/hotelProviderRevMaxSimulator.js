@@ -29,7 +29,7 @@ class HotelProviderRevMaxSimulator extends HotelProvider {
   }
 
   getProviderID () {
-    'revmax-simulator';
+    'EREVMAX-SIMULATOR';
   }
 };
 

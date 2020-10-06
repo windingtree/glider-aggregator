@@ -92,7 +92,7 @@ class HotelProviderRevMax extends HotelProvider {
   }
 
   getProviderID () {
-    return 'revmax';
+    return 'EREVMAX';
   }
 };
 

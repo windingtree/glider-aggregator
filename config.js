@@ -14,29 +14,40 @@
 let buildEnv;
 try {
   buildEnv = require('./env.json');
-} catch (err) {}
+} catch (err) {
+  console.warn('cannot load env.json file', err);
+}
+
+
+let features = {};
+try {
+  features = require('./features.json');
+} catch (err) {
+  console.warn('cannot load features.json file', err);
+}
+
 
 // Define the current environment
 const determineEnviroment = () => {
   // If defined, use the Glider environment variable
-  if(process.env.GLIDER_ENV) {
+  if (process.env.GLIDER_ENV) {
     return process.env.GLIDER_ENV;
   }
 
   // If env.json file present, use it
-  if(buildEnv) {
+  if (buildEnv) {
     return buildEnv.environment;
   }
 
   // Otherwise use the Github branch provided by Vercel
-  switch(process.env.VERCEL_GITHUB_COMMIT_REF || process.env.NOW_GITHUB_COMMIT_REF) {
+  switch (process.env.VERCEL_GITHUB_COMMIT_REF || process.env.NOW_GITHUB_COMMIT_REF) {
     case 'master':
       return 'production';
     case 'develop':
     default:
       return 'staging';
   }
-}
+};
 
 const environment = determineEnviroment();
 
@@ -151,8 +162,13 @@ module.exports.debugInfo = () => {
     erevmax: erevmax,
     env: process.env,
     buildEnv: buildEnv,
-  }
-}
+    features: features,
+  };
+};
+
+module.exports.getFeatureFlag = (featureId) => {
+  return features[featureId];
+};
 
 module.exports.airFranceConfig = airFranceConfig;
 module.exports.airCanadaConfig = airCanadaConfig;
@@ -160,6 +176,7 @@ module.exports.amadeusGdsConfig = amadeusGdsConfig;
 module.exports.erevmax = erevmax;
 module.exports.redisUrl = getConfigKey('REDIS_URL') || 'redis://localhost:6379';
 module.exports.mongoUrl = getConfigKey('MONGO_URL') || 'mongodb://localhost/glider';
+module.exports.BUSINESS_RULES_MONGO_URL = getConfigKey('BUSINESS_RULES_MONGO_URL') || 'mongodb://localhost/glider';
 module.exports.elasticUrl = getConfigKey('ELASTIC_URL') || 'http://localhost:9200';
 module.exports.INFURA_URI = `${getConfigKey('INFURA_ENDPOINT')}/${getConfigKey('INFURA_PROJECT_ID')}`;
 module.exports.GLIDER_DID = `did:orgid:${getConfigKey('GLIDER_ORGID') || '0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0'}`;
@@ -171,3 +188,4 @@ module.exports.expirationTime = 30 * 60; // 30 min in seconds
 module.exports.expirationLong = 60 * 60 * 24 * 365 * 7; // 7 years in seconds
 module.exports.ETHEREUM_NETWORK = getConfigKey('ETHEREUM_NETWORK') || 'ropsten';
 module.exports.environment = environment;
+module.exports.branch = process.env.VERCEL_GITHUB_COMMIT_REF;

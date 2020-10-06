@@ -20,7 +20,7 @@ const createFlightProvider = (providerId) => {
     case 'AC':
       providerImpl = new FlightProviderAC();
       break;
-    case '1A':
+    case 'AMADEUS':
       providerImpl = new FlightProvider1A();
       break;
     default:
@@ -50,13 +50,13 @@ const createFlightProviders = (providerIDs) => {
 const createHotelProvider = (providerId) => {
   let providerImpl;
   switch (providerId) {
-    case 'revmax':
+    case 'EREVMAX':
       providerImpl = new HotelProviderRevMax();
       break;
-    case '1A':
+    case 'AMADEUS':
       providerImpl = new HotelProviderAmadeus();
       break;
-    case 'revmax-simulator':
+    case 'EREVMAX-SIMULATOR':
       providerImpl = new HotelProviderRevMaxSimulator();
       break;
     default:

@@ -4,6 +4,8 @@ const {
   offerManager,
   FlightOffer,
 } = require('../../models/offer');
+const config = require('../../../config');
+
 
 const getACDestinations = () =>{
   return caDestinations;
@@ -13,14 +15,17 @@ const get1ADestinations = () =>{
   return caDestinations;
 };
 
-// Fetching of the flight operators associated with the given origin and destination
+/**
+ * Find which flight providers should be used for a given origin&destination.
+ * Takes into account which providers are enabled/disabled (by business rules)
+ */
 module.exports.selectProvider = (origin, destination) => {
   origin = Array.isArray(origin) ? origin : [origin];
   destination = Array.isArray(destination) ? destination : [destination];
 
   const sdMapping = [
     {
-      provider: '1A',
+      provider: 'AMADEUS',
       destinations: get1ADestinations(),
     },
     {
@@ -29,7 +34,7 @@ module.exports.selectProvider = (origin, destination) => {
     },
   ];
 
-  return sdMapping
+  let providers = sdMapping
     .reduce((a, v) => {
 
       if (
@@ -42,6 +47,11 @@ module.exports.selectProvider = (origin, destination) => {
 
       return a;
     }, []);// temporary until we do not have a specific set for AF - ['AF']
+
+  //of those providers that were found, only use those that are specified by business rules/feature flag
+  let enabledFlightProviders = config.getFeatureFlag('flights.providers') || [];
+  providers = providers.filter(provider=>enabledFlightProviders.includes(provider));
+  return providers;
 };
 
 module.exports.reMapPassengersInRequestBody = (offer, body) => {

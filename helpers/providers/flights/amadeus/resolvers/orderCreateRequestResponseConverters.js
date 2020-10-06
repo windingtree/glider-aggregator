@@ -2,7 +2,7 @@ const { createPrice, convertGenderFromAmadeusToGlider } = require('./amadeusForm
 //request
 const { convertGenderFromGliderToAmadeus } = require('./amadeusFormatUtils');
 const GliderError = require('../../../../error');
-const config = require('../../../../../config').amadeusGdsConfig;
+const { getFeatureFlag } = require('../../../../../config');
 
 const createTraveller = (id, pax) => {
   const { civility, firstnames, lastnames, birthdate, contactInformation } = pax;
@@ -53,16 +53,23 @@ const createOrderCreateRequest = (order, body) => {
   let request = {
     data: {
       type: 'flight-order',
-      queuingOfficeId: config.queueingOfficeId,
       flightOffers: [rawOffer],
       travelers: [...passengers],
     },
   };
-  //caution - during testing it was failing if request.data.ownerOfficeId was specified!
-  if(config.ownerOfficeId && config.ownerOfficeId.trim().length>0){
-    console.log(`ownerOfficeId is specified - using that to create a booking:${config.ownerOfficeId}`);
-    request.data.ownerOfficeId=config.ownerOfficeId;
+  //do we need to queue a PNR to a queue?
+  let queuingOfficeId = getFeatureFlag('flights.amadeus.queuingOfficeId');
+  if (queuingOfficeId && queuingOfficeId.length > 0) {
+    request.data.queuingOfficeId = queuingOfficeId;
   }
+
+  //do we need to transfer ownership to a specific queue?
+  let ownerOfficeId = getFeatureFlag('flights.amadeus.ownerOfficeId');
+  if (ownerOfficeId && ownerOfficeId.length > 0) {
+    request.data.ownerOfficeId = ownerOfficeId;
+  }
+
+
   // request.data.flightOffers.push(...offers);
   return request;
 };
