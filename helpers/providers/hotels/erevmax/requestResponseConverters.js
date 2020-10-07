@@ -93,7 +93,7 @@ const processSearchResponse = async (response, guestCounts, offersToStore) => {
       // Add the offer in the list of offers to store
       let offerId = uuidv4();
       offersToStore[offerId] = new offer.AccommodationOffer(
-        'revmax',
+        'EREVMAX',
         roomStay._hotelCode_,
         roomRate.ratePlanReference,
         roomRate.roomTypeReference,
