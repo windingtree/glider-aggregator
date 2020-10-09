@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 const { createSegment, createPrice, createPassenger } = require('./amadeusFormatUtils');
 const GliderError = require('../../../../error');
+const { convertLocalAirportTimeToUtc } = require('../../../../utils/timezoneUtils');
 const { getFeatureFlag } = require('../../../../../config');
 
 
@@ -18,7 +19,7 @@ const convertPassengerTypeToAmadeus = (type) => {
 };
 
 
-const createFlightSearchRequest =  (itinerary, passengers) => {
+const createFlightSearchRequest = (itinerary, passengers) => {
   // const { itinerary, passengers } = body;
   //transform itinerary criteria to Amadeus format
   let itineraryId = 1;
@@ -85,7 +86,7 @@ const createFlightSearchRequest =  (itinerary, passengers) => {
     }
     request.searchCriteria.flightFilters.carrierRestrictions.excludedCarrierCodes = excluded;
   }
-  if(included && included.length>0 && excluded && excluded.length>0){
+  if (included && included.length > 0 && excluded && excluded.length > 0) {
     console.warn('Features flights.amadeus.validatingCarriers.excluded && flights.amadeus.validatingCarriers.included are mutually exclusive');
   }
   return request;
@@ -165,6 +166,8 @@ const processFlightSearchResponse = (response) => {
       _itinerary.segments.map(_segment => {
         //build segment object
         let segment = createSegment(_segment);
+        segment.departureTime = convertLocalAirportTimeToUtc(segment.departureTime, segment.origin.iataCode);
+        segment.arrivalTime = convertLocalAirportTimeToUtc(segment.arrivalTime, segment.destination.iataCode);
         itinerarySegments.push(segment);
         segmentToItineraryMap[_segment.id] = itineraryId;
         offerSegments.push(segment);  //store this as 'extraData' for post-processing of offer price call
