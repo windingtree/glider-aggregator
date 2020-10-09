@@ -23,12 +23,12 @@ const createFlightSearchRequest =  (itinerary, passengers) => {
   //transform itinerary criteria to Amadeus format
   let itineraryId = 1;
   const originDestinations = itinerary.segments.map(segment => {
-    let { date, time } = splitIsoDateTime(segment.departureTime);
+    let { date } = splitIsoDateTime(segment.departureTime);
     return {
       id: itineraryId++,
       originLocationCode: segment.origin.iataCode,
       destinationLocationCode: segment.destination.iataCode,
-      departureDateTimeRange: { date: date, time: time },
+      departureDateTimeRange: { date: date },
     };
   });
 
