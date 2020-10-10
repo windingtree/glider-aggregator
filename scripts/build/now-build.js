@@ -18,6 +18,7 @@ fs.writeFile('env.json', `${JSON.stringify({
 
 console.log('Generate features.json');
 getFeatureFlagsAsync().then(features => {
+  console.log('**********FEATURES*************',JSON.stringify(features));
   fs.writeFile('features.json', JSON.stringify(features), err => {
     if (err) {
       console.error('Error while generating features.json', err);
