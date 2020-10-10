@@ -1,6 +1,6 @@
 // const { assertFailure } = require('../../helpers/assertions');
 const { zonedTimeToUtc } = require('date-fns-tz');
-const { airports } = require('./timeZoneByAirportCode');
+const { airports } = require('../utils/timeZoneByAirportCode');
 const {
   reduceObjectToProperty,
   splitPropertyBySpace,
@@ -9,7 +9,6 @@ const {
   reduceContactInformation,
   useDictionary,
   mergeHourAndDate,
-  convertDateToAirportTime,
   reduceToProperty,
   roundCommissionDecimals,
   deepMerge
@@ -339,44 +338,6 @@ describe('Parsers', () => {
     });
   });
 
-  describe('#convertDateToAirportTime', () => {
-    const date = '2020-09-14';
-    const time = '14:30';
-    const iataCode = 'YYZ';
-
-    it('should to throw if wrong data has been passed', async () => {
-      (() => convertDateToAirportTime(undefined, time, iataCode)).should.to.throw;
-      (() => convertDateToAirportTime('wrongString', time, iataCode)).should.to.throw;
-      (() => convertDateToAirportTime('', time, iataCode)).should.to.throw;
-      (() => convertDateToAirportTime([], time, iataCode)).should.to.throw;
-      (() => convertDateToAirportTime({}, time, iataCode)).should.to.throw;
-    });
-
-    it('should to throw if wrong time has been passed', async () => {
-      (() => convertDateToAirportTime(date, undefined, iataCode)).should.to.throw;
-      (() => convertDateToAirportTime(date, 'wrongString', iataCode)).should.to.throw;
-      (() => convertDateToAirportTime(date, '', iataCode)).should.to.throw;
-      (() => convertDateToAirportTime(date, [], iataCode)).should.to.throw;
-      (() => convertDateToAirportTime(date, {}, iataCode)).should.to.throw;
-    });
-
-    it('should to throw if wrong iataCode has been passed', async () => {
-      (() => convertDateToAirportTime(date, time, undefined)).should.to.throw;
-      (() => convertDateToAirportTime(date, time, '0000')).should.to.throw;
-      (() => convertDateToAirportTime(date, time, '')).should.to.throw;
-      (() => convertDateToAirportTime(date, time, [])).should.to.throw;
-      (() => convertDateToAirportTime(date, time, {})).should.to.throw;
-    });
-
-    it('should covert date', async () => {
-      const result = convertDateToAirportTime(date, time, iataCode);
-      const airportTime = zonedTimeToUtc(
-        `${date} ${time}:00.000`,
-        airports[iataCode]
-      ).toISOString();
-      (result.toISOString()).should.to.equal(airportTime);
-    });
-  });
 
   describe('#reduceToProperty', () => {
     const data = {

@@ -1,6 +1,6 @@
 const { Engine, Rule } = require('json-rules-engine');
 const GliderError = require('../error');
-const { loadBreRules } = require('./model');
+const { loadBreRulesAsync } = require('./breModel');
 const config = require('../../config');
 
 const BRE_TOPIC = 'featureFlag';  //which rules in BRE collection are related to feature flags
@@ -79,7 +79,7 @@ let _engine;
 const getFeatureFlagsEngine = async () => {
   if (!_engine) {
     console.log(`**************Initializing BRE ENGINE************, branch:${config.branch}, environment:${config.environment}`);
-    let records = await loadBreRules(BRE_TOPIC);
+    let records = await loadBreRulesAsync(BRE_TOPIC);
     _engine = new FeatureFlagEngine();
     await _engine.evaluateRules(records, config.branch, config.environment);
   } else {
@@ -93,18 +93,17 @@ const getFeatureFlagsEngine = async () => {
  * @param featureId
  * @returns {Promise<*>}
  */
-const getFeatureFlag = async (featureId) => {
+const getFeatureFlagAsync = async (featureId) => {
   const e = await getFeatureFlagsEngine();
   return e.getFeatureFlag(featureId);
 };
 
 /**
  * Helper function to return all features(and it's values/configurations)
- * @param featureId
  * @returns {Promise<*>}
  */
-const getFeatureFlags = async () => {
+const getFeatureFlagsAsync = async () => {
   const e = await getFeatureFlagsEngine();
   return e.getFeatureFlags();
 };
-module.exports = { FeatureFlagEngine, getFeatureFlag, getFeatureFlags };
+module.exports = { FeatureFlagEngine, getFeatureFlagAsync, getFeatureFlagsAsync };

@@ -26,7 +26,7 @@
     "test:newman": "node ./test/newman/run.js",
     "coverage": "COVERAGE=true ./scripts/test.sh",
     "lint": "npx eslint test admin api decorators helpers",
-    "now-build": "node ./scripts/build/now-build.js",
+    "now-build": "node -r ./node_modules/dotenv/config  ./scripts/build/now-build.js dotenv_config_path=./.env.build",
     "build-schemas": "npx js-yaml ./public/wt-aggregator.yaml > helpers/payload/schemas/wt-aggregator-schema.json"
   },
   "dependencies": {
