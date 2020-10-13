@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const parseKeys = obj => {
   Object.keys(obj).forEach((v) => {
 

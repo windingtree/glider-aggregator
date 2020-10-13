@@ -124,24 +124,24 @@ paths:
                           {
                             "polygon": [
                               [
-                                24.8963928,
-                                60.1749466
+                                  24.8963928,
+                                  60.1749466
                               ],
                               [
-                                24.9700356,
-                                60.1763126
+                                  24.9700356,
+                                  60.1763126
                               ],
                               [
-                                24.9720097,
-                                60.1475721
+                                  24.9720097,
+                                  60.1475721
                               ],
                               [
-                                24.8987961,
-                                60.1442394
+                                  24.8987961,
+                                  60.1442394
                               ],
                               [
-                                24.896307,
-                                60.1748612
+                                  24.896307,
+                                  60.1748612
                               ]
                             ]
                           },
@@ -361,24 +361,24 @@ paths:
             schema:
               $ref: "#/components/schemas/CreateOfferBody"
             example:
-                {
-                  "offerId": "11111111-2222-3333-4444-000000000001",
-                  "guaranteeId": "02a1a7c0-3ff8-4e12-a3ba-65d57e1e9276",
-                  "passengers":
-                    {
-                      "PAX1":
-                        {
-                          "type": "ADT",
-                          "civility": "MR",
-                          "lastnames": ["Marley"],
-                          "firstnames": ["Bob"],
-                          "gender": "Male",
-                          "birthdate": "1980-03-21T00:00:00Z",
-                          "contactInformation":
-                            ["+32123456789", "contact@org.co.uk"],
-                        },
-                    },
-                }
+              {
+                "offerId": "11111111-2222-3333-4444-000000000001",
+                "guaranteeId": "02a1a7c0-3ff8-4e12-a3ba-65d57e1e9276",
+                "passengers":
+                  {
+                    "PAX1":
+                      {
+                        "type": "ADT",
+                        "civility": "MR",
+                        "lastnames": ["Marley"],
+                        "firstnames": ["Bob"],
+                        "gender": "Male",
+                        "birthdate": "1980-03-21T00:00:00Z",
+                        "contactInformation":
+                          ["+32123456789", "contact@org.co.uk"],
+                      },
+                  },
+              }
         required: true
       responses:
         200:
@@ -435,110 +435,38 @@ paths:
         - orgid_token: []
       x-codegen-request-body-name: body
 
-  # Fulfill an Order
-  /orders/{orderId}/fulfill:
+  # ** Orders **
+  /orders/cancel:
     post:
       tags:
         - orders
-      summary: Fulfills an order in Aggregator
-      description: Confirms an order, providing travel documents if relevant
-      operationId: fulfillOrder
-      parameters:
-        - name: orderId
-          in: path
-          description: ID of the order to sign
-          required: true
-          schema:
-            oneOf:
-              - $ref: "#/components/schemas/UUID"
-              - $ref: "#/components/schemas/ShortOrderId"
+      summary: Cancel an existing order
+      operationId: cancelOrder
       requestBody:
         content:
           application/json:
             schema:
+              type: object
               properties:
-                orderItems:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/UUID"
-                passengerReferences:
-                  type: array
-                  items:
-                    description: The identifier of a passenger
-                    type: string
-                    example: PAX1
-                guaranteeId:
+                orderId:
                   $ref: "#/components/schemas/UUID"
       responses:
         200:
-          description: Order sucessfully signed
+          description: Order cancelled succesfully
           content:
             application/json:
               schema:
                 properties:
                   orderId:
+                    description: Order ID
                     $ref: "#/components/schemas/UUID"
-                  order:
-                    $ref: "#/components/schemas/Order"
-                  travelDocuments:
-                    description: The travel documents provided by the supplier
-                    type: object
-                    properties:
-                      bookings:
-                        description: The booking references
-                        type: array
-                        items:
-                          type: string
-                          pattern: "^[A-Z0-9]{6}$"
-                          example: "LCHTB4"
-                      etickets:
-                        description: The electronic ticket references
-                        type: array
-                        items:
-                          type: string
-                          pattern: "^[0-9]{3}-[0-9]{10}$"
-                          example: "057-1438027611"
-        400:
-          description: Invalid ID supplied
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        401:
-          description: Authorization required
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        403:
-          description: Not authorized to retrieve this order
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        404:
-          description: Order not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        415:
-          description: Content should be application/json
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        429:
-          description: Too many requests, rate limit has been reached
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - orgid_auth:
-            - write:orders
-        - orgid_token: []
-
+                  status:
+                    description: Result of cancellation
+                    type: string
+                example: {
+                  "orderId": "11111111-2222-3333-4444-000000000001",
+                  "status": "CANCELLED"
+                }
 components:
   schemas:
     Error:
@@ -817,24 +745,24 @@ components:
       example:
         [
           [
-            24.8963928,
-            60.1749466
+              24.8963928,
+              60.1749466
           ],
           [
-            24.9700356,
-            60.1763126
+              24.9700356,
+              60.1763126
           ],
           [
-            24.9720097,
-            60.1475721
+              24.9720097,
+              60.1475721
           ],
           [
-            24.8987961,
-            60.1442394
+              24.8987961,
+              60.1442394
           ],
           [
-            24.896307,
-            60.1748612
+              24.896307,
+              60.1748612
           ]
         ]
 
@@ -1140,7 +1068,7 @@ components:
             type: string
           example:
             [
-              "HW9EJ7XAC7-SEG1"
+                "HW9EJ7XAC7-SEG1"
             ]
 
     PricedOffer:
@@ -1309,25 +1237,25 @@ components:
               },
               "options":
                 [
-                  "code": "LGAC",
-                  "name": "Lounge Access",
-                  "description": "Lounge Access",
-                  "application": "surcharge",
-                  "segment": "SEG1",
-                  "passenger": "PAX1",
-                  "price": {
-                    "currency": "CAD",
-                    "public": "30.00",
-                    "taxes": "5.08"
-                  },
-                  "taxes" : [
-                    {
-                      "code": "XG",
-                      "amount": "5.08",
-                      "description": "Goods and Services Tax"
-                    }
-                  ],
-                  "conditions": "Non transferable.\nNon refundable"
+                    "code": "LGAC",
+                    "name": "Lounge Access",
+                    "description": "Lounge Access",
+                    "application": "surcharge",
+                    "segment": "SEG1",
+                    "passenger": "PAX1",
+                    "price": {
+                      "currency": "CAD",
+                      "public": "30.00",
+                      "taxes": "5.08"
+                    },
+                    "taxes" : [
+                      {
+                        "code": "XG",
+                        "amount": "5.08",
+                        "description": "Goods and Services Tax"
+                      }
+                    ],
+                    "conditions": "Non transferable.\nNon refundable"
                 ]
             }
           }
@@ -1512,42 +1440,43 @@ components:
         - distributor
       type: object
       properties:
-        # A version
-        version:
-          description: A major/minor version pattern for forward compatibility
-          type: string
-          pattern: '^[0-9]+(\.[0-9]+)+$'
-          minLength: 3
-          maxLength: 12
-          example: "1.0.0"
-
-        # The ORG.ID of the supplier
-        supplier:
-          $ref: "#/components/schemas/OrgId"
-
-        # The ORG.ID of the distributor
-        distributor:
-          $ref: "#/components/schemas/OrgId"
-
-        # The type of travel service in the order
-        type:
-          description: Type of travel service
-          type: string
-          enum:
-            - transportation
-            - accommodation
-            - lounge
-            - fasttrack
-            - parking
-          example: "transportation"
-
-        # The sub-type of service
-        subtype:
-          description: The sub-type of service
-          oneOf:
-            - $ref: "#/components/schemas/TransportationType"
-            - $ref: "#/components/schemas/AccommodationType"
-          example: "flight"
+# BELOW BLOCK IS COMMENTED AS TODAY WE DON'T YET PROVIDE RESPONSE IN FORESEEN FORMAT - TO BE ADDED IN THE FUTURE, THUS KEEPING IT COMMENTED OUT
+#        # A version
+#        version:
+#          description: A major/minor version pattern for forward compatibility
+#          type: string
+#          pattern: '^[0-9]+(\.[0-9]+)+$'
+#          minLength: 3
+#          maxLength: 12
+#          example: "1.0.0"
+#
+#        # The ORG.ID of the supplier
+#        supplier:
+#          $ref: "#/components/schemas/OrgId"
+#
+#        # The ORG.ID of the distributor
+#        distributor:
+#          $ref: "#/components/schemas/OrgId"
+#
+#        # The type of travel service in the order
+#        type:
+#          description: Type of travel service
+#          type: string
+#          enum:
+#            - transportation
+#            - accommodation
+#            - lounge
+#            - fasttrack
+#            - parking
+#          example: "transportation"
+#
+#        # The sub-type of service
+#        subtype:
+#          description: The sub-type of service
+#          oneOf:
+#            - $ref: "#/components/schemas/TransportationType"
+#            - $ref: "#/components/schemas/AccommodationType"
+#          example: "flight"
 
         # The price of the service
         price:
@@ -1576,21 +1505,25 @@ components:
           items:
             $ref: "#/components/schemas/OptionSelection"
 
+        status:
+          description: Status of an order
+          type: string
+
     CreateOfferBody:
       description: An object to provide order details
       type: object
       required: ["offerId","passengers"]
       properties:
-          offerId:
-            $ref: "#/components/schemas/UUID"
-          passengers:
-            description: Indexed dictionary of the passengers
-            type: object
-            required: true
-            additionalProperties:
-              $ref: "#/components/schemas/Passenger"
-          guaranteeId:
-            $ref: "#/components/schemas/UUID"
+        offerId:
+          $ref: "#/components/schemas/UUID"
+        passengers:
+          description: Indexed dictionary of the passengers
+          type: object
+          required: true
+          additionalProperties:
+            $ref: "#/components/schemas/Passenger"
+        guaranteeId:
+          $ref: "#/components/schemas/UUID"
 
 
     # Contains the parameters for a search

@@ -14,6 +14,10 @@ const OrdersSchema = new Schema(
       type: String,
       required: true
     },
+    orderStatus:{
+      type: String,
+      required: true
+    },
     request: Schema.Types.Mixed,
     guarantee: Schema.Types.Mixed,
     guaranteeClaim: Schema.Types.Mixed,

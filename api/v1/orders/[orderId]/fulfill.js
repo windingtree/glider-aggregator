@@ -1,46 +1,19 @@
-const { ready, transform } = require('camaro');
 const { basicDecorator } = require('../../../../decorators/basic');
 const GliderError = require('../../../../helpers/error');
-const {
-  airFranceConfig,
-  airCanadaConfig
-} = require('../../../../config');
+const { createFlightProvider } = require('../../../../helpers/providers/providerFactory');
 const { ordersManager } = require('../../../..//helpers/models/order');
-const {
-  mapNdcRequestData_AF,
-  mapNdcRequestHeaderData_AC,
-  mapNdcRequestData_AC
-} = require('../../../../helpers/transformInputData/fulfillOrder');
-const {
-  fulfillOrderTemplate_AF,
-  fulfillOrderTemplate_AC
-} = require('../../../../helpers/soapTemplates/fulfillOrder');
-const {
-  ErrorsTransformTemplate_AF,
-  ErrorsTransformTemplate_AC,
-  FaultsTransformTemplate_AC,
-  fulfillOrderTransformTemplate_AF,
-  fulfillOrderTransformTemplate_AC
-} = require('../../../../helpers/camaroTemplates/fulfillOrder');
-const {
-  reduceToObjectByKey,
-  reduceToProperty
-} = require('../../../../helpers/parsers');
-const {
-  getGuarantee,
-  claimGuarantee,
-  claimGuaranteeWithCard
-} = require('../../../../helpers/guarantee');
-const {
-  callProvider
-} = require('../../../../helpers/resolvers/utils/flightUtils');
+
+const { reduceToObjectByKey, reduceToProperty } = require('../../../../helpers/parsers');
+const { getGuarantee, claimGuarantee, claimGuaranteeWithCard } = require('../../../../helpers/guarantee');
+
 
 module.exports = basicDecorator(async (req, res) => {
   const { body, query } = req;
-  let guaranteeClaim;
+  const { orderId } = query;
 
   // Get the order
   const order = await ordersManager.getOrder(query.orderId);
+
 
   if (order.offer && order.offer.extraData && order.offer.extraData.mappedPassengers) {
     body.passengerReferences = body.passengerReferences
@@ -48,114 +21,27 @@ module.exports = basicDecorator(async (req, res) => {
   } else {
     throw new GliderError(
       'Mapped passengers Ids not found in the offer',
-      500
+      500,
     );
   }
 
   // Get the guarantee and verify
   const guarantee = await getGuarantee(body.guaranteeId, {
     currency: order.order.order.price.currency,
-    amountAfterTax: order.order.order.price.public
+    amountAfterTax: order.order.order.price.public,
   });
+  //claim
+  let guaranteeClaim = await claimGuaranteeWithCard(body.guaranteeId);
 
-  let ndcRequestHeaderData;
-  let ndcRequestData;
-  let providerUrl;
-  let apiKey;
-  let SOAPAction;
-  let ndcBody;
-  let responseTransformTemplate;
-  let errorsTransformTemplate;
-  let faultsTransformTemplate;
 
-  switch (order.provider) {
-    case 'AF':
-      ndcRequestData = mapNdcRequestData_AF(airFranceConfig, body, query);
-      providerUrl = 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001489v01/EXT';
-      apiKey = airFranceConfig.apiKey;
-      SOAPAction = '"http://www.af-klm.com/services/passenger/AirDocIssue/airDocIssue"';
-      ndcBody = fulfillOrderTemplate_AF(ndcRequestData);
-      responseTransformTemplate = fulfillOrderTransformTemplate_AF;
-      errorsTransformTemplate = ErrorsTransformTemplate_AF;
-      faultsTransformTemplate = null;
-      break;
-    case 'AC':
-      guaranteeClaim = await claimGuaranteeWithCard(body.guaranteeId);
-      ndcRequestHeaderData = mapNdcRequestHeaderData_AC(guaranteeClaim);
-      ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, order, body, guaranteeClaim);
-      providerUrl = `${airCanadaConfig.baseUrlPci}/OrderCreate`;
-      apiKey = airCanadaConfig.apiKey;
-      ndcBody = fulfillOrderTemplate_AC(ndcRequestHeaderData, ndcRequestData);
-      // console.log('@@@', ndcBody);
-      responseTransformTemplate = fulfillOrderTransformTemplate_AC;
-      errorsTransformTemplate = ErrorsTransformTemplate_AC;
-      faultsTransformTemplate = FaultsTransformTemplate_AC;
-      break;
-    default:
-      return Promise.reject('Unsupported flight operator');
-  }
+  let provider = order.provider;
+  let providerImpl = createFlightProvider(provider);
+  let fulfillResults = await providerImpl.orderFulfill(orderId, order, body, guaranteeClaim);
 
-  const { response, error } = await callProvider(
-    order.provider,
-    providerUrl,
-    apiKey,
-    ndcBody,
-    SOAPAction
-  );
+  fulfillResults.travelDocuments.etickets = reduceToObjectByKey(fulfillResults.travelDocuments.etickets);
+  fulfillResults.travelDocuments.etickets = reduceToProperty(fulfillResults.travelDocuments.etickets, '_passenger_');
 
-  if (error && !error.isAxiosError) {
-    
-    throw new GliderError(
-      response.error.message,
-      502
-    );
-  }
-
-  let faultsResult;
-
-  if (faultsTransformTemplate) {
-    await ready();
-    faultsResult = await transform(response.data, faultsTransformTemplate);
-  }
-
-  // Attempt to parse as a an error
-  await ready();
-  const errorsResult = await transform(response.data, errorsTransformTemplate);
-
-  // Because of two types of errors can be returned: NDCMSG_Fault and Errors
-  const combinedErrors = [
-    ...(faultsResult ? faultsResult.errors : []),
-    ...errorsResult.errors
-  ];
-
-  // If an error is found, stop here
-  if (combinedErrors.length) {
-    throw new GliderError(
-      combinedErrors.map(e => e.message).join('; '),
-      502
-    );
-  } else if (error) {
-    throw new GliderError(
-      error.message,
-      502
-    );
-  }
-
-  await ready();
-  const fulfillResults = await transform(
-    response.data,
-    responseTransformTemplate
-  );
-
-  fulfillResults.travelDocuments.etickets = reduceToObjectByKey(
-    fulfillResults.travelDocuments.etickets
-  );
-
-  fulfillResults.travelDocuments.etickets = reduceToProperty(
-    fulfillResults.travelDocuments.etickets,
-    '_passenger_'
-  );
-
+  //FIXME - do we need to claim after or before fulfill call?
   if (!guaranteeClaim) {
     guaranteeClaim = await claimGuarantee(body.guaranteeId);
   }
@@ -167,8 +53,9 @@ module.exports = basicDecorator(async (req, res) => {
       guarantee: guarantee,
       guaranteeClaim: guaranteeClaim,
       order: fulfillResults,
-      offer: order.offer
-    }
+      offer: order.offer,
+    },
+    'CREATED'
   );
 
   res.status(200).json(fulfillResults);

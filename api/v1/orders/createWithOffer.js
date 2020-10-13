@@ -12,8 +12,8 @@ const {
 } = require('../../../helpers/guarantee');
 const hotelResolver = require('../../../helpers/resolvers/hotel/orderCreateWithOffer');
 const flightResolver = require('../../../helpers/resolvers/flight/orderCreateWithOffer');
-const { setOrderStatus, assertOrgerStatus } = require('../../../helpers/resolvers/utils/offers');
-const { validateCreateOfferPayload } = require('../../../payload/validators');
+const { setOrderStatus, assertOrderStatus } = require('../../../helpers/resolvers/utils/offers');
+const { validateCreateOfferPayload } = require('../../../helpers/payload/validators');
 module.exports = basicDecorator(async (req, res) => {
   const requestBody = req.body;
 
@@ -24,12 +24,18 @@ module.exports = basicDecorator(async (req, res) => {
     );
   }
   validateCreateOfferPayload(requestBody);
+
   // Retrieve the offer
   const storedOffer = await offerManager.getOffer(requestBody.offerId);
 
   let originOffers = [];
 
-  if (storedOffer instanceof FlightOffer) {
+  // in case of not priced offer
+  // there possible situation when storedOffer.extraData.originOffers is undefined
+  if (storedOffer instanceof FlightOffer &&
+    storedOffer.extraData &&
+    storedOffer.extraData.originOffers) {
+
     originOffers = await Promise.all(
       storedOffer.extraData.originOffers.map(
         offerId => offerManager.getOffer(offerId)
@@ -42,7 +48,7 @@ module.exports = basicDecorator(async (req, res) => {
     ...originOffers
   ];
 
-  assertOrgerStatus(allOffers);
+  assertOrderStatus(allOffers);
 
   try {
     await setOrderStatus(allOffers, 'CREATING');
@@ -59,7 +65,7 @@ module.exports = basicDecorator(async (req, res) => {
       guaranteeClaim = await claimGuaranteeWithCard(requestBody.guaranteeId);
     }
 
-    // Handle an Accomodation offer
+    // Handle an Accommodation offer
     if (storedOffer instanceof AccommodationOffer) {
 
       if (!guaranteeClaim) {
@@ -105,8 +111,10 @@ module.exports = basicDecorator(async (req, res) => {
       );
 
     if (storedOffer instanceof AccommodationOffer) {
-      delete orderCreationResults.order.success;
-      delete orderCreationResults.order.errors;
+      /*
+            delete orderCreationResults.order.success;
+            delete orderCreationResults.order.errors;
+      */
     } else if (storedOffer instanceof FlightOffer) {
       const changedPassengers =
         Object.entries(orderCreationResults.order.passengers)
@@ -173,7 +181,8 @@ module.exports = basicDecorator(async (req, res) => {
         guaranteeClaim: guaranteeClaim,
         order: orderCreationResults,
         offer: storedOffer
-      }
+      },
+      'CREATED'
     );
 
     await setOrderStatus(allOffers, 'CREATED');

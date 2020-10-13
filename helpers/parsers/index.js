@@ -1,46 +1,45 @@
 // const parse = require('date-fns/parse');
-const { zonedTimeToUtc } = require('date-fns-tz');
-const { airports } = require('./timeZoneByAirportCode');
+const { convertLocalAirportTimeToUtc } = require('../utils/timezoneUtils');
 
-module.exports.reduceObjectToProperty = (object, property) => Object.entries(object)
+module.exports.reduceObjectToProperty = (array, property) => Object.entries(array)
   .reduce(
-    (result, [key, value])=> ({
+    (result, [key, value]) => ({
       ...result,
-      [key]: value[property]
+      [key]: value[property],
     }),
-    {}
+    {},
   );
 
 module.exports.splitPropertyBySpace = (array, property) => array
   .map(
     (element) => ({
       ...element,
-      [property]: element[property].split(' ')
-    })
+      [property]: element[property].split(' '),
+    }),
   );
 
 module.exports.reduceContactInformation = (passengers) => passengers
   .map(
     (passenger) => {
       const emails = passenger.contactInformation && Array.isArray(passenger.contactInformation.emails)
-        ? passenger.contactInformation.emails.map(({ value })=> value)
+        ? passenger.contactInformation.emails.map(({ value }) => value)
         : [];
       const phones = passenger.contactInformation && Array.isArray(passenger.contactInformation.phones)
-        ? passenger.contactInformation.phones.map(({ value })=> value)
+        ? passenger.contactInformation.phones.map(({ value }) => value)
         : [];
       return {
         ...passenger,
         contactInformation: emails.concat(phones),
       };
-    }
+    },
   );
 
 module.exports.useDictionary = (array, object, keyToReplace) => array
   .map(
-    (element) =>({
+    (element) => ({
       ...element,
-      [keyToReplace]: object[element[keyToReplace]]
-    })
+      [keyToReplace]: object[element[keyToReplace]],
+    }),
   );
 
 module.exports.mergeHourAndDate = array => array
@@ -57,44 +56,50 @@ module.exports.mergeHourAndDate = array => array
       ...others,
       origin,
       destination,
-      departureTime: zonedTimeToUtc(
+      departureTime: convertLocalAirportTimeToUtc(
         `${splittedDepartureDate} ${splittedDepartureTime}:00.000`,
-        airports[origin.iataCode]
+        origin.iataCode,
       ).toISOString(),
-      arrivalTime: zonedTimeToUtc(
+      arrivalTime: convertLocalAirportTimeToUtc(
         `${splittedArrivalDate} ${splittedArrivalTime}:00.000`,
-        airports[destination.iataCode]
-      ).toISOString()
-    })
+        destination.iataCode,
+      ).toISOString(),
+    }),
   );
 
-module.exports.convertDateToIrportTime = (date, time, iataCode) => zonedTimeToUtc(
-  `${date} ${time}:00.000`,
-  airports[iataCode]
-);
 
-module.exports.reduceToProperty = (object, property) =>  Object.keys(object)
-  .map((key)=> {
+module.exports.reduceToProperty = (object, property) => Object.keys(object)
+  .map((key) => {
     return {
-      [key]: object[key][property]
+      [key]: object[key][property],
     };
   });
 
+/* istanbul ignore next */
 module.exports.splitSegments = (combinations) => combinations
   .map(
     ({ _items_, ...others }) => ({
       ...others,
-      _items_ : _items_.split(' '),
-    })
+      _items_: _items_.split(' '),
+    }),
   );
 
+/**
+ * Convert an array of objects (each having '_id_' property), into associative array which key is '_id_' and value is object that had '_id_' property.
+ * Example:
+ * input: [{_id_:'Key1',name:'Object1'},{_id_:'Key2',name:'Object2'}]
+ * output: {'Key1':{name:'Object1'},'Key2':{name:'Object2'}}
+ *
+ * @param array
+ * @return {*}
+ */
 module.exports.reduceToObjectByKey = (array) => array
   .reduce(
     (segments, { _id_, ...others }) => ({
       ...segments,
       [_id_]: others,
     }),
-    {}
+    {},
   );
 
 module.exports.roundCommissionDecimals = (offers) => offers
@@ -103,12 +108,12 @@ module.exports.roundCommissionDecimals = (offers) => offers
       ...others,
       price: {
         ...price,
-        commission: price.commission.toFixed(2).toString()
-      }
-    })
+        commission: price.commission.toFixed(2).toString(),
+      },
+    }),
   );
 
-module.exports.reduceAcomodation = (accommodation) => accommodation
+module.exports.reduceAccommodation = (accommodation) => accommodation
   .reduce(
     (ac, { _provider_, _id_, ...others }) => {
       const key = `${_provider_}.${_id_}`;
@@ -117,9 +122,10 @@ module.exports.reduceAcomodation = (accommodation) => accommodation
         [key]: others,
       };
     },
-    {}
+    {},
   );
 
+/* istanbul ignore next */
 module.exports.reduceRoomStays = (_roomStays_ => {
   // The offer dicts will contain all offers
   let offers = {};
@@ -145,13 +151,13 @@ module.exports.reduceRoomStays = (_roomStays_ => {
       let offer = {
         // Reference from other elements
         pricePlansReferences: pricePlansReferences,
-  
+
         // Build price
         price: {
           currency: roomRate.price.currency,
           public: roomRate.price._afterTax_,
-          taxes: new Number(roomRate.price._afterTax_) - new Number(roomRate.price._beforeTax_)
-        }
+          taxes: new Number(roomRate.price._afterTax_) - new Number(roomRate.price._beforeTax_),
+        },
       };
 
       // Add the offer item to the offers dict
@@ -163,9 +169,9 @@ module.exports.reduceRoomStays = (_roomStays_ => {
 
 // Deep merge of two objects
 const deepMerge = (target, source) => {
-  
+
   for (const key of Object.keys(source)) {
-    
+
     if (source[key].constructor === Object && target[key]) {
       Object.assign(source[key], deepMerge(target[key], source[key]));
     } else {

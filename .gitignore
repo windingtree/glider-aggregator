@@ -109,3 +109,5 @@ dist
 temp
 .vercel
 env.json
+features.json
+/.idea/

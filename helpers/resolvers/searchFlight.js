@@ -1,54 +1,26 @@
-const { transform } = require('camaro');
 const { v4: uuidv4 } = require('uuid');
-const {
-  mapNdcRequestData_AF,
-  mapNdcRequestData_AC
-} = require('../transformInputData/searchOffers');
-const {
-  provideShoppingRequestTemplate_AF,
-  provideShoppingRequestTemplate_AC
-} = require('../soapTemplates/searchOffers');
-const {
-  provideAirShoppingTransformTemplate_AF,
-  provideAirShoppingTransformTemplate_AC,
-  ErrorsTransformTemplate_AF,
-  ErrorsTransformTemplate_AC,
-  FaultsTransformTemplate_AC
-} = require('../camaroTemplates/provideAirShopping');
+const { createFlightProviders } = require('../providers/providerFactory');
 const {
   reduceToObjectByKey,
   roundCommissionDecimals,
   mergeHourAndDate,
   useDictionary,
   reduceObjectToProperty,
-  deepMerge
+  deepMerge,
 } = require('../parsers');
-
-const {
-  airFranceConfig,
-  airCanadaConfig
-} = require('../../config');
 
 const GliderError = require('../error');
 const offerModel = require('../models/offer');
-const { selectProvider, callProvider } = require('./utils/flightUtils');
+const { selectProvider } = require('./utils/flightUtils');
 
 const transformResponse = async (
-  { provider, response, templates },
-  passengersIds
+  { provider, response: searchResults }, passengersIds,
 ) => {
-  const searchResults = await transform(
-    response.data,
-    templates.response
-  );
+  if (provider !== 'AMADEUS') {
+    searchResults.itineraries.segments = mergeHourAndDate(searchResults.itineraries.segments);
+  }
 
-  searchResults.itineraries.segments = mergeHourAndDate(
-    searchResults.itineraries.segments
-  );
-
-  searchResults.itineraries.segments = reduceToObjectByKey(
-    searchResults.itineraries.segments
-  );
+  searchResults.itineraries.segments = reduceToObjectByKey(searchResults.itineraries.segments);
 
   // Walk through the flight list
   const combinations = {};
@@ -59,25 +31,36 @@ const transformResponse = async (
 
   const mappedPassengers = {};
   const mappedPassengersReverse = {};
-
   // Create the offers
   for (const offer of Object.values(searchResults.offers)) {
     // Add offer items
     offer.offerItems = reduceToObjectByKey(offer.offerItems);
     offer.offerItems = reduceObjectToProperty(offer.offerItems, '_value_');
 
+    let flattenedPassengerIds = flattenPassengerTypesMap(passengersIds);
     for (const item in offer.offerItems) {
       const refs = offer
         .offerItems[item]
         .passengerReferences
         .split(' ')
-        .map((r, i) => {
+        .map(r => {
           for (const p in searchResults.passengers) {
             const passenger = searchResults.passengers[p];
             if (r === passenger._id_) {
-              mappedPassengers[passengersIds[passenger.type][i]] = r;
-              mappedPassengersReverse[r] = passengersIds[passenger.type][i];
-              return passengersIds[passenger.type][i];
+              let paxType = passenger.type;
+              //find corresponding entry in flattenedPassengerIds
+              let mappedPassenger = undefined;
+              for (let flatIdx = 0; flatIdx < flattenedPassengerIds.length; flatIdx++) {
+                if (flattenedPassengerIds[flatIdx].type === paxType) {
+                  mappedPassenger = flattenedPassengerIds.splice(flatIdx, 1)[0];
+                  break;
+                }
+              }
+              if (!mappedPassenger)
+                throw new GliderError(`Cannot map passenger from search results to request, _id_:${passenger._id_}, type:${passenger.type}`);
+              mappedPassengers[mappedPassenger.id] = r;
+              mappedPassengersReverse[r] = mappedPassenger.id;
+              return mappedPassenger.id;
             }
           }
         });
@@ -91,7 +74,7 @@ const transformResponse = async (
 
         if (!pricePlansReferences[flightsReference.priceClassRef]) {
           pricePlansReferences[flightsReference.priceClassRef] = {
-            'flights': [flightsReference.flightRef]
+            'flights': [flightsReference.flightRef],
           };
         } else {
           pricePlansReferences[flightsReference.priceClassRef]
@@ -100,9 +83,9 @@ const transformResponse = async (
         }
       }
       offer.pricePlansReferences = pricePlansReferences;
-      delete(offer.flightsReferences);
+      delete (offer.flightsReferences);
     } else if (offer.pricePlansReferences) {
-      
+
       for (const priceRef of offer.pricePlansReferences) {
         priceRef.flights = priceRef.flights.split(' ');
       }
@@ -116,16 +99,16 @@ const transformResponse = async (
   searchResults.passengers = reduceToObjectByKey(
     searchResults.passengers.map(p => ({
       '_id_': mappedPassengersReverse[p._id_],
-      type: p.type
-    }))
+      type: p.type,
+    })),
   );
-  
+
   if (searchResults.checkedBaggages) {
     searchResults.checkedBaggages = reduceToObjectByKey(searchResults.checkedBaggages);
     searchResults.pricePlans = useDictionary(
       searchResults.pricePlans,
       searchResults.checkedBaggages,
-      'checkedBaggages'
+      'checkedBaggages',
     );
   }
 
@@ -134,21 +117,21 @@ const transformResponse = async (
   for (const plan in searchResults.pricePlans) {
 
     if (!searchResults.pricePlans[plan].checkedBaggages &&
-        searchResults.pricePlans[plan].amenities) {
-      
+      searchResults.pricePlans[plan].amenities) {
+
       if (searchResults.pricePlans[plan].amenities.includes('Checked bags for a fee')) {
         searchResults.pricePlans[plan].checkedBaggages = {
-          quantity: 0
+          quantity: 0,
         };
       } else if (searchResults.pricePlans[plan].amenities.includes('1st checked bag free')) {
         searchResults.pricePlans[plan].checkedBaggages = {
-          quantity: 1
+          quantity: 1,
         };
       } else if (
         searchResults.pricePlans[plan].amenities.includes('2 checked bags free') ||
         searchResults.pricePlans[plan].amenities.includes('2 checked bags for a fee')) {
         searchResults.pricePlans[plan].checkedBaggages = {
-          quantity: 2
+          quantity: 2,
         };
       }
     }
@@ -159,11 +142,11 @@ const transformResponse = async (
   }
 
   let overriddenOffers = {};
-  
+
   // Store the offers
   let indexedOffers = {};
   let expirationDate = new Date(Date.now() + 60 * 30 * 1000).toISOString();// now + 30 min
-  
+
   // Process offers
   for (let offerId in searchResults.offers) {
 
@@ -179,7 +162,7 @@ const transformResponse = async (
     if (provider === 'AC') {
       let segments;
       let destinations;
-      
+
       // Extract segments and destinations associated with the offer
       for (const pricePlanId in searchResults.offers[offerId].pricePlansReferences) {
         const pricePlan = searchResults.offers[offerId].pricePlansReferences[pricePlanId];
@@ -189,8 +172,8 @@ const transformResponse = async (
           // Build plans refs with deduplicated flights
           const pricePlansRefsOverride = {
             [pricePlanId]: {
-              flights: [flight]
-            }
+              flights: [flight],
+            },
           };
 
           // Get the associated combinations associated with the flight
@@ -211,7 +194,7 @@ const transformResponse = async (
               `${provider}${operator.flightNumber}${segment.departureTime}${segment.arrivalTime}`;
             return {
               id: c,
-              ...segment
+              ...segment,
             };
           });
 
@@ -219,8 +202,8 @@ const transformResponse = async (
           destinations = [
             {
               id: flight,
-              ...searchResults.destinations[flight]
-            }
+              ...searchResults.destinations[flight],
+            },
           ];
 
           // Create extended set of AirCanada offers
@@ -232,16 +215,24 @@ const transformResponse = async (
             segments,
             destinations,
             passengers: passengersIds,
-            mappedPassengers
+            mappedPassengers,
           };
         }
       }
-    } else {
-
+    }
+    if (provider === 'AF') {
       // AirFrance offers
       searchResults.offers[offerId].extraData = {
         passengers: passengersIds,
-        mappedPassengers
+        mappedPassengers,
+      };
+    }
+    if (provider === 'AMADEUS') {
+      searchResults.offers[offerId].extraData = {
+        rawOffer: searchResults.offers[offerId].extraData.rawOffer,
+        segments: searchResults.offers[offerId].extraData.segments,
+        passengers: passengersIds,
+        mappedPassengers,
       };
     }
   }
@@ -283,16 +274,16 @@ const transformResponse = async (
       delete segment.aggregationKey;
     }
     searchResults.itineraries.segments = aggregatedSegments;
-    
+
     const updatedCombinations = {};
-    const combinationsKeys= {};
+    const combinationsKeys = {};
 
     for (const c in searchResults.itineraries.combinations) {
       let combination = searchResults.itineraries.combinations[c];
       updatedCombinations[c] = combination.map(
         segmentId => segmentsMap[segmentId]
           ? segmentsMap[segmentId]
-          : segmentId
+          : segmentId,
       );
       combinationsKeys[c] = updatedCombinations[c].join('');
     }
@@ -301,7 +292,7 @@ const transformResponse = async (
     // Flights aggregation
     const aggregatedCombinations = {};
     const aggregatedCombinationsKeys = {};
-    
+
     for (const origCombinationId in searchResults.itineraries.combinations) {
       let combination = searchResults.itineraries.combinations[origCombinationId];
 
@@ -311,7 +302,8 @@ const transformResponse = async (
         aggregatedCombinations[origCombinationId] = combination;
         aggregatedCombinationsKeys[updatedCombinations[origCombinationId]] = origCombinationId;
       }
-    };
+    }
+    ;
     searchResults.itineraries.combinations = aggregatedCombinations;
   }
 
@@ -326,7 +318,7 @@ const transformResponse = async (
         offer.pricePlansReferences[pricePlanId].flights = flights.map(
           flight => combinationsMap[flight]
             ? combinationsMap[flight]
-            : flight
+            : flight,
         );
       }
     }
@@ -338,13 +330,12 @@ const transformResponse = async (
       searchResults.offers[offerId].offerItems,
       searchResults.offers[offerId].price.public,
       searchResults.offers[offerId].price.currency,
-      searchResults.offers[offerId].extraData
+      searchResults.offers[offerId].extraData,
     );
 
     delete searchResults.offers[offerId].offerItems;
     delete searchResults.offers[offerId].extraData;
   }
-
   // Store offers to the database
   await offerModel.offerManager.storeOffers(indexedOffers);
 
@@ -365,187 +356,75 @@ const transformResponse = async (
   return searchResults;
 };
 
-module.exports.searchFlight = async (body) => {
 
+//convert {"ADT":["X","934A5B09"],"CHD":["1772C7D1"]};
+//to  [{ type: 'ADT', id: 'X' },{ type: 'ADT', id: 'Y' },{ type: 'CHD', id: 'Z' }]
+const flattenPassengerTypesMap = (paxTypesMap) => {
+  let result = [];
+  for (const [passengerType, passengerIds] of Object.entries(paxTypesMap)) {
+    let allPaxIdentifiersOfType = passengerIds.map(paxId => {
+      return { type: passengerType, id: paxId };
+    });
+    result.push(...allPaxIdentifiersOfType);
+  }
+  return result;
+};
+
+
+module.exports.searchFlight = async (body) => {
   // Fetching of the flight providers
   // associated with the given origin and destination
   const providers = selectProvider(
     body.itinerary.segments[0].origin.iataCode,
-    body.itinerary.segments[0].destination.iataCode
+    body.itinerary.segments[0].destination.iataCode,
   );
-
   if (providers.length === 0) {
-    throw new GliderError(
-      'Flight providers not found for the given origin and destination',
-      404
-    );
-  };
-
-  // Checking of the type of request: OneWay or Return
-  let requestDocumentId = 'OneWay';
-  const { itinerary: { segments } } = body;
-
-  if (
-    segments.length === 2 &&
-    (
-      segments[0].origin.iataCode === segments[1].destination.iataCode ||
-      segments[1].origin.iataCode === segments[0].destination.iataCode
-    )
-  ) {
-    requestDocumentId = 'Return';
+    throw new GliderError('Flight providers not found for the given origin and destination', 404);
   }
-
+  let providerHandlers = createFlightProviders(providers);
+  if (providers.length !== providerHandlers.length) {
+    //TODO improve handling of unknown providers/implementations
+    throw new GliderError('Missing provider configuraton/implementation', 404);
+  }
+  const { itinerary, passengers } = body;
   // Request all providers
-  const responses = await Promise.all(providers.map(provider => {
-    let ndcRequestData;
-    let providerUrl;
-    let apiKey;
-    let SOAPAction;
-    let ndcBody;
-    let templates;
 
-    switch (provider) {
-      case 'AF':
-        ndcRequestData = mapNdcRequestData_AF(airFranceConfig, body);
-        providerUrl = 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001448v01/EXT';
-        apiKey = airFranceConfig.apiKey;
-        SOAPAction = '"http://www.af-klm.com/services/passenger/ProvideAirShopping/provideAirShopping"';
-        ndcBody = provideShoppingRequestTemplate_AF(ndcRequestData);
-        templates = {
-          response: provideAirShoppingTransformTemplate_AF,
-          faults: null,
-          errors: ErrorsTransformTemplate_AF
-        };
-        break;
-      case 'AC':
-        ndcRequestData = mapNdcRequestData_AC(airCanadaConfig, body, requestDocumentId);
-        providerUrl = `${airCanadaConfig.baseUrl}/AirShopping`;
-        apiKey = airCanadaConfig.apiKey;
-        ndcBody = provideShoppingRequestTemplate_AC(ndcRequestData);
-        // console.log('@@@', ndcBody);
-        templates = {
-          response: provideAirShoppingTransformTemplate_AC,
-          faults: FaultsTransformTemplate_AC,
-          errors: ErrorsTransformTemplate_AC
-        };
-        break;
-      default:
-        return Promise.reject('Unsupported flight operator');
+  const responses = await Promise.all(providerHandlers.map(async providerImpl => {
+    let result = {
+      provider: providerImpl.getProviderID(),
+      response: undefined,
+      error: undefined,
+    };
+    try {
+      result.response = await providerImpl.flightSearch(itinerary, passengers);
+    } catch (error) {
+      result.error = error;
     }
-
-    // Fake AirFrance response
-    // if (provider === 'AF') {
-    //   const fs = require('fs');
-    //   const path = require('path');
-    //   const data = fs.readFileSync(
-    //     path.resolve(__dirname, '../../temp/afkl-AirShoppingRS.xml'),
-    //     'utf8'
-    //   );
-    //   return {
-    //     provider,
-    //     templates,
-    //     response: {
-    //       data
-    //     }
-    //   }
-    // } else {
-    //   return {
-    //     provider,
-    //     templates,
-    //     error: new Error('Skiped')
-    //   }
-    // }
-
-    return callProvider(
-      provider,
-      providerUrl,
-      apiKey,
-      ndcBody,
-      SOAPAction,
-      templates
-    );
+    return result;
   }));
-
-  // const fs = require('fs');
-
   // Check responses for errors
   const responseErrors = (await Promise.all(
-    responses
-      .map(async ({ provider, response, error, templates }) => {
-
-        // fs.writeFileSync(`/home/kostysh/dev/glider-fork/temp/${provider}-shp-rs.xml`, response.data);
-        
-        if (error && !error.isAxiosError) {
-
-          // Request error
-          return {
-            provider,
-            error: error instanceof Error ? error.message : error
-          };
-        }
-
-        try {
-          let faultsResult;
-
-          if (templates.faults) {
-            faultsResult = await transform(
-              response.data,
-              templates.faults
-            );
-          }
-
-          const errorsResult = await transform(
-            response.data,
-            templates.errors
-          );
-
-          // Because of two types of errors can be returned: NDCMSG_Fault and Errors
-          const combinedErrors = [
-            ...(faultsResult ? faultsResult.errors : []),
-            ...errorsResult.errors
-          ];
-
-          if (combinedErrors.length) {
-            return {
-              provider,
-              error: combinedErrors.map(e => e.message).join('; ')
-            };
-          } else if (error) {
-            return {
-              provider,
-              error: error.message
-            };
-          } else {
-            return null;
-          }
-
-        } catch (e) {
-
-          // Transformation error
-          return {
-            provider: provider,
-            error: e.message
-          };
-        }
-      })
+    responses.map(({ provider, error }) => {
+      if (error) {
+        return {
+          provider:provider,
+          error: error.message,
+        };
+      } else {
+        return null;
+      }
+    }),
   ))
     .filter(e => e !== null);
-  
-  let searchResult = {};
 
+  let searchResult = {};
   if (responseErrors.length === providers.length) {
-    // If all providers returned errors
-    // then send error with API response
-    throw new GliderError(
-      responseErrors.map(e => `Provider "${e.provider}": ${e.error}`).join('; '),
-      502
-    );
+    // If all providers returned errors then send error with API response
+    throw new GliderError(responseErrors.map(e => `Provider [${e.provider}]: ${e.error}`).join('; '), 502);
   } else if (responseErrors.length > 0) {
-    // If at least one provider returned offers
-    // then pul all errors to the warnings section
+    // If at least one provider returned offers then put all errors to the warnings section
     searchResult.warnings = responseErrors;
   }
-
   // Build mapped passengers by types
   const passengersIds = body.passengers.reduce(
     (a, v) => {
@@ -560,16 +439,17 @@ module.exports.searchFlight = async (body) => {
       }
       return a;
     },
-    {}
+    {},
   );
-
   const transformedResponses = await Promise.all(
     responses
       .filter(r => !r.error)// Exclude errors
       .map(
-        r => transformResponse(r, passengersIds)
-      )
+        r => transformResponse(r, passengersIds),
+      ),
   );
 
   return transformedResponses.reduce((a, v) => deepMerge(a, v), searchResult);
 };
+
+

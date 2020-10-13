@@ -1,0 +1,239 @@
+{
+  "headers": {
+    "date": "Fri, 02 Oct 2020 04:27:19 GMT",
+    "content-type": "application/vnd.amadeus+json",
+    "content-length": "4142",
+    "connection": "close",
+    "ama-internal-message-version": "14.1",
+    "ama-request-id": "0001TDQDOHK4DI",
+    "ama-gateway-request-id": "rrt-01dd98b74cb1d7356-a-de-13882-24263185-1",
+    "access-control-allow-headers": "origin, x-requested-with, accept, Content-Type, Authorization",
+    "access-control-max-age": "3628800",
+    "access-control-allow-methods": "*",
+    "server": "Amadeus",
+    "access-control-allow-origin": "*"
+  },
+  "statusCode": 200,
+  "request": {
+    "host": "test.api.amadeus.com",
+    "port": 443,
+    "ssl": true,
+    "scheme": "https",
+    "verb": "POST",
+    "path": "/v1/shopping/flight-offers/pricing",
+    "params": "{\"data\":{\"type\":\"flight-offers-pricing\",\"flightOffers\":[{\"type\":\"flight-offer\",\"id\":\"1\",\"source\":\"GDS\",\"instantTicketingRequired\":false,\"nonHomogeneous\":false,\"oneWay\":false,\"lastTicketingDate\":\"2020-10-05\",\"numberOfBookableSeats\":9,\"itineraries\":[{\"duration\":\"PT10H45M\",\"segments\":[{\"departure\":{\"iataCode\":\"YVR\",\"terminal\":\"M\",\"at\":\"2020-10-14T13:45:00\"},\"arrival\":{\"iataCode\":\"NRT\",\"terminal\":\"2\",\"at\":\"2020-10-15T16:30:00\"},\"carrierCode\":\"JL\",\"number\":\"17\",\"aircraft\":{\"code\":\"767\"},\"operating\":{\"carrierCode\":\"JL\"},\"duration\":\"PT10H45M\",\"id\":\"9\",\"numberOfStops\":0,\"blacklistedInEU\":false}]},{\"duration\":\"PT9H10M\",\"segments\":[{\"departure\":{\"iataCode\":\"NRT\",\"terminal\":\"2\",\"at\":\"2020-10-22T18:30:00\"},\"arrival\":{\"iataCode\":\"YVR\",\"terminal\":\"M\",\"at\":\"2020-10-22T11:40:00\"},\"carrierCode\":\"JL\",\"number\":\"18\",\"aircraft\":{\"code\":\"767\"},\"operating\":{\"carrierCode\":\"JL\"},\"duration\":\"PT9H10M\",\"id\":\"18\",\"numberOfStops\":0,\"blacklistedInEU\":false}]}],\"price\":{\"currency\":\"EUR\",\"total\":\"626.25\",\"base\":\"563.00\",\"fees\":[{\"amount\":\"0.00\",\"type\":\"SUPPLIER\"},{\"amount\":\"0.00\",\"type\":\"TICKETING\"}],\"grandTotal\":\"626.25\"},\"pricingOptions\":{\"fareType\":[\"PUBLISHED\"],\"includedCheckedBagsOnly\":true},\"validatingAirlineCodes\":[\"JL\"],\"travelerPricings\":[{\"travelerId\":\"1\",\"fareOption\":\"STANDARD\",\"travelerType\":\"ADULT\",\"price\":{\"currency\":\"EUR\",\"total\":\"626.25\",\"base\":\"563.00\"},\"fareDetailsBySegment\":[{\"segmentId\":\"9\",\"cabin\":\"ECONOMY\",\"fareBasis\":\"OLX03IN0\",\"class\":\"O\",\"includedCheckedBags\":{\"quantity\":2}},{\"segmentId\":\"18\",\"cabin\":\"ECONOMY\",\"fareBasis\":\"OLX03IN0\",\"class\":\"O\",\"includedCheckedBags\":{\"quantity\":2}}]}]}]}}",
+    "queryPath": "/v1/shopping/flight-offers/pricing",
+    "bearerToken": "mAmJzAEuAjsj1fqk1xvRVaC7xfNE",
+    "clientVersion": "5.2.0",
+    "languageVersion": "14.13.0",
+    "appId": null,
+    "appVersion": null,
+    "headers": {
+      "User-Agent": "amadeus-node/5.2.0 node/14.13.0",
+      "Accept": "application/json, application/vnd.amadeus+json",
+      "Authorization": "Bearer mAmJzAEuAjsj1fqk1xvRVaC7xfNE",
+      "Content-Type": "application/vnd.amadeus+json"
+    }
+  },
+  "body": "{\n  \"data\" : {\n    \"type\" : \"flight-offers-pricing\",\n    \"flightOffers\" : [ {\n      \"type\" : \"flight-offer\",\n      \"id\" : \"1\",\n      \"source\" : \"GDS\",\n      \"instantTicketingRequired\" : false,\n      \"nonHomogeneous\" : false,\n      \"paymentCardRequired\" : false,\n      \"lastTicketingDate\" : \"2020-10-05\",\n      \"itineraries\" : [ {\n        \"segments\" : [ {\n          \"departure\" : {\n            \"iataCode\" : \"YVR\",\n            \"terminal\" : \"M\",\n            \"at\" : \"2020-10-14T13:45:00\"\n          },\n          \"arrival\" : {\n            \"iataCode\" : \"NRT\",\n            \"terminal\" : \"2\",\n            \"at\" : \"2020-10-15T16:30:00\"\n          },\n          \"carrierCode\" : \"JL\",\n          \"number\" : \"17\",\n          \"aircraft\" : {\n            \"code\" : \"767\"\n          },\n          \"operating\" : {\n            \"carrierCode\" : \"JL\"\n          },\n          \"duration\" : \"PT10H45M\",\n          \"id\" : \"9\",\n          \"numberOfStops\" : 0,\n          \"co2Emissions\" : [ {\n            \"weight\" : 317,\n            \"weightUnit\" : \"KG\",\n            \"cabin\" : \"ECONOMY\"\n          } ]\n        } ]\n      }, {\n        \"segments\" : [ {\n          \"departure\" : {\n            \"iataCode\" : \"NRT\",\n            \"terminal\" : \"2\",\n            \"at\" : \"2020-10-22T18:30:00\"\n          },\n          \"arrival\" : {\n            \"iataCode\" : \"YVR\",\n            \"terminal\" : \"M\",\n            \"at\" : \"2020-10-22T11:40:00\"\n          },\n          \"carrierCode\" : \"JL\",\n          \"number\" : \"18\",\n          \"aircraft\" : {\n            \"code\" : \"767\"\n          },\n          \"operating\" : {\n            \"carrierCode\" : \"JL\"\n          },\n          \"duration\" : \"PT9H10M\",\n          \"id\" : \"18\",\n          \"numberOfStops\" : 0,\n          \"co2Emissions\" : [ {\n            \"weight\" : 317,\n            \"weightUnit\" : \"KG\",\n            \"cabin\" : \"ECONOMY\"\n          } ]\n        } ]\n      } ],\n      \"price\" : {\n        \"currency\" : \"EUR\",\n        \"total\" : \"626.25\",\n        \"base\" : \"563.00\",\n        \"fees\" : [ {\n          \"amount\" : \"0.00\",\n          \"type\" : \"SUPPLIER\"\n        }, {\n          \"amount\" : \"0.00\",\n          \"type\" : \"TICKETING\"\n        }, {\n          \"amount\" : \"0.00\",\n          \"type\" : \"FORM_OF_PAYMENT\"\n        } ],\n        \"grandTotal\" : \"626.25\",\n        \"billingCurrency\" : \"EUR\"\n      },\n      \"pricingOptions\" : {\n        \"fareType\" : [ \"PUBLISHED\" ],\n        \"includedCheckedBagsOnly\" : true\n      },\n      \"validatingAirlineCodes\" : [ \"JL\" ],\n      \"travelerPricings\" : [ {\n        \"travelerId\" : \"1\",\n        \"fareOption\" : \"STANDARD\",\n        \"travelerType\" : \"ADULT\",\n        \"price\" : {\n          \"currency\" : \"EUR\",\n          \"total\" : \"626.25\",\n          \"base\" : \"563.00\",\n          \"taxes\" : [ {\n            \"amount\" : \"16.61\",\n            \"code\" : \"CA\"\n          }, {\n            \"amount\" : \"4.32\",\n            \"code\" : \"OI\"\n          }, {\n            \"amount\" : \"16.03\",\n            \"code\" : \"SQ\"\n          }, {\n            \"amount\" : \"17.34\",\n            \"code\" : \"SW\"\n          }, {\n            \"amount\" : \"8.14\",\n            \"code\" : \"TK\"\n          }, {\n            \"amount\" : \"0.81\",\n            \"code\" : \"XG\"\n          } ],\n          \"refundableTaxes\" : \"63.25\"\n        },\n        \"fareDetailsBySegment\" : [ {\n          \"segmentId\" : \"9\",\n          \"cabin\" : \"ECONOMY\",\n          \"fareBasis\" : \"OLX03IN0\",\n          \"class\" : \"O\",\n          \"includedCheckedBags\" : {\n            \"quantity\" : 2\n          }\n        }, {\n          \"segmentId\" : \"18\",\n          \"cabin\" : \"ECONOMY\",\n          \"fareBasis\" : \"OLX03IN0\",\n          \"class\" : \"O\",\n          \"includedCheckedBags\" : {\n            \"quantity\" : 2\n          }\n        } ]\n      } ]\n    } ],\n    \"bookingRequirements\" : {\n      \"travelerRequirements\" : [ {\n        \"travelerId\" : \"1\",\n        \"genderRequired\" : true,\n        \"documentRequired\" : true,\n        \"dateOfBirthRequired\" : true,\n        \"redressRequiredIfAny\" : true,\n        \"residenceRequired\" : true\n      } ]\n    }\n  },\n  \"dictionaries\" : {\n    \"locations\" : {\n      \"NRT\" : {\n        \"cityCode\" : \"TYO\",\n        \"countryCode\" : \"JP\"\n      },\n      \"YVR\" : {\n        \"cityCode\" : \"YVR\",\n        \"countryCode\" : \"CA\"\n      }\n    }\n  }\n}",
+  "result": {
+    "data": {
+      "type": "flight-offers-pricing",
+      "flightOffers": [
+        {
+          "type": "flight-offer",
+          "id": "1",
+          "source": "GDS",
+          "instantTicketingRequired": false,
+          "nonHomogeneous": false,
+          "paymentCardRequired": false,
+          "lastTicketingDate": "2020-10-05",
+          "itineraries": [
+            {
+              "segments": [
+                {
+                  "departure": {
+                    "iataCode": "YVR",
+                    "terminal": "M",
+                    "at": "2020-10-14T13:45:00"
+                  },
+                  "arrival": {
+                    "iataCode": "NRT",
+                    "terminal": "2",
+                    "at": "2020-10-15T16:30:00"
+                  },
+                  "carrierCode": "JL",
+                  "number": "17",
+                  "aircraft": {
+                    "code": "767"
+                  },
+                  "operating": {
+                    "carrierCode": "JL"
+                  },
+                  "duration": "PT10H45M",
+                  "id": "9",
+                  "numberOfStops": 0,
+                  "co2Emissions": [
+                    {
+                      "weight": 317,
+                      "weightUnit": "KG",
+                      "cabin": "ECONOMY"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "segments": [
+                {
+                  "departure": {
+                    "iataCode": "NRT",
+                    "terminal": "2",
+                    "at": "2020-10-22T18:30:00"
+                  },
+                  "arrival": {
+                    "iataCode": "YVR",
+                    "terminal": "M",
+                    "at": "2020-10-22T11:40:00"
+                  },
+                  "carrierCode": "JL",
+                  "number": "18",
+                  "aircraft": {
+                    "code": "767"
+                  },
+                  "operating": {
+                    "carrierCode": "JL"
+                  },
+                  "duration": "PT9H10M",
+                  "id": "18",
+                  "numberOfStops": 0,
+                  "co2Emissions": [
+                    {
+                      "weight": 317,
+                      "weightUnit": "KG",
+                      "cabin": "ECONOMY"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "price": {
+            "currency": "EUR",
+            "total": "626.25",
+            "base": "563.00",
+            "fees": [
+              {
+                "amount": "0.00",
+                "type": "SUPPLIER"
+              },
+              {
+                "amount": "0.00",
+                "type": "TICKETING"
+              },
+              {
+                "amount": "0.00",
+                "type": "FORM_OF_PAYMENT"
+              }
+            ],
+            "grandTotal": "626.25",
+            "billingCurrency": "EUR"
+          },
+          "pricingOptions": {
+            "fareType": [
+              "PUBLISHED"
+            ],
+            "includedCheckedBagsOnly": true
+          },
+          "validatingAirlineCodes": [
+            "JL"
+          ],
+          "travelerPricings": [
+            {
+              "travelerId": "1",
+              "fareOption": "STANDARD",
+              "travelerType": "ADULT",
+              "price": {
+                "currency": "EUR",
+                "total": "626.25",
+                "base": "563.00",
+                "taxes": [
+                  {
+                    "amount": "16.61",
+                    "code": "CA"
+                  },
+                  {
+                    "amount": "4.32",
+                    "code": "OI"
+                  },
+                  {
+                    "amount": "16.03",
+                    "code": "SQ"
+                  },
+                  {
+                    "amount": "17.34",
+                    "code": "SW"
+                  },
+                  {
+                    "amount": "8.14",
+                    "code": "TK"
+                  },
+                  {
+                    "amount": "0.81",
+                    "code": "XG"
+                  }
+                ],
+                "refundableTaxes": "63.25"
+              },
+              "fareDetailsBySegment": [
+                {
+                  "segmentId": "9",
+                  "cabin": "ECONOMY",
+                  "fareBasis": "OLX03IN0",
+                  "class": "O",
+                  "includedCheckedBags": {
+                    "quantity": 2
+                  }
+                },
+                {
+                  "segmentId": "18",
+                  "cabin": "ECONOMY",
+                  "fareBasis": "OLX03IN0",
+                  "class": "O",
+                  "includedCheckedBags": {
+                    "quantity": 2
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "bookingRequirements": {
+        "travelerRequirements": [
+          {
+            "travelerId": "1",
+            "genderRequired": true,
+            "documentRequired": true,
+            "dateOfBirthRequired": true,
+            "redressRequiredIfAny": true,
+            "residenceRequired": true
+          }
+        ]
+      }
+    },
+    "dictionaries": {
+      "locations": {
+        "NRT": {
+          "cityCode": "TYO",
+          "countryCode": "JP"
+        },
+        "YVR": {
+          "cityCode": "YVR",
+          "countryCode": "CA"
+        }
+      }
+    }
+  },
+  "parsed": true
+}
