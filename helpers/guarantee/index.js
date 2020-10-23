@@ -18,7 +18,7 @@ const processSimardError = e => {
   throw new GliderError(message, status);
 };
 
-// Get and ferify guarantee
+// Get and verify guarantee
 module.exports.getGuarantee = async (id, offer) => {
   let guarantee;
 
@@ -133,4 +133,68 @@ module.exports.refundSettlement = async (settlementId, amount, currency) => {
     processSimardError(e);
   }
   return result;
+};
+
+// Create virtual card for guarantee
+module.exports.createVirtualCard = async (amount, currency) => {
+  let cardDetails;
+
+  if (!amount || Number(amount)<=0) {
+    throw new GliderError('Missing or incorrect amount', 400);
+  }
+  try {
+    const response = await axios.post(
+      `${config.SIMARD_URL}/cards`,
+      {
+        currency: currency,
+        amount: amount,
+        expiration: new Date(Date.now() + 60 * 1000 * 60 * 24 * 7).toISOString()  //7 days
+      },
+      {
+        headers: simardHeaders,
+      }
+    );
+    cardDetails = response.data;
+  } catch (e) {
+    processSimardError(e);
+  }
+
+  return cardDetails;
+};
+
+// delete guarantee
+module.exports.deleteGuarantee = async (guaranteeId) => {
+  if (!guaranteeId) {
+    throw new GliderError('Guarantee Id is required', 400);
+  }
+  try {
+    await axios.delete(
+      `${config.SIMARD_URL}/balances/guarantees/{guarantee_id}`,
+      {
+        headers: simardHeaders,
+      }
+    );
+
+  } catch (e) {
+    processSimardError(e);
+  }
+};
+
+
+// Create virtual card for guarantee
+module.exports.deleteVirtualCard = async (cardId) => {
+  if (!cardId) {
+    throw new GliderError('Card Id is required', 400);
+  }
+  try {
+    await axios.delete(
+      `${config.SIMARD_URL}/cards/{cardId}`,
+      {
+        headers: simardHeaders,
+      }
+    );
+
+  } catch (e) {
+    processSimardError(e);
+  }
 };

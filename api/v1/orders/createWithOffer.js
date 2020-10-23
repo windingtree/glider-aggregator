@@ -8,7 +8,10 @@ const {
 const { ordersManager } = require('../../../helpers/models/order');
 const {
   getGuarantee,
-  claimGuaranteeWithCard
+  claimGuarantee,
+  createVirtualCard,
+  deleteGuarantee,
+  deleteVirtualCard
 } = require('../../../helpers/guarantee');
 const hotelResolver = require('../../../helpers/resolvers/hotel/orderCreateWithOffer');
 const flightResolver = require('../../../helpers/resolvers/flight/orderCreateWithOffer');
@@ -49,20 +52,24 @@ module.exports = basicDecorator(async (req, res) => {
   ];
 
   assertOrderStatus(allOffers);
+  let virtualCard;
+  let orderCreationResults;
+  let guarantee;
+  let guaranteeClaim;
 
   try {
     await setOrderStatus(allOffers, 'CREATING');
 
-    let orderCreationResults;
-    let guarantee;
-    let guaranteeClaim;
 
     if (requestBody.guaranteeId) {
       // Get the guarantee
       guarantee = await getGuarantee(requestBody.guaranteeId, storedOffer);
 
-      // Claim the guarantee
-      guaranteeClaim = await claimGuaranteeWithCard(requestBody.guaranteeId);
+      //create virtual card
+      let currency =  storedOffer.currency;
+      let amount = storedOffer.amountAfterTax;
+      virtualCard = await createVirtualCard(amount, currency);
+
     }
 
     // Handle an Accommodation offer
@@ -100,7 +107,23 @@ module.exports = basicDecorator(async (req, res) => {
       );
     }
 
-    // Change passengers Ids to indernal
+    if (guarantee) {
+      //at this stage bookings should be created - we can commit payment transactions (claim guarantee)
+      guaranteeClaim = await claimGuarantee(requestBody.guaranteeId);
+    }
+
+  } catch (error) {
+    //if booking failed, rollback transaction (cancel virtual card, delete guarantee)
+    await deleteGuarantee(requestBody.guaranteeId);
+    await deleteVirtualCard(virtualCard.id);
+
+
+
+    await setOrderStatus(allOffers, 'UNLOCKED');
+    throw error;
+  }
+  try{
+    // Change passengers Ids to internal
     const passengersIndex = Object.entries(requestBody.passengers)
       .reduce(
         (a, v) => {
