@@ -75,18 +75,16 @@ module.exports = basicDecorator(async (req, res) => {
     // Handle an Accommodation offer
     if (storedOffer instanceof AccommodationOffer) {
 
-      if (!guaranteeClaim) {
-        throw new GliderError(
-          'Claimed guarantee is required',
-          400
-        );
+
+      if (!virtualCard) {
+        throw new GliderError('Card is required to complete the booking',400);
       }
 
       // Resolve this query for an hotel offer
       orderCreationResults = await hotelResolver(
         storedOffer,
         requestBody.passengers,
-        guaranteeClaim.card
+        virtualCard
       );
     }
 
@@ -180,8 +178,14 @@ module.exports = basicDecorator(async (req, res) => {
           },
           {}
         );
+      let segments=[];
+      Object.keys(orderCreationResults.order.itinerary.segments).forEach(segmentId=>{
+        segments.push(orderCreationResults.order.itinerary.segments[segmentId]);
+      });
 
-      orderCreationResults.order.itinerary.segments =
+      orderCreationResults.order.itinerary.segments=segments;
+
+     /* orderCreationResults.order.itinerary.segments =
         Object.entries(orderCreationResults.order.itinerary.segments)
           .reduce(
             (a, v) => {
@@ -192,7 +196,7 @@ module.exports = basicDecorator(async (req, res) => {
               return a;
             },
             {}
-          );
+          );*/
     }
 
     await ordersManager.saveOrder(

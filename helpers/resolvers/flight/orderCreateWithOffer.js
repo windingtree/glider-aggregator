@@ -34,7 +34,9 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   let createResults = await providerImpl.orderCreate(offer, requestBody, guaranteeClaim);
 
   // Otherwise parse as a result
-  createResults.order.itinerary.segments = mergeHourAndDate(createResults.order.itinerary.segments);
+  if(provider!== 'AMADEUS') {//FIXME remove reference to Amadeus
+    createResults.order.itinerary.segments = mergeHourAndDate(createResults.order.itinerary.segments);
+  }
   createResults.order.itinerary.segments = createResults.order.itinerary.segments
     .map(s => {
       const operator = s.operator;
@@ -64,7 +66,7 @@ module.exports = async (offer, requestBody, guaranteeClaim) => {
   createResults.order.passengers = splitPropertyBySpace(createResults.order.passengers, 'lastnames');
   createResults.order.passengers = reduceContactInformation(createResults.order.passengers);
   createResults.order.passengers = reduceToObjectByKey(createResults.order.passengers);
-  if (guaranteeClaim &&
+  if (/*guaranteeClaim &&*/   //why at this stage do we check this? Booking should fail if there is no claim
     createResults.travelDocuments &&
     Array.isArray(createResults.travelDocuments.bookings) &&
     createResults.travelDocuments.bookings.length > 0) {

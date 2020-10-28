@@ -164,15 +164,16 @@ module.exports.createVirtualCard = async (amount, currency) => {
 
 // delete guarantee
 module.exports.deleteGuarantee = async (guaranteeId) => {
+  console.log('Delete gurantee',guaranteeId);
   if (!guaranteeId) {
     throw new GliderError('Guarantee Id is required', 400);
   }
   try {
     await axios.delete(
-      `${config.SIMARD_URL}/balances/guarantees/{guarantee_id}`,
+      `${config.SIMARD_URL}/balances/guarantees/${guaranteeId}`,
       {
         headers: simardHeaders,
-      }
+      },
     );
 
   } catch (e) {
@@ -188,7 +189,7 @@ module.exports.deleteVirtualCard = async (cardId) => {
   }
   try {
     await axios.delete(
-      `${config.SIMARD_URL}/cards/{cardId}`,
+      `${config.SIMARD_URL}/cards/${cardId}`,
       {
         headers: simardHeaders,
       }

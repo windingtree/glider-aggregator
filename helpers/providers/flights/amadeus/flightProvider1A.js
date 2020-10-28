@@ -27,7 +27,7 @@ class FlightProvider1A extends FlightProvider {
   // eslint-disable-next-line no-unused-vars
   async retrieveSeatmaps (offers) {
     let seatmapEnabled = getFeatureFlag('flights.amadeus.seatmap.enabled');
-    if(!seatmapEnabled)
+    if (!seatmapEnabled)
       throw new GliderError('Seatmap display for this flight is not possible');   //for now we will not display seatmap for Amadeus
     let ndcBody = createRetrieveSeatmapRequest(offers);
     const response = await amadeusClient.seatmapRequest(ndcBody);
@@ -41,7 +41,7 @@ class FlightProvider1A extends FlightProvider {
     try {
       response = await amadeusClient.flightOfferPrice(priceRQ);
       assertAmadeusFault(response);
-    }catch(err){
+    } catch (err) {
       console.log('Error while trying to price an offer:', err);
       response = await amadeusClient.flightOfferPrice(priceRQ);
       assertAmadeusFault(response);
@@ -53,12 +53,12 @@ class FlightProvider1A extends FlightProvider {
     // create request
     let request = createOrderCreateRequest(offer, requestBody, guaranteeClaim);
     //make a call
-    let  response;
+    let response;
     try {
       response = await amadeusClient.flightOrderCreate(request);
       // process any potential errors
       assertAmadeusFault(response);
-    }catch(err){
+    } catch (err) {
       console.log('Error while trying to create an order:', err);
       //retry
       response = await amadeusClient.flightOrderCreate(request);
