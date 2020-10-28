@@ -20,8 +20,8 @@ describe('flights/amadeus/requestResponseConverters', () => {
 
       let pax1ContactDetails = contactList[0];
       assert.equal(pax1ContactDetails._id_, passengers[0].contactInformation);
-      assert.equal(pax1ContactDetails.emails[0].value,'contact@org.co.uk');
-      assert.equal(pax1ContactDetails.phones[0].value,'32123456789');
+      assert.equal(pax1ContactDetails.emails[0].value, 'contact@org.co.uk');
+      assert.equal(pax1ContactDetails.phones[0].value, '32123456789');
 
     });
 

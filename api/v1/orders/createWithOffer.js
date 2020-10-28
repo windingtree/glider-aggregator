@@ -3,7 +3,7 @@ const { basicDecorator } = require('../../../decorators/basic');
 const {
   offerManager,
   AccommodationOffer,
-  FlightOffer
+  FlightOffer,
 } = require('../../../helpers/models/offer');
 const { ordersManager } = require('../../../helpers/models/order');
 const {
@@ -11,7 +11,7 @@ const {
   claimGuarantee,
   createVirtualCard,
   deleteGuarantee,
-  deleteVirtualCard
+  deleteVirtualCard,
 } = require('../../../helpers/guarantee');
 const hotelResolver = require('../../../helpers/resolvers/hotel/orderCreateWithOffer');
 const flightResolver = require('../../../helpers/resolvers/flight/orderCreateWithOffer');
@@ -23,7 +23,7 @@ module.exports = basicDecorator(async (req, res) => {
   if (!requestBody.offerId) {
     throw new GliderError(
       'Missing mandatory field: offerId',
-      400
+      400,
     );
   }
   validateCreateOfferPayload(requestBody);
@@ -41,14 +41,14 @@ module.exports = basicDecorator(async (req, res) => {
 
     originOffers = await Promise.all(
       storedOffer.extraData.originOffers.map(
-        offerId => offerManager.getOffer(offerId)
-      )
+        offerId => offerManager.getOffer(offerId),
+      ),
     );
   }
 
   const allOffers = [
     storedOffer,
-    ...originOffers
+    ...originOffers,
   ];
 
   assertOrderStatus(allOffers);
@@ -66,7 +66,7 @@ module.exports = basicDecorator(async (req, res) => {
       guarantee = await getGuarantee(requestBody.guaranteeId, storedOffer);
 
       //create virtual card
-      let currency =  storedOffer.currency;
+      let currency = storedOffer.currency;
       let amount = storedOffer.amountAfterTax;
       virtualCard = await createVirtualCard(amount, currency);
 
@@ -77,14 +77,14 @@ module.exports = basicDecorator(async (req, res) => {
 
 
       if (!virtualCard) {
-        throw new GliderError('Card is required to complete the booking',400);
+        throw new GliderError('Card is required to complete the booking', 400);
       }
 
       // Resolve this query for an hotel offer
       orderCreationResults = await hotelResolver(
         storedOffer,
         requestBody.passengers,
-        virtualCard
+        virtualCard,
       );
     }
 
@@ -93,7 +93,7 @@ module.exports = basicDecorator(async (req, res) => {
       orderCreationResults = await flightResolver(
         storedOffer,
         requestBody,
-        guaranteeClaim
+        guaranteeClaim,
       );
     }
 
@@ -101,7 +101,7 @@ module.exports = basicDecorator(async (req, res) => {
     else {
       throw new GliderError(
         'Unable to understand the offer type',
-        500
+        500,
       );
     }
 
@@ -114,13 +114,10 @@ module.exports = basicDecorator(async (req, res) => {
     //if booking failed, rollback transaction (cancel virtual card, delete guarantee)
     await deleteGuarantee(requestBody.guaranteeId);
     await deleteVirtualCard(virtualCard.id);
-
-
-
     await setOrderStatus(allOffers, 'UNLOCKED');
     throw error;
   }
-  try{
+  try {
     // Change passengers Ids to internal
     const passengersIndex = Object.entries(requestBody.passengers)
       .reduce(
@@ -128,7 +125,7 @@ module.exports = basicDecorator(async (req, res) => {
           a[`${v[1].type}${v[1].lastnames.join('').toUpperCase()}${v[1].firstnames.join('').toUpperCase()}${v[1].birthdate.split('T')[0]}`] = v[0];
           return a;
         },
-        {}
+        {},
       );
 
     if (storedOffer instanceof AccommodationOffer) {
@@ -150,8 +147,8 @@ module.exports = basicDecorator(async (req, res) => {
             },
             {
               passengers: {},
-              mapping: {}
-            }
+              mapping: {},
+            },
           );
       orderCreationResults.order.passengers = changedPassengers.passengers;
 
@@ -165,38 +162,38 @@ module.exports = basicDecorator(async (req, res) => {
                 changedTickets[t] = changedPassengers.mapping[tickets[t]];
               }
               return changedTickets;
-            }
+            },
           );
       }
 
-      // Change segments Ids to internal values
-      const segmentsIndex = storedOffer.extraData.segments
-        .reduce(
-          (a, v) => {
-            a[`${v.index}`] = v.id;
-            return a;
-          },
-          {}
-        );
-      let segments=[];
-      Object.keys(orderCreationResults.order.itinerary.segments).forEach(segmentId=>{
+      // // Change segments Ids to internal values
+      // const segmentsIndex = storedOffer.extraData.segments
+      //   .reduce(
+      //     (a, v) => {
+      //       a[`${v.index}`] = v.id;
+      //       return a;
+      //     },
+      //     {}
+      //   );
+      let segments = [];
+      Object.keys(orderCreationResults.order.itinerary.segments).forEach(segmentId => {
         segments.push(orderCreationResults.order.itinerary.segments[segmentId]);
       });
 
-      orderCreationResults.order.itinerary.segments=segments;
+      orderCreationResults.order.itinerary.segments = segments;
 
-     /* orderCreationResults.order.itinerary.segments =
-        Object.entries(orderCreationResults.order.itinerary.segments)
-          .reduce(
-            (a, v) => {
-              const index = `${v[1].origin.iataCode}${v[1].destination.iataCode}`;
-              if (segmentsIndex[index]) {
-                a[segmentsIndex[index]] = v[1];
-              }
-              return a;
-            },
-            {}
-          );*/
+      /* orderCreationResults.order.itinerary.segments =
+         Object.entries(orderCreationResults.order.itinerary.segments)
+           .reduce(
+             (a, v) => {
+               const index = `${v[1].origin.iataCode}${v[1].destination.iataCode}`;
+               if (segmentsIndex[index]) {
+                 a[segmentsIndex[index]] = v[1];
+               }
+               return a;
+             },
+             {}
+           );*/
     }
 
     await ordersManager.saveOrder(
@@ -207,9 +204,9 @@ module.exports = basicDecorator(async (req, res) => {
         guarantee: guarantee,
         guaranteeClaim: guaranteeClaim,
         order: orderCreationResults,
-        offer: storedOffer
+        offer: storedOffer,
       },
-      'CREATED'
+      'CREATED',
     );
 
     await setOrderStatus(allOffers, 'CREATED');

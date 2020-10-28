@@ -25,7 +25,7 @@ module.exports.getGuarantee = async (id, offer) => {
   if (!id) {
     throw new GliderError(
       'Guarantee Id is required',
-      400
+      400,
     );
   }
 
@@ -35,7 +35,7 @@ module.exports.getGuarantee = async (id, offer) => {
       `${config.SIMARD_URL}/balances/guarantees/${id}`,
       {
         headers: simardHeaders,
-      }
+      },
     );
 
     guarantee = response.data;
@@ -44,7 +44,7 @@ module.exports.getGuarantee = async (id, offer) => {
     if (guarantee.currency !== offer.currency) {
       throw new GliderError(
         `The guarantee currency: ${guarantee.currency} is different from offer currency: ${offer.currency}`,
-        400
+        400,
       );
     }
 
@@ -52,7 +52,7 @@ module.exports.getGuarantee = async (id, offer) => {
     if (Number(guarantee.amount) < Number(offer.amountAfterTax)) {
       throw new GliderError(
         `The guarantee amount: ${guarantee.currency} is less then offer amount: ${offer.amountAfterTax}`,
-        400
+        400,
       );
     }
 
@@ -61,7 +61,7 @@ module.exports.getGuarantee = async (id, offer) => {
     if (new Date(guarantee.expiration).getTime() < (Date.now() + 60 * 60 * 72 * 1000)) {
       throw new GliderError(
         `The guarantee expiration date: ${guarantee.expiration} is less then 72 hours from now`,
-        400
+        400,
       );
     }
   } catch (e) {
@@ -81,7 +81,7 @@ module.exports.claimGuarantee = async (id) => {
       {},
       {
         headers: simardHeaders,
-      }
+      },
     );
     claim = response.data;
   } catch (e) {
@@ -99,11 +99,11 @@ module.exports.claimGuaranteeWithCard = async (id) => {
       `${config.SIMARD_URL}/balances/guarantees/${id}/claimWithCard`,
       {
         // Date.now() + 7 days
-        expiration: new Date(Date.now() + 60 * 1000 * 60 * 24 * 7).toISOString()
+        expiration: new Date(Date.now() + 60 * 1000 * 60 * 24 * 7).toISOString(),
       },
       {
         headers: simardHeaders,
-      }
+      },
     );
     claim = response.data;
   } catch (e) {
@@ -126,7 +126,7 @@ module.exports.refundSettlement = async (settlementId, amount, currency) => {
       },
       {
         headers: simardHeaders,
-      }
+      },
     );
     result = response.data;
   } catch (e) {
@@ -139,7 +139,7 @@ module.exports.refundSettlement = async (settlementId, amount, currency) => {
 module.exports.createVirtualCard = async (amount, currency) => {
   let cardDetails;
 
-  if (!amount || Number(amount)<=0) {
+  if (!amount || Number(amount) <= 0) {
     throw new GliderError('Missing or incorrect amount', 400);
   }
   try {
@@ -148,11 +148,11 @@ module.exports.createVirtualCard = async (amount, currency) => {
       {
         currency: currency,
         amount: amount,
-        expiration: new Date(Date.now() + 60 * 1000 * 60 * 24 * 7).toISOString()  //7 days
+        expiration: new Date(Date.now() + 60 * 1000 * 60 * 24 * 7).toISOString(),  //7 days
       },
       {
         headers: simardHeaders,
-      }
+      },
     );
     cardDetails = response.data;
   } catch (e) {
@@ -164,7 +164,7 @@ module.exports.createVirtualCard = async (amount, currency) => {
 
 // delete guarantee
 module.exports.deleteGuarantee = async (guaranteeId) => {
-  console.log('Delete gurantee',guaranteeId);
+  console.log('Delete gurantee', guaranteeId);
   if (!guaranteeId) {
     throw new GliderError('Guarantee Id is required', 400);
   }
@@ -192,7 +192,7 @@ module.exports.deleteVirtualCard = async (cardId) => {
       `${config.SIMARD_URL}/cards/${cardId}`,
       {
         headers: simardHeaders,
-      }
+      },
     );
 
   } catch (e) {

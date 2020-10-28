@@ -4,7 +4,7 @@ const { convertGenderFromGliderToAmadeus, createSegment } = require('./amadeusFo
 const GliderError = require('../../../../error');
 const { getFeatureFlag } = require('../../../../../config');
 
-const { parsePhoneNumberWithError, ParseError }  = require('libphonenumber-js');
+const { parsePhoneNumberWithError, ParseError } = require('libphonenumber-js');
 
 
 const createTraveller = (id, pax) => {
@@ -18,18 +18,18 @@ const createTraveller = (id, pax) => {
   let ctcmCountryCode;
   try {
     const phoneNumber = parsePhoneNumberWithError(phone);
-    ctcmCountryCode=phoneNumber.countryCallingCode;
-    ctcmNumber=phoneNumber.nationalNumber;
+    ctcmCountryCode = phoneNumber.countryCallingCode;
+    ctcmNumber = phoneNumber.nationalNumber;
   } catch (error) {
     if (error instanceof ParseError) {
       // Not a phone number, non-existent country, etc.
-      console.log('Cannot properly parse phone number:',error.message);
+      console.log('Cannot properly parse phone number:', error.message);
     } else {
       //we can ignore this - in this case CTCM will fail but booking still can be created
       // throw error
     }
   }
-//FIXME - hardcoded pax type
+  //FIXME - hardcoded pax type
   return {
     id: id,
     dateOfBirth: birthdate.substr(0, 10),
