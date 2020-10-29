@@ -31,8 +31,8 @@
       "Accept-Encoding": "gzip,deflate",
       "Cache-Control": "no-cache",
       "Connection": "keep-alive",
-      "api_key": "74f19d8f71d5a6da1e98874fa3adea08",
-      "X-apiKey": "74f19d8f71d5a6da1e98874fa3adea08",
+      "api_key": "",
+      "X-apiKey": "",
       "User-Agent": "axios/0.19.2",
       "Content-Length": 2282
     },
