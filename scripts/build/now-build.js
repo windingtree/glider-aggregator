@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { getFeatureFlags } = require('../../helpers/businessrules/featureFlagEngine');
+const { getFeatureFlagsAsync } = require('../../helpers/businessrules/featureFlagEngine');
 // Determine branch and environment
 const githubBranch = process.env.VERCEL_GITHUB_COMMIT_REF || process.env.NOW_GITHUB_COMMIT_REF || 'undefined';
 const environment = (githubBranch === 'master' ? 'production' : 'staging');
@@ -17,7 +17,8 @@ fs.writeFile('env.json', `${JSON.stringify({
 });
 
 console.log('Generate features.json');
-getFeatureFlags().then(features => {
+getFeatureFlagsAsync().then(features => {
+  console.log('**********FEATURES*************',JSON.stringify(features));
   fs.writeFile('features.json', JSON.stringify(features), err => {
     if (err) {
       console.error('Error while generating features.json', err);
