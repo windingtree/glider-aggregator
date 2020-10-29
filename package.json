@@ -46,6 +46,7 @@
     "jose": "1.27.2",
     "js-yaml": "^3.14.0",
     "json-rules-engine": "^5.0.4",
+    "libphonenumber-js": "^1.8.5",
     "lodash": "^4.17.20",
     "mongoose": "5.9.24",
     "redis": "3.0.2",

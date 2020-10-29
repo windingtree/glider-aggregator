@@ -1,8 +1,11 @@
 const { createPrice, convertGenderFromAmadeusToGlider } = require('./amadeusFormatUtils');
 //request
-const { convertGenderFromGliderToAmadeus } = require('./amadeusFormatUtils');
+const { convertGenderFromGliderToAmadeus, createSegment } = require('./amadeusFormatUtils');
 const GliderError = require('../../../../error');
 const { getFeatureFlag } = require('../../../../../config');
+
+const { parsePhoneNumberWithError, ParseError } = require('libphonenumber-js');
+
 
 const createTraveller = (id, pax) => {
   const { civility, firstnames, lastnames, birthdate, contactInformation } = pax;
@@ -10,6 +13,22 @@ const createTraveller = (id, pax) => {
   const phone = contactInformation && contactInformation.length > 0 ? contactInformation[0] : null;
   if (!email) throw new GliderError(`Missing email address for passenger ${id}`);
   if (!phone) throw new GliderError(`Missing phone number for passenger ${id}`);
+
+  let ctcmNumber;
+  let ctcmCountryCode;
+  try {
+    const phoneNumber = parsePhoneNumberWithError(phone);
+    ctcmCountryCode = phoneNumber.countryCallingCode;
+    ctcmNumber = phoneNumber.nationalNumber;
+  } catch (error) {
+    if (error instanceof ParseError) {
+      // Not a phone number, non-existent country, etc.
+      console.log('Cannot properly parse phone number:', error.message);
+    } else {
+      //we can ignore this - in this case CTCM will fail but booking still can be created
+      // throw error
+    }
+  }
   //FIXME - hardcoded pax type
   return {
     id: id,
@@ -23,8 +42,8 @@ const createTraveller = (id, pax) => {
       emailAddress: email,
       phones: [{
         deviceType: 'MOBILE',
-        countryCallingCode: '1',  //TODO remove hardcoded
-        number: phone,
+        countryCallingCode: ctcmCountryCode,
+        number: ctcmNumber,
       }],
     },
     documents: [],
@@ -75,8 +94,6 @@ const createOrderCreateRequest = (order, body) => {
 };
 
 
-
-
 //response
 const createPassenger = (traveler) => {
   const { id, dateOfBirth, gender, name, contact } = traveler;
@@ -94,21 +111,19 @@ const createPassenger = (traveler) => {
     birthdate: dateOfBirth,
     contactInformation: 'CONTACT_For_TravelerRefNumber' + id,
   };
-
+  //create array with pax emails (concatenate country dialing code with actual number as used in aggregator
+  let phonesArr = phones.map(phone => {
+    return {
+      value: `${phone.countryCallingCode}${phone.number}`,
+    };
+  });
   let contactInfo = {
     _id_: 'CONTACT_For_TravelerRefNumber' + id,
-    emails: [
-      {
-        value: emailAddress,
-      },
-    ],
-    phones: [
-      {
-        value: phones,
-      },
-    ],
+    emails: [{
+      value: emailAddress,
+    }],
+    phones: phonesArr,
   };
-
   return {
     passenger: paxDetails,
     contactInformation: contactInfo,
@@ -155,6 +170,16 @@ const orderCreateRequestResponseConverters = (response) => {
   let _offer = response.data.flightOffers[0];
   let price = createPrice(_offer.price, 0); //TODO add commission
   order.order.price = price;
+
+  let segments = [];
+  _offer.itineraries.forEach(_itinerary => {
+    _itinerary.segments.forEach(_segment => {
+      segments.push(createSegment(_segment));
+    });
+  });
+
+  order.order.itinerary.segments = segments;
+
   return order;
 };
 
