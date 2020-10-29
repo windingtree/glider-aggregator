@@ -1,43 +1,6 @@
 {
-  "response": {
-    "headers": {
-      "date": "Fri, 02 Oct 2020 04:28:49 GMT",
-      "content-type": "application/vnd.amadeus+json",
-      "content-length": "176",
-      "connection": "close",
-      "ama-internal-message-version": "14.1",
-      "ama-request-id": "0001TDQKLHK4FZ",
-      "ama-gateway-request-id": "rrt-041ba1f5a5855a47c-a-de-19393-24767485-1",
-      "access-control-allow-headers": "origin, x-requested-with, accept, Content-Type, Authorization",
-      "access-control-max-age": "3628800",
-      "access-control-allow-methods": "*",
-      "server": "Amadeus",
-      "access-control-allow-origin": "*"
-    },
-    "statusCode": 500,
-    "request": {
-      "host": "test.api.amadeus.com",
-      "port": 443,
-      "ssl": true,
-      "scheme": "https",
-      "verb": "POST",
-      "path": "/v1/booking/flight-orders",
-      "params": "{\"data\":{\"type\":\"flight-order\",\"queuingOfficeId\":\"TLLEE2159\",\"flightOffers\":[{\"type\":\"flight-offer\",\"id\":\"1\",\"source\":\"GDS\",\"instantTicketingRequired\":false,\"nonHomogeneous\":false,\"oneWay\":false,\"lastTicketingDate\":\"2020-10-05\",\"numberOfBookableSeats\":9,\"itineraries\":[{\"duration\":\"PT10H45M\",\"segments\":[{\"departure\":{\"iataCode\":\"YVR\",\"terminal\":\"M\",\"at\":\"2020-10-14T13:45:00\"},\"arrival\":{\"iataCode\":\"NRT\",\"terminal\":\"2\",\"at\":\"2020-10-15T16:30:00\"},\"carrierCode\":\"JL\",\"number\":\"17\",\"aircraft\":{\"code\":\"767\"},\"operating\":{\"carrierCode\":\"JL\"},\"duration\":\"PT10H45M\",\"id\":\"9\",\"numberOfStops\":0,\"blacklistedInEU\":false}]},{\"duration\":\"PT9H10M\",\"segments\":[{\"departure\":{\"iataCode\":\"NRT\",\"terminal\":\"2\",\"at\":\"2020-10-22T18:30:00\"},\"arrival\":{\"iataCode\":\"YVR\",\"terminal\":\"M\",\"at\":\"2020-10-22T11:40:00\"},\"carrierCode\":\"JL\",\"number\":\"18\",\"aircraft\":{\"code\":\"767\"},\"operating\":{\"carrierCode\":\"JL\"},\"duration\":\"PT9H10M\",\"id\":\"18\",\"numberOfStops\":0,\"blacklistedInEU\":false}]}],\"price\":{\"currency\":\"EUR\",\"total\":\"626.25\",\"base\":\"563.00\",\"fees\":[{\"amount\":\"0.00\",\"type\":\"SUPPLIER\"},{\"amount\":\"0.00\",\"type\":\"TICKETING\"}],\"grandTotal\":\"626.25\"},\"pricingOptions\":{\"fareType\":[\"PUBLISHED\"],\"includedCheckedBagsOnly\":true},\"validatingAirlineCodes\":[\"JL\"],\"travelerPricings\":[{\"travelerId\":\"1\",\"fareOption\":\"STANDARD\",\"travelerType\":\"ADULT\",\"price\":{\"currency\":\"EUR\",\"total\":\"626.25\",\"base\":\"563.00\"},\"fareDetailsBySegment\":[{\"segmentId\":\"9\",\"cabin\":\"ECONOMY\",\"fareBasis\":\"OLX03IN0\",\"class\":\"O\",\"includedCheckedBags\":{\"quantity\":2}},{\"segmentId\":\"18\",\"cabin\":\"ECONOMY\",\"fareBasis\":\"OLX03IN0\",\"class\":\"O\",\"includedCheckedBags\":{\"quantity\":2}}]}]}],\"travelers\":[{\"id\":\"1\",\"dateOfBirth\":\"1999-12-12\",\"name\":{\"firstName\":\"John\",\"lastName\":\"Doe\"},\"gender\":\"MALE\",\"contact\":{\"emailAddress\":\"tomasz.kurek@gmail.com\",\"phones\":[{\"deviceType\":\"MOBILE\",\"countryCallingCode\":\"1\",\"number\":\"+48609111222\"}]},\"documents\":[]}]}}",
-      "queryPath": "/v1/booking/flight-orders",
-      "bt": "",
-      "clientVersion": "5.2.0",
-      "languageVersion": "14.13.0",
-      "appId": null,
-      "appVersion": null,
-      "headers": {
-        "User-Agent": "amadeus-node/5.2.0 node/14.13.0",
-        "Accept": "application/json, application/vnd.amadeus+json",
-        "Authorization": "",
-        "Content-Type": "application/vnd.amadeus+json"
-      }
-    },
-    "body": "{\n  \"errors\" : [ {\n    \"status\" : 500,\n    \"code\" : 141,\n    \"title\" : \"SYSTEM ERROR HAS OCCURRED\",\n    \"detail\" : \"Unknown error occurred while processing the message\"\n  } ]\n}",
     "result": {
+
       "errors": [
         {
           "status": 500,
@@ -48,6 +11,4 @@
       ]
     },
     "parsed": true
-  },
-  "code": "ServerError"
 }
