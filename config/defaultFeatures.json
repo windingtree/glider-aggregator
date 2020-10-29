@@ -443,5 +443,20 @@
         "value": false
       }
     }
+  },
+  {
+    "topic": "featureFlag",
+    "comment": "Max number of flight offers to be requested from Amadeus GDS (default setting)",
+    "conditions": {
+      "all": []
+    },
+    "priority": 100,
+    "event": {
+      "type": "featureFlag",
+      "params": {
+        "key": "flights.amadeus.maxFlightOffers",
+        "value": 500
+      }
+    }
   }
 ]
