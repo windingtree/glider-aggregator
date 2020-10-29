@@ -31,7 +31,7 @@
     "headers": {
       "User-Agent": "amadeus-node/5.2.0 node/14.13.0",
       "Accept": "application/json, application/vnd.amadeus+json",
-      "Authorization": "Bearer mAmJzAEuAjsj1fqk1xvRVaC7xfNE",
+      "Authorization": "",
       "Content-Type": "application/vnd.amadeus+json"
     }
   },
