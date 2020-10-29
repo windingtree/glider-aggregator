@@ -118,11 +118,15 @@ module.exports = basicDecorator(async (req, res) => {
     throw error;
   }
   try {
+    const createPaxIndex = (pax) => {
+      return `${pax.type}${pax.lastnames.join('').toUpperCase()}${pax.firstnames.join('').toUpperCase()}${pax.birthdate.split('T')[0]}`.replace(/ /ig, '');
+    };
     // Change passengers Ids to internal
     const passengersIndex = Object.entries(requestBody.passengers)
       .reduce(
         (a, v) => {
-          a[`${v[1].type}${v[1].lastnames.join('').toUpperCase()}${v[1].firstnames.join('').toUpperCase()}${v[1].birthdate.split('T')[0]}`] = v[0];
+          let index = createPaxIndex(v[1]);
+          a[index] = v[0];
           return a;
         },
         {},
@@ -138,7 +142,7 @@ module.exports = basicDecorator(async (req, res) => {
         Object.entries(orderCreationResults.order.passengers)
           .reduce(
             (a, v) => {
-              const index = `${v[1].type}${v[1].lastnames.join('').toUpperCase()}${v[1].firstnames.join('').toUpperCase()}${v[1].birthdate}`;
+              const index = createPaxIndex(v[1]);
               if (passengersIndex[index]) {
                 a.passengers[passengersIndex[index]] = v[1];
                 a.mapping[v[0]] = passengersIndex[index];
