@@ -85,9 +85,9 @@ const processPriceOfferResponse = (response) => {
       _itinerary.segments.map(_segment => {
         //build segment object
         let segment = createSegment(_segment);
-        console.log('segment', segment);
-        console.log('segment._id_', segment._id_);
-        console.log('segment.id', segment.id);
+        // console.log('segment', segment);
+        // console.log('segment._id_', segment._id_);
+        // console.log('segment.id', segment.id);
         currentOffer.offer.itinerary.segments[segment._id_] = segment;
       });
     });

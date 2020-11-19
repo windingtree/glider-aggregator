@@ -62,33 +62,26 @@ class FlightProvider1A extends FlightProvider {
       //convert to WT format
       order = orderCreateResponseProcessor(orderCreateResponse);
 
-      //since response from order create does not contain eTicket numbers, we need to make a separate call to retrieve orders by PNR locator
-      //to do that, we need to collect PNRs first
-      let pnrs = order.travelDocuments.bookings;
+      //since response from order create does not contain eTicket numbers, we need to make a separate call to retrieve orders
       let eTickets = [];
-      //for every PNR, retrieve booking from API
-      for (const pnr of pnrs) {
-        //prepare a request to retrieve a PNR
-        let pnrRetrieveQuery = {
-          reference: pnr,
-          originSystemCode: 'GDS',
-        };
-        //retrieve an order
-        let orderRetrieveResponse = await amadeusClient.flightOrderRetrieve(pnrRetrieveQuery);
-        //convert response
-        let retrievedOrder = orderRetrieveResponseConverter(orderRetrieveResponse);
-        //extract eTicket numbers
-        if (retrievedOrder && retrievedOrder.travelDocuments && retrievedOrder.travelDocuments.etickets) {
-          eTickets.push(...retrievedOrder.travelDocuments.etickets);
-        }
-
+      let pnrRetrieveQuery = {
+        orderId: orderCreateResponse.data.id,
+      };
+      //retrieve an order
+      let orderRetrieveResponse = await amadeusClient.flightOrderRetrieve(pnrRetrieveQuery);
+      //convert response
+      let retrievedOrder = orderRetrieveResponseConverter(orderRetrieveResponse);
+      //extract eTicket numbers
+      if (retrievedOrder && retrievedOrder.travelDocuments && retrievedOrder.travelDocuments.etickets) {
+        eTickets.push(...retrievedOrder.travelDocuments.etickets);
       }
+
       //remove dupes
       let eTicketsSet = new Set(eTickets);
       eTickets = [...eTicketsSet];
       //store eTickets in the response from order create
       order.travelDocuments.etickets = eTickets;
-    }catch(err){
+    } catch (err) {
       console.error(err);
       throw new GliderError('Failure while creating booking:' + err, 500);
     }

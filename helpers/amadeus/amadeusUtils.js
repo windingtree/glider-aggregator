@@ -47,7 +47,7 @@ const getAmadeusClient = (type = CLIENT_TYPE_SELF_SERVICE) => {
 const amadeusEndpointRequest = async (ndcBody, action) => {
   let response;
   let amadeusClient;
-  let queryString;
+
   try {
     logRQRS(ndcBody, `${action}-request`);
     switch (action) {
@@ -67,9 +67,10 @@ const amadeusEndpointRequest = async (ndcBody, action) => {
         // response = await amadeusClient.booking.flightOrders.post(requestStr);
         break;
       case REQUESTS.ORDERRETRIEVE:
-        queryString = qs.stringify(ndcBody);
+
         amadeusClient = getAmadeusClient(CLIENT_TYPE_ENTERPRISE);
-        response = await amadeusClient.doGet(`/v1/booking/flight-orders/by-reference?${queryString}`);
+        response = await amadeusClient.doGet(`/v1/booking/flight-orders/${ndcBody.orderId}`);
+        // response = await amadeusClient.doGet(`/v1/booking/flight-orders/by-reference?${queryString}`);
         break;
       case REQUESTS.SEATMAP:
         amadeusClient = getAmadeusClient(CLIENT_TYPE_ENTERPRISE);

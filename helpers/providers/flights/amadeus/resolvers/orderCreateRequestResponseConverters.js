@@ -156,7 +156,7 @@ const createPassenger = (traveler) => {
 };
 
 const orderRetrieveResponseConverter = (response) => {
-  return convertOrderFormAmadeusResponse(response.data[0]);
+  return convertOrderFormAmadeusResponse(response.data);
 };
 const orderCreateRequestResponseConverters = (response) => {
   return convertOrderFormAmadeusResponse(response.data);

@@ -1,6 +1,7 @@
 const axios = require('axios');
 const GliderError = require('../error');
 const qs = require('querystring');
+const { logRQRS } = require('../log/logRQ');
 const HTTP_TIMEOUT_SECONDS = 30;    //TODO - move to config
 const TTL_BUFFER_SECONDS = 30;
 
@@ -103,6 +104,7 @@ class SampleHttpClient {
       headers: SampleHttpClient.createHeadersJSONContent(token),
       timeout: HTTP_TIMEOUT_SECONDS * 1000,
     });
+    logRQRS(response,'RAW_RESPNSE');
     return response;
   }
 
@@ -124,6 +126,7 @@ class SampleHttpClient {
       headers: (urlEncodedContentType ? SampleHttpClient.createHeadersURLEncodedContent(token) : SampleHttpClient.createHeadersJSONContent(token)),
       timeout: HTTP_TIMEOUT_SECONDS * 1000,
     });
+    logRQRS(response,'RAW_RESPNSE');
     return response;
   }
 
