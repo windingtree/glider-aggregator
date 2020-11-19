@@ -145,9 +145,12 @@ const airCanadaConfig = {
 const amadeusGdsConfig = {  //TEST
   clientId: getConfigKey('AMADEUS_CLIENT_ID') ,
   clientSecret: getConfigKey('AMADEUS_CLIENT_SECRET'),
-  hostname: getConfigKey('AMADEUS_ENVIRONMENT') || 'test',
-  queueingOfficeId: getConfigKey('AMADEUS_QUEUE_OFFICE_ID') ,
-  ownerOfficeId: getConfigKey('AMADEUS_OWNERSHIP_OFFICE_ID'),
+  hostname: getConfigKey('AMADEUS_ENVIRONMENT') || 'test'
+};
+const amadeusSelfServiceConfig = {  //TEST
+  clientId: getConfigKey('AMADEUS_SS_CLIENT_ID') ,
+  clientSecret: getConfigKey('AMADEUS_SS_CLIENT_SECRET'),
+  hostname: getConfigKey('AMADEUS_SS_ENVIRONMENT') || 'test'
 };
 
 const erevmax = {
@@ -173,6 +176,7 @@ module.exports.getFeatureFlag = (featureId) => {
 module.exports.airFranceConfig = airFranceConfig;
 module.exports.airCanadaConfig = airCanadaConfig;
 module.exports.amadeusGdsConfig = amadeusGdsConfig;
+module.exports.amadeusSelfServiceConfig = amadeusSelfServiceConfig;
 module.exports.erevmax = erevmax;
 module.exports.redisUrl = getConfigKey('REDIS_URL') || 'redis://localhost:6379';
 module.exports.mongoUrl = getConfigKey('MONGO_URL') || 'mongodb://localhost/glider';

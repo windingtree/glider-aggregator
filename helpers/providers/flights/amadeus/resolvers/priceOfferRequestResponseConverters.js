@@ -105,13 +105,13 @@ const processPriceOfferResponse = (response) => {
       });
       let baseFare = createFareItem('base', _price.base, '', baseFareItemComponents);
       let taxes = [];
-      _travelerPricing.price.taxes.map(_tax => {
-        taxes.push(createTaxItem(_tax.code, _tax.amount, getTaxDefinition(_tax.code)));
-      });
-      let pricedItem = createPricedItem('offeritem-' + uuidv4(), [passenger._id_], taxes, [baseFare]);
-
-
-      currentOffer.offer.pricedItems.push(pricedItem);
+      if(_travelerPricing.price && _travelerPricing.price.taxes) {  //taxes sometimes are not provided (e.g. in case of infants)
+        _travelerPricing.price.taxes.map(_tax => {
+          taxes.push(createTaxItem(_tax.code, _tax.amount, getTaxDefinition(_tax.code)));
+        });
+        let pricedItem = createPricedItem('offeritem-' + uuidv4(), [passenger._id_], taxes, [baseFare]);
+        currentOffer.offer.pricedItems.push(pricedItem);
+      }
 
     });
 

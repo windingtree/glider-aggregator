@@ -1,0 +1,481 @@
+{
+  "meta": {
+    "count": 1,
+    "links": {
+      "self": "https://test.travel.api.amadeus.com/v1/booking/flight-orders/by-reference?reference=OO2FC7&originSystemCode=GDS"
+    }
+  },
+  "data": [
+    {
+      "type": "flight-order",
+      "id": "eJzTd9f39zdyczYHAArtAjY%3D",
+      "queuingOfficeId": "TLLEE2159",
+      "associatedRecords": [
+        {
+          "reference": "OO2FC7",
+          "originSystemCode": "LO",
+          "flightOfferId": "1"
+        },
+        {
+          "reference": "OO2FC7",
+          "creationDate": "2020-11-19T08:09:00",
+          "originSystemCode": "GDS",
+          "flightOfferId": "1"
+        }
+      ],
+      "flightOffers": [
+        {
+          "type": "flight-offer",
+          "id": "1",
+          "source": "GDS",
+          "nonHomogeneous": false,
+          "lastTicketingDate": "2020-11-20",
+          "itineraries": [
+            {
+              "segments": [
+                {
+                  "departure": {
+                    "iataCode": "KRK",
+                    "at": "2020-12-20T15:05:00"
+                  },
+                  "arrival": {
+                    "iataCode": "WAW",
+                    "at": "2020-12-20T15:55:00"
+                  },
+                  "carrierCode": "LO",
+                  "number": "3906",
+                  "aircraft": {
+                    "code": "738"
+                  },
+                  "operating": {},
+                  "id": "1",
+                  "numberOfStops": 0
+                }
+              ]
+            },
+            {
+              "segments": [
+                {
+                  "departure": {
+                    "iataCode": "WAW",
+                    "at": "2021-01-20T10:40:00"
+                  },
+                  "arrival": {
+                    "iataCode": "KRK",
+                    "at": "2021-01-20T11:35:00"
+                  },
+                  "carrierCode": "LO",
+                  "number": "3907",
+                  "aircraft": {
+                    "code": "E95"
+                  },
+                  "operating": {},
+                  "id": "2",
+                  "numberOfStops": 0
+                }
+              ]
+            }
+          ],
+          "price": {
+            "currency": "EUR",
+            "total": "131.49",
+            "base": "21.00",
+            "grandTotal": "131.49"
+          },
+          "pricingOptions": {
+            "fareType": [
+              "PUBLISHED"
+            ]
+          },
+          "validatingAirlineCodes": [
+            "LO"
+          ],
+          "travelerPricings": [
+            {
+              "travelerId": "1",
+              "travelerType": "ADULT",
+              "price": {
+                "currency": "EUR",
+                "total": "44.91",
+                "base": "8.00",
+                "taxes": [
+                  {
+                    "amount": "2.00",
+                    "code": "EI"
+                  },
+                  {
+                    "amount": "0.30",
+                    "code": "ND"
+                  },
+                  {
+                    "amount": "24.59",
+                    "code": "XW"
+                  },
+                  {
+                    "amount": "0.64",
+                    "code": "XX"
+                  },
+                  {
+                    "amount": "9.38",
+                    "code": "YQ"
+                  }
+                ]
+              },
+              "fareDetailsBySegment": [
+                {
+                  "segmentId": "1",
+                  "cabin": "ECONOMY",
+                  "fareBasis": "OSAVG0",
+                  "class": "O",
+                  "includedCheckedBags": {
+                    "quantity": 0
+                  }
+                },
+                {
+                  "segmentId": "2",
+                  "cabin": "ECONOMY",
+                  "fareBasis": "OSAVG0",
+                  "class": "O",
+                  "includedCheckedBags": {
+                    "quantity": 0
+                  }
+                }
+              ]
+            },
+            {
+              "travelerId": "2",
+              "travelerType": "HELD_INFANT",
+              "associatedAdultId": "1",
+              "price": {
+                "currency": "EUR",
+                "total": "0.00",
+                "base": "0.00"
+              },
+              "fareDetailsBySegment": [
+                {
+                  "segmentId": "1",
+                  "cabin": "ECONOMY",
+                  "fareBasis": "OSAVG0",
+                  "class": "O",
+                  "includedCheckedBags": {
+                    "quantity": 0
+                  }
+                },
+                {
+                  "segmentId": "2",
+                  "cabin": "ECONOMY",
+                  "fareBasis": "OSAVG0",
+                  "class": "O",
+                  "includedCheckedBags": {
+                    "quantity": 0
+                  }
+                }
+              ]
+            },
+            {
+              "travelerId": "3",
+              "travelerType": "CHILD",
+              "price": {
+                "currency": "EUR",
+                "total": "41.67",
+                "base": "5.00",
+                "taxes": [
+                  {
+                    "amount": "2.00",
+                    "code": "EI"
+                  },
+                  {
+                    "amount": "0.30",
+                    "code": "ND"
+                  },
+                  {
+                    "amount": "24.59",
+                    "code": "XW"
+                  },
+                  {
+                    "amount": "0.40",
+                    "code": "XX"
+                  },
+                  {
+                    "amount": "9.38",
+                    "code": "YQ"
+                  }
+                ]
+              },
+              "fareDetailsBySegment": [
+                {
+                  "segmentId": "1",
+                  "cabin": "ECONOMY",
+                  "fareBasis": "OSAVG0",
+                  "class": "O",
+                  "includedCheckedBags": {
+                    "quantity": 0
+                  }
+                },
+                {
+                  "segmentId": "2",
+                  "cabin": "ECONOMY",
+                  "fareBasis": "OSAVG0",
+                  "class": "O",
+                  "includedCheckedBags": {
+                    "quantity": 0
+                  }
+                }
+              ]
+            },
+            {
+              "travelerId": "4",
+              "travelerType": "ADULT",
+              "price": {
+                "currency": "EUR",
+                "total": "44.91",
+                "base": "8.00",
+                "taxes": [
+                  {
+                    "amount": "2.00",
+                    "code": "EI"
+                  },
+                  {
+                    "amount": "0.30",
+                    "code": "ND"
+                  },
+                  {
+                    "amount": "24.59",
+                    "code": "XW"
+                  },
+                  {
+                    "amount": "0.64",
+                    "code": "XX"
+                  },
+                  {
+                    "amount": "9.38",
+                    "code": "YQ"
+                  }
+                ]
+              },
+              "fareDetailsBySegment": [
+                {
+                  "segmentId": "1",
+                  "cabin": "ECONOMY",
+                  "fareBasis": "OSAVG0",
+                  "class": "O",
+                  "includedCheckedBags": {
+                    "quantity": 0
+                  }
+                },
+                {
+                  "segmentId": "2",
+                  "cabin": "ECONOMY",
+                  "fareBasis": "OSAVG0",
+                  "class": "O",
+                  "includedCheckedBags": {
+                    "quantity": 0
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "travelers": [
+        {
+          "id": "1",
+          "dateOfBirth": "1991-01-01",
+          "gender": "FEMALE",
+          "name": {
+            "firstName": "ANNA",
+            "lastName": "KUREK"
+          },
+          "contact": {
+            "purpose": "STANDARD",
+            "phones": [
+              {
+                "deviceType": "MOBILE",
+                "countryCallingCode": "48",
+                "number": "609111825"
+              }
+            ],
+            "emailAddress": "TOMASZ.KUREK@GMAIL.COM"
+          }
+        },
+        {
+          "id": "3",
+          "dateOfBirth": "2010-01-01",
+          "gender": "MALE",
+          "name": {
+            "firstName": "ROBERT",
+            "lastName": "KUREK"
+          },
+          "contact": {
+            "purpose": "STANDARD",
+            "phones": [
+              {
+                "deviceType": "MOBILE",
+                "countryCallingCode": "48",
+                "number": "609111825"
+              }
+            ],
+            "emailAddress": "TOM@SIMARD.IO"
+          }
+        },
+        {
+          "id": "4",
+          "dateOfBirth": "1990-01-01",
+          "gender": "MALE",
+          "name": {
+            "firstName": "TOMASZ",
+            "lastName": "KUREK"
+          },
+          "contact": {
+            "purpose": "STANDARD",
+            "phones": [
+              {
+                "deviceType": "MOBILE",
+                "countryCallingCode": "48",
+                "number": "609111825"
+              }
+            ],
+            "emailAddress": "TOM@SIMARD.IO"
+          }
+        },
+        {
+          "id": "2",
+          "dateOfBirth": "2019-11-11",
+          "name": {
+            "firstName": "FRANK",
+            "lastName": "KUREK"
+          }
+        }
+      ],
+      "remarks": {
+        "general": [
+          {
+            "subType": "GENERAL_MISCELLANEOUS",
+            "text": "GLIDER OTA BOOKING",
+            "flightOfferIds": [
+              "1"
+            ]
+          },
+          {
+            "subType": "GENERAL_MISCELLANEOUS",
+            "text": "ONLINE",
+            "flightOfferIds": [
+              "1"
+            ]
+          },
+          {
+            "subType": "GENERAL_MISCELLANEOUS",
+            "text": "PRICING ENTRY FXP/FF-ECOSAVER/R,P,VC-LO,FC-EUR/P1-3",
+            "flightOfferIds": [
+              "1"
+            ]
+          }
+        ]
+      },
+      "ticketingAgreement": {
+        "option": "CONFIRM"
+      },
+      "contacts": [
+        {
+          "addresseeName": {
+            "firstName": "MATHIEU TAHON"
+          },
+          "address": {
+            "lines": [
+              "TARTU MNT 67 1-13B",
+              "ESTONIA"
+            ],
+            "postalCode": "10115",
+            "countryCode": "EE",
+            "cityName": "TALLINN"
+          },
+          "purpose": "STANDARD",
+          "phones": [
+            {
+              "deviceType": "LANDLINE",
+              "countryCallingCode": "372",
+              "number": "6273157"
+            },
+            {
+              "deviceType": "MOBILE",
+              "countryCallingCode": "32",
+              "number": "483318821"
+            }
+          ],
+          "companyName": "SIMARD",
+          "emailAddress": "MATHIEU@SIMARD.IO"
+        },
+        {
+          "addresseeName": {
+            "firstName": "VERONIKA VELKE"
+          },
+          "address": {
+            "lines": [
+              "TARTU MNT 67 1-13B",
+              "ESTONIA"
+            ],
+            "postalCode": "10115",
+            "countryCode": "EE",
+            "cityName": "TALLINN"
+          },
+          "purpose": "INVOICE",
+          "companyName": "SIMARD"
+        }
+      ],
+      "tickets": [
+        {
+          "documentType": "ETICKET",
+          "documentNumber": "080-9485202886",
+          "documentStatus": "ISSUED",
+          "travelerId": "1",
+          "segmentIds": [
+            "1",
+            "2"
+          ]
+        },
+        {
+          "documentType": "ETICKET",
+          "documentNumber": "080-9485202887",
+          "documentStatus": "ISSUED",
+          "travelerId": "4",
+          "segmentIds": [
+            "1",
+            "2"
+          ]
+        },
+        {
+          "documentType": "ETICKET",
+          "documentNumber": "080-9485202888",
+          "documentStatus": "ISSUED",
+          "travelerId": "3",
+          "segmentIds": [
+            "1",
+            "2"
+          ]
+        },
+        {
+          "documentType": "ETICKET",
+          "documentNumber": "080-9485202889",
+          "documentStatus": "ISSUED",
+          "travelerId": "2",
+          "segmentIds": [
+            "1",
+            "2"
+          ]
+        }
+      ]
+    }
+  ],
+  "dictionaries": {
+    "locations": {
+      "KRK": {
+        "cityCode": "KRK",
+        "countryCode": "PL"
+      },
+      "WAW": {
+        "cityCode": "WAW",
+        "countryCode": "PL"
+      }
+    }
+  }
+}
