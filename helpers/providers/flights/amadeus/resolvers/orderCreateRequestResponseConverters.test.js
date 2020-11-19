@@ -1,4 +1,4 @@
-const { orderCreateResponseProcessor,orderRetrieveResponseConverter } = require('./orderCreateRequestResponseConverters');
+const { orderCreateResponseProcessor, orderRetrieveResponseConverter } = require('./orderCreateRequestResponseConverters');
 const assert = require('chai').assert;
 
 
@@ -52,11 +52,9 @@ describe('flights/amadeus/requestResponseConverters', () => {
     });
 
 
-
     it('should process 2ADT+1CH+1INF order retrieve response correctly', async () => {
       const amadeusResponse = require('../../../../../test/mockresponses/flights/amadeus/amadeusBookingRetrieveRS_2ADT1CHD1INF_OK.json');
       const actualResponse = await orderRetrieveResponseConverter(amadeusResponse);
-      console.log(JSON.stringify(actualResponse));
       const { order: { price, passengers, contactList } } = actualResponse;
 
       assert.equal(price.currency, 'EUR');

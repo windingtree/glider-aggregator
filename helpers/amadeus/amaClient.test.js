@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const { ApiToken, AmaClient } = require('./amadeusClient');
+const { ApiToken } = require('./amadeusClient');
 
 
 describe('#ApiToken', () => {

@@ -1,11 +1,9 @@
 const { logRQRS } = require('../log/logRQ');
 const _ = require('lodash');
-const Amadeus = require('amadeus');
 const { AmadeusClient } = require('./amadeusClient');
-const { amadeusGdsConfig,amadeusSelfServiceConfig } = require('../../config');
+const { amadeusGdsConfig, amadeusSelfServiceConfig } = require('../../config');
 const GliderError = require('../error');
 const qs = require('querystring');
-
 
 
 const REQUESTS = {
@@ -15,11 +13,11 @@ const REQUESTS = {
   ORDERRETRIEVE: 'ORDER_RETRIEVE',
   SEATMAP: 'SEATMAP',
   HOTEL_SEARCH: 'HOTEL_SEARCH',
-  HOTEL_ORDER_CREATE: 'HOTEL_ORDER_CREATE'
+  HOTEL_ORDER_CREATE: 'HOTEL_ORDER_CREATE',
 };
 
-const CLIENT_TYPE_SELF_SERVICE='selfservice';
-const CLIENT_TYPE_ENTERPRISE='enterprise';
+const CLIENT_TYPE_SELF_SERVICE = 'selfservice';
+const CLIENT_TYPE_ENTERPRISE = 'enterprise';
 
 /**
  * Create, configure and return instance of amadeus client.
@@ -27,20 +25,20 @@ const CLIENT_TYPE_ENTERPRISE='enterprise';
  * @returns {} Singleton instance of Amadeus client.
  */
 
-let amadeusClients={
-  CLIENT_TYPE_SELF_SERVICE:undefined,
-  CLIENT_TYPE_ENTERPRISE:undefined
+let amadeusClients = {
+  CLIENT_TYPE_SELF_SERVICE: undefined,
+  CLIENT_TYPE_ENTERPRISE: undefined,
 };
 const getAmadeusClient = (type = CLIENT_TYPE_SELF_SERVICE) => {
-  if(amadeusClients[type]){
+  if (amadeusClients[type]) {
     return amadeusClients[type];
   }
-  if(type === CLIENT_TYPE_ENTERPRISE) {
+  if (type === CLIENT_TYPE_ENTERPRISE) {
     amadeusClients[type] = new AmadeusClient(amadeusGdsConfig.hostname, amadeusGdsConfig.clientId, amadeusGdsConfig.clientSecret);
-  }else if (type ===CLIENT_TYPE_SELF_SERVICE){
+  } else if (type === CLIENT_TYPE_SELF_SERVICE) {
     amadeusClients[type] = new AmadeusClient(amadeusSelfServiceConfig.hostname, amadeusSelfServiceConfig.clientId, amadeusSelfServiceConfig.clientSecret);
-  }else{
-    throw new GliderError('Unknown amadeus client type requested:'+type);
+  } else {
+    throw new GliderError('Unknown amadeus client type requested:' + type);
   }
   return amadeusClients[type];
 };
@@ -96,9 +94,9 @@ const amadeusEndpointRequest = async (ndcBody, action) => {
     let errors = _.get(error, 'response.data.errors');
     let errorMessage;
     if (errors && Array.isArray(errors)) {
-      errorMessage=errors.map(err=>`${err.title?err.title:''};${err.detail?err.detail:''}`).join(',');
+      errorMessage = errors.map(err => `${err.title ? err.title : ''};${err.detail ? err.detail : ''}`).join(',');
     }
-    throw new GliderError(errorMessage?errorMessage:error.message, 500);
+    throw new GliderError(errorMessage ? errorMessage : error.message, 500);
   }
   return response;
 };
@@ -165,5 +163,5 @@ module.exports = {
   flightOrderCreate,
   flightOrderRetrieve,
   hotelSearch,
-  hotelBook
+  hotelBook,
 };

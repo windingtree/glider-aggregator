@@ -50,6 +50,7 @@ const determineEnviroment = () => {
 };
 
 const environment = determineEnviroment();
+console.log('###########ENV:',environment);
 
 // Get an an environment variable
 const getConfigKey = (key) => {

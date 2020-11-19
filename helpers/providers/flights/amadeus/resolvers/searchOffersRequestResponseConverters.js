@@ -46,15 +46,15 @@ const createFlightSearchRequest = (itinerary, passengers) => {
     }
   });
   //in case we have infants, we need to also indicate which adult passenger will be associated with a given infant
-  let adults = travelers.filter(pax=>pax.travelerType === 'ADULT');
-  let infantsOnLap = travelers.filter(pax=>pax.travelerType === 'HELD_INFANT');
-  if(infantsOnLap.length>0){
+  let adults = travelers.filter(pax => pax.travelerType === 'ADULT');
+  let infantsOnLap = travelers.filter(pax => pax.travelerType === 'HELD_INFANT');
+  if (infantsOnLap.length > 0) {
     //if we have more infants than adults - fail, it's not possible to duplicate same accompanying adult for two infants
-    if(infantsOnLap.length>adults.length)
-      throw new GliderError('Number of infant passengers cannot be greater than adults',500);
-    for(let i=0;i<infantsOnLap.length;i++){
-      let infant=infantsOnLap[i];
-      infant.associatedAdultId=adults[i].id;
+    if (infantsOnLap.length > adults.length)
+      throw new GliderError('Number of infant passengers cannot be greater than adults', 500);
+    for (let i = 0; i < infantsOnLap.length; i++) {
+      let infant = infantsOnLap[i];
+      infant.associatedAdultId = adults[i].id;
     }
   }
 
