@@ -1,5 +1,6 @@
 const GliderError = require('../error');
 const offersModelResolver = require('./mongo/offers');
+const { logRQRS } = require('../log/logRQ');
 
 class GuestCount {
   // Constructor
@@ -102,6 +103,8 @@ class OfferManager {
 
   // Store object set of offers
   storeOffers (offers = {}) {
+    console.log('Storing offers');
+    logRQRS(offers,'stored_offers');
     return Promise.all(
       Object.keys(offers).map(offerId => this.saveOffer(
         offerId,
@@ -115,6 +118,7 @@ class OfferManager {
 
   // Get a specific offer
   async getOffer (offerId) {
+    console.log(`Retrieve offer from DB:${offerId}`);
     let offer;
 
     if (!offerId) {
@@ -148,7 +152,7 @@ class OfferManager {
     }
 
     offer = offer.offer;
-    
+
     if (offer.airlineCode) {
       offer = Object.assign(new FlightOffer(), offer);
     } else if (offer.hotelCode) {
@@ -159,7 +163,7 @@ class OfferManager {
         400
       );
     }
-
+    console.log(`Offer retrieved:${offerId}`);
     return offer;
   }
 }

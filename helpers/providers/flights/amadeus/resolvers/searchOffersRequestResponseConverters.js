@@ -224,7 +224,7 @@ const processFlightSearchResponse = (response) => {
       // console.log('brandedFareName=', brandedFareName, 'prevBrandedFareName=', prevBrandedFareName);
       if (prevBrandedFareName !== brandedFareName) {
         //new branded fare  - create new price plan
-        let checkedBags = (_fareSegmentDetail.includedCheckedBags && _fareSegmentDetail.includedCheckedBags.quantity ? _fareSegmentDetail.includedCheckedBags.quantity : 0);
+       /* let checkedBags = (_fareSegmentDetail.includedCheckedBags && _fareSegmentDetail.includedCheckedBags.quantity ? _fareSegmentDetail.includedCheckedBags.quantity : 0);
         let amenities = [];
         if (_fareSegmentDetail.cabin === 'FIRST') amenities.push('First class');
         if (_fareSegmentDetail.cabin === 'PREMIUM_ECONOMY') amenities.push('Premium Economy class');
@@ -235,7 +235,8 @@ const processFlightSearchResponse = (response) => {
         if (checkedBags === 2) amenities.push('2 checked bags free');
         if (ancillaries.length > 0)
           amenities.push(...ancillaries);
-        currentPricePlan = createPricePlan(uuidv4() + '-' + brandedFareName, brandedFareName, amenities, checkedBags);
+        currentPricePlan = createPricePlan(uuidv4() + '-' + brandedFareName, brandedFareName, amenities, checkedBags);*/
+        currentPricePlan = translateAmenities(_fareSegmentDetail,{});
         offerPricePlans.push(currentPricePlan);
         currentOffer.pricePlansReferences.push(createPricePlansReference(currentPricePlan._id_));
       }
@@ -265,6 +266,26 @@ const processFlightSearchResponse = (response) => {
   });
   return searchResults;
 };
+
+
+const translateAmenities = (_fareSegmentDetail, segment) =>{
+  let {cabin, fareBasis, brandedFare, class:bookingClass, includedCheckedBags} = _fareSegmentDetail;
+  let brandedFareName = brandedFare ? brandedFare : cabin;
+  //new branded fare  - create new price plan
+  let checkedBags = (includedCheckedBags && includedCheckedBags.quantity ? includedCheckedBags.quantity : 0);
+  let amenities = [];
+  if (cabin === 'FIRST') amenities.push('First class');
+  if (cabin === 'PREMIUM_ECONOMY') amenities.push('Premium Economy class');
+  if (cabin === 'BUSINESS') amenities.push('Business class');
+  if (cabin === 'ECONOMY') amenities.push('Economy class');
+  if (checkedBags === 0) amenities.push('Checked bags for a fee');
+  if (checkedBags === 1) amenities.push('1st checked bag free');
+  if (checkedBags === 2) amenities.push('2 checked bags free');
+  // if (ancillaries.length > 0)
+  //   amenities.push(...ancillaries);
+  let currentPricePlan = createPricePlan(uuidv4() + '-' + brandedFareName, brandedFareName, amenities, checkedBags);
+   return currentPricePlan;
+}
 
 
 module.exports = { processFlightSearchResponse, createFlightSearchRequest };

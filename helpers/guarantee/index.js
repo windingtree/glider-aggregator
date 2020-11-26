@@ -14,14 +14,14 @@ const processSimardError = e => {
     message = e.response.data.message;
     status = e.response.status;
   }
-
+  console.log('Got simard error, JWT that was used:', config.SIMARD_JWT);
   throw new GliderError(message, status);
 };
 
 // Get and verify guarantee
 module.exports.getGuarantee = async (id, offer) => {
   let guarantee;
-
+  console.log(`Get guarantee ID:${id}`);
   if (!id) {
     throw new GliderError(
       'Guarantee Id is required',
@@ -65,6 +65,7 @@ module.exports.getGuarantee = async (id, offer) => {
       );
     }
   } catch (e) {
+    console.error(`Get guarantee failed:${e.message?e.message:e}`);
     processSimardError(e);
   }
 
@@ -74,7 +75,7 @@ module.exports.getGuarantee = async (id, offer) => {
 // Claim the guarantee
 module.exports.claimGuarantee = async (id) => {
   let claim;
-
+  console.log(`Claim guarantee (without card) ${id}`);
   try {
     const response = await axios.post(
       `${config.SIMARD_URL}/balances/guarantees/${id}/claim`,
@@ -85,6 +86,7 @@ module.exports.claimGuarantee = async (id) => {
     );
     claim = response.data;
   } catch (e) {
+    console.error(`Claim  guarantee failed ${e.message?e.message:e}`);
     processSimardError(e);
   }
   return claim;
@@ -92,6 +94,7 @@ module.exports.claimGuarantee = async (id) => {
 
 // Claim the guarantee with card
 module.exports.claimGuaranteeWithCard = async (id) => {
+  console.log(`Claim guarantee with card ${id}`);
   let claim;
 
   try {
@@ -107,6 +110,7 @@ module.exports.claimGuaranteeWithCard = async (id) => {
     );
     claim = response.data;
   } catch (e) {
+    console.error(`Claim  guarantee failed ${e.message?e.message:e}`);
     processSimardError(e);
   }
 
@@ -115,6 +119,7 @@ module.exports.claimGuaranteeWithCard = async (id) => {
 
 // refund
 module.exports.refundSettlement = async (settlementId, amount, currency) => {
+  console.log(`Refund settlement ${settlementId}, amount: ${amount}${currency}`);
   let result;
   try {
     const response = await axios.post(
@@ -130,6 +135,7 @@ module.exports.refundSettlement = async (settlementId, amount, currency) => {
     );
     result = response.data;
   } catch (e) {
+    console.error(`Refund settlement failed ${e.message?e.message:e}`);
     processSimardError(e);
   }
   return result;
@@ -137,6 +143,7 @@ module.exports.refundSettlement = async (settlementId, amount, currency) => {
 
 // Create virtual card for guarantee
 module.exports.createVirtualCard = async (amount, currency) => {
+  console.log(`Creating virtual card for amount: ${amount}${currency}`);
   let cardDetails;
 
   if (!amount || Number(amount) <= 0) {
@@ -156,6 +163,7 @@ module.exports.createVirtualCard = async (amount, currency) => {
     );
     cardDetails = response.data;
   } catch (e) {
+    console.error(`Creating virtual card failed:${e.message?e.message:e}`);
     processSimardError(e);
   }
 
@@ -164,7 +172,7 @@ module.exports.createVirtualCard = async (amount, currency) => {
 
 // delete guarantee
 module.exports.deleteGuarantee = async (guaranteeId) => {
-  console.log('Delete gurantee', guaranteeId);
+  console.log(`Delete guarantee ${guaranteeId}`);
   if (!guaranteeId) {
     throw new GliderError('Guarantee Id is required', 400);
   }
@@ -177,6 +185,7 @@ module.exports.deleteGuarantee = async (guaranteeId) => {
     );
 
   } catch (e) {
+    console.error(`Delete guarantee failed ${e.message?e.message:e}`);
     processSimardError(e);
   }
 };
@@ -184,6 +193,7 @@ module.exports.deleteGuarantee = async (guaranteeId) => {
 
 // Create virtual card for guarantee
 module.exports.deleteVirtualCard = async (cardId) => {
+  console.log(`Delete virtual card ${cardId}`);
   if (!cardId) {
     throw new GliderError('Card Id is required', 400);
   }
@@ -196,6 +206,7 @@ module.exports.deleteVirtualCard = async (cardId) => {
     );
 
   } catch (e) {
+    console.error(`Delete virtual failed ${e.message?e.message:e}`);
     processSimardError(e);
   }
 };

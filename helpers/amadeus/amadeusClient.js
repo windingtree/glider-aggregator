@@ -149,6 +149,7 @@ class AmadeusClient {
     this.client_id = client_id;
     this.client_secret = client_secret;
     this.token = new ApiToken();
+    console.log(`Creating AmadeusClient instance, URL:${url},client_id:${client_id}, client_secret:${client_secret}`);
   }
 
   /**
@@ -156,11 +157,15 @@ class AmadeusClient {
    * @param url Relative path that should be used.
    * @returns {Promise<*>}
    */
-  async doGet (url) {
+  async doGet (url, params) {
     if (this.token.isExpired()) {
       await this._authenticate();
     }
     let fullUrl = this._createUrl(url);
+    if(params)
+    {
+      fullUrl = `${fullUrl}?${qs.stringify(params)}`;
+    }
     console.log(`GET ${fullUrl}, token:${this.token.getBearerToken()}`);
     return SampleHttpClient.getRequest(fullUrl, this.token.getBearerToken());
   }

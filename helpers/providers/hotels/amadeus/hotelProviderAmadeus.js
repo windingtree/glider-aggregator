@@ -1,7 +1,7 @@
 const { createSearchRequest, processSearchResponse } = require('./resolvers/searchHotelsRequestResponseConverters');
 const { processOrderResponse, createOrderRequest } = require('./resolvers/orderCreateRequestResponseConverters');
 const { convertPolygonToCircle } = require('./enclosingCircle');
-
+const { v4: uuidv4 } = require('uuid');
 
 const HotelProvider = require('../../hotelProvider');
 const GliderError = require('../../../../helpers/error');
@@ -36,7 +36,7 @@ class HotelProviderAmadeus extends HotelProvider {
     assertAmadeusFault(response);
     //process response
     let searchResults = processSearchResponse(response);
-    let offersToStore = [];
+    let offersToStore ={};
     let guestCounts = getGuestCounts(guests);
     Object.keys(searchResults.offers).forEach(offerId => {
       let accOffer = searchResults.offers[offerId];

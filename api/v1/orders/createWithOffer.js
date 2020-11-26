@@ -64,12 +64,12 @@ module.exports = basicDecorator(async (req, res) => {
     if (requestBody.guaranteeId) {
       // Get the guarantee
       guarantee = await getGuarantee(requestBody.guaranteeId, storedOffer);
-
+      console.log('Guarantee:', guarantee);
       //create virtual card
       let currency = storedOffer.currency;
       let amount = storedOffer.amountAfterTax;
       virtualCard = await createVirtualCard(amount, currency);
-
+      console.log('Virtual card:',virtualCard);
     }
 
     // Handle an Accommodation offer
@@ -90,10 +90,13 @@ module.exports = basicDecorator(async (req, res) => {
 
     // Handle a flight offer
     else if (storedOffer instanceof FlightOffer) {
+      let claim={
+        card:virtualCard
+      };
       orderCreationResults = await flightResolver(
         storedOffer,
         requestBody,
-        guaranteeClaim,
+        claim,
       );
     }
 
@@ -111,9 +114,12 @@ module.exports = basicDecorator(async (req, res) => {
     }
 
   } catch (error) {
+    console.error(`Error while processing order:${error}`);
     //if booking failed, rollback transaction (cancel virtual card, delete guarantee)
     await deleteGuarantee(requestBody.guaranteeId);
-    await deleteVirtualCard(virtualCard.id);
+    if(virtualCard) {
+      await deleteVirtualCard(virtualCard.id);
+    }
     await setOrderStatus(allOffers, 'UNLOCKED');
     throw error;
   }

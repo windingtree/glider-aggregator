@@ -79,6 +79,7 @@ class FlightProvider1A extends FlightProvider {
       //remove dupes
       let eTicketsSet = new Set(eTickets);
       eTickets = [...eTicketsSet];
+
       //store eTickets in the response from order create
       order.travelDocuments.etickets = eTickets;
     } catch (err) {

@@ -51,7 +51,7 @@ const determineEnviroment = () => {
 
 const environment = determineEnviroment();
 console.log('###########ENV:',environment);
-
+console.log('ENV:',environment);
 // Get an an environment variable
 const getConfigKey = (key) => {
   // Return environment specific variable if any
@@ -177,6 +177,7 @@ module.exports.getFeatureFlag = (featureId) => {
 module.exports.airFranceConfig = airFranceConfig;
 module.exports.airCanadaConfig = airCanadaConfig;
 module.exports.amadeusGdsConfig = amadeusGdsConfig;
+module.exports.AMADEUS_CLIENT_TYPE = getConfigKey('AMADEUS_CLIENT_TYPE') || 'selfservice';
 module.exports.amadeusSelfServiceConfig = amadeusSelfServiceConfig;
 module.exports.erevmax = erevmax;
 module.exports.redisUrl = getConfigKey('REDIS_URL') || 'redis://localhost:6379';

@@ -30,6 +30,7 @@ let amadeusClients = {
   CLIENT_TYPE_ENTERPRISE: undefined,
 };
 const getAmadeusClient = (type = CLIENT_TYPE_SELF_SERVICE) => {
+  console.log(`getAmadeusClient:${type}`);
   if (amadeusClients[type]) {
     return amadeusClients[type];
   }
@@ -79,7 +80,8 @@ const amadeusEndpointRequest = async (ndcBody, action) => {
         break;
       case REQUESTS.HOTEL_SEARCH:
         amadeusClient = getAmadeusClient(CLIENT_TYPE_SELF_SERVICE);
-        response = await amadeusClient.doPost('/v2/shopping/hotel-offers', ndcBody);
+
+        response = await amadeusClient.doGet('/v2/shopping/hotel-offers', ndcBody);
         // response = await amadeusClient.shopping.hotelOffers.get(ndcBody);
         break;
       case REQUESTS.HOTEL_ORDER_CREATE:
