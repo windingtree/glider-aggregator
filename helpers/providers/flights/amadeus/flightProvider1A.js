@@ -76,9 +76,16 @@ class FlightProvider1A extends FlightProvider {
         eTickets.push(...retrievedOrder.travelDocuments.etickets);
       }
 
-      //remove dupes
-      let eTicketsSet = new Set(eTickets);
-      eTickets = [...eTicketsSet];
+      /*    //remove dupes
+          let eTicketsSet = new Set(eTickets);
+          eTickets = [...eTicketsSet];
+
+          eTickets = [
+            { _id_: '12', eTicket: '082-12312321', _passenger_: '1' },
+            { _id_: '232', eTicket: '082-12312321', _passenger_: '2' },
+            { _id_: '31232', eTicket: '082-12312321', _passenger_: '3' },
+          ];
+    */
 
       //store eTickets in the response from order create
       order.travelDocuments.etickets = eTickets;

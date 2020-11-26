@@ -191,11 +191,11 @@ const convertOrderFormAmadeusResponse = (orderResponse) => {
   }
   if (_tickets) {
     let eTickets = _tickets.map(_ticket => {
-      return _ticket.documentNumber;
+      return {
+        _id_: _ticket.documentNumber, _passenger_: _ticket.travelerId,
+      };
     });
-    //remove dupes
-    let eTicketsSet = new Set(eTickets);
-    order.travelDocuments.etickets = [...eTicketsSet];
+    order.travelDocuments.etickets = [...eTickets];
   }
   let uniqueTravelers = {};
 

@@ -1,7 +1,6 @@
 const { createSearchRequest, processSearchResponse } = require('./resolvers/searchHotelsRequestResponseConverters');
 const { processOrderResponse, createOrderRequest } = require('./resolvers/orderCreateRequestResponseConverters');
 const { convertPolygonToCircle } = require('./enclosingCircle');
-const { v4: uuidv4 } = require('uuid');
 
 const HotelProvider = require('../../hotelProvider');
 const GliderError = require('../../../../helpers/error');

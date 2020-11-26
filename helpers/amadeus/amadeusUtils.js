@@ -3,7 +3,6 @@ const _ = require('lodash');
 const { AmadeusClient } = require('./amadeusClient');
 const { amadeusGdsConfig, amadeusSelfServiceConfig } = require('../../config');
 const GliderError = require('../error');
-const qs = require('querystring');
 
 
 const REQUESTS = {

@@ -104,7 +104,7 @@ class OfferManager {
   // Store object set of offers
   storeOffers (offers = {}) {
     console.log('Storing offers');
-    logRQRS(offers,'stored_offers');
+    logRQRS(offers, 'stored_offers');
     return Promise.all(
       Object.keys(offers).map(offerId => this.saveOffer(
         offerId,

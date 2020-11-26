@@ -104,7 +104,7 @@ class SampleHttpClient {
       headers: SampleHttpClient.createHeadersJSONContent(token),
       timeout: HTTP_TIMEOUT_SECONDS * 1000,
     });
-    logRQRS(response,'RAW_RESPNSE');
+    logRQRS(response, 'RAW_RESPNSE');
     return response;
   }
 
@@ -126,7 +126,7 @@ class SampleHttpClient {
       headers: (urlEncodedContentType ? SampleHttpClient.createHeadersURLEncodedContent(token) : SampleHttpClient.createHeadersJSONContent(token)),
       timeout: HTTP_TIMEOUT_SECONDS * 1000,
     });
-    logRQRS(response,'RAW_RESPNSE');
+    logRQRS(response, 'RAW_RESPNSE');
     return response;
   }
 
@@ -162,8 +162,7 @@ class AmadeusClient {
       await this._authenticate();
     }
     let fullUrl = this._createUrl(url);
-    if(params)
-    {
+    if (params) {
       fullUrl = `${fullUrl}?${qs.stringify(params)}`;
     }
     console.log(`GET ${fullUrl}, token:${this.token.getBearerToken()}`);

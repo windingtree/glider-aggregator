@@ -1,5 +1,4 @@
 /* istanbul ignore file */
-const { logRQRS } = require('../../helpers/log/logRQ');
 const { basicDecorator } = require('../../decorators/basic');
 const { searchHotel } = require('../../helpers/resolvers/searchHotel');
 const { searchFlight } = require('../../helpers/resolvers/searchFlight');
@@ -17,7 +16,6 @@ module.exports = basicDecorator(async (req, res) => {
   } else if (itinerary) {
     // result = await controller.flightsSearch(itinerary,passengers);
     result = await searchFlight(body);
-    logRQRS(result,'FlightSearchResults');
   }
   res.status(200).json(result);
 });
