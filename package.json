@@ -27,10 +27,12 @@
     "coverage": "COVERAGE=true ./scripts/test.sh",
     "lint": "npx eslint test admin api decorators helpers",
     "now-build": "node -r ./node_modules/dotenv/config  ./scripts/build/now-build.js dotenv_config_path=./.env.build",
-    "build-schemas": "npx js-yaml ./public/wt-aggregator.yaml > helpers/payload/schemas/wt-aggregator-schema.json"
+    "build-schemas": "npx js-yaml ./public/wt-aggregator.yaml > helpers/payload/schemas/wt-aggregator-schema.json",
+    "install": "node -r ./node_modules/dotenv/config ./scripts/build/now-build.js dotenv_config_path=./.env.build"
   },
   "dependencies": {
     "@elastic/elasticsearch": "7.8.0",
+    "@windingtree/config-profiles": "^1.0.6",
     "@windingtree/org.id": "1.1.0",
     "@windingtree/org.id-lif-deposit": "1.0.2",
     "@windingtree/org.id-resolver": "1.4.0",
@@ -49,6 +51,7 @@
     "libphonenumber-js": "^1.8.5",
     "lodash": "^4.17.20",
     "mongoose": "5.9.24",
+    "node-cache": "^5.1.2",
     "redis": "3.0.2",
     "uuid": "8.2.0",
     "web3": "1.2.11"

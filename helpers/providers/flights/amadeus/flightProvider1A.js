@@ -20,7 +20,7 @@ class FlightProvider1A extends FlightProvider {
     const request = createFlightSearchRequest(itinerary, passengers);
     const response = await amadeusClient.flightOffersSearch(request);
     assertAmadeusFault(response);
-    return processFlightSearchResponse(response.data);
+    return await processFlightSearchResponse(response.data);
   }
 
 
@@ -75,17 +75,6 @@ class FlightProvider1A extends FlightProvider {
       if (retrievedOrder && retrievedOrder.travelDocuments && retrievedOrder.travelDocuments.etickets) {
         eTickets.push(...retrievedOrder.travelDocuments.etickets);
       }
-
-      /*    //remove dupes
-          let eTicketsSet = new Set(eTickets);
-          eTickets = [...eTicketsSet];
-
-          eTickets = [
-            { _id_: '12', eTicket: '082-12312321', _passenger_: '1' },
-            { _id_: '232', eTicket: '082-12312321', _passenger_: '2' },
-            { _id_: '31232', eTicket: '082-12312321', _passenger_: '3' },
-          ];
-    */
 
       //store eTickets in the response from order create
       order.travelDocuments.etickets = eTickets;

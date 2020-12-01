@@ -1,8 +1,40 @@
 const fs = require('fs');
-const { getFeatureFlagsAsync } = require('../../helpers/businessrules/featureFlagEngine');
+
+const path = require('path');
+const profiles = require('@windingtree/config-profiles');
+const activeProfile = profiles.determineActiveProfile();
+
+
+
+
+console.log('Active profile:', activeProfile)
+console.log('__filename:',__filename);
+console.log('__dirname:',__dirname);
+console.log('process.cwd():',process.cwd());
+profiles.init({
+    baseFolder: path.join(process.cwd(),'api/profiles'),
+    dbUrl: profiles.getEnvironmentEntry(activeProfile, 'MONGO_URL'),
+    encryptionDetails: profiles.getEnvironmentEntry(activeProfile, 'PROFILE_SECRET')
+  }
+)
+
+
+profiles.dumpProfile(activeProfile).then(()=>{
+  console.log(`profile ${activeProfile} successfully generated`);
+  process.exit(0)
+}).catch(err=>{
+  console.error(`profile ${activeProfile} generation failed, ${err}`)
+  process.exit(-1)
+});
+
+
+
+
 // Determine branch and environment
 const githubBranch = process.env.VERCEL_GITHUB_COMMIT_REF || process.env.NOW_GITHUB_COMMIT_REF || 'undefined';
 const environment = (githubBranch === 'master' ? 'production' : 'staging');
+
+
 
 // Write it to the env.json configuration file
 fs.writeFile('env.json', `${JSON.stringify({
@@ -15,6 +47,8 @@ fs.writeFile('env.json', `${JSON.stringify({
     throw err;
   }
 });
+/*
+const { getFeatureFlagsAsync } = require('../../helpers/businessrules/featureFlagEngine');
 
 console.log('Generate features.json');
 getFeatureFlagsAsync().then(features => {
@@ -29,3 +63,5 @@ getFeatureFlagsAsync().then(features => {
   console.error('Failed to retrieve feature flags!', err);
   throw err;
 });
+
+*/

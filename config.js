@@ -11,12 +11,28 @@
  * - The Github's branch, if the deployment is made using the Vercel/Github integration
  * - Defaults to 'staging', including local
  */
+const path = require('path');
+const profiles = require('@windingtree/config-profiles');
+
 let buildEnv;
 try {
   buildEnv = require('./env.json');
 } catch (err) {
   console.warn('cannot load env.json file', err);
 }
+
+const activeProfile = process.env.ACTIVE_PROFILE || 'staging';
+console.log('Active profile:', activeProfile)
+console.log('__filename:',__filename);
+console.log('__dirname:',__dirname);
+console.log('process.cwd():',process.cwd());
+profiles.init({
+    baseFolder: path.join(process.cwd(),'api/profiles'),
+    dbUrl: profiles.getEnvironmentEntry(activeProfile, 'MONGO_URL'),
+    encryptionDetails: profiles.getEnvironmentEntry(activeProfile, 'PROFILE_SECRET')
+  }
+)
+
 
 
 let features = {};
@@ -55,7 +71,8 @@ console.log('ENV:',environment);
 // Get an an environment variable
 const getConfigKey = (key) => {
   // Return environment specific variable if any
-  const envKey = `${environment.toUpperCase()}_${key}`;
+  return profiles.getEnvOrProfileEntry(key)
+  /*const envKey = `${environment.toUpperCase()}_${key}`;
   if(process.env.hasOwnProperty(envKey)) {
     return process.env[envKey];
   }
@@ -66,7 +83,7 @@ const getConfigKey = (key) => {
   }
 
   // Config key does not exist
-  return undefined;
+  return undefined;*/
 };
 
 const airFranceConfig = {
@@ -144,9 +161,9 @@ const airCanadaConfig = {
   }
 };
 const amadeusGdsConfig = {  //TEST
-  clientId: getConfigKey('AMADEUS_CLIENT_ID') ,
-  clientSecret: getConfigKey('AMADEUS_CLIENT_SECRET'),
-  hostname: getConfigKey('AMADEUS_ENVIRONMENT') || 'test'
+  clientId: getConfigKey('AMADEUS_ENT_CLIENT_ID') ,
+  clientSecret: getConfigKey('AMADEUS_ENT_CLIENT_SECRET'),
+  hostname: getConfigKey('AMADEUS_ENT_ENVIRONMENT') || 'test'
 };
 const amadeusSelfServiceConfig = {  //TEST
   clientId: getConfigKey('AMADEUS_SS_CLIENT_ID') ,

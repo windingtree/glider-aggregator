@@ -143,13 +143,19 @@
         "ETHEREUM_NETWORK": "@staging.ethereum_network",
         "PRODUCTION_ETHEREUM_NETWORK": "@production.ethereum_network",
 
-        "STAGING_AMADEUS_CLIENT_ID": "@staging.glider-aggregator.amadeus_client_id",
-        "STAGING_AMADEUS_CLIENT_SECRET": "@staging.glider-aggregator.amadeus_client_secret",
-        "STAGING_AMADEUS_ENVIRONMENT": "@staging.glider-aggregator.amadeus_environment",
+        "STAGING_AMADEUS_SS_CLIENT_ID": "@staging.glider-aggregator.amadeus_ss_client_id",
+        "STAGING_AMADEUS_SS_CLIENT_SECRET": "@staging.glider-aggregator.amadeus_ss_client_secret",
+        "STAGING_AMADEUS_SS_ENVIRONMENT": "@staging.glider-aggregator.amadeus_ss_environment",
 
-        "PRODUCTION_AMADEUS_CLIENT_ID": "@production.glider-aggregator.amadeus_client_id",
-        "PRODUCTION_AMADEUS_CLIENT_SECRET": "@production.glider-aggregator.amadeus_client_secret",
-        "PRODUCTION_AMADEUS_ENVIRONMENT": "@production.glider-aggregator.amadeus_environment",
+        "PRODUCTION_AMADEUS_SS_CLIENT_ID": "@production.glider-aggregator.amadeus_ss_client_id",
+        "PRODUCTION_AMADEUS_SS_CLIENT_SECRET": "@production.glider-aggregator.amadeus_ss_client_secret",
+        "PRODUCTION_AMADEUS_SS_ENVIRONMENT": "@production.glider-aggregator.amadeus_ss_environment",
+
+        "STAGING_AMADEUS_ENT_CLIENT_ID": "@staging.glider-aggregator.amadeus_ent_client_id",
+        "STAGING_AMADEUS_ENT_CLIENT_SECRET": "@staging.glider-aggregator.amadeus_ent_client_secret",
+        "STAGING_AMADEUS_ENT_ENVIRONMENT": "@staging.glider-aggregator.amadeus_ent_environment",
+
+
 
         "STAGING_BUSINESS_RULES_MONGO_URL": "@staging.glider-aggregator.business_rules_mongo_url",
         "PRODUCTION_BUSINESS_RULES_MONGO_URL": "@production.glider-aggregator.business_rules_mongo_url"

@@ -44,7 +44,7 @@ const getAmadeusClient = (type = CLIENT_TYPE_SELF_SERVICE) => {
 };
 
 
-const amadeusEndpointRequest = async (ndcBody, action) => {
+const amadeusEndpointRequest = async (ndcBody, action, params) => {
   let response;
   let amadeusClient;
 
@@ -53,39 +53,39 @@ const amadeusEndpointRequest = async (ndcBody, action) => {
     switch (action) {
       case REQUESTS.SEARCHOFFERS:
         amadeusClient = getAmadeusClient(CLIENT_TYPE_ENTERPRISE);
-        response = await amadeusClient.doPost('/v2/shopping/flight-offers', ndcBody);
+        response = await amadeusClient.doPost('/v2/shopping/flight-offers', ndcBody, params);
         // response = await amadeusClient.shopping.flightOffersSearch.post(requestStr);
         break;
       case REQUESTS.PRICEOFFERS:
         amadeusClient = getAmadeusClient(CLIENT_TYPE_ENTERPRISE);
-        response = await amadeusClient.doPost('/v1/shopping/flight-offers/pricing', ndcBody);
+        response = await amadeusClient.doPost('/v1/shopping/flight-offers/pricing', ndcBody, params);
         // response = await amadeusClient.shopping.flightOffers.pricing.post(requestStr);
         break;
       case REQUESTS.ORDERCREATE:
         amadeusClient = getAmadeusClient(CLIENT_TYPE_ENTERPRISE);
-        response = await amadeusClient.doPost('/v1/booking/flight-orders?issue=true', ndcBody);
+        response = await amadeusClient.doPost('/v1/booking/flight-orders?issue=true', ndcBody, params);
         // response = await amadeusClient.booking.flightOrders.post(requestStr);
         break;
       case REQUESTS.ORDERRETRIEVE:
 
         amadeusClient = getAmadeusClient(CLIENT_TYPE_ENTERPRISE);
-        response = await amadeusClient.doGet(`/v1/booking/flight-orders/${ndcBody.orderId}`);
+        response = await amadeusClient.doGet(`/v1/booking/flight-orders/${ndcBody.orderId}`, params);
         // response = await amadeusClient.doGet(`/v1/booking/flight-orders/by-reference?${queryString}`);
         break;
       case REQUESTS.SEATMAP:
         amadeusClient = getAmadeusClient(CLIENT_TYPE_ENTERPRISE);
-        response = await amadeusClient.doPost('/v2/shopping/flight-offers', ndcBody);
+        response = await amadeusClient.doPost('/v2/shopping/flight-offers', ndcBody,params);
         // response = await amadeusClient.shopping.seatmaps.post(requestStr);
         break;
       case REQUESTS.HOTEL_SEARCH:
         amadeusClient = getAmadeusClient(CLIENT_TYPE_SELF_SERVICE);
 
-        response = await amadeusClient.doGet('/v2/shopping/hotel-offers', ndcBody);
+        response = await amadeusClient.doGet('/v2/shopping/hotel-offers', ndcBody, params);
         // response = await amadeusClient.shopping.hotelOffers.get(ndcBody);
         break;
       case REQUESTS.HOTEL_ORDER_CREATE:
         amadeusClient = getAmadeusClient(CLIENT_TYPE_SELF_SERVICE);
-        response = await amadeusClient.doPost('/v1/booking/hotel-bookings', ndcBody);
+        response = await amadeusClient.doPost('/v1/booking/hotel-bookings', ndcBody,params);
         // response = await amadeusClient.booking.hotelBookings.post(requestStr);
         break;
     }
@@ -125,24 +125,24 @@ const assertAmadeusFault = (response, error) => {
 };
 
 
-const flightOffersSearch = async (request) => {
-  return await amadeusEndpointRequest(request, REQUESTS.SEARCHOFFERS);
+const flightOffersSearch = async (request, params) => {
+  return await amadeusEndpointRequest(request, REQUESTS.SEARCHOFFERS, params);
 };
 
-const seatmapRequest = async (request) => {
-  return await amadeusEndpointRequest(request, REQUESTS.SEATMAP);
+const seatmapRequest = async (request, params) => {
+  return await amadeusEndpointRequest(request, REQUESTS.SEATMAP, params);
 };
 
-const flightOfferPrice = async (request) => {
-  return await amadeusEndpointRequest(request, REQUESTS.PRICEOFFERS);
+const flightOfferPrice = async (request, params) => {
+  return await amadeusEndpointRequest(request, REQUESTS.PRICEOFFERS, params);
 };
 
-const flightOrderCreate = async (request) => {
-  return await amadeusEndpointRequest(request, REQUESTS.ORDERCREATE);
+const flightOrderCreate = async (request, params) => {
+  return await amadeusEndpointRequest(request, REQUESTS.ORDERCREATE, params);
 };
 
-const flightOrderRetrieve = async (request) => {
-  return await amadeusEndpointRequest(request, REQUESTS.ORDERRETRIEVE);
+const flightOrderRetrieve = async (request, params) => {
+  return await amadeusEndpointRequest(request, REQUESTS.ORDERRETRIEVE, params);
 };
 
 

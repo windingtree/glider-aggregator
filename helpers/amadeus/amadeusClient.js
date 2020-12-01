@@ -104,7 +104,6 @@ class SampleHttpClient {
       headers: SampleHttpClient.createHeadersJSONContent(token),
       timeout: HTTP_TIMEOUT_SECONDS * 1000,
     });
-    logRQRS(response, 'RAW_RESPNSE');
     return response;
   }
 
@@ -126,7 +125,6 @@ class SampleHttpClient {
       headers: (urlEncodedContentType ? SampleHttpClient.createHeadersURLEncodedContent(token) : SampleHttpClient.createHeadersJSONContent(token)),
       timeout: HTTP_TIMEOUT_SECONDS * 1000,
     });
-    logRQRS(response, 'RAW_RESPNSE');
     return response;
   }
 
@@ -175,11 +173,14 @@ class AmadeusClient {
    * @param body JSON body to be sent to Amadeus API
    * @returns {Promise<*>}
    */
-  async doPost (url, body) {
+  async doPost (url, body, params) {
     if (this.token.isExpired()) {
       await this._authenticate();
     }
     let fullUrl = this._createUrl(url);
+    if (params) {
+      fullUrl = `${fullUrl}?${qs.stringify(params)}`;
+    }
     console.log(`POST ${fullUrl}, token:${this.token.getBearerToken()}`);
     return SampleHttpClient.postRequest(fullUrl, body, this.token.getBearerToken());
   }
