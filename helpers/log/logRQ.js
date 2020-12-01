@@ -2,12 +2,12 @@
 const fs = require('fs');
 const { stringifyCircular } = require('../json');
 
-const DEV_MODE = (process.env.DEVELOPMENT_MODE==="true");
+const DEV_MODE = (process.env.DEVELOPMENT_MODE === 'true');
 const FOLDER = process.env.LOGS_FOLDER;
 
 // eslint-disable-next-line no-unused-vars
 const logRQRS = (data = '', suffix = '', provider = '') => {
-  if(DEV_MODE) {
+  if (DEV_MODE) {
     let ts = Date.now();
     let extension = 'json';
     try {

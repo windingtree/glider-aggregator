@@ -29,22 +29,6 @@ const CarrierConfigurationSchema = new Schema(
     }],
   }, { timestamps: true });
 
-let a = {
-  carrierCode: 'LO',
-  brandedFares: [{
-    brandedFareId: 'ECOSAVER',
-    brandedFareName: 'Economy Saver',
-    refundable: true,
-    changeable: true,
-    penalties: true,
-    checkedBaggages: {
-      quantity: 10,
-    },
-    amenities: ['meal on baord', 'extra pillow'],
-  }],
-};
-
-
 module.exports = async () => {
   const db = await getMongoConnection();
   return db.model('CarrierConfiguration', CarrierConfigurationSchema);

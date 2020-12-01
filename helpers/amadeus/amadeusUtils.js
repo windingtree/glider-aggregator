@@ -74,7 +74,7 @@ const amadeusEndpointRequest = async (ndcBody, action, params) => {
         break;
       case REQUESTS.SEATMAP:
         amadeusClient = getAmadeusClient(CLIENT_TYPE_ENTERPRISE);
-        response = await amadeusClient.doPost('/v2/shopping/flight-offers', ndcBody,params);
+        response = await amadeusClient.doPost('/v2/shopping/flight-offers', ndcBody, params);
         // response = await amadeusClient.shopping.seatmaps.post(requestStr);
         break;
       case REQUESTS.HOTEL_SEARCH:
@@ -85,7 +85,7 @@ const amadeusEndpointRequest = async (ndcBody, action, params) => {
         break;
       case REQUESTS.HOTEL_ORDER_CREATE:
         amadeusClient = getAmadeusClient(CLIENT_TYPE_SELF_SERVICE);
-        response = await amadeusClient.doPost('/v1/booking/hotel-bookings', ndcBody,params);
+        response = await amadeusClient.doPost('/v1/booking/hotel-bookings', ndcBody, params);
         // response = await amadeusClient.booking.hotelBookings.post(requestStr);
         break;
     }

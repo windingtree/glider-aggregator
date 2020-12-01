@@ -1,7 +1,6 @@
 const axios = require('axios');
 const GliderError = require('../error');
 const qs = require('querystring');
-const { logRQRS } = require('../log/logRQ');
 const HTTP_TIMEOUT_SECONDS = 30;    //TODO - move to config
 const TTL_BUFFER_SECONDS = 30;
 

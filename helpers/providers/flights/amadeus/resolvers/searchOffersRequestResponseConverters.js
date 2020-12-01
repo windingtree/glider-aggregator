@@ -3,7 +3,7 @@ const { createSegment, createPrice, createPassenger } = require('./amadeusFormat
 const GliderError = require('../../../../error');
 const { convertLocalAirportTimeToUtc } = require('../../../../utils/timezoneUtils');
 const { getFeatureFlag } = require('../../../../../config');
-const {getFareFamily} = require('../../../../models/carrierConfigManager')
+const { getFareFamily } = require('../../../../models/carrierConfigManager');
 
 //request
 
@@ -153,17 +153,19 @@ const createCombination = (itineraryId, segments) => {
 
 
 //iterate over all segments and load them into a map for later retrieval
-const createSegmentsMap = (flightOffers) =>{
-  let segmentsMap={};
+/*
+const createSegmentsMap = (flightOffers) => {
+  let segmentsMap = {};
   flightOffers.map(flightOffer => {
     flightOffer.itineraries.map(itinerary => {
       itinerary.segments.map(segment => {
-        segmentsMap[segment.id]=segment;
+        segmentsMap[segment.id] = segment;
       });
     });
   });
   return segmentsMap;
-}
+};
+*/
 
 const processFlightSearchResponse = async (response) => {
   let searchResults = {
@@ -177,14 +179,20 @@ const processFlightSearchResponse = async (response) => {
     // destinations: [],
   };
 
-  let segmentIdToSegmentMap = createSegmentsMap(response);
+  // let segmentIdToSegmentMap = createSegmentsMap(response);
 
   let passengersSet = {};
   //iterate over offers
-  for(let _flightOffer of response){
-  // response.map(_flightOffer => {
-    let { lastTicketingDate: _lastTicketingDate, itineraries: _itineraries, price: _price, travelerPricings: _travelerPricings,validatingAirlineCodes } = _flightOffer;
-    let validatingCarrierCode = (Array.isArray(validatingAirlineCodes) && validatingAirlineCodes.length>0)?validatingAirlineCodes[0]:undefined;
+  for (let _flightOffer of response) {
+    // response.map(_flightOffer => {
+    let {
+      lastTicketingDate: _lastTicketingDate,
+      itineraries: _itineraries,
+      price: _price,
+      travelerPricings: _travelerPricings,
+      validatingAirlineCodes,
+    } = _flightOffer;
+    let validatingCarrierCode = (Array.isArray(validatingAirlineCodes) && validatingAirlineCodes.length > 0) ? validatingAirlineCodes[0] : undefined;
     let offerItineraries = [];
     let segmentToItineraryMap = {};
     let offerSegments = [];
@@ -235,8 +243,8 @@ const processFlightSearchResponse = async (response) => {
     let prevItineraryId;
     let prevBrandedFareName;
     let currentPricePlan;
-    for(let _fareSegmentDetail of _travelerPricing.fareDetailsBySegment){
-    // _travelerPricing.fareDetailsBySegment.map(async _fareSegmentDetail => {
+    for (let _fareSegmentDetail of _travelerPricing.fareDetailsBySegment) {
+      // _travelerPricing.fareDetailsBySegment.map(async _fareSegmentDetail => {
       let brandedFareName = _fareSegmentDetail.brandedFare ? _fareSegmentDetail.brandedFare : _fareSegmentDetail.cabin;
       let itineraryId = segmentToItineraryMap[_fareSegmentDetail.segmentId];
       // console.log('brandedFareName=', brandedFareName, 'prevBrandedFareName=', prevBrandedFareName);
@@ -255,7 +263,7 @@ const processFlightSearchResponse = async (response) => {
            amenities.push(...ancillaries);
          currentPricePlan = createPricePlan(uuidv4() + '-' + brandedFareName, brandedFareName, amenities, checkedBags);*/
 
-        let fareSegment = segmentIdToSegmentMap[_fareSegmentDetail.segmentId];
+        // let fareSegment = segmentIdToSegmentMap[_fareSegmentDetail.segmentId];
         currentPricePlan = await translateAmenities(_fareSegmentDetail, validatingCarrierCode);
         offerPricePlans.push(currentPricePlan);
         currentOffer.pricePlansReferences.push(createPricePlansReference(currentPricePlan._id_));
@@ -268,14 +276,16 @@ const processFlightSearchResponse = async (response) => {
       }
       prevItineraryId = itineraryId;
       prevBrandedFareName = brandedFareName;
-    };
+    }
+    ;
     // });
 
     searchResults.pricePlans.push(...offerPricePlans);  //store all newly created price plans in response
 
     searchResults.offers.push(currentOffer);
 
-  };
+  }
+  ;
   for (const passengerId of Object.keys(passengersSet)) {
     searchResults.passengers.push(passengersSet[passengerId]);
   }
@@ -326,7 +336,7 @@ const translateAmenities = async (_fareSegmentDetail, carrierCode) => {
     amenities.push('Checked bags for a fee');
   } else if (includedCheckedBags === 1) {
     amenities.push('1 checked bag included');
-  }else {
+  } else {
     amenities.push(`${includedCheckedBags} checked bags included`);
   }
   // if (ancillaries.length > 0)

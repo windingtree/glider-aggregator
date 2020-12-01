@@ -1,12 +1,8 @@
 const expect = require('chai').expect;
 const CarrierConfigurationModel = require('./mongo/carrierConfig');
 const { getCarrierDetails, getFareFamily } = require('./carrierConfigManager');
-const GliderError = require('../error');
 const assert = require('assert');
 
-const getDummy = async () => {
-  throw new GliderError('test');
-};
 
 const dummyCarrierConfig =
   {
@@ -23,19 +19,19 @@ const dummyCarrierConfig =
         'free snack',
       ],
     },
-      {
-        brandName: 'Flex',
-        refundable: true,
-        changeable: true,
-        penalties: true,
-        checkedBaggages: {
-          quantity: 1,
-        },
-        amenities: [
-          '1 checked bag',
-          'meal on board',
-        ],
-      }],
+    {
+      brandName: 'Flex',
+      refundable: true,
+      changeable: true,
+      penalties: true,
+      checkedBaggages: {
+        quantity: 1,
+      },
+      amenities: [
+        '1 checked bag',
+        'meal on board',
+      ],
+    }],
   };
 
 
