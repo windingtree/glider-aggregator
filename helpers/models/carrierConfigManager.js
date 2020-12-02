@@ -4,9 +4,9 @@ const NodeCache = require('node-cache');
 
 // const CACHE_TTL_SECONDS = 60 * 60;//1hr cache expiry time, this is how long carrier details will be stored in memory before refreshing from mongo
 const CACHE_TTL_SECONDS = 60;//for dev purpose - short cache expiry
-const cache = new NodeCache({ stdTTL: CACHE_TTL_SECONDS, useClones:false });
+const cache = new NodeCache({ stdTTL: CACHE_TTL_SECONDS, useClones: false });
 
-const NULL_VALUE={};    //object to be stored in cache in case carrier details were not found (to indicate it's missing in database and not to query each time it's not found)
+const NULL_VALUE = {};    //object to be stored in cache in case carrier details were not found (to indicate it's missing in database and not to query each time it's not found)
 
 /**
  * Retrieve carrier configuration from a database (so far it includes only fare families)
@@ -22,18 +22,18 @@ const getCarrierDetails = async (carrierCode) => {
   let carrierInfo;
   let cachedValue = cache.get(carrierCode.toUpperCase());
 
-  //check if we have this carrier in cache already - if so, return data from cache
-  if (cachedValue !== undefined) {
-    console.log(`getCarrierDetails(${carrierCode}) - hit from cache`);
-    return cachedValue; //return cached value
-  }
-
   //IMPORTANT! Performance issue if incorrectly implemented
   //check also if for a given carrier we did not set NULL_VALUE (this was to indicate we already queried database but did not find such carrier in database)
   //if we did store NULL_VALUE - return it (otherwise we would be querying mongo each time for carriers we don't have data in database)!
   if (cachedValue === NULL_VALUE) {
     console.log(`getCarrierDetails(${carrierCode}) - cachedValue is null`);
     return null;
+  }
+
+  //check if we have this carrier in cache already - if so, return data from cache
+  if (cachedValue !== undefined) {
+    console.log(`getCarrierDetails(${carrierCode}) - hit from cache`);
+    return cachedValue; //return cached value
   }
 
 
@@ -49,10 +49,10 @@ const getCarrierDetails = async (carrierCode) => {
   }
 
   //if carrier config was not found in database - we have to indicate this in cache with NULL_VALUE object(we can't use normal 'null')
-  if(!carrierInfo){
+  if (!carrierInfo) {
     console.log(`getCarrierDetails(${carrierCode}) - value from DB not found - set null in cache`);
     cache.set(carrierCode.toUpperCase(), NULL_VALUE);
-  }else{
+  } else {
     console.log(`getCarrierDetails(${carrierCode}) - value from DB is not null`);
     //store retrieved value in cache for future retrieval
     cache.set(carrierCode.toUpperCase(), carrierInfo);
@@ -70,7 +70,6 @@ const getFareFamily = async (carrierCode, brandedFareId) => {
   let carrierConfig = await getCarrierDetails(carrierCode);
   if (!carrierConfig)
     return null;
-
   let brand = carrierConfig.brandedFares.filter(brand => (brand.brandedFareId.toLowerCase() === brandedFareId.toLowerCase()));
   if (brand.length > 0)
     return brand[0];

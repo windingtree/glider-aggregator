@@ -9,7 +9,7 @@ describe('Resolvers/utils/flightUtils', () => {
   describe('#selectProvider', () => {
     let getFeatureFlagStub;
     before(function () {
-      getFeatureFlagStub = sinon.stub(config, 'getFeatureFlag');
+      getFeatureFlagStub = sinon.stub(config, 'getConfigKeyAsArray');
     });
     after(function () {
       getFeatureFlagStub.restore();

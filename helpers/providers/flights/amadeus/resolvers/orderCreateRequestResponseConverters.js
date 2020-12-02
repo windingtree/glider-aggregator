@@ -2,7 +2,7 @@ const { createPrice, convertGenderFromAmadeusToGlider } = require('./amadeusForm
 //request
 const { convertGenderFromGliderToAmadeus, createSegment } = require('./amadeusFormatUtils');
 const GliderError = require('../../../../error');
-const { getFeatureFlag } = require('../../../../../config');
+const { getConfigKey } = require('../../../../../config');
 
 const { parsePhoneNumberWithError, ParseError } = require('libphonenumber-js');
 
@@ -93,13 +93,13 @@ const createOrderCreateRequest = (order, body) => {
     },
   };
   //do we need to queue a PNR to a queue?
-  let queuingOfficeId = getFeatureFlag('flights.amadeus.queuingOfficeId');
+  let queuingOfficeId = getConfigKey('flights.amadeus.queuingOfficeId');
   if (queuingOfficeId && queuingOfficeId.length > 0) {
     request.data.queuingOfficeId = queuingOfficeId;
   }
 
   //do we need to transfer ownership to a specific queue?
-  let ownerOfficeId = getFeatureFlag('flights.amadeus.ownerOfficeId');
+  let ownerOfficeId = getConfigKey('flights.amadeus.ownerOfficeId');
   if (ownerOfficeId && ownerOfficeId.length > 0) {
     request.data.ownerOfficeId = ownerOfficeId;
   }

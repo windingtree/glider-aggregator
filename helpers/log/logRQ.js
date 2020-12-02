@@ -1,13 +1,13 @@
 // eslint-disable-next-line no-unused-vars
 const fs = require('fs');
 const { stringifyCircular } = require('../json');
+const { getConfigKey, DEVELOPMENT_MODE } = require('../../config');
 
-const DEV_MODE = (process.env.DEVELOPMENT_MODE === 'true');
-const FOLDER = process.env.LOGS_FOLDER;
+const FOLDER = getConfigKey('DEVELOPMENT_LOGS_FOLDER');
 
 // eslint-disable-next-line no-unused-vars
 const logRQRS = (data = '', suffix = '', provider = '') => {
-  if (DEV_MODE) {
+  if (DEVELOPMENT_MODE) {
     let ts = Date.now();
     let extension = 'json';
     try {
