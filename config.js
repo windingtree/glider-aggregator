@@ -22,16 +22,13 @@ try {
 }
 
 const activeProfile = process.env.ACTIVE_PROFILE || 'staging';
-console.log('Active profile:', activeProfile)
-console.log('__filename:',__filename);
-console.log('__dirname:',__dirname);
-console.log('process.cwd():',process.cwd());
+console.log('Active profile:', activeProfile);
 profiles.init({
-    baseFolder: path.join(process.cwd(),'api/profiles'),
-    dbUrl: profiles.getEnvironmentEntry(activeProfile, 'MONGO_URL'),
-    encryptionDetails: profiles.getEnvironmentEntry(activeProfile, 'PROFILE_SECRET')
-  }
-)
+  baseFolder: path.join(process.cwd(), 'api/profiles'),
+  dbUrl: profiles.getEnvironmentEntry(activeProfile, 'MONGO_URL'),
+  encryptionDetails: profiles.getEnvironmentEntry(activeProfile, 'PROFILE_SECRET')
+}
+);
 
 
 
@@ -66,12 +63,13 @@ const determineEnviroment = () => {
 };
 
 const environment = determineEnviroment();
-console.log('###########ENV:',environment);
-console.log('ENV:',environment);
+console.log('###########ENV:', environment);
+console.log('ENV:', environment);
+console.log('process.env:', process.env);
 // Get an an environment variable
 const getConfigKey = (key) => {
   // Return environment specific variable if any
-  return profiles.getEnvOrProfileEntry(key)
+  return profiles.getEnvOrProfileEntry(key);
   /*const envKey = `${environment.toUpperCase()}_${key}`;
   if(process.env.hasOwnProperty(envKey)) {
     return process.env[envKey];
@@ -161,12 +159,12 @@ const airCanadaConfig = {
   }
 };
 const amadeusGdsConfig = {  //TEST
-  clientId: getConfigKey('AMADEUS_ENT_CLIENT_ID') ,
+  clientId: getConfigKey('AMADEUS_ENT_CLIENT_ID'),
   clientSecret: getConfigKey('AMADEUS_ENT_CLIENT_SECRET'),
   hostname: getConfigKey('AMADEUS_ENT_ENVIRONMENT') || 'test'
 };
 const amadeusSelfServiceConfig = {  //TEST
-  clientId: getConfigKey('AMADEUS_SS_CLIENT_ID') ,
+  clientId: getConfigKey('AMADEUS_SS_CLIENT_ID'),
   clientSecret: getConfigKey('AMADEUS_SS_CLIENT_SECRET'),
   hostname: getConfigKey('AMADEUS_SS_ENVIRONMENT') || 'test'
 };
