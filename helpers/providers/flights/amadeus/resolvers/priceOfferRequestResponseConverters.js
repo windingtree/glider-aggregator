@@ -85,9 +85,9 @@ const processPriceOfferResponse = (response) => {
       _itinerary.segments.map(_segment => {
         //build segment object
         let segment = createSegment(_segment);
-        console.log('segment', segment);
-        console.log('segment._id_', segment._id_);
-        console.log('segment.id', segment.id);
+        // console.log('segment', segment);
+        // console.log('segment._id_', segment._id_);
+        // console.log('segment.id', segment.id);
         currentOffer.offer.itinerary.segments[segment._id_] = segment;
       });
     });
@@ -105,13 +105,13 @@ const processPriceOfferResponse = (response) => {
       });
       let baseFare = createFareItem('base', _price.base, '', baseFareItemComponents);
       let taxes = [];
-      _travelerPricing.price.taxes.map(_tax => {
-        taxes.push(createTaxItem(_tax.code, _tax.amount, getTaxDefinition(_tax.code)));
-      });
-      let pricedItem = createPricedItem('offeritem-' + uuidv4(), [passenger._id_], taxes, [baseFare]);
-
-
-      currentOffer.offer.pricedItems.push(pricedItem);
+      if(_travelerPricing.price && _travelerPricing.price.taxes) {  //taxes sometimes are not provided (e.g. in case of infants)
+        _travelerPricing.price.taxes.map(_tax => {
+          taxes.push(createTaxItem(_tax.code, _tax.amount, getTaxDefinition(_tax.code)));
+        });
+        let pricedItem = createPricedItem('offeritem-' + uuidv4(), [passenger._id_], taxes, [baseFare]);
+        currentOffer.offer.pricedItems.push(pricedItem);
+      }
 
     });
 

@@ -1,5 +1,6 @@
 const { reduceToObjectByKey } = require('../../../../parsers');
 const { format, parseISO } = require('date-fns');
+const { v4: uuidv4 } = require('uuid');
 
 //request
 
@@ -25,7 +26,7 @@ const processSearchResponse = (response) => {
   const accommodations = {};
   const pricePlans = {};
   const offers = {};
-  response.result && response.result.data.forEach(hotelOffer => {
+  response && response.data.forEach(hotelOffer => {
     try {
       let singleHotelResponse = convertHotelOffers(hotelOffer);
       Object.assign(accommodations, singleHotelResponse.accommodations);
@@ -271,7 +272,7 @@ const createPriceOffer = (hotelId, offer) => {
   const { id, price } = offer;
   const { currency, total } = price;
   return {
-    _id_: id,
+    _id_:  uuidv4(),
     pricePlansReferences: {
       id: {
         accommodation: hotelId,

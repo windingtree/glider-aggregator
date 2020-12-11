@@ -2,7 +2,7 @@ const { createPrice, convertGenderFromAmadeusToGlider } = require('./amadeusForm
 //request
 const { convertGenderFromGliderToAmadeus, createSegment } = require('./amadeusFormatUtils');
 const GliderError = require('../../../../error');
-const { getFeatureFlag } = require('../../../../../config');
+const { getConfigKey } = require('../../../../../config');
 
 const { parsePhoneNumberWithError, ParseError } = require('libphonenumber-js');
 
@@ -74,16 +74,32 @@ const createOrderCreateRequest = (order, body) => {
       type: 'flight-order',
       flightOffers: [rawOffer],
       travelers: [...passengers],
+      remarks: {
+        general: [
+          {
+            subType: 'GENERAL_MISCELLANEOUS',
+            text: 'GLIDER OTA BOOKING',
+          },
+        ],
+      },
+      formOfPayments: [
+        {
+          other: {
+            method: 'CASH',
+            flightOfferIds: [rawOffer.id],
+          },
+        },
+      ],
     },
   };
   //do we need to queue a PNR to a queue?
-  let queuingOfficeId = getFeatureFlag('flights.amadeus.queuingOfficeId');
+  let queuingOfficeId = getConfigKey('flights.amadeus.queuingOfficeId');
   if (queuingOfficeId && queuingOfficeId.length > 0) {
     request.data.queuingOfficeId = queuingOfficeId;
   }
 
   //do we need to transfer ownership to a specific queue?
-  let ownerOfficeId = getFeatureFlag('flights.amadeus.ownerOfficeId');
+  let ownerOfficeId = getConfigKey('flights.amadeus.ownerOfficeId');
   if (ownerOfficeId && ownerOfficeId.length > 0) {
     request.data.ownerOfficeId = ownerOfficeId;
   }
@@ -98,30 +114,39 @@ const createOrderCreateRequest = (order, body) => {
 const createPassenger = (traveler) => {
   const { id, dateOfBirth, gender, name, contact } = traveler;
   const { firstName, lastName } = name;
-  const { phones, emailAddress } = contact;
   //TODO pax type missing in amadeus response
   //TODO pax civility missing in amadeus response
+
   let paxDetails = {
     _id_: id,
     type: 'ADT',
-    gender: convertGenderFromAmadeusToGlider(gender),
+    gender: (gender?convertGenderFromAmadeusToGlider(gender):''),
     civility: '',
     lastnames: lastName,
     firstnames: firstName,
     birthdate: dateOfBirth,
     contactInformation: 'CONTACT_For_TravelerRefNumber' + id,
   };
-  //create array with pax emails (concatenate country dialing code with actual number as used in aggregator
-  let phonesArr = phones.map(phone => {
-    return {
-      value: `${phone.countryCallingCode}${phone.number}`,
-    };
-  });
+
+  //create array with pax phones (concatenate country dialing code with actual number as used in aggregator
+  let phonesArr=[];
+  if(contact && contact.phones) {
+    phonesArr = contact.phones.map(phone => {
+      return {
+        value: `${phone.countryCallingCode}${phone.number}`,
+      };
+    });
+  }
+  //create array with email (if it exists)
+  let emailArr=[];
+  if(contact && contact.emailAddress){
+    emailArr.push({
+      value: contact.emailAddress
+    });
+  }
   let contactInfo = {
     _id_: 'CONTACT_For_TravelerRefNumber' + id,
-    emails: [{
-      value: emailAddress,
-    }],
+    emails: emailArr,
     phones: phonesArr,
   };
   return {
@@ -130,9 +155,14 @@ const createPassenger = (traveler) => {
   };
 };
 
-
+const orderRetrieveResponseConverter = (response) => {
+  return convertOrderFormAmadeusResponse(response.data);
+};
 const orderCreateRequestResponseConverters = (response) => {
-  const { id: _id, associatedRecords: _associatedRecords, travelers: _travelers } = response.data;
+  return convertOrderFormAmadeusResponse(response.data);
+};
+const convertOrderFormAmadeusResponse = (orderResponse) => {
+  const { id: _id, associatedRecords: _associatedRecords, travelers: _travelers, tickets: _tickets, flightOffers:_flightOffers } = orderResponse;
 
 
   let order = {
@@ -151,10 +181,22 @@ const orderCreateRequestResponseConverters = (response) => {
     },
   };
 
-  let pnrs = _associatedRecords.map(_associatedRecord => {
-    return _associatedRecord.reference;
-  });
-  order.travelDocuments.bookings.push(...pnrs);
+  if(_associatedRecords) {
+    let pnrs = _associatedRecords.map(_associatedRecord => {
+      return _associatedRecord.reference;
+    });
+    //remove dupes
+    let pnrsSet = new Set(pnrs);
+    order.travelDocuments.bookings = [...pnrsSet];
+  }
+  if (_tickets) {
+    let eTickets = _tickets.map(_ticket => {
+      return {
+        _id_: _ticket.documentNumber, _passenger_: _ticket.travelerId,
+      };
+    });
+    order.travelDocuments.etickets = [...eTickets];
+  }
   let uniqueTravelers = {};
 
   _travelers.map(_traveler => {
@@ -167,7 +209,7 @@ const orderCreateRequestResponseConverters = (response) => {
     order.order.contactList.push(contactInformation);
   });
 
-  let _offer = response.data.flightOffers[0];
+  let _offer = _flightOffers[0];
   let price = createPrice(_offer.price, 0); //TODO add commission
   order.order.price = price;
 
@@ -184,4 +226,4 @@ const orderCreateRequestResponseConverters = (response) => {
 };
 
 
-module.exports = { orderCreateResponseProcessor: orderCreateRequestResponseConverters, createOrderCreateRequest };
+module.exports = { orderCreateResponseProcessor: orderCreateRequestResponseConverters, createOrderCreateRequest, orderRetrieveResponseConverter };

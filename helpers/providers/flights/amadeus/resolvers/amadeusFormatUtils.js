@@ -46,9 +46,13 @@ const createPrice = (price, commission = 0) => {
   const { grandTotal, currency } = price;
   //TODO calculate commission
   //calculate offer price
-  let tax = price.fees.reduce((total, taxItem) => {
-    return total + Number(taxItem.amount);
-  }, 0);
+  let tax = 0;
+  if(price && price.fees)
+  {
+    tax=price.fees.reduce((total, taxItem) => {
+      return total + Number(taxItem.amount);
+    }, 0);
+  }
 
   return {
     currency: currency,
@@ -72,13 +76,14 @@ const convertGenderFromGliderToAmadeus = (gender) => {
 const convertPassengerTypeFromAmadeusToGlider = (type) => {
   if (type === 'ADULT') return 'ADT';
   else if (type === 'CHILD') return 'CHD';
-  else if (type === 'INFANT') return 'INF';
+  else if (type === 'HELD_INFANT') return 'INF';
+  else if (type === 'SEATED_INFANT') return 'INF';
   else throw new GliderError('invalid passenger type:' + type, 400);
 };
 const convertPassengerTypeFromGliderToAmadeus = (type) => {
   if (type === 'ADT') return 'ADULT';
   else if (type === 'CHD') return 'CHILD';
-  else if (type === 'INF') return 'INFANT';
+  else if (type === 'INF') return 'HELD_INFANT';
   else throw new GliderError('invalid passenger type:' + type, 400);
 };
 const createPassenger = (travelerPricing) => {

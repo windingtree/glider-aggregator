@@ -15,5 +15,24 @@ describe('flights/amadeus/requestResponseConverters', () => {
       // console.log(`XXX:${JSON.stringify(segment)}`);
 
     });
+
+
+    it('test', () => {
+      const response = require('../../../../../test/mockresponses/flights/amadeus/amadeusSearchRS_2ADT1CHD_Return.json');
+
+      //iterate over all segments and load them into a map for later retrieval
+      let segmentsMap={};
+      response.result.data.map(flightOffer => {
+        flightOffer.itineraries.map(itinerary => {
+          itinerary.segments.map(segment => {
+            segmentsMap[segment.id]=segment;
+          });
+        });
+      });
+      console.log(segmentsMap);
+    });
+
   });
 });
+
+

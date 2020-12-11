@@ -7,11 +7,11 @@ const {
 const config = require('../../../config');
 
 
-const getACDestinations = () =>{
+const getACDestinations = () => {
   return caDestinations;
 };
 
-const get1ADestinations = () =>{
+const get1ADestinations = () => {
   return caDestinations;
 };
 
@@ -49,8 +49,9 @@ module.exports.selectProvider = (origin, destination) => {
     }, []);// temporary until we do not have a specific set for AF - ['AF']
 
   //of those providers that were found, only use those that are specified by business rules/feature flag
-  let enabledFlightProviders = config.getFeatureFlag('flights.providers') || [];
-  providers = providers.filter(provider=>enabledFlightProviders.includes(provider));
+  let enabledFlightProviders = config.getConfigKeyAsArray('flights.providers', []);
+
+  providers = providers.filter(provider => enabledFlightProviders.includes(provider));
   return providers;
 };
 

@@ -102,62 +102,17 @@
         }
     ],
     "env": {
-        "AF_API_KEY": "@af_api_key",
-
-        "AC_API_KEY": "@staging.glider-aggregator.ac_api_key",
-        "AC_USERNAME": "@staging.glider-aggregator.ac_username",
-        "AC_PASSWORD": "@staging.glider-aggregator.ac_password",
-        "AC_POS_COUNTRY_CODE": "@staging.glider-aggregator.ac_pos_country",
-        "PRODUCTION_AC_API_KEY":  "@production.glider-aggregator.ac_api_key",
-        "PRODUCTION_AC_USERNAME": "@production.glider-aggregator.ac_username",
-        "PRODUCTION_AC_PASSWORD": "@production.glider-aggregator.ac_password",
-        "PRODUCTION_AC_POS_COUNTRY_CODE": "@production.glider-aggregator.ac_pos_country",
-
-        "STAGING_EREVMAX_RESERVATION_URL": "@staging.glider-aggregator.erevmax_reservation_url",
-        "STAGING_EREVMAX_AVAILABILITY_URL": "@staging.glider-aggregator.erevmax_availability_url",
-        "STAGING_EREVMAX_CANCELLATION_URL": "@staging.glider-aggregator.erevmax_cancellation_url",
-        "PRODUCTION_EREVMAX_RESERVATION_URL": "@production.glider-aggregator.erevmax_reservation_url",
-        "PRODUCTION_EREVMAX_AVAILABILITY_URL": "@production.glider-aggregator.erevmax_availability_url",
-        "PRODUCTION_EREVMAX_CANCELLATION_URL": "@production.glider-aggregator.erevmax_cancellation_url",
-
-        "SIMARD_JWT": "@staging.glider-aggregator.jwt",
-        "GLIDER_ORGID": "@staging.glider-aggregator.orgid",
-        "GLIDER_ADMIN_KEY": "@staging.glider-aggregator.admin-key",
-        "LIF_MIN_DEPOSIT": "@staging.glider-aggregator.lif_deposit",
-        "PRODUCTION_SIMARD_JWT": "@production.glider-aggregator.jwt",
-        "PRODUCTION_GLIDER_ORGID": "@production.glider-aggregator.orgid",
-        "PRODUCTION_GLIDER_ADMIN_KEY": "@production.glider-aggregator.admin-key",
-        "PRODUCTION_LIF_MIN_DEPOSIT": "@production.glider-aggregator.lif_deposit",
-
-
-        "REDIS_URL": "@staging.glider-aggregator.redis_url",
         "MONGO_URL": "@staging.glider-aggregator.mongo_url",
-        "ELASTIC_URL": "@staging.glider-aggregator.elastic_url",
-        "INFURA_ENDPOINT": "@staging.infura_wss_endpoint",
-        "PRODUCTION_REDIS_URL": "@production.glider-aggregator.redis_url",
         "PRODUCTION_MONGO_URL": "@production.glider-aggregator.mongo_url",
-        "PRODUCTION_ELASTIC_URL": "@production.glider-aggregator.elastic_url",
-        "PRODUCTION_INFURA_ENDPOINT": "@production.infura_wss_endpoint",
-        "INFURA_PROJECT_ID": "@infura_project_id",
-
-        "ETHEREUM_NETWORK": "@staging.ethereum_network",
-        "PRODUCTION_ETHEREUM_NETWORK": "@production.ethereum_network",
-
-        "STAGING_AMADEUS_CLIENT_ID": "@staging.glider-aggregator.amadeus_client_id",
-        "STAGING_AMADEUS_CLIENT_SECRET": "@staging.glider-aggregator.amadeus_client_secret",
-        "STAGING_AMADEUS_ENVIRONMENT": "@staging.glider-aggregator.amadeus_environment",
-
-        "PRODUCTION_AMADEUS_CLIENT_ID": "@production.glider-aggregator.amadeus_client_id",
-        "PRODUCTION_AMADEUS_CLIENT_SECRET": "@production.glider-aggregator.amadeus_client_secret",
-        "PRODUCTION_AMADEUS_ENVIRONMENT": "@production.glider-aggregator.amadeus_environment",
-
-        "STAGING_BUSINESS_RULES_MONGO_URL": "@staging.glider-aggregator.business_rules_mongo_url",
-        "PRODUCTION_BUSINESS_RULES_MONGO_URL": "@production.glider-aggregator.business_rules_mongo_url"
+        "STAGING_PROFILE_SECRET": "@staging.glider-aggregator.profile_secret",
+        "PRODUCTION_PROFILE_SECRET": "@production.glider-aggregator.profile_secret"
     },
     "build": {
         "env": {
-            "STAGING_BUSINESS_RULES_MONGO_URL": "@staging.glider-aggregator.business_rules_mongo_url",
-            "PRODUCTION_BUSINESS_RULES_MONGO_URL": "@production.glider-aggregator.business_rules_mongo_url"
+            "MONGO_URL": "@staging.glider-aggregator.mongo_url",
+            "PRODUCTION_MONGO_URL": "@production.glider-aggregator.mongo_url",
+            "STAGING_PROFILE_SECRET": "@staging.glider-aggregator.profile_secret",
+            "PRODUCTION_PROFILE_SECRET": "@production.glider-aggregator.profile_secret"
         }
     }
 }

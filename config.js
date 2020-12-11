@@ -11,12 +11,24 @@
  * - The Github's branch, if the deployment is made using the Vercel/Github integration
  * - Defaults to 'staging', including local
  */
+const path = require('path');
+const profiles = require('@windingtree/config-profiles');
+
 let buildEnv;
 try {
   buildEnv = require('./env.json');
 } catch (err) {
   console.warn('cannot load env.json file', err);
 }
+
+const activeProfile = process.env.ACTIVE_PROFILE || 'staging';
+console.log('Active profile:', activeProfile);
+profiles.init({
+    baseFolder: path.join(process.cwd(), 'api/profiles'),
+    dbUrl: profiles.getEnvironmentEntry(activeProfile, 'MONGO_URL'),
+    encryptionDetails: profiles.getEnvironmentEntry(activeProfile, 'PROFILE_SECRET'),
+  },
+);
 
 
 let features = {};
@@ -50,23 +62,25 @@ const determineEnviroment = () => {
 };
 
 const environment = determineEnviroment();
-
+console.log('###########ENV:', environment);
+console.log('ENV:', environment);
+console.log('process.env:', process.env);
 // Get an an environment variable
-const getConfigKey = (key) => {
-  // Return environment specific variable if any
-  const envKey = `${environment.toUpperCase()}_${key}`;
-  if(process.env.hasOwnProperty(envKey)) {
-    return process.env[envKey];
-  }
-
-  // Return variable key
-  if(process.env.hasOwnProperty(key)) {
-    return process.env[key];
-  }
-
-  // Config key does not exist
-  return undefined;
+const getConfigKey = (key, defaultValue) => {
+  return profiles.getEnvOrProfileEntry(key, defaultValue);
 };
+module.exports.getConfigKey = getConfigKey;
+
+const getConfigKeyAsArray = (key, defaultValue) => {
+  let result = getConfigKey(key);
+  if (result) {
+    let arr = result.split(',');
+    arr = arr.map(key => key.trim());
+    return arr;
+  }
+  return defaultValue;
+};
+module.exports.getConfigKeyAsArray = getConfigKeyAsArray;
 
 const airFranceConfig = {
   apiKey: getConfigKey('AF_API_KEY'),
@@ -101,7 +115,6 @@ const airFranceConfig = {
     },
   },
 };
-
 const airCanadaConfig = {
   apiKey: getConfigKey('AC_API_KEY'),
   commission: getConfigKey('AC_COMISSION') || '0',
@@ -111,20 +124,20 @@ const airCanadaConfig = {
   PointOfSale: {
     Location: {
       CountryCode: {
-        '@value': getConfigKey('AC_POS_COUNTRY_CODE') || 'CA'
-      }
+        '@value': getConfigKey('AC_POS_COUNTRY_CODE') || 'CA',
+      },
     },
     TouchPoint: {
       Device: {
         Code: getConfigKey('AC_POS_DEVICE_CODE') || '0.AAA.X',
-        TableName: {}
-      }
-    }
+        TableName: {},
+      },
+    },
   },
   Document: {
     '@id': getConfigKey('AC_DOCUMENT_ID') || 'OneWay',
     Name: getConfigKey('AC_DOCUMENT_NAME') || 'NDC-Exchange',
-    ReferenceVersion: getConfigKey('AC_DOCUMENT_REFERENCE_VERSION') || 'UAT-OTA-2010B'
+    ReferenceVersion: getConfigKey('AC_DOCUMENT_REFERENCE_VERSION') || 'UAT-OTA-2010B',
   },
   Party: {
     Participants: {
@@ -136,18 +149,21 @@ const airCanadaConfig = {
           SystemID: {
             '@Owner': getConfigKey('AC_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SYSTEM_ID_OWNER') || 'ADS',
             '@value': getConfigKey('AC_PASSWORD') || getConfigKey('AC_PARTICIPANT_ENABLED_SYSTEM_PARTICIPANT_SYSTEM_ID'),
-          }
-        }
-      }
-    }
-  }
+          },
+        },
+      },
+    },
+  },
 };
 const amadeusGdsConfig = {  //TEST
-  clientId: getConfigKey('AMADEUS_CLIENT_ID') ,
-  clientSecret: getConfigKey('AMADEUS_CLIENT_SECRET'),
-  hostname: getConfigKey('AMADEUS_ENVIRONMENT') || 'test',
-  queueingOfficeId: getConfigKey('AMADEUS_QUEUE_OFFICE_ID') ,
-  ownerOfficeId: getConfigKey('AMADEUS_OWNERSHIP_OFFICE_ID'),
+  clientId: getConfigKey('AMADEUS_ENT_CLIENT_ID'),
+  clientSecret: getConfigKey('AMADEUS_ENT_CLIENT_SECRET'),
+  hostname: getConfigKey('AMADEUS_ENT_ENVIRONMENT') || 'test',
+};
+const amadeusSelfServiceConfig = {  //TEST
+  clientId: getConfigKey('AMADEUS_SS_CLIENT_ID'),
+  clientSecret: getConfigKey('AMADEUS_SS_CLIENT_SECRET'),
+  hostname: getConfigKey('AMADEUS_SS_ENVIRONMENT') || 'test',
 };
 
 const erevmax = {
@@ -166,13 +182,15 @@ module.exports.debugInfo = () => {
   };
 };
 
-module.exports.getFeatureFlag = (featureId) => {
-  return features[featureId];
+module.exports.getFeatureFlag = (featureId, defaultValue) => {
+  if (features[featureId]) ;
 };
 
 module.exports.airFranceConfig = airFranceConfig;
 module.exports.airCanadaConfig = airCanadaConfig;
 module.exports.amadeusGdsConfig = amadeusGdsConfig;
+module.exports.AMADEUS_CLIENT_TYPE = getConfigKey('AMADEUS_CLIENT_TYPE') || 'selfservice';
+module.exports.amadeusSelfServiceConfig = amadeusSelfServiceConfig;
 module.exports.erevmax = erevmax;
 module.exports.redisUrl = getConfigKey('REDIS_URL') || 'redis://localhost:6379';
 module.exports.mongoUrl = getConfigKey('MONGO_URL') || 'mongodb://localhost/glider';
@@ -188,4 +206,5 @@ module.exports.expirationTime = 30 * 60; // 30 min in seconds
 module.exports.expirationLong = 60 * 60 * 24 * 365 * 7; // 7 years in seconds
 module.exports.ETHEREUM_NETWORK = getConfigKey('ETHEREUM_NETWORK') || 'ropsten';
 module.exports.environment = environment;
+module.exports.DEVELOPMENT_MODE = getConfigKey('DEVELOPMENT_MODE',false);
 module.exports.branch = process.env.VERCEL_GITHUB_COMMIT_REF;

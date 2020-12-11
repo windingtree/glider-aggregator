@@ -11,7 +11,7 @@ const {
   mergeHourAndDate,
   reduceToProperty,
   roundCommissionDecimals,
-  deepMerge
+  deepMerge,
 } = require('../../helpers/parsers');
 
 require('chai').should();
@@ -21,11 +21,11 @@ describe('Parsers', () => {
   describe('#reduceObjectToProperty', () => {
     const arr = [
       {
-        prop: 'prop1'
+        prop: 'prop1',
       },
       {
-        prop: 'prop2'
-      }
+        prop: 'prop2',
+      },
     ];
 
     it('should trow if wrong array of objects has been provided', async () => {
@@ -52,11 +52,11 @@ describe('Parsers', () => {
   describe('#splitPropertyBySpace', () => {
     const arr = [
       {
-        prop: 'prop1 prop2 prop3'
+        prop: 'prop1 prop2 prop3',
       },
       {
-        prop: 'prop4 prop5'
-      }
+        prop: 'prop4 prop5',
+      },
     ];
 
     it('should trow if wrong array of objects has been provided', async () => {
@@ -81,12 +81,12 @@ describe('Parsers', () => {
     const arr = [
       {
         _id_: 'prop1',
-        data: 1
+        data: 1,
       },
       {
         _id_: 'prop2',
-        data: 2
-      }
+        data: 2,
+      },
     ];
 
     it('should trow if wrong array value has been provided', async () => {
@@ -97,9 +97,31 @@ describe('Parsers', () => {
 
     it('should fulfill', async () => {
       const result = reduceToObjectByKey(arr);
+      console.log('input:', arr);
+      console.log('result:', result);
       arr.forEach(a => {
         (result[a._id_]).should.be.an('object').to.have.property('data').to.equal(a.data);
       });
+    });
+
+
+    it('dupa', async () => {
+      let input = [
+        {
+          _id_: '012-',
+          _passenger_: 'pax1',
+        },
+        {
+          _id_: '0123-32123',
+          _passenger_: 'pax2',
+        },
+      ];
+
+
+      let etickets = reduceToObjectByKey(input);
+      etickets = reduceToProperty(etickets, '_passenger_');
+      console.log('final:', etickets);
+
     });
   });
 
@@ -108,13 +130,13 @@ describe('Parsers', () => {
       {
         _provider_: 'provider',
         _id_: '07001',
-        data: 1
+        data: 1,
       },
       {
         _provider_: 'provider',
         _id_: '07002',
-        data: 2
-      }
+        data: 2,
+      },
     ];
 
     it('should trow if wrong array value has been provided', async () => {
@@ -139,25 +161,25 @@ describe('Parsers', () => {
         gender: 'Male',
         civility: 'MR',
         lastnames: [
-          'MARLEY'
+          'MARLEY',
         ],
         firstnames: [
-          'BOB'
+          'BOB',
         ],
         birthdate: '1980-03-21',
         contactInformation: {
           emails: [
             {
-              value: 'CONTACT@ORG.CO.UK'
-            }
+              value: 'CONTACT@ORG.CO.UK',
+            },
           ],
           phones: [
             {
-              value: '+32123456789'
-            }
-          ]
-        }
-      }
+              value: '+32123456789',
+            },
+          ],
+        },
+      },
     ];
 
     it('should throw of wrong passengers has been provided', async () => {
@@ -187,17 +209,17 @@ describe('Parsers', () => {
     const passengers = [
       {
         _id_: 'TravelerRefNumber2',
-        contactInformation: 'CONTACT_For_TravelerRefNumber2'
-      }
+        contactInformation: 'CONTACT_For_TravelerRefNumber2',
+      },
     ];
     const contacList = {
       'CONTACT_For_TravelerRefNumber2': {
         emails: [
           {
-            value: 'CONTACT@ORG.CO.UK'
-          }
-        ]
-      }
+            value: 'CONTACT@ORG.CO.UK',
+          },
+        ],
+      },
     };
     const word = 'contactInformation';
 
@@ -245,15 +267,15 @@ describe('Parsers', () => {
           'operatorType': 'airline',
           'iataCode': '',
           'iataCodeM': 'AC',
-          'flightNumber': '164'
+          'flightNumber': '164',
         },
         'origin': {
           'locationType': 'airport',
-          'iataCode': 'YEG'
+          'iataCode': 'YEG',
         },
         'destination': {
           'locationType': 'airport',
-          'iataCode': 'YYZ'
+          'iataCode': 'YYZ',
         },
         'splittedDepartureTime': '09:00',
         'splittedDepartureDate': '2020-09-14',
@@ -264,45 +286,45 @@ describe('Parsers', () => {
           'Date': '2020-09-14',
           'Time': '09:00',
           'Terminal': {
-            'Name': ''
-          }
+            'Name': '',
+          },
         },
         'Arrival': {
           'AirportCode': 'YYZ',
           'Date': '2020-09-14',
           'Time': '14:35',
           'Terminal': {
-            'Name': '1'
-          }
+            'Name': '1',
+          },
         },
         'MarketingCarrier': {
           'AirlineID': 'AC',
           'Name': 'Air Canada',
           'FlightNumber': '164',
-          'ResBookDesigCode': 'B'
+          'ResBookDesigCode': 'B',
         },
         'OperatingCarrier': {
           'Disclosures': {
             'Description': {
-              'Text': 'yfq7H2nszqdvF8SySYd5TV8dpcsYUV67hhsPQkG0KtuMa/AmJRTN4jT+fplmszbFaGtED8EIJYrbScfNk5TdE2NWN/9d2yHWak/vPCpyfdjBFHiM+rPeiQ=='
-            }
-          }
+              'Text': 'yfq7H2nszqdvF8SySYd5TV8dpcsYUV67hhsPQkG0KtuMa/AmJRTN4jT+fplmszbFaGtED8EIJYrbScfNk5TdE2NWN/9d2yHWak/vPCpyfdjBFHiM+rPeiQ==',
+            },
+          },
         },
         'Equipment': {
-          'AircraftCode': '321'
+          'AircraftCode': '321',
         },
         'ClassOfService': {
-          'Code': 'B'
+          'Code': 'B',
         },
         'FlightDetail': {
           'FlightDuration': {
-            'Value': 'PT03H35M'
+            'Value': 'PT03H35M',
           },
           'Stops': {
-            'StopQuantity': '0'
-          }
-        }
-      }
+            'StopQuantity': '0',
+          },
+        },
+      },
     ];
 
     it('should to throw if wrong array has been passed', async () => {
@@ -323,13 +345,13 @@ describe('Parsers', () => {
           } else if (k === 'departureTime') {
             const time = zonedTimeToUtc(
               `${segments[i].splittedDepartureDate} ${segments[i].splittedDepartureTime}:00.000`,
-              airports[s.origin.iataCode]
+              airports[s.origin.iataCode],
             ).toISOString();
             (s.departureTime).should.to.equal(time);
           } else if (k === 'arrivalTime') {
             const time = zonedTimeToUtc(
               `${segments[i].splittedArrivalDate} ${segments[i].splittedArrivalTime}:00.000`,
-              airports[s.destination.iataCode]
+              airports[s.destination.iataCode],
             ).toISOString();
             (s.arrivalTime).should.to.equal(time);
           }
@@ -343,14 +365,14 @@ describe('Parsers', () => {
     const data = {
       one: {
         prop: {
-          value: 1
-        }
+          value: 1,
+        },
       },
       two: {
         prop: {
-          value: 2
-        }
-      }
+          value: 2,
+        },
+      },
     };
 
     it('should to throw if wrong object has been provided', async () => {
@@ -368,6 +390,7 @@ describe('Parsers', () => {
 
     it('should return broken array if unknown property has been provided', async () => {
       const result = reduceToProperty(data, 'unknownProperty');
+
       result.forEach(a => {
         const prop = Object.keys(a)[0];
         (data).should.to.have.property(prop);
@@ -377,6 +400,8 @@ describe('Parsers', () => {
 
     it('should fulfill', async () => {
       const result = reduceToProperty(data, 'prop');
+      console.log('input:', data);
+      console.log('result:', result);
       result.forEach(a => {
         const prop = Object.keys(a)[0];
         (data).should.to.have.property(prop);
@@ -391,53 +416,53 @@ describe('Parsers', () => {
         '_id_': 'T4B56FYQEH-OfferID-42',
         'offerItems': {
           'HAS54TFEWO-OfferItemID-83': {
-            'passengerReferences': '5B628F25 84B3E141'
+            'passengerReferences': '5B628F25 84B3E141',
           },
           'KPIC3IX1DH-OfferItemID-84': {
-            'passengerReferences': 'E32E17CB'
-          }
+            'passengerReferences': 'E32E17CB',
+          },
         },
         'expiration': '',
         'price': {
           'currency': 'CAD',
           'public': '3666.90',
           'commission': 0,
-          'taxes': '135.30'
+          'taxes': '135.30',
         },
         'pricePlansReferences': {
           'G9I3YBZWA4-BusinessClassflexible': {
             'flights': [
               'FFCQV2B62M-OD120',
-              'GOKZJ5PLMB-OD121'
-            ]
-          }
-        }
+              'GOKZJ5PLMB-OD121',
+            ],
+          },
+        },
       },
       {
         '_id_': 'Q2T85YX2T0-OfferID-43',
         'offerItems': {
           'AQ7HWZ2LXH-OfferItemID-85': {
-            'passengerReferences': '5B628F25 84B3E141'
+            'passengerReferences': '5B628F25 84B3E141',
           },
           'Y5OU8TUXKZ-OfferItemID-86': {
-            'passengerReferences': 'E32E17CB'
-          }
+            'passengerReferences': 'E32E17CB',
+          },
         },
         'expiration': '',
         'price': {
           'currency': 'CAD',
           'public': '3671.49',
           'commission': 0,
-          'taxes': '136.83'
+          'taxes': '136.83',
         },
         'pricePlansReferences': {
           'G9I3YBZWA4-BusinessClassflexible': {
             'flights': [
-              'F7RWILPCNQ-OD122'
-            ]
-          }
-        }
-      }
+              'F7RWILPCNQ-OD122',
+            ],
+          },
+        },
+      },
     ];
 
     it('should to throw if wrong array has been provided', async () => {
@@ -462,24 +487,24 @@ describe('Parsers', () => {
       prop1: {
         value1: 1,
         value2: {
-          value3: 3
-        }
+          value3: 3,
+        },
       },
       prop2: {
-        value4: 4
-      }
+        value4: 4,
+      },
     };
     const obj2 = {
       prop1: {
         value4: 'new4',
         value2: {
           value3: 'new3',
-          value5: 5
-        }
+          value5: 5,
+        },
       },
       prop2: {
-        value6: 6
-      }
+        value6: 6,
+      },
     };
 
     it('should to throw if wrong object has been provided', async () => {

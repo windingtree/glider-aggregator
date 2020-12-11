@@ -2,8 +2,8 @@ const { v4: uuidv4 } = require('uuid');
 const { createSegment, createPrice, createPassenger } = require('./amadeusFormatUtils');
 const GliderError = require('../../../../error');
 const { convertLocalAirportTimeToUtc } = require('../../../../utils/timezoneUtils');
-const { getFeatureFlag } = require('../../../../../config');
-
+const { getConfigKey, getConfigKeyAsArray } = require('../../../../../config');
+const { getFareFamily } = require('../../../../models/carrierConfigManager');
 
 //request
 
@@ -14,7 +14,7 @@ const splitIsoDateTime = (isoDateString) => {
 const convertPassengerTypeToAmadeus = (type) => {
   if (type === 'ADT') return 'ADULT';
   else if (type === 'CHD') return 'CHILD';
-  else if (type === 'INF') return 'INFANT';
+  else if (type === 'INF') return 'HELD_INFANT';
   else throw new GliderError('invalid passenger type:' + type, 400);
 };
 
@@ -45,6 +45,18 @@ const createFlightSearchRequest = (itinerary, passengers) => {
       });
     }
   });
+  //in case we have infants, we need to also indicate which adult passenger will be associated with a given infant
+  let adults = travelers.filter(pax => pax.travelerType === 'ADULT');
+  let infantsOnLap = travelers.filter(pax => pax.travelerType === 'HELD_INFANT');
+  if (infantsOnLap.length > 0) {
+    //if we have more infants than adults - fail, it's not possible to duplicate same accompanying adult for two infants
+    if (infantsOnLap.length > adults.length)
+      throw new GliderError('Number of infant passengers cannot be greater than adults', 500);
+    for (let i = 0; i < infantsOnLap.length; i++) {
+      let infant = infantsOnLap[i];
+      infant.associatedAdultId = adults[i].id;
+    }
+  }
 
 
   let request = {
@@ -55,7 +67,7 @@ const createFlightSearchRequest = (itinerary, passengers) => {
       'GDS',
     ],
     searchCriteria: {
-      maxFlightOffers: getFeatureFlag('flights.amadeus.maxFlightOffers') || 100,
+      maxFlightOffers: getConfigKey('flights.amadeus.maxFlightOffers', 100),
       excludeAllotments: true,
       additionalInformation: {
         brandedFares: true,
@@ -72,22 +84,12 @@ const createFlightSearchRequest = (itinerary, passengers) => {
     },
   };
   //check if we need to include or exclude certain validating carriers
-  let validatingCarriers = getFeatureFlag('flights.amadeus.validatingCarriers') || {};
-  let { included, excluded } = validatingCarriers;
-  if (included && included.length > 0) {
-    if (included.length > 99) {
+  let validatingCarriers = getConfigKeyAsArray('flights.amadeus.validatingCarriers', []);
+  if (validatingCarriers && validatingCarriers.length > 0) {
+    if (validatingCarriers.length > 99) {
       console.warn('feature flights.amadeus.validatingCarriers.included is having too many items - Amadeus does not allow more than 99');
     }
-    request.searchCriteria.flightFilters.carrierRestrictions.includedCarrierCodes = included;
-  }
-  if (excluded && excluded.length > 0) {
-    if (excluded.length > 99) {
-      console.warn('feature flights.amadeus.validatingCarriers.excluded is having too many items - Amadeus does not allow more than 99');
-    }
-    request.searchCriteria.flightFilters.carrierRestrictions.excludedCarrierCodes = excluded;
-  }
-  if (included && included.length > 0 && excluded && excluded.length > 0) {
-    console.warn('Features flights.amadeus.validatingCarriers.excluded && flights.amadeus.validatingCarriers.included are mutually exclusive');
+    request.searchCriteria.flightFilters.carrierRestrictions.includedCarrierCodes = validatingCarriers;
   }
   return request;
 };
@@ -139,7 +141,23 @@ const createCombination = (itineraryId, segments) => {
   };
 };
 
-const processFlightSearchResponse = (response) => {
+
+//iterate over all segments and load them into a map for later retrieval
+/*
+const createSegmentsMap = (flightOffers) => {
+  let segmentsMap = {};
+  flightOffers.map(flightOffer => {
+    flightOffer.itineraries.map(itinerary => {
+      itinerary.segments.map(segment => {
+        segmentsMap[segment.id] = segment;
+      });
+    });
+  });
+  return segmentsMap;
+};
+*/
+
+const processFlightSearchResponse = async (response) => {
   let searchResults = {
     offers: [],
     itineraries: {
@@ -151,11 +169,20 @@ const processFlightSearchResponse = (response) => {
     // destinations: [],
   };
 
+  // let segmentIdToSegmentMap = createSegmentsMap(response);
 
   let passengersSet = {};
   //iterate over offers
-  response.map(_flightOffer => {
-    let { lastTicketingDate: _lastTicketingDate, itineraries: _itineraries, price: _price, travelerPricings: _travelerPricings } = _flightOffer;
+  for (let _flightOffer of response) {
+    // response.map(_flightOffer => {
+    let {
+      lastTicketingDate: _lastTicketingDate,
+      itineraries: _itineraries,
+      price: _price,
+      travelerPricings: _travelerPricings,
+      validatingAirlineCodes,
+    } = _flightOffer;
+    let validatingCarrierCode = (Array.isArray(validatingAirlineCodes) && validatingAirlineCodes.length > 0) ? validatingAirlineCodes[0] : undefined;
     let offerItineraries = [];
     let segmentToItineraryMap = {};
     let offerSegments = [];
@@ -206,24 +233,28 @@ const processFlightSearchResponse = (response) => {
     let prevItineraryId;
     let prevBrandedFareName;
     let currentPricePlan;
-    _travelerPricing.fareDetailsBySegment.map(_fareSegmentDetail => {
+    for (let _fareSegmentDetail of _travelerPricing.fareDetailsBySegment) {
+      // _travelerPricing.fareDetailsBySegment.map(async _fareSegmentDetail => {
       let brandedFareName = _fareSegmentDetail.brandedFare ? _fareSegmentDetail.brandedFare : _fareSegmentDetail.cabin;
       let itineraryId = segmentToItineraryMap[_fareSegmentDetail.segmentId];
       // console.log('brandedFareName=', brandedFareName, 'prevBrandedFareName=', prevBrandedFareName);
       if (prevBrandedFareName !== brandedFareName) {
         //new branded fare  - create new price plan
-        let checkedBags = (_fareSegmentDetail.includedCheckedBags && _fareSegmentDetail.includedCheckedBags.quantity ? _fareSegmentDetail.includedCheckedBags.quantity : 0);
-        let amenities = [];
-        if (_fareSegmentDetail.cabin === 'FIRST') amenities.push('First class');
-        if (_fareSegmentDetail.cabin === 'PREMIUM_ECONOMY') amenities.push('Premium Economy class');
-        if (_fareSegmentDetail.cabin === 'BUSINESS') amenities.push('Business class');
-        if (_fareSegmentDetail.cabin === 'ECONOMY') amenities.push('Economy class');
-        if (checkedBags === 0) amenities.push('Checked bags for a fee');
-        if (checkedBags === 1) amenities.push('1st checked bag free');
-        if (checkedBags === 2) amenities.push('2 checked bags free');
-        if (ancillaries.length > 0)
-          amenities.push(...ancillaries);
-        currentPricePlan = createPricePlan(uuidv4() + '-' + brandedFareName, brandedFareName, amenities, checkedBags);
+        /* let checkedBags = (_fareSegmentDetail.includedCheckedBags && _fareSegmentDetail.includedCheckedBags.quantity ? _fareSegmentDetail.includedCheckedBags.quantity : 0);
+         let amenities = [];
+         if (_fareSegmentDetail.cabin === 'FIRST') amenities.push('First class');
+         if (_fareSegmentDetail.cabin === 'PREMIUM_ECONOMY') amenities.push('Premium Economy class');
+         if (_fareSegmentDetail.cabin === 'BUSINESS') amenities.push('Business class');
+         if (_fareSegmentDetail.cabin === 'ECONOMY') amenities.push('Economy class');
+         if (checkedBags === 0) amenities.push('Checked bags for a fee');
+         if (checkedBags === 1) amenities.push('1st checked bag free');
+         if (checkedBags === 2) amenities.push('2 checked bags free');
+         if (ancillaries.length > 0)
+           amenities.push(...ancillaries);
+         currentPricePlan = createPricePlan(uuidv4() + '-' + brandedFareName, brandedFareName, amenities, checkedBags);*/
+
+        // let fareSegment = segmentIdToSegmentMap[_fareSegmentDetail.segmentId];
+        currentPricePlan = await translateAmenities(_fareSegmentDetail, validatingCarrierCode);
         offerPricePlans.push(currentPricePlan);
         currentOffer.pricePlansReferences.push(createPricePlansReference(currentPricePlan._id_));
       }
@@ -235,14 +266,16 @@ const processFlightSearchResponse = (response) => {
       }
       prevItineraryId = itineraryId;
       prevBrandedFareName = brandedFareName;
-    });
+    }
+    ;
     // });
 
     searchResults.pricePlans.push(...offerPricePlans);  //store all newly created price plans in response
 
     searchResults.offers.push(currentOffer);
 
-  });
+  }
+  ;
   for (const passengerId of Object.keys(passengersSet)) {
     searchResults.passengers.push(passengersSet[passengerId]);
   }
@@ -252,6 +285,54 @@ const processFlightSearchResponse = (response) => {
     });
   });
   return searchResults;
+};
+
+
+const translateAmenities = async (_fareSegmentDetail, carrierCode) => {
+  let { cabin, brandedFare: brandedFareId, includedCheckedBags } = _fareSegmentDetail;
+  console.log(`translateAmenities, carrierCode:${carrierCode}, branded fare code:${brandedFareId}`);
+  let brandedFareName;
+  let amenities = [];
+  let predefinedAmenities = [];
+
+  //if we have brandedFareID (e.g. FLEX/COMFORT), try to find it's definition in mongo (carrier configuration)
+  if (brandedFareId) {
+    let fareFamilyDefinition = await getFareFamily(carrierCode, brandedFareId);
+
+    //if we have definition of branded fare in mongo, retrieve it's details from there (fare name, amenities, etc)
+    if (fareFamilyDefinition) {
+      brandedFareName = fareFamilyDefinition.brandedFareName;
+      // checkedBags=fareFamilyDefinition.checkedBaggages.quantity;
+      predefinedAmenities.push(fareFamilyDefinition.amenities);
+      // refundable=fareFamilyDefinition.refundable;
+    }
+  }
+
+  if (!brandedFareName) {
+    brandedFareName = brandedFareId ? brandedFareId : cabin;
+  }
+
+  //if we took branded fare and amenities from mongo - use that. Otherwise create amenities
+  if (predefinedAmenities.length > 0) {
+    amenities = [...predefinedAmenities];
+  } else {
+    if (cabin === 'FIRST') amenities.push('First class');
+    if (cabin === 'PREMIUM_ECONOMY') amenities.push('Premium Economy class');
+    if (cabin === 'BUSINESS') amenities.push('Business class');
+    if (cabin === 'ECONOMY') amenities.push('Economy class');
+  }
+
+  if (includedCheckedBags === 0) {
+    amenities.push('Checked bags for a fee');
+  } else if (includedCheckedBags === 1) {
+    amenities.push('1 checked bag included');
+  } else {
+    amenities.push(`${includedCheckedBags} checked bags included`);
+  }
+  // if (ancillaries.length > 0)
+  //   amenities.push(...ancillaries);
+  let currentPricePlan = createPricePlan(uuidv4() + '-' + brandedFareName, brandedFareName, amenities, includedCheckedBags);
+  return currentPricePlan;
 };
 
 
