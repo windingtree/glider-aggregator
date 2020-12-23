@@ -85,6 +85,7 @@ const createFlightSearchRequest = (itinerary, passengers) => {
   };
   //check if we need to include or exclude certain validating carriers
   let validatingCarriers = getConfigKeyAsArray('flights.amadeus.validatingCarriers', []);
+  console.log('validating carriers requested:',validatingCarriers);
   if (validatingCarriers && validatingCarriers.length > 0) {
     if (validatingCarriers.length > 99) {
       console.warn('feature flights.amadeus.validatingCarriers.included is having too many items - Amadeus does not allow more than 99');
@@ -182,7 +183,8 @@ const processFlightSearchResponse = async (response) => {
       travelerPricings: _travelerPricings,
       validatingAirlineCodes,
     } = _flightOffer;
-    let validatingCarrierCode = (Array.isArray(validatingAirlineCodes) && validatingAirlineCodes.length > 0) ? validatingAirlineCodes[0] : undefined;
+    // let validatingCarrierCodeFromAmadeus = (Array.isArray(validatingAirlineCodes) && validatingAirlineCodes.length > 0) ? validatingAirlineCodes[0] : undefined;
+    let validatingCarrierCode = detectMarketingCarrierCode(_itineraries);
     let offerItineraries = [];
     let segmentToItineraryMap = {};
     let offerSegments = [];
@@ -287,23 +289,42 @@ const processFlightSearchResponse = async (response) => {
   return searchResults;
 };
 
+//naive way to find marketing carrier based on first segment
+const detectMarketingCarrierCode = (itineraries)=>{
+  let carrierCodes = [];
+  itineraries.forEach(itinerary => {
+    itinerary.segments.forEach(segment => {
+      let rec = {
+        carrier: segment.carrierCode,
+      };
+      carrierCodes.push(rec);
+    });
+  });
 
+  let firstCarrierCode = carrierCodes.length>0?carrierCodes[0].carrier:null;
+  return firstCarrierCode;
+}
 const translateAmenities = async (_fareSegmentDetail, carrierCode) => {
   let { cabin, brandedFare: brandedFareId, includedCheckedBags } = _fareSegmentDetail;
-  console.log(`translateAmenities, carrierCode:${carrierCode}, branded fare code:${brandedFareId}`);
+
   let brandedFareName;
   let amenities = [];
   let predefinedAmenities = [];
 
+
   //if we have brandedFareID (e.g. FLEX/COMFORT), try to find it's definition in mongo (carrier configuration)
   if (brandedFareId) {
     let fareFamilyDefinition = await getFareFamily(carrierCode, brandedFareId);
-
+    if(!fareFamilyDefinition){
+      console.log(`Branded fare definition not found, carrierCode:${carrierCode}, branded fare code:${brandedFareId}`);
+    }else{
+      console.log(`Branded fare definition found, carrierCode:${carrierCode}, branded fare code:${brandedFareId} ==> ${fareFamilyDefinition.brandedFareName}`);
+    }
     //if we have definition of branded fare in mongo, retrieve it's details from there (fare name, amenities, etc)
     if (fareFamilyDefinition) {
       brandedFareName = fareFamilyDefinition.brandedFareName;
       // checkedBags=fareFamilyDefinition.checkedBaggages.quantity;
-      predefinedAmenities.push(fareFamilyDefinition.amenities);
+      predefinedAmenities=predefinedAmenities.concat(fareFamilyDefinition.amenities);
       // refundable=fareFamilyDefinition.refundable;
     }
   }
@@ -314,20 +335,20 @@ const translateAmenities = async (_fareSegmentDetail, carrierCode) => {
 
   //if we took branded fare and amenities from mongo - use that. Otherwise create amenities
   if (predefinedAmenities.length > 0) {
-    amenities = [...predefinedAmenities];
+    amenities = amenities.concat(predefinedAmenities);
   } else {
     if (cabin === 'FIRST') amenities.push('First class');
     if (cabin === 'PREMIUM_ECONOMY') amenities.push('Premium Economy class');
     if (cabin === 'BUSINESS') amenities.push('Business class');
     if (cabin === 'ECONOMY') amenities.push('Economy class');
   }
-
-  if (includedCheckedBags === 0) {
+  let includedCheckedBagsQuantity = includedCheckedBags?includedCheckedBags.quantity:0;
+  if (includedCheckedBagsQuantity === 0) {
     amenities.push('Checked bags for a fee');
-  } else if (includedCheckedBags === 1) {
+  } else if (includedCheckedBagsQuantity === 1) {
     amenities.push('1 checked bag included');
   } else {
-    amenities.push(`${includedCheckedBags} checked bags included`);
+    amenities.push(`${includedCheckedBagsQuantity} checked bags included`);
   }
   // if (ancillaries.length > 0)
   //   amenities.push(...ancillaries);

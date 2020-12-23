@@ -26,13 +26,13 @@ const getCarrierDetails = async (carrierCode) => {
   //check also if for a given carrier we did not set NULL_VALUE (this was to indicate we already queried database but did not find such carrier in database)
   //if we did store NULL_VALUE - return it (otherwise we would be querying mongo each time for carriers we don't have data in database)!
   if (cachedValue === NULL_VALUE) {
-    console.log(`getCarrierDetails(${carrierCode}) - cachedValue is null`);
+    // console.log(`getCarrierDetails(${carrierCode}) - cachedValue is null`);
     return null;
   }
 
   //check if we have this carrier in cache already - if so, return data from cache
   if (cachedValue !== undefined) {
-    console.log(`getCarrierDetails(${carrierCode}) - hit from cache`);
+    // console.log(`getCarrierDetails(${carrierCode}) - hit from cache`);
     return cachedValue; //return cached value
   }
 
@@ -42,7 +42,7 @@ const getCarrierDetails = async (carrierCode) => {
     const model = await CarrierConfiguration();
 
     carrierInfo = await model.findOne({ carrierCode: { '$regex': carrierCode, $options: 'i' } }).exec();
-    console.log(`getCarrierDetails(${carrierCode}) - query DB - result:${carrierInfo}`);
+    // console.log(`getCarrierDetails(${carrierCode}) - query DB - result:${carrierInfo}`);
 
   } catch (e) {
     throw new GliderError('Failed to retrieve carrier configuration', 404);
@@ -50,10 +50,10 @@ const getCarrierDetails = async (carrierCode) => {
 
   //if carrier config was not found in database - we have to indicate this in cache with NULL_VALUE object(we can't use normal 'null')
   if (!carrierInfo) {
-    console.log(`getCarrierDetails(${carrierCode}) - value from DB not found - set null in cache`);
+    // console.log(`getCarrierDetails(${carrierCode}) - value from DB not found - set null in cache`);
     cache.set(carrierCode.toUpperCase(), NULL_VALUE);
   } else {
-    console.log(`getCarrierDetails(${carrierCode}) - value from DB is not null`);
+    // console.log(`getCarrierDetails(${carrierCode}) - value from DB is not null`);
     //store retrieved value in cache for future retrieval
     cache.set(carrierCode.toUpperCase(), carrierInfo);
   }
