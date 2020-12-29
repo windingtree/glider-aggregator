@@ -21,7 +21,7 @@
   "scripts": {
     "localservers:start": "./scripts/localservers/start.sh",
     "localservers:stop": "./scripts/localservers/stop.sh",
-    "dev": "now dev",
+    "dev": "now dev --listen=3001",
     "test": "./scripts/test.sh",
     "test:newman": "node ./test/newman/run.js",
     "coverage": "COVERAGE=true ./scripts/test.sh",

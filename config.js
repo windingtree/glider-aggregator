@@ -24,10 +24,10 @@ try {
 const activeProfile = process.env.ACTIVE_PROFILE || 'staging';
 console.log('Active profile:', activeProfile);
 profiles.init({
-    baseFolder: path.join(process.cwd(), 'api/profiles'),
-    dbUrl: profiles.getEnvironmentEntry(activeProfile, 'MONGO_URL'),
-    encryptionDetails: profiles.getEnvironmentEntry(activeProfile, 'PROFILE_SECRET'),
-  },
+  baseFolder: path.join(process.cwd(), 'api/profiles'),
+  dbUrl: profiles.getEnvironmentEntry(activeProfile, 'MONGO_URL'),
+  encryptionDetails: profiles.getEnvironmentEntry(activeProfile, 'PROFILE_SECRET'),
+},
 );
 
 
@@ -62,9 +62,7 @@ const determineEnviroment = () => {
 };
 
 const environment = determineEnviroment();
-console.log('###########ENV:', environment);
 console.log('ENV:', environment);
-console.log('process.env:', process.env);
 // Get an an environment variable
 const getConfigKey = (key, defaultValue) => {
   return profiles.getEnvOrProfileEntry(key, defaultValue);
@@ -182,9 +180,6 @@ module.exports.debugInfo = () => {
   };
 };
 
-module.exports.getFeatureFlag = (featureId, defaultValue) => {
-  if (features[featureId]) ;
-};
 
 module.exports.airFranceConfig = airFranceConfig;
 module.exports.airCanadaConfig = airCanadaConfig;
