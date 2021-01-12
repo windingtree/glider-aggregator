@@ -38,7 +38,7 @@
     "@windingtree/org.id-resolver": "1.4.0",
     "ajv": "^6.12.4",
     "amadeus": "^5.2.0",
-    "axios": "0.19.2",
+    "axios": "0.21.1",
     "camaro": "6.0.3",
     "date-fns": "2.14.0",
     "date-fns-tz": "1.0.10",
