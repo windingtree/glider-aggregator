@@ -8,7 +8,8 @@ const dummyCarrierConfig =
   {
     carrierCode: 'XYZ',
     brandedFares: [{
-      brandName: 'Basic',
+      brandedFareId : 'BASIC',
+      brandedFareName : 'Basic',
       refundable: false,
       changeable: false,
       penalties: false,
@@ -20,7 +21,8 @@ const dummyCarrierConfig =
       ],
     },
     {
-      brandName: 'Flex',
+      brandedFareId : 'FLEX',
+      brandedFareName : 'Flex',
       refundable: true,
       changeable: true,
       penalties: true,
@@ -78,13 +80,13 @@ describe('CarrierConfiguration', () => {
       let flex = await getFareFamily('XYZ', 'Flex');
       expect(flex).to.be.not.empty;
       expect(flex).to.be.an('object');
-      expect(flex).to.have.property('brandedFareId').equal('Flex');
+      expect(flex).to.have.property('brandedFareId').equal('FLEX');
     });
     it('should return existing fare family also if name case does not match ', async () => {
       let flex = await getFareFamily('XYZ', 'FLEX');
       expect(flex).to.be.not.empty;
       expect(flex).to.be.an('object');
-      expect(flex).to.have.property('brandedFareId').equal('Flex');
+      expect(flex).to.have.property('brandedFareId').equal('FLEX');
     });
     it('should return empty if name case does not match ', async () => {
       let flex = await getFareFamily('XYZ', 'DUMMY');

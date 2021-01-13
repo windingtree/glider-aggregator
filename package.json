@@ -22,7 +22,8 @@
     "localservers:start": "./scripts/localservers/start.sh",
     "localservers:stop": "./scripts/localservers/stop.sh",
     "dev": "now dev --listen=3001",
-    "test": "./scripts/test.sh",
+    "test": "mocha",
+    "test-script": "./scripts/test.sh",
     "test:newman": "node ./test/newman/run.js",
     "coverage": "COVERAGE=true ./scripts/test.sh",
     "lint": "npx eslint test admin api decorators helpers",
@@ -51,7 +52,6 @@
     "libphonenumber-js": "^1.8.5",
     "lodash": "^4.17.20",
     "mongoose": "5.9.24",
-    "node-cache": "^5.1.2",
     "redis": "3.0.2",
     "uuid": "8.2.0",
     "web3": "1.2.11"
