@@ -1,8 +1,7 @@
 const FlightProvider = require('../../flightProvider');
-const { createFlightSearchRequest, createFulfillOrderRequest, createOrderCreateRequest } = require('./requestResponseConverters');
-const { processFlightSearchResponse, processFulfillOrderResponse, processOrderCreateResponse } = require('./requestResponseConverters');
+const converters = require('./requestResponseConverters');
 
-const { flightSearchRQ, fulfillOrderRQ, createOrderRQ } = require('./ndcClientAF');
+const ndcClient= require('./ndcClientAF');
 const { assertResponseErrors } = require('../ndc/assertResponseErrors');
 
 //shopping templates
@@ -22,10 +21,10 @@ class FlightProviderAF extends FlightProvider {
   }
 
   async flightSearch (itinerary, passengers) {
-    let ndcBody = createFlightSearchRequest(itinerary, passengers);
-    let response = await flightSearchRQ(ndcBody);
+    let ndcBody = converters.createFlightSearchRequest(itinerary, passengers);
+    let response = await ndcClient.flightSearchRQ(ndcBody);
     await assertResponseErrors(response.data, ErrorsTransformTemplate_AF);
-    return processFlightSearchResponse(response.data);
+    return converters.processFlightSearchResponse(response.data);
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -40,21 +39,21 @@ class FlightProviderAF extends FlightProvider {
 
   // eslint-disable-next-line no-unused-vars
   async orderCreate (offer, requestBody, guaranteeClaim) {
-    let ndcBody = createOrderCreateRequest(offer, requestBody);
-    const response = await createOrderRQ(ndcBody);
+    let ndcBody = converters.createOrderCreateRequest(offer, requestBody);
+    const response = await ndcClient.createOrderRQ(ndcBody);
     await assertResponseErrors(response.data, OrderCreateErrorsTransformTemplate_AF);
     // Otherwise parse as a result
-    return await processOrderCreateResponse(response.data);
+    return await converters.processOrderCreateResponse(response.data);
   }
 
   // eslint-disable-next-line no-unused-vars
   async orderFulfill (orderId, order, body, guaranteeClaim) {
-    let ndcBody = createFulfillOrderRequest(body, orderId);
-    const response = await fulfillOrderRQ(ndcBody);
+    let ndcBody = converters.createFulfillOrderRequest(body, orderId);
+    const response = await ndcClient.fulfillOrderRQ(ndcBody);
     await assertResponseErrors(response.data, FulfillErrorsTransformTemplate_AF);
 
     // await ready();
-    return await processFulfillOrderResponse(response.data);
+    return await converters.processFulfillOrderResponse(response.data);
   }
 
   getProviderID () {

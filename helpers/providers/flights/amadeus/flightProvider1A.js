@@ -1,7 +1,7 @@
 const FlightProvider = require('../../flightProvider');
 
 const amadeusClient = require('../../../amadeus/amadeusUtils');
-const amadeusConverters = require('./converters/amadeusConverters');
+const amadeusConverters = require('./converters');
 const GliderError = require('../../../error');
 const { getConfigKey } = require('../../../../config');
 
