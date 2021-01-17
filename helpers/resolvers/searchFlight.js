@@ -398,7 +398,7 @@ module.exports.searchFlight = async (body) => {
     try {
       result.response = await providerImpl.flightSearch(itinerary, passengers);
       console.log(`Search completed for ${providerImpl.getProviderID()}`);
-      logRQRS(result.response, 'raw_response');
+      logRQRS(result.response, 'raw_response', providerImpl.getProviderID());
     } catch (error) {
       console.log(`Search failed for ${providerImpl.getProviderID()}, code:${error.code}, message:${error.message}`);
       result.error = error;

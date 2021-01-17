@@ -1,12 +1,7 @@
 const FlightProvider = require('../../flightProvider');
 
-const { createFlightSearchRequest, processFlightSearchResponse } = require('./resolvers/searchOffersRequestResponseConverters');
-const { assertAmadeusFault } = require('../../../amadeus/amadeusUtils');
 const amadeusClient = require('../../../amadeus/amadeusUtils');
-
-const { createOfferPriceRequest, processPriceOfferResponse } = require('./resolvers/priceOfferRequestResponseConverters');
-const { orderCreateResponseProcessor, createOrderCreateRequest, orderRetrieveResponseConverter } = require('./resolvers/orderCreateRequestResponseConverters');
-const { processRetrieveSeatmapResponse, createRetrieveSeatmapRequest } = require('./resolvers/seatmapRequestResponseConverters');
+const amadeusConverters = require('./converters/amadeusConverters');
 const GliderError = require('../../../error');
 const { getConfigKey } = require('../../../../config');
 
@@ -17,10 +12,10 @@ class FlightProvider1A extends FlightProvider {
   }
 
   async flightSearch (itinerary, passengers) {
-    const request = createFlightSearchRequest(itinerary, passengers);
+    const request = amadeusConverters.createFlightSearchRequest(itinerary, passengers);
     const response = await amadeusClient.flightOffersSearch(request);
-    assertAmadeusFault(response);
-    return await processFlightSearchResponse(response.data);
+    amadeusClient.assertAmadeusFault(response);
+    return await amadeusConverters.processFlightSearchResponse(response.data);
   }
 
 
@@ -29,38 +24,31 @@ class FlightProvider1A extends FlightProvider {
     let seatmapEnabled = getConfigKey('flights.amadeus.seatmap.enabled', true);
     if (!seatmapEnabled )
       throw new GliderError('Seatmap display for this flight is not possible');   //for now we will not display seatmap for Amadeus
-    let ndcBody = createRetrieveSeatmapRequest(offers);
+    let ndcBody = amadeusConverters.createRetrieveSeatmapRequest(offers);
     const response = await amadeusClient.seatmapRequest(ndcBody);
-    assertAmadeusFault(response);
-    return processRetrieveSeatmapResponse(response.result, offers);
+    amadeusClient.assertAmadeusFault(response);
+    return amadeusConverters.processRetrieveSeatmapResponse(response.result, offers);
   }
 
   async priceOffers (body, offers) {
-    let priceRQ = createOfferPriceRequest(offers.map(offer => offer.extraData.rawOffer));
-    let response;
-    try {
-      response = await amadeusClient.flightOfferPrice(priceRQ);
-      assertAmadeusFault(response);
-    } catch (err) {
-      console.log('Error while trying to price an offer:', err);
-      response = await amadeusClient.flightOfferPrice(priceRQ);
-      assertAmadeusFault(response);
-    }
-    return processPriceOfferResponse(response);
+    let priceRQ = amadeusConverters.createOfferPriceRequest(offers.map(offer => offer.extraData.rawOffer));
+    let response = await amadeusClient.flightOfferPrice(priceRQ);
+    amadeusClient.assertAmadeusFault(response);
+    return amadeusConverters.processPriceOfferResponse(response);
   }
 
   async orderCreate (offer, requestBody, guaranteeClaim) {
     // create request
-    let request = createOrderCreateRequest(offer, requestBody, guaranteeClaim);
+    let request = amadeusConverters.createOrderCreateRequest(offer, requestBody, guaranteeClaim);
     let order;
     try {
       //make a call to Amadeus to create an order
       let orderCreateResponse = await amadeusClient.flightOrderCreate(request);
       // process any potential errors
-      assertAmadeusFault(orderCreateResponse);
+      amadeusClient.assertAmadeusFault(orderCreateResponse);
 
       //convert to WT format
-      order = orderCreateResponseProcessor(orderCreateResponse);
+      order = amadeusConverters.orderCreateResponseProcessor(orderCreateResponse);
 
       //since response from order create does not contain eTicket numbers, we need to make a separate call to retrieve orders
       let eTickets = [];
@@ -70,7 +58,7 @@ class FlightProvider1A extends FlightProvider {
       //retrieve an order
       let orderRetrieveResponse = await amadeusClient.flightOrderRetrieve(pnrRetrieveQuery);
       //convert response
-      let retrievedOrder = orderRetrieveResponseConverter(orderRetrieveResponse);
+      let retrievedOrder = amadeusConverters.orderRetrieveResponseConverter(orderRetrieveResponse);
       //extract eTicket numbers
       if (retrievedOrder && retrievedOrder.travelDocuments && retrievedOrder.travelDocuments.etickets) {
         eTickets.push(...retrievedOrder.travelDocuments.etickets);

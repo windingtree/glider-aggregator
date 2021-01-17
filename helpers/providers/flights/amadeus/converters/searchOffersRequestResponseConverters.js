@@ -268,11 +268,13 @@ const translateAmenities = async (_fareSegmentDetail, carrierCode) => {
   //if we have brandedFareID (e.g. FLEX/COMFORT), try to find it's definition in mongo (carrier configuration)
   if (brandedFareId) {
     let fareFamilyDefinition = await getFareFamily(carrierCode, brandedFareId);
+    /*
     if (!fareFamilyDefinition) {
       console.log(`Branded fare definition not found, carrierCode:${carrierCode}, branded fare code:${brandedFareId}`);
     } else {
       console.log(`Branded fare definition found, carrierCode:${carrierCode}, branded fare code:${brandedFareId} ==> ${fareFamilyDefinition.brandedFareName}`);
     }
+*/
     //if we have definition of branded fare in mongo, retrieve it's details from there (fare name, amenities, etc)
     if (fareFamilyDefinition) {
       brandedFareName = fareFamilyDefinition.brandedFareName;

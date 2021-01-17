@@ -22,7 +22,7 @@
     "localservers:start": "./scripts/localservers/start.sh",
     "localservers:stop": "./scripts/localservers/stop.sh",
     "dev": "now dev --listen=3001",
-    "test": "mocha",
+    "test": "mocha -r ts-node/register tests/**/*.test.ts",
     "test-script": "./scripts/test.sh",
     "test:newman": "node ./test/newman/run.js",
     "coverage": "COVERAGE=true ./scripts/test.sh",
@@ -60,14 +60,17 @@
     "@actions/core": "1.2.6",
     "@actions/exec": "1.0.4",
     "@actions/github": "4.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.13.0",
+    "@typescript-eslint/parser": "^4.13.0",
     "chai": "4.2.0",
     "dotenv": "8.2.0",
-    "eslint": "7.4.0",
+    "eslint": "^7.4.0",
     "mocha": "^8.1.3",
     "newman": "5.1.2",
     "now": "19.2.0",
     "nyc": "15.1.0",
-    "sinon": "^9.0.3"
+    "sinon": "^9.0.3",
+    "typescript": "^4.1.3"
   },
   "engines": {
     "node": "12.x"
