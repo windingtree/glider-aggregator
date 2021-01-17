@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const { createFlightProviders } = require('../providers/providerFactory');
+const providerFactory = require('../providers/providerFactory');
 const {
   reduceToObjectByKey,
   roundCommissionDecimals,
@@ -11,7 +11,7 @@ const {
 
 const GliderError = require('../error');
 const offerModel = require('../models/offer');
-const { selectProvider } = require('./utils/flightUtils');
+const { logRQRS } = require('../log/logRQ');
 
 const transformResponse = async (
   { provider, response: searchResults }, passengersIds,
@@ -374,14 +374,14 @@ const flattenPassengerTypesMap = (paxTypesMap) => {
 module.exports.searchFlight = async (body) => {
   // Fetching of the flight providers
   // associated with the given origin and destination
-  const providers = selectProvider(
+  const providers = providerFactory.selectProvider(
     body.itinerary.segments[0].origin.iataCode,
     body.itinerary.segments[0].destination.iataCode,
   );
   if (providers.length === 0) {
     throw new GliderError('Flight providers not found for the given origin and destination', 404);
   }
-  let providerHandlers = createFlightProviders(providers);
+  let providerHandlers = providerFactory.createFlightProviders(providers);
   if (providers.length !== providerHandlers.length) {
     //TODO improve handling of unknown providers/implementations
     throw new GliderError('Missing provider configuraton/implementation', 404);
@@ -397,7 +397,10 @@ module.exports.searchFlight = async (body) => {
     };
     try {
       result.response = await providerImpl.flightSearch(itinerary, passengers);
+      console.log(`Search completed for ${providerImpl.getProviderID()}`);
+      logRQRS(result.response, 'raw_response');
     } catch (error) {
+      console.log(`Search failed for ${providerImpl.getProviderID()}, code:${error.code}, message:${error.message}`);
       result.error = error;
     }
     return result;

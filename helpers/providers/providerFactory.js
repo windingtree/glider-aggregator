@@ -4,6 +4,8 @@ const { FlightProvider1A } = require('./flights/amadeus/flightProvider1A');
 const { HotelProviderRevMax } = require('./hotels/erevmax/hotelProviderRevMax');
 const { HotelProviderRevMaxSimulator } = require('./hotels/simulator/hotelProviderRevMaxSimulator');
 const { HotelProviderAmadeus } = require('./hotels/amadeus/hotelProviderAmadeus');
+const caDestinations = require('./cadest.json');
+const config = require('../../config');
 const GliderError = require('../error');
 
 /**
@@ -78,9 +80,60 @@ const createHotelProviders = (providerIDs) => {
 };
 
 
+
+const getACDestinations = () => {
+  return caDestinations;
+};
+
+const get1ADestinations = () => {
+  return caDestinations;
+};
+
+/**
+ * Find which flight providers should be used for a given origin&destination.
+ * Takes into account which providers are enabled/disabled (by business rules)
+ */
+const selectProvider = (origin, destination) => {
+  origin = Array.isArray(origin) ? origin : [origin];
+  destination = Array.isArray(destination) ? destination : [destination];
+
+  const sdMapping = [
+    {
+      provider: 'AMADEUS',
+      destinations: get1ADestinations(),
+    },
+    {
+      provider: 'AC',
+      destinations: getACDestinations(),
+    },
+  ];
+
+  let providers = sdMapping
+    .reduce((a, v) => {
+
+      if (
+        (v.destinations.filter(d => origin.includes(d)).length > 0 ||
+          v.destinations.filter(d => destination.includes(d)).length > 0) &&
+        !a.includes(v.provider)
+      ) {
+        a.push(v.provider);
+      }
+
+      return a;
+    }, []);// temporary until we do not have a specific set for AF - ['AF']
+
+  //of those providers that were found, only use those that are specified by business rules/feature flag
+  let enabledFlightProviders = config.getConfigKeyAsArray('flights.providers', []);
+
+  providers = providers.filter(provider => enabledFlightProviders.includes(provider));
+  return providers;
+};
+
+
 module.exports = {
   createFlightProviders,
   createFlightProvider,
   createHotelProvider,
   createHotelProviders,
+  selectProvider
 };
