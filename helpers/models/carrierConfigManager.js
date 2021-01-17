@@ -7,9 +7,9 @@ let cache;  //this is cache which will store all carriers configurations, carrie
 const ensureCarrierConfigurationCacheIsPopulated = async () => {
   if(cache)
   {
-    console.log('');
     return;
   }
+  console.log('Carrier config not yet populated');
   //if we are here - cache did not have any data yet - load it from DB
   try {
     const model = await CarrierConfiguration();
