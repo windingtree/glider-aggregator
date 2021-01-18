@@ -372,6 +372,7 @@ const flattenPassengerTypesMap = (paxTypesMap) => {
 
 
 module.exports.searchFlight = async (body) => {
+  logRQRS(body, 'search criteria');
   // Fetching of the flight providers
   // associated with the given origin and destination
   const providers = providerFactory.selectProvider(
@@ -452,7 +453,9 @@ module.exports.searchFlight = async (body) => {
       ),
   );
 
-  return transformedResponses.reduce((a, v) => deepMerge(a, v), searchResult);
+  let finalResult =  transformedResponses.reduce((a, v) => deepMerge(a, v), searchResult);
+  logRQRS(finalResult, 'search response');
+  return finalResult;
 };
 
 

@@ -1,0 +1,3796 @@
+{
+  "meta": {
+    "count": 10
+  },
+  "data": [
+    {
+      "type": "flight-offer",
+      "id": "1",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "oneWay": false,
+      "lastTicketingDate": "2021-01-18",
+      "numberOfBookableSeats": 4,
+      "itineraries": [
+        {
+          "duration": "PT10H55M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-01T06:50:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T08:55:00"
+              },
+              "carrierCode": "SN",
+              "number": "2104",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H5M",
+              "id": "4",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T10:45:00"
+              },
+              "arrival": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-01T12:45:00"
+              },
+              "carrierCode": "SN",
+              "number": "9689",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT8H",
+              "id": "5",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        },
+        {
+          "duration": "PT12H5M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-15T18:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T19:19:00"
+              },
+              "carrierCode": "SN",
+              "number": "9554",
+              "aircraft": {
+                "code": "333"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H19M",
+              "id": "6",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T20:25:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T08:10:00"
+              },
+              "carrierCode": "SN",
+              "number": "9552",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT6H45M",
+              "id": "7",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T09:40:00"
+              },
+              "arrival": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-16T10:05:00"
+              },
+              "carrierCode": "SN",
+              "number": "2093",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H25M",
+              "id": "8",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "EUR",
+        "total": "975.18",
+        "base": "6.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          }
+        ],
+        "grandTotal": "975.18",
+        "additionalServices": [
+          {
+            "amount": "121.62",
+            "type": "CHECKED_BAGS"
+          }
+        ]
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": false
+      },
+      "validatingAirlineCodes": [
+        "SN"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "6",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "7",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "8",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "2",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "6",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "7",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "8",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "3",
+          "fareOption": "STANDARD",
+          "travelerType": "CHILD",
+          "price": {
+            "currency": "EUR",
+            "total": "266.10",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "6",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "7",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "8",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            }
+          ]
+        }
+      ],
+      "fareRules": {
+        "rules": [
+          {
+            "category": "EXCHANGE",
+            "maxPenaltyAmount": "0.00"
+          },
+          {
+            "category": "REFUND",
+            "notApplicable": true
+          },
+          {
+            "category": "REVALIDATION",
+            "maxPenaltyAmount": "0.00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "flight-offer",
+      "id": "2",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "oneWay": false,
+      "lastTicketingDate": "2021-01-18",
+      "numberOfBookableSeats": 4,
+      "itineraries": [
+        {
+          "duration": "PT10H55M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-01T06:50:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T08:55:00"
+              },
+              "carrierCode": "SN",
+              "number": "2104",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H5M",
+              "id": "4",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T10:45:00"
+              },
+              "arrival": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-01T12:45:00"
+              },
+              "carrierCode": "SN",
+              "number": "9689",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT8H",
+              "id": "5",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        },
+        {
+          "duration": "PT15H5M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-15T15:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T16:19:00"
+              },
+              "carrierCode": "SN",
+              "number": "9562",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H19M",
+              "id": "9",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T20:25:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T08:10:00"
+              },
+              "carrierCode": "SN",
+              "number": "9552",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT6H45M",
+              "id": "10",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T09:40:00"
+              },
+              "arrival": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-16T10:05:00"
+              },
+              "carrierCode": "SN",
+              "number": "2093",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H25M",
+              "id": "11",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "EUR",
+        "total": "975.18",
+        "base": "6.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          }
+        ],
+        "grandTotal": "975.18",
+        "additionalServices": [
+          {
+            "amount": "121.62",
+            "type": "CHECKED_BAGS"
+          }
+        ]
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": false
+      },
+      "validatingAirlineCodes": [
+        "SN"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "9",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "10",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "11",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "2",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "9",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "10",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "11",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "3",
+          "fareOption": "STANDARD",
+          "travelerType": "CHILD",
+          "price": {
+            "currency": "EUR",
+            "total": "266.10",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "9",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "10",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "11",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            }
+          ]
+        }
+      ],
+      "fareRules": {
+        "rules": [
+          {
+            "category": "EXCHANGE",
+            "maxPenaltyAmount": "0.00"
+          },
+          {
+            "category": "REFUND",
+            "notApplicable": true
+          },
+          {
+            "category": "REVALIDATION",
+            "maxPenaltyAmount": "0.00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "flight-offer",
+      "id": "3",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "oneWay": false,
+      "lastTicketingDate": "2021-01-18",
+      "numberOfBookableSeats": 4,
+      "itineraries": [
+        {
+          "duration": "PT10H55M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-01T06:50:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T08:55:00"
+              },
+              "carrierCode": "SN",
+              "number": "2104",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H5M",
+              "id": "4",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T10:45:00"
+              },
+              "arrival": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-01T12:45:00"
+              },
+              "carrierCode": "SN",
+              "number": "9689",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT8H",
+              "id": "5",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        },
+        {
+          "duration": "PT19H5M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-15T18:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T19:19:00"
+              },
+              "carrierCode": "SN",
+              "number": "9554",
+              "aircraft": {
+                "code": "333"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H19M",
+              "id": "12",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T20:25:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T08:10:00"
+              },
+              "carrierCode": "SN",
+              "number": "9552",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT6H45M",
+              "id": "13",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T16:55:00"
+              },
+              "arrival": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-16T17:05:00"
+              },
+              "carrierCode": "SN",
+              "number": "2095",
+              "aircraft": {
+                "code": "319"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H10M",
+              "id": "14",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "EUR",
+        "total": "975.18",
+        "base": "6.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          }
+        ],
+        "grandTotal": "975.18",
+        "additionalServices": [
+          {
+            "amount": "121.62",
+            "type": "CHECKED_BAGS"
+          }
+        ]
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": false
+      },
+      "validatingAirlineCodes": [
+        "SN"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "12",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "13",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "14",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "2",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "12",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "13",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "14",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "3",
+          "fareOption": "STANDARD",
+          "travelerType": "CHILD",
+          "price": {
+            "currency": "EUR",
+            "total": "266.10",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "12",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "13",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "14",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            }
+          ]
+        }
+      ],
+      "fareRules": {
+        "rules": [
+          {
+            "category": "EXCHANGE",
+            "maxPenaltyAmount": "0.00"
+          },
+          {
+            "category": "REFUND",
+            "notApplicable": true
+          },
+          {
+            "category": "REVALIDATION",
+            "maxPenaltyAmount": "0.00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "flight-offer",
+      "id": "4",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "oneWay": false,
+      "lastTicketingDate": "2021-01-18",
+      "numberOfBookableSeats": 4,
+      "itineraries": [
+        {
+          "duration": "PT10H55M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-01T06:50:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T08:55:00"
+              },
+              "carrierCode": "SN",
+              "number": "2104",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H5M",
+              "id": "4",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T10:45:00"
+              },
+              "arrival": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-01T12:45:00"
+              },
+              "carrierCode": "SN",
+              "number": "9689",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT8H",
+              "id": "5",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        },
+        {
+          "duration": "PT22H5M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-15T15:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T16:19:00"
+              },
+              "carrierCode": "SN",
+              "number": "9562",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H19M",
+              "id": "15",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T20:25:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T08:10:00"
+              },
+              "carrierCode": "SN",
+              "number": "9552",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT6H45M",
+              "id": "16",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T16:55:00"
+              },
+              "arrival": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-16T17:05:00"
+              },
+              "carrierCode": "SN",
+              "number": "2095",
+              "aircraft": {
+                "code": "319"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H10M",
+              "id": "17",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "EUR",
+        "total": "975.18",
+        "base": "6.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          }
+        ],
+        "grandTotal": "975.18",
+        "additionalServices": [
+          {
+            "amount": "121.62",
+            "type": "CHECKED_BAGS"
+          }
+        ]
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": false
+      },
+      "validatingAirlineCodes": [
+        "SN"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "15",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "16",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "17",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "2",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "15",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "16",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "17",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "3",
+          "fareOption": "STANDARD",
+          "travelerType": "CHILD",
+          "price": {
+            "currency": "EUR",
+            "total": "266.10",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "15",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "16",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "17",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            }
+          ]
+        }
+      ],
+      "fareRules": {
+        "rules": [
+          {
+            "category": "EXCHANGE",
+            "maxPenaltyAmount": "0.00"
+          },
+          {
+            "category": "REFUND",
+            "notApplicable": true
+          },
+          {
+            "category": "REVALIDATION",
+            "maxPenaltyAmount": "0.00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "flight-offer",
+      "id": "5",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "oneWay": false,
+      "lastTicketingDate": "2021-01-18",
+      "numberOfBookableSeats": 4,
+      "itineraries": [
+        {
+          "duration": "PT10H55M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-01T06:50:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T08:55:00"
+              },
+              "carrierCode": "SN",
+              "number": "2104",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H5M",
+              "id": "4",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T10:45:00"
+              },
+              "arrival": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-01T12:45:00"
+              },
+              "carrierCode": "SN",
+              "number": "9689",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT8H",
+              "id": "5",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        },
+        {
+          "duration": "PT23H20M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-15T18:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T19:19:00"
+              },
+              "carrierCode": "SN",
+              "number": "9554",
+              "aircraft": {
+                "code": "333"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H19M",
+              "id": "18",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T20:25:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T08:10:00"
+              },
+              "carrierCode": "SN",
+              "number": "9552",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT6H45M",
+              "id": "19",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T21:10:00"
+              },
+              "arrival": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-16T21:20:00"
+              },
+              "carrierCode": "SN",
+              "number": "2103",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H10M",
+              "id": "20",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "EUR",
+        "total": "975.18",
+        "base": "6.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          }
+        ],
+        "grandTotal": "975.18",
+        "additionalServices": [
+          {
+            "amount": "121.62",
+            "type": "CHECKED_BAGS"
+          }
+        ]
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": false
+      },
+      "validatingAirlineCodes": [
+        "SN"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "18",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "19",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "20",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "2",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "18",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "19",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "20",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "3",
+          "fareOption": "STANDARD",
+          "travelerType": "CHILD",
+          "price": {
+            "currency": "EUR",
+            "total": "266.10",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "18",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "19",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "20",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            }
+          ]
+        }
+      ],
+      "fareRules": {
+        "rules": [
+          {
+            "category": "EXCHANGE",
+            "maxPenaltyAmount": "0.00"
+          },
+          {
+            "category": "REFUND",
+            "notApplicable": true
+          },
+          {
+            "category": "REVALIDATION",
+            "maxPenaltyAmount": "0.00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "flight-offer",
+      "id": "6",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "oneWay": false,
+      "lastTicketingDate": "2021-01-18",
+      "numberOfBookableSeats": 4,
+      "itineraries": [
+        {
+          "duration": "PT10H55M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-01T06:50:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T08:55:00"
+              },
+              "carrierCode": "SN",
+              "number": "2104",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H5M",
+              "id": "4",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T10:45:00"
+              },
+              "arrival": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-01T12:45:00"
+              },
+              "carrierCode": "SN",
+              "number": "9689",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT8H",
+              "id": "5",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        },
+        {
+          "duration": "PT26H20M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-15T15:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T16:19:00"
+              },
+              "carrierCode": "SN",
+              "number": "9562",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H19M",
+              "id": "21",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T20:25:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T08:10:00"
+              },
+              "carrierCode": "SN",
+              "number": "9552",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT6H45M",
+              "id": "22",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T21:10:00"
+              },
+              "arrival": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-16T21:20:00"
+              },
+              "carrierCode": "SN",
+              "number": "2103",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H10M",
+              "id": "23",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "EUR",
+        "total": "975.18",
+        "base": "6.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          }
+        ],
+        "grandTotal": "975.18",
+        "additionalServices": [
+          {
+            "amount": "121.62",
+            "type": "CHECKED_BAGS"
+          }
+        ]
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": false
+      },
+      "validatingAirlineCodes": [
+        "SN"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "21",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "22",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "23",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "2",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "21",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "22",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "23",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "3",
+          "fareOption": "STANDARD",
+          "travelerType": "CHILD",
+          "price": {
+            "currency": "EUR",
+            "total": "266.10",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "4",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "5",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "21",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "22",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "23",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            }
+          ]
+        }
+      ],
+      "fareRules": {
+        "rules": [
+          {
+            "category": "EXCHANGE",
+            "maxPenaltyAmount": "0.00"
+          },
+          {
+            "category": "REFUND",
+            "notApplicable": true
+          },
+          {
+            "category": "REVALIDATION",
+            "maxPenaltyAmount": "0.00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "flight-offer",
+      "id": "7",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "oneWay": false,
+      "lastTicketingDate": "2021-01-18",
+      "numberOfBookableSeats": 4,
+      "itineraries": [
+        {
+          "duration": "PT12H44M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-01T06:50:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T08:55:00"
+              },
+              "carrierCode": "SN",
+              "number": "2104",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H5M",
+              "id": "1",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T10:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-01T11:30:00"
+              },
+              "carrierCode": "SN",
+              "number": "9551",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT7H30M",
+              "id": "2",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-01T13:00:00"
+              },
+              "arrival": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-01T14:34:00"
+              },
+              "carrierCode": "SN",
+              "number": "9553",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H34M",
+              "id": "3",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        },
+        {
+          "duration": "PT12H5M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-15T18:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T19:19:00"
+              },
+              "carrierCode": "SN",
+              "number": "9554",
+              "aircraft": {
+                "code": "333"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H19M",
+              "id": "6",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T20:25:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T08:10:00"
+              },
+              "carrierCode": "SN",
+              "number": "9552",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT6H45M",
+              "id": "7",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T09:40:00"
+              },
+              "arrival": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-16T10:05:00"
+              },
+              "carrierCode": "SN",
+              "number": "2093",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H25M",
+              "id": "8",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "EUR",
+        "total": "975.18",
+        "base": "6.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          }
+        ],
+        "grandTotal": "975.18",
+        "additionalServices": [
+          {
+            "amount": "121.62",
+            "type": "CHECKED_BAGS"
+          }
+        ]
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": false
+      },
+      "validatingAirlineCodes": [
+        "SN"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "2",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "6",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "7",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "8",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "2",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "2",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "6",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "7",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "8",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "3",
+          "fareOption": "STANDARD",
+          "travelerType": "CHILD",
+          "price": {
+            "currency": "EUR",
+            "total": "266.10",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "2",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "6",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "7",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "8",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            }
+          ]
+        }
+      ],
+      "fareRules": {
+        "rules": [
+          {
+            "category": "EXCHANGE",
+            "maxPenaltyAmount": "0.00"
+          },
+          {
+            "category": "REFUND",
+            "notApplicable": true
+          },
+          {
+            "category": "REVALIDATION",
+            "maxPenaltyAmount": "0.00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "flight-offer",
+      "id": "8",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "oneWay": false,
+      "lastTicketingDate": "2021-01-18",
+      "numberOfBookableSeats": 4,
+      "itineraries": [
+        {
+          "duration": "PT12H44M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-01T06:50:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T08:55:00"
+              },
+              "carrierCode": "SN",
+              "number": "2104",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H5M",
+              "id": "1",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T10:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-01T11:30:00"
+              },
+              "carrierCode": "SN",
+              "number": "9551",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT7H30M",
+              "id": "2",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-01T13:00:00"
+              },
+              "arrival": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-01T14:34:00"
+              },
+              "carrierCode": "SN",
+              "number": "9553",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H34M",
+              "id": "3",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        },
+        {
+          "duration": "PT15H5M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-15T15:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T16:19:00"
+              },
+              "carrierCode": "SN",
+              "number": "9562",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H19M",
+              "id": "9",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T20:25:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T08:10:00"
+              },
+              "carrierCode": "SN",
+              "number": "9552",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT6H45M",
+              "id": "10",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T09:40:00"
+              },
+              "arrival": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-16T10:05:00"
+              },
+              "carrierCode": "SN",
+              "number": "2093",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H25M",
+              "id": "11",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "EUR",
+        "total": "975.18",
+        "base": "6.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          }
+        ],
+        "grandTotal": "975.18",
+        "additionalServices": [
+          {
+            "amount": "121.62",
+            "type": "CHECKED_BAGS"
+          }
+        ]
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": false
+      },
+      "validatingAirlineCodes": [
+        "SN"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "2",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "9",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "10",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "11",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "2",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "2",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "9",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "10",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "11",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "3",
+          "fareOption": "STANDARD",
+          "travelerType": "CHILD",
+          "price": {
+            "currency": "EUR",
+            "total": "266.10",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "2",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "9",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "10",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "11",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            }
+          ]
+        }
+      ],
+      "fareRules": {
+        "rules": [
+          {
+            "category": "EXCHANGE",
+            "maxPenaltyAmount": "0.00"
+          },
+          {
+            "category": "REFUND",
+            "notApplicable": true
+          },
+          {
+            "category": "REVALIDATION",
+            "maxPenaltyAmount": "0.00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "flight-offer",
+      "id": "9",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "oneWay": false,
+      "lastTicketingDate": "2021-01-18",
+      "numberOfBookableSeats": 4,
+      "itineraries": [
+        {
+          "duration": "PT12H44M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-01T06:50:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T08:55:00"
+              },
+              "carrierCode": "SN",
+              "number": "2104",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H5M",
+              "id": "1",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T10:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-01T11:30:00"
+              },
+              "carrierCode": "SN",
+              "number": "9551",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT7H30M",
+              "id": "2",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-01T13:00:00"
+              },
+              "arrival": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-01T14:34:00"
+              },
+              "carrierCode": "SN",
+              "number": "9553",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H34M",
+              "id": "3",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        },
+        {
+          "duration": "PT19H5M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-15T18:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T19:19:00"
+              },
+              "carrierCode": "SN",
+              "number": "9554",
+              "aircraft": {
+                "code": "333"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H19M",
+              "id": "12",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T20:25:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T08:10:00"
+              },
+              "carrierCode": "SN",
+              "number": "9552",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT6H45M",
+              "id": "13",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T16:55:00"
+              },
+              "arrival": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-16T17:05:00"
+              },
+              "carrierCode": "SN",
+              "number": "2095",
+              "aircraft": {
+                "code": "319"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H10M",
+              "id": "14",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "EUR",
+        "total": "975.18",
+        "base": "6.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          }
+        ],
+        "grandTotal": "975.18",
+        "additionalServices": [
+          {
+            "amount": "121.62",
+            "type": "CHECKED_BAGS"
+          }
+        ]
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": false
+      },
+      "validatingAirlineCodes": [
+        "SN"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "2",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "12",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "13",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "14",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "2",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "2",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "12",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "13",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "14",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "3",
+          "fareOption": "STANDARD",
+          "travelerType": "CHILD",
+          "price": {
+            "currency": "EUR",
+            "total": "266.10",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "2",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "12",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "13",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "14",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            }
+          ]
+        }
+      ],
+      "fareRules": {
+        "rules": [
+          {
+            "category": "EXCHANGE",
+            "maxPenaltyAmount": "0.00"
+          },
+          {
+            "category": "REFUND",
+            "notApplicable": true
+          },
+          {
+            "category": "REVALIDATION",
+            "maxPenaltyAmount": "0.00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "flight-offer",
+      "id": "10",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "oneWay": false,
+      "lastTicketingDate": "2021-01-18",
+      "numberOfBookableSeats": 4,
+      "itineraries": [
+        {
+          "duration": "PT12H44M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-01T06:50:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T08:55:00"
+              },
+              "carrierCode": "SN",
+              "number": "2104",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H5M",
+              "id": "1",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-01T10:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-01T11:30:00"
+              },
+              "carrierCode": "SN",
+              "number": "9551",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT7H30M",
+              "id": "2",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-01T13:00:00"
+              },
+              "arrival": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-01T14:34:00"
+              },
+              "carrierCode": "SN",
+              "number": "9553",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H34M",
+              "id": "3",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        },
+        {
+          "duration": "PT22H5M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "YYZ",
+                "terminal": "1",
+                "at": "2021-03-15T15:00:00"
+              },
+              "arrival": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T16:19:00"
+              },
+              "carrierCode": "SN",
+              "number": "9562",
+              "aircraft": {
+                "code": "320"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT1H19M",
+              "id": "15",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "YUL",
+                "at": "2021-03-15T20:25:00"
+              },
+              "arrival": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T08:10:00"
+              },
+              "carrierCode": "SN",
+              "number": "9552",
+              "aircraft": {
+                "code": "788"
+              },
+              "operating": {
+                "carrierCode": "AC"
+              },
+              "duration": "PT6H45M",
+              "id": "16",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "BRU",
+                "at": "2021-03-16T16:55:00"
+              },
+              "arrival": {
+                "iataCode": "LHR",
+                "terminal": "2",
+                "at": "2021-03-16T17:05:00"
+              },
+              "carrierCode": "SN",
+              "number": "2095",
+              "aircraft": {
+                "code": "319"
+              },
+              "operating": {
+                "carrierCode": "SN"
+              },
+              "duration": "PT1H10M",
+              "id": "17",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "EUR",
+        "total": "975.18",
+        "base": "6.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          }
+        ],
+        "grandTotal": "975.18",
+        "additionalServices": [
+          {
+            "amount": "121.62",
+            "type": "CHECKED_BAGS"
+          }
+        ]
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": false
+      },
+      "validatingAirlineCodes": [
+        "SN"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "2",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "15",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "16",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "17",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "2",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "354.54",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "2",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "15",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "16",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            },
+            {
+              "segmentId": "17",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K",
+              "includedCheckedBags": {
+                "quantity": 0
+              }
+            }
+          ]
+        },
+        {
+          "travelerId": "3",
+          "fareOption": "STANDARD",
+          "travelerType": "CHILD",
+          "price": {
+            "currency": "EUR",
+            "total": "266.10",
+            "base": "2.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "2",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "3",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "15",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "16",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            },
+            {
+              "segmentId": "17",
+              "cabin": "ECONOMY",
+              "fareBasis": "KLX5TLGT",
+              "brandedFare": "NALIGHT",
+              "class": "K"
+            }
+          ]
+        }
+      ],
+      "fareRules": {
+        "rules": [
+          {
+            "category": "EXCHANGE",
+            "maxPenaltyAmount": "0.00"
+          },
+          {
+            "category": "REFUND",
+            "notApplicable": true
+          },
+          {
+            "category": "REVALIDATION",
+            "maxPenaltyAmount": "0.00"
+          }
+        ]
+      }
+    }
+  ],
+  "dictionaries": {
+    "locations": {
+      "YUL": {
+        "cityCode": "YMQ",
+        "countryCode": "CA"
+      },
+      "BRU": {
+        "cityCode": "BRU",
+        "countryCode": "BE"
+      },
+      "LHR": {
+        "cityCode": "LON",
+        "countryCode": "GB"
+      },
+      "YYZ": {
+        "cityCode": "YTO",
+        "countryCode": "CA"
+      }
+    },
+    "aircraft": {
+      "319": "AIRBUS A319",
+      "320": "AIRBUS A320",
+      "333": "AIRBUS A330-300",
+      "788": "BOEING 787-8"
+    },
+    "currencies": {
+      "EUR": "EURO"
+    },
+    "carriers": {
+      "AC": "AIR CANADA",
+      "SN": "BRUSSELS AIRLINES"
+    }
+  }
+}

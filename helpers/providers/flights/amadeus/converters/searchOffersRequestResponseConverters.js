@@ -67,7 +67,7 @@ const createFlightSearchRequest = (itinerary, passengers) => {
       'GDS',
     ],
     searchCriteria: {
-      maxFlightOffers: getConfigKey('flights.amadeus.maxFlightOffers', 100),
+      maxFlightOffers: 10,
       excludeAllotments: true,
       additionalInformation: {
         brandedFares: true,

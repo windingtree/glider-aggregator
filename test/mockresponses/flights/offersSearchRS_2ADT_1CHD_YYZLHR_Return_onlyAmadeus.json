@@ -1,0 +1,811 @@
+{
+  "offers": {
+    "c15cc227-a0ca-4fea-a370-b582e3d2b85d": {
+      "expiration": "2021-01-17T14:22:41.009Z",
+      "pricePlansReferences": {
+        "d949ce42-b178-4c2d-b24b-eb7802768ba8-NALIGHT": {
+          "flights": [
+            "962ce862-2f73-46b0-b6f5-8692af5a941f",
+            "962ce862-2f73-46b0-b6f5-8692af5a941f",
+            "a6500344-c491-4078-96be-3400f6a6ac27"
+          ]
+        }
+      },
+      "price": {
+        "currency": "EUR",
+        "public": "975.18",
+        "commission": "0.00",
+        "taxes": 0
+      }
+    },
+    "f0b343da-b2b9-4361-9fa4-d437a06965b7": {
+      "expiration": "2021-01-17T14:22:41.009Z",
+      "pricePlansReferences": {
+        "e331bccc-aa93-4faa-8e57-85f731380479-NALIGHT": {
+          "flights": [
+            "9cb4ba28-35df-44fd-bd72-fb6214869105",
+            "9cb4ba28-35df-44fd-bd72-fb6214869105",
+            "61e28dc5-34e3-448c-97bc-3828885ce8de"
+          ]
+        }
+      },
+      "price": {
+        "currency": "EUR",
+        "public": "975.18",
+        "commission": "0.00",
+        "taxes": 0
+      }
+    },
+    "2ce02caa-0223-48fa-8b27-99a1dd60ece7": {
+      "expiration": "2021-01-17T14:22:41.009Z",
+      "pricePlansReferences": {
+        "0d589f12-c68e-4d3c-946f-8a89edf3442f-NALIGHT": {
+          "flights": [
+            "6b946064-c380-4b78-ae87-1940c71b41a8",
+            "6b946064-c380-4b78-ae87-1940c71b41a8",
+            "0157218d-9275-48b6-81cf-ca032cb6bc56"
+          ]
+        }
+      },
+      "price": {
+        "currency": "EUR",
+        "public": "975.18",
+        "commission": "0.00",
+        "taxes": 0
+      }
+    },
+    "a7315b6c-b6da-476c-aaed-f44805c96045": {
+      "expiration": "2021-01-17T14:22:41.009Z",
+      "pricePlansReferences": {
+        "05f062d8-ccd6-429e-9fe3-736a74c235a3-NALIGHT": {
+          "flights": [
+            "2153756d-057d-4c72-be3d-86cce159b653",
+            "2153756d-057d-4c72-be3d-86cce159b653",
+            "e76422f3-c69e-4f40-b214-6ebd5fc50d6e"
+          ]
+        }
+      },
+      "price": {
+        "currency": "EUR",
+        "public": "975.18",
+        "commission": "0.00",
+        "taxes": 0
+      }
+    },
+    "8e8207ee-a3bc-4fc1-90be-d594adbdf53a": {
+      "expiration": "2021-01-17T14:22:41.009Z",
+      "pricePlansReferences": {
+        "e1ead729-1b0c-4b44-a065-97de0ba836b1-NALIGHT": {
+          "flights": [
+            "6928e6af-e066-42f0-8837-903749e02748",
+            "6928e6af-e066-42f0-8837-903749e02748",
+            "8182d4d6-57d4-4006-8360-87f4b269a9a2"
+          ]
+        }
+      },
+      "price": {
+        "currency": "EUR",
+        "public": "975.18",
+        "commission": "0.00",
+        "taxes": 0
+      }
+    },
+    "57bb9efa-f078-4ce0-8048-87f94684a12c": {
+      "expiration": "2021-01-17T14:22:41.009Z",
+      "pricePlansReferences": {
+        "164ab78e-7a00-4115-b4dd-c3a3c138d288-NALIGHT": {
+          "flights": [
+            "87ecf343-f232-4b6b-9f55-92ead5876ecd",
+            "87ecf343-f232-4b6b-9f55-92ead5876ecd",
+            "35b1a4a6-eca0-4a3d-b8d9-7cf6b529926b"
+          ]
+        }
+      },
+      "price": {
+        "currency": "EUR",
+        "public": "975.18",
+        "commission": "0.00",
+        "taxes": 0
+      }
+    },
+    "808095e5-6a6a-42a7-b48f-782dc95bbfb9": {
+      "expiration": "2021-01-17T14:22:41.009Z",
+      "pricePlansReferences": {
+        "db4d44b1-9a73-451b-9a48-aaea3944e861-NALIGHT": {
+          "flights": [
+            "6ca70483-fb9b-4a5e-9bd5-2ec8692263b2",
+            "6ca70483-fb9b-4a5e-9bd5-2ec8692263b2",
+            "d35d76f5-5208-4c2f-bdbb-d6e8b3099991"
+          ]
+        }
+      },
+      "price": {
+        "currency": "EUR",
+        "public": "975.18",
+        "commission": "0.00",
+        "taxes": 0
+      }
+    },
+    "a6b18908-9427-4289-ac66-18ec0c1152f2": {
+      "expiration": "2021-01-17T14:22:41.009Z",
+      "pricePlansReferences": {
+        "18fdb2c5-60a6-4385-b2fb-6b9cd3f80d26-NALIGHT": {
+          "flights": [
+            "9bf1f3c4-2bf4-49ec-84f5-aeba98ac8ec1",
+            "9bf1f3c4-2bf4-49ec-84f5-aeba98ac8ec1",
+            "10bf5d1f-b3c1-45d4-bf5b-447afaf2bf9f"
+          ]
+        }
+      },
+      "price": {
+        "currency": "EUR",
+        "public": "975.18",
+        "commission": "0.00",
+        "taxes": 0
+      }
+    },
+    "e2619b0b-dabc-4768-adde-ab3bd0e3e896": {
+      "expiration": "2021-01-17T14:22:41.009Z",
+      "pricePlansReferences": {
+        "df9f33e1-cdc6-4e9e-88fd-0d03e94fee4d-NALIGHT": {
+          "flights": [
+            "14ae0234-bf7c-4d44-93c7-41c116edaea8",
+            "14ae0234-bf7c-4d44-93c7-41c116edaea8",
+            "6d949bca-18d7-4e8b-9ac5-84e7b9457433"
+          ]
+        }
+      },
+      "price": {
+        "currency": "EUR",
+        "public": "975.18",
+        "commission": "0.00",
+        "taxes": 0
+      }
+    },
+    "d52afeae-d66e-43f1-90e9-d3618e5314db": {
+      "expiration": "2021-01-17T14:22:41.009Z",
+      "pricePlansReferences": {
+        "ff1e953e-4dc3-45d9-a055-203ffac540d4-NALIGHT": {
+          "flights": [
+            "dcb90d17-a492-4e8c-bb87-3fdf603e85e1",
+            "dcb90d17-a492-4e8c-bb87-3fdf603e85e1",
+            "f1882896-cb03-4a7c-8ea8-d840fc7e798c"
+          ]
+        }
+      },
+      "price": {
+        "currency": "EUR",
+        "public": "975.18",
+        "commission": "0.00",
+        "taxes": 0
+      }
+    }
+  },
+  "itineraries": {
+    "combinations": {
+      "962ce862-2f73-46b0-b6f5-8692af5a941f": [
+        "4",
+        "5"
+      ],
+      "a6500344-c491-4078-96be-3400f6a6ac27": [
+        "6",
+        "7",
+        "8"
+      ],
+      "9cb4ba28-35df-44fd-bd72-fb6214869105": [
+        "4",
+        "5"
+      ],
+      "61e28dc5-34e3-448c-97bc-3828885ce8de": [
+        "9",
+        "10",
+        "11"
+      ],
+      "6b946064-c380-4b78-ae87-1940c71b41a8": [
+        "4",
+        "5"
+      ],
+      "0157218d-9275-48b6-81cf-ca032cb6bc56": [
+        "12",
+        "13",
+        "14"
+      ],
+      "2153756d-057d-4c72-be3d-86cce159b653": [
+        "4",
+        "5"
+      ],
+      "e76422f3-c69e-4f40-b214-6ebd5fc50d6e": [
+        "15",
+        "16",
+        "17"
+      ],
+      "6928e6af-e066-42f0-8837-903749e02748": [
+        "4",
+        "5"
+      ],
+      "8182d4d6-57d4-4006-8360-87f4b269a9a2": [
+        "18",
+        "19",
+        "20"
+      ],
+      "87ecf343-f232-4b6b-9f55-92ead5876ecd": [
+        "4",
+        "5"
+      ],
+      "35b1a4a6-eca0-4a3d-b8d9-7cf6b529926b": [
+        "21",
+        "22",
+        "23"
+      ],
+      "6ca70483-fb9b-4a5e-9bd5-2ec8692263b2": [
+        "1",
+        "2",
+        "3"
+      ],
+      "d35d76f5-5208-4c2f-bdbb-d6e8b3099991": [
+        "6",
+        "7",
+        "8"
+      ],
+      "9bf1f3c4-2bf4-49ec-84f5-aeba98ac8ec1": [
+        "1",
+        "2",
+        "3"
+      ],
+      "10bf5d1f-b3c1-45d4-bf5b-447afaf2bf9f": [
+        "9",
+        "10",
+        "11"
+      ],
+      "14ae0234-bf7c-4d44-93c7-41c116edaea8": [
+        "1",
+        "2",
+        "3"
+      ],
+      "6d949bca-18d7-4e8b-9ac5-84e7b9457433": [
+        "12",
+        "13",
+        "14"
+      ],
+      "dcb90d17-a492-4e8c-bb87-3fdf603e85e1": [
+        "1",
+        "2",
+        "3"
+      ],
+      "f1882896-cb03-4a7c-8ea8-d840fc7e798c": [
+        "15",
+        "16",
+        "17"
+      ]
+    },
+    "segments": {
+      "1": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "SN",
+          "iataCodeM": "SN",
+          "flightNumber": "2104"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "LHR"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "departureTime": "2021-03-01T06:50:00.000Z",
+        "arrivalTime": "2021-03-01T07:55:00.000Z"
+      },
+      "2": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9551"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2021-03-01T09:00:00.000Z",
+        "arrivalTime": "2021-03-01T16:30:00.000Z"
+      },
+      "3": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9553"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2021-03-01T18:00:00.000Z",
+        "arrivalTime": "2021-03-01T19:34:00.000Z"
+      },
+      "4": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "SN",
+          "iataCodeM": "SN",
+          "flightNumber": "2104"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "LHR"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "departureTime": "2021-03-01T06:50:00.000Z",
+        "arrivalTime": "2021-03-01T07:55:00.000Z"
+      },
+      "5": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9689"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2021-03-01T09:45:00.000Z",
+        "arrivalTime": "2021-03-01T17:45:00.000Z"
+      },
+      "6": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9554"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2021-03-15T22:00:00.000Z",
+        "arrivalTime": "2021-03-15T23:19:00.000Z"
+      },
+      "7": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9552"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "departureTime": "2021-03-16T00:25:00.000Z",
+        "arrivalTime": "2021-03-16T07:10:00.000Z"
+      },
+      "8": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "SN",
+          "iataCodeM": "SN",
+          "flightNumber": "2093"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "LHR"
+        },
+        "departureTime": "2021-03-16T08:40:00.000Z",
+        "arrivalTime": "2021-03-16T10:05:00.000Z"
+      },
+      "9": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9562"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2021-03-15T19:00:00.000Z",
+        "arrivalTime": "2021-03-15T20:19:00.000Z"
+      },
+      "10": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9552"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "departureTime": "2021-03-16T00:25:00.000Z",
+        "arrivalTime": "2021-03-16T07:10:00.000Z"
+      },
+      "11": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "SN",
+          "iataCodeM": "SN",
+          "flightNumber": "2093"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "LHR"
+        },
+        "departureTime": "2021-03-16T08:40:00.000Z",
+        "arrivalTime": "2021-03-16T10:05:00.000Z"
+      },
+      "12": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9554"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2021-03-15T22:00:00.000Z",
+        "arrivalTime": "2021-03-15T23:19:00.000Z"
+      },
+      "13": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9552"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "departureTime": "2021-03-16T00:25:00.000Z",
+        "arrivalTime": "2021-03-16T07:10:00.000Z"
+      },
+      "14": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "SN",
+          "iataCodeM": "SN",
+          "flightNumber": "2095"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "LHR"
+        },
+        "departureTime": "2021-03-16T15:55:00.000Z",
+        "arrivalTime": "2021-03-16T17:05:00.000Z"
+      },
+      "15": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9562"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2021-03-15T19:00:00.000Z",
+        "arrivalTime": "2021-03-15T20:19:00.000Z"
+      },
+      "16": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9552"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "departureTime": "2021-03-16T00:25:00.000Z",
+        "arrivalTime": "2021-03-16T07:10:00.000Z"
+      },
+      "17": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "SN",
+          "iataCodeM": "SN",
+          "flightNumber": "2095"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "LHR"
+        },
+        "departureTime": "2021-03-16T15:55:00.000Z",
+        "arrivalTime": "2021-03-16T17:05:00.000Z"
+      },
+      "18": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9554"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2021-03-15T22:00:00.000Z",
+        "arrivalTime": "2021-03-15T23:19:00.000Z"
+      },
+      "19": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9552"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "departureTime": "2021-03-16T00:25:00.000Z",
+        "arrivalTime": "2021-03-16T07:10:00.000Z"
+      },
+      "20": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "SN",
+          "iataCodeM": "SN",
+          "flightNumber": "2103"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "LHR"
+        },
+        "departureTime": "2021-03-16T20:10:00.000Z",
+        "arrivalTime": "2021-03-16T21:20:00.000Z"
+      },
+      "21": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9562"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "departureTime": "2021-03-15T19:00:00.000Z",
+        "arrivalTime": "2021-03-15T20:19:00.000Z"
+      },
+      "22": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "AC",
+          "iataCodeM": "SN",
+          "flightNumber": "9552"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YUL"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "departureTime": "2021-03-16T00:25:00.000Z",
+        "arrivalTime": "2021-03-16T07:10:00.000Z"
+      },
+      "23": {
+        "operator": {
+          "operatorType": "airline",
+          "iataCode": "SN",
+          "iataCodeM": "SN",
+          "flightNumber": "2103"
+        },
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "BRU"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "LHR"
+        },
+        "departureTime": "2021-03-16T20:10:00.000Z",
+        "arrivalTime": "2021-03-16T21:20:00.000Z"
+      }
+    }
+  },
+  "pricePlans": {
+    "d949ce42-b178-4c2d-b24b-eb7802768ba8-NALIGHT": {
+      "name": "NALIGHT",
+      "amenities": [
+        "Economy class",
+        "Checked bags for a fee"
+      ],
+      "checkedBaggages": {
+        "quantity": 0
+      }
+    },
+    "e331bccc-aa93-4faa-8e57-85f731380479-NALIGHT": {
+      "name": "NALIGHT",
+      "amenities": [
+        "Economy class",
+        "Checked bags for a fee"
+      ],
+      "checkedBaggages": {
+        "quantity": 0
+      }
+    },
+    "0d589f12-c68e-4d3c-946f-8a89edf3442f-NALIGHT": {
+      "name": "NALIGHT",
+      "amenities": [
+        "Economy class",
+        "Checked bags for a fee"
+      ],
+      "checkedBaggages": {
+        "quantity": 0
+      }
+    },
+    "05f062d8-ccd6-429e-9fe3-736a74c235a3-NALIGHT": {
+      "name": "NALIGHT",
+      "amenities": [
+        "Economy class",
+        "Checked bags for a fee"
+      ],
+      "checkedBaggages": {
+        "quantity": 0
+      }
+    },
+    "e1ead729-1b0c-4b44-a065-97de0ba836b1-NALIGHT": {
+      "name": "NALIGHT",
+      "amenities": [
+        "Economy class",
+        "Checked bags for a fee"
+      ],
+      "checkedBaggages": {
+        "quantity": 0
+      }
+    },
+    "164ab78e-7a00-4115-b4dd-c3a3c138d288-NALIGHT": {
+      "name": "NALIGHT",
+      "amenities": [
+        "Economy class",
+        "Checked bags for a fee"
+      ],
+      "checkedBaggages": {
+        "quantity": 0
+      }
+    },
+    "db4d44b1-9a73-451b-9a48-aaea3944e861-NALIGHT": {
+      "name": "NALIGHT",
+      "amenities": [
+        "Economy class",
+        "Checked bags for a fee"
+      ],
+      "checkedBaggages": {
+        "quantity": 0
+      }
+    },
+    "18fdb2c5-60a6-4385-b2fb-6b9cd3f80d26-NALIGHT": {
+      "name": "NALIGHT",
+      "amenities": [
+        "Economy class",
+        "Checked bags for a fee"
+      ],
+      "checkedBaggages": {
+        "quantity": 0
+      }
+    },
+    "df9f33e1-cdc6-4e9e-88fd-0d03e94fee4d-NALIGHT": {
+      "name": "NALIGHT",
+      "amenities": [
+        "Economy class",
+        "Checked bags for a fee"
+      ],
+      "checkedBaggages": {
+        "quantity": 0
+      }
+    },
+    "ff1e953e-4dc3-45d9-a055-203ffac540d4-NALIGHT": {
+      "name": "NALIGHT",
+      "amenities": [
+        "Economy class",
+        "Checked bags for a fee"
+      ],
+      "checkedBaggages": {
+        "quantity": 0
+      }
+    }
+  },
+  "passengers": {
+    "39FCA4B9": {
+      "type": "ADT"
+    },
+    "D21E8465": {
+      "type": "ADT"
+    },
+    "F974D269": {
+      "type": "CHD"
+    }
+  }
+}
