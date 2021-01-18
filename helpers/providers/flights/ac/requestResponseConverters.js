@@ -44,7 +44,9 @@ const createFlightSearchRequest = (itinerary, passengers) => {
 };
 
 const processFlightSearchResponse = async (data) => {
-  return await transform(data, provideAirShoppingTransformTemplate_AC);
+  let searchResults =  await transform(data, provideAirShoppingTransformTemplate_AC);
+  searchResults.itineraries.segments = mergeHourAndDate(searchResults.itineraries.segments);
+  return searchResults;
 };
 
 

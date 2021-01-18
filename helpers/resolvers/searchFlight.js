@@ -13,12 +13,69 @@ const GliderError = require('../error');
 const offerModel = require('../models/offer');
 const { logRQRS } = require('../log/logRQ');
 
+
+/**
+ * For every pricePlan, update checkedBaggages.quantity based on free text received from provider (in amenities)
+ * For example
+ * 'Checked bags for a fee' -> checkedBaggages.quantity=0
+ * '1st checked bag free' -> checkedBaggages.quantity=1
+ * '2 checked bags free' -> checkedBaggages.quantity=2
+ * @param searchResults
+ */
+const updateCheckedBaggageQuantities =  (searchResults) => {
+  for (const plan in searchResults.pricePlans) {
+
+    if (!searchResults.pricePlans[plan].checkedBaggages &&
+      searchResults.pricePlans[plan].amenities) {
+
+      if (searchResults.pricePlans[plan].amenities.includes('Checked bags for a fee')) {
+        searchResults.pricePlans[plan].checkedBaggages = {
+          quantity: 0,
+        };
+      } else if (searchResults.pricePlans[plan].amenities.includes('1st checked bag free')) {
+        searchResults.pricePlans[plan].checkedBaggages = {
+          quantity: 1,
+        };
+      } else if (
+        searchResults.pricePlans[plan].amenities.includes('2 checked bags free')) {
+        searchResults.pricePlans[plan].checkedBaggages = {
+          quantity: 2,
+        };
+      } else {
+        searchResults.pricePlans[plan].checkedBaggages = {
+          quantity: 0,
+        };
+      }
+    }
+  }
+};
+
+/**
+ * Add offer expiry date to every offer (if it does not exist)
+ * @param searchResults
+ */
+const updateOfferExpiryDate =  (searchResults) => {
+  let expirationDate = new Date(Date.now() + 60 * 30 * 1000).toISOString();// now + 30 min
+  for (let offerId in searchResults.offers) {
+    if (searchResults.offers[offerId].expiration === '') {
+      searchResults.offers[offerId].expiration = expirationDate;
+    }
+    // Fix Date ISO string format if missed (actual for AF offers)
+    if (!searchResults.offers[offerId].expiration.match(/Z$/)) {
+      searchResults.offers[offerId].expiration = searchResults.offers[offerId].expiration + 'Z';
+    }
+  } ;
+};
+
+
 const transformResponse = async (
   { provider, response: searchResults }, passengersIds,
 ) => {
+/*
   if (provider !== 'AMADEUS') {
     searchResults.itineraries.segments = mergeHourAndDate(searchResults.itineraries.segments);
   }
+*/
 
   searchResults.itineraries.segments = reduceToObjectByKey(searchResults.itineraries.segments);
 
@@ -114,32 +171,8 @@ const transformResponse = async (
 
   searchResults.pricePlans = reduceToObjectByKey(searchResults.pricePlans);
 
-  for (const plan in searchResults.pricePlans) {
-
-    if (!searchResults.pricePlans[plan].checkedBaggages &&
-      searchResults.pricePlans[plan].amenities) {
-
-      if (searchResults.pricePlans[plan].amenities.includes('Checked bags for a fee')) {
-        searchResults.pricePlans[plan].checkedBaggages = {
-          quantity: 0,
-        };
-      } else if (searchResults.pricePlans[plan].amenities.includes('1st checked bag free')) {
-        searchResults.pricePlans[plan].checkedBaggages = {
-          quantity: 1,
-        };
-      } else if (
-        searchResults.pricePlans[plan].amenities.includes('2 checked bags free') ||
-        searchResults.pricePlans[plan].amenities.includes('2 checked bags for a fee')) {
-        searchResults.pricePlans[plan].checkedBaggages = {
-          quantity: 2,
-        };
-      }else{
-        searchResults.pricePlans[plan].checkedBaggages = {
-          quantity: 0
-        };
-      }
-    }
-  }
+  //find out how many checked bags are included in each offer(price plan) based on free text in amenities
+  updateCheckedBaggageQuantities(searchResults);
 
   if (searchResults.destinations) {
     searchResults.destinations = reduceToObjectByKey(searchResults.destinations);
@@ -149,20 +182,9 @@ const transformResponse = async (
 
   // Store the offers
   let indexedOffers = {};
-  let expirationDate = new Date(Date.now() + 60 * 30 * 1000).toISOString();// now + 30 min
-
+  updateOfferExpiryDate(searchResults);
   // Process offers
   for (let offerId in searchResults.offers) {
-
-    if (searchResults.offers[offerId].expiration === '') {
-      searchResults.offers[offerId].expiration = expirationDate;
-    }
-
-    // Fix Date ISO string format if missed (actual for AF offers)
-    if (!searchResults.offers[offerId].expiration.match(/Z$/)) {
-      searchResults.offers[offerId].expiration = searchResults.offers[offerId].expiration + 'Z';
-    }
-
     if (provider === 'AC') {
       let segments;
       let destinations;

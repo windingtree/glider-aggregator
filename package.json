@@ -41,6 +41,7 @@
     "amadeus": "^5.2.0",
     "axios": "0.21.1",
     "camaro": "6.0.3",
+    "chai-date-string": "^0.1.0",
     "date-fns": "2.14.0",
     "date-fns-tz": "1.0.10",
     "email-validator": "2.0.4",

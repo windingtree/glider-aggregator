@@ -178,8 +178,8 @@ const processFlightSearchResponse = async (response) => {
       _itinerary.segments.map(_segment => {
         //build segment object
         let segment = createSegment(_segment);
-        segment.departureTime = convertLocalAirportTimeToUtc(segment.departureTime, segment.origin.iataCode);
-        segment.arrivalTime = convertLocalAirportTimeToUtc(segment.arrivalTime, segment.destination.iataCode);
+        segment.departureTime = convertLocalAirportTimeToUtc(segment.departureTime, segment.origin.iataCode).toISOString();
+        segment.arrivalTime = convertLocalAirportTimeToUtc(segment.arrivalTime, segment.destination.iataCode).toISOString();
         itinerarySegments.push(segment);
         segmentToItineraryMap[_segment.id] = itineraryId;
         offerSegments.push(segment);  //store this as 'extraData' for post-processing of offer price call

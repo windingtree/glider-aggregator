@@ -16,6 +16,9 @@ const { provideOrderCreateTransformTemplate_AF } = require('./camaroTemplates/pr
 const { mapNdcRequestData_AF: mapNdcFulfillRequestData_AF } = require('./transformInputData/fulfillOrder');
 const { fulfillOrderTemplate_AF } = require('./soapTemplates/fulfillOrder');
 const { fulfillOrderTransformTemplate_AF } = require('./camaroTemplates/fulfillOrder');
+const {
+  mergeHourAndDate,
+} = require('../../../parsers');
 
 
 const { reMapPassengersInRequestBody } = require('../../../resolvers/utils/flightUtils');
@@ -28,7 +31,9 @@ const createFlightSearchRequest = (itinerary, passengers) => {
 };
 
 const processFlightSearchResponse = async (data) => {
-  return await transform(data, provideAirShoppingTransformTemplate_AF);
+  let searchResults = await transform(data, provideAirShoppingTransformTemplate_AF);
+  searchResults.itineraries.segments = mergeHourAndDate(searchResults.itineraries.segments);
+  return searchResults;
 };
 
 //order create
