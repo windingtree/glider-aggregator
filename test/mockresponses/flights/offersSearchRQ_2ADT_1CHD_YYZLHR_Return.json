@@ -1,0 +1,38 @@
+{
+  "itinerary": {
+    "segments": [
+      {
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "LHR"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "departureTime": "2021-03-01T13:10:04.687Z"
+      },
+      {
+        "origin": {
+          "locationType": "airport",
+          "iataCode": "YYZ"
+        },
+        "destination": {
+          "locationType": "airport",
+          "iataCode": "LHR"
+        },
+        "departureTime": "2021-03-15T15:15:04.687Z"
+      }
+    ]
+  },
+  "passengers": [
+    {
+      "type": "ADT",
+      "count": 2
+    },
+    {
+      "type": "CHD",
+      "count": 1
+    }
+  ]
+}

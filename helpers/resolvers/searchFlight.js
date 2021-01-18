@@ -133,6 +133,10 @@ const transformResponse = async (
         searchResults.pricePlans[plan].checkedBaggages = {
           quantity: 2,
         };
+      }else{
+        searchResults.pricePlans[plan].checkedBaggages = {
+          quantity: 0
+        };
       }
     }
   }
