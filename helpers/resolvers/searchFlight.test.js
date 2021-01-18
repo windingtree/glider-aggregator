@@ -73,7 +73,7 @@ describe('Resolvers/searchFlight', async () => {
           //offer flights(itineraries) should not be empty
           flights.should.have.length.above(0);
           //there should be no duplicated itinIDs
-          // checkIfDuplicateExistsInArray(flights).should.be.false;
+          checkIfDuplicateExistsInArray(flights).should.be.false;
 
           //check if flights actually exist and have at least 1 segment
           flights.forEach(flightId => {
@@ -91,7 +91,7 @@ describe('Resolvers/searchFlight', async () => {
         });
 
         //check offer expiry date
-        // isFuture(expiration).should.be.true;
+        isFuture(expiration).should.be.true;
 
         //check offer price
         const { currency, public, commission, taxes } = price;
@@ -152,7 +152,7 @@ describe('Resolvers/searchFlight', async () => {
           //offer flights(itineraries) should not be empty
           flights.should.have.length.above(0);
           //there should be no duplicated itinIDs
-          // checkIfDuplicateExistsInArray(flights).should.be.false;
+          checkIfDuplicateExistsInArray(flights).should.be.false;
 
           //check if flights actually exist and have at least 1 segment
           flights.forEach(flightId => {
@@ -170,7 +170,7 @@ describe('Resolvers/searchFlight', async () => {
         });
 
         //check offer expiry date
-        // isFuture(expiration).should.be.true;
+        isFuture(expiration).should.be.true;
 
         //check offer price
         const { currency, public, commission, taxes } = price;
