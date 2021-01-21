@@ -1,5 +1,5 @@
 const { airFranceConfig } = require('../../../../config');
-const { webserviceDefinition } = require('../../../webservice/webserviceClient');
+const { createWebserviceDefinition } = require('../../../webservice/webserviceClient');
 const WebserviceClient = require('../../../webservice/webserviceClient').WebserviceClient;
 
 const WEBSERVICES = {
@@ -13,9 +13,9 @@ const customHeaders = {
   'X-apiKey': airFranceConfig.apiKey,
 };
 const WEBSERVICES_CONFIG = [
-  webserviceDefinition(WEBSERVICES.FLIGHTS_SEARCH, 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001448v01/EXT', '"http://www.af-klm.com/services/passenger/ProvideAirShopping/provideAirShopping"', customHeaders),
-  webserviceDefinition(WEBSERVICES.CREATE_ORDER, 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001451v01/EXT', '"http://www.af-klm.com/services/passenger/ProvideOrderCreate/provideOrderCreate"', customHeaders),
-  webserviceDefinition(WEBSERVICES.ORDER_FULFILL, 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001489v01/EXT', '"http://www.af-klm.com/services/passenger/AirDocIssue/airDocIssue"', customHeaders),
+  createWebserviceDefinition(WEBSERVICES.FLIGHTS_SEARCH, 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001448v01/EXT', '"http://www.af-klm.com/services/passenger/ProvideAirShopping/provideAirShopping"', customHeaders),
+  createWebserviceDefinition(WEBSERVICES.CREATE_ORDER, 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001451v01/EXT', '"http://www.af-klm.com/services/passenger/ProvideOrderCreate/provideOrderCreate"', customHeaders),
+  createWebserviceDefinition(WEBSERVICES.ORDER_FULFILL, 'https://ndc-rct.airfranceklm.com/passenger/distribmgmt/001489v01/EXT', '"http://www.af-klm.com/services/passenger/AirDocIssue/airDocIssue"', customHeaders),
 ];
 
 let wbsClient;

@@ -1,0 +1,615 @@
+{
+  "result": {
+    "meta": {
+      "count": 4
+    },
+    "data": [
+      {
+        "type": "flight-offer",
+        "id": "1",
+        "source": "GDS",
+        "instantTicketingRequired": false,
+        "nonHomogeneous": false,
+        "oneWay": false,
+        "lastTicketingDate": "2021-01-17",
+        "numberOfBookableSeats": 7,
+        "itineraries": [
+          {
+            "duration": "PT15H",
+            "segments": [
+              {
+                "departure": {
+                  "iataCode": "YYZ",
+                  "terminal": "3",
+                  "at": "2021-08-09T09:15:00"
+                },
+                "arrival": {
+                  "iataCode": "MEX",
+                  "terminal": "2",
+                  "at": "2021-08-09T14:00:00"
+                },
+                "carrierCode": "AM",
+                "number": "693",
+                "aircraft": {
+                  "code": "7S8"
+                },
+                "operating": {
+                  "carrierCode": "AM"
+                },
+                "duration": "PT5H45M",
+                "id": "1",
+                "numberOfStops": 0,
+                "blacklistedInEU": false
+              },
+              {
+                "departure": {
+                  "iataCode": "MEX",
+                  "terminal": "2",
+                  "at": "2021-08-09T18:30:00"
+                },
+                "arrival": {
+                  "iataCode": "BOG",
+                  "terminal": "1",
+                  "at": "2021-08-09T23:15:00"
+                },
+                "carrierCode": "AM",
+                "number": "708",
+                "aircraft": {
+                  "code": "7S8"
+                },
+                "operating": {
+                  "carrierCode": "AM"
+                },
+                "duration": "PT4H45M",
+                "id": "2",
+                "numberOfStops": 0,
+                "blacklistedInEU": false
+              }
+            ]
+          }
+        ],
+        "price": {
+          "currency": "EUR",
+          "total": "748.58",
+          "base": "698.00",
+          "fees": [
+            {
+              "amount": "0.00",
+              "type": "SUPPLIER"
+            },
+            {
+              "amount": "0.00",
+              "type": "TICKETING"
+            }
+          ],
+          "grandTotal": "748.58",
+          "additionalServices": [
+            {
+              "amount": "55.00",
+              "type": "CHECKED_BAGS"
+            }
+          ]
+        },
+        "pricingOptions": {
+          "fareType": [
+            "PUBLISHED"
+          ],
+          "includedCheckedBagsOnly": true
+        },
+        "validatingAirlineCodes": [
+          "HR"
+        ],
+        "travelerPricings": [
+          {
+            "travelerId": "1",
+            "fareOption": "STANDARD",
+            "travelerType": "ADULT",
+            "price": {
+              "currency": "EUR",
+              "total": "748.58",
+              "base": "698.00"
+            },
+            "fareDetailsBySegment": [
+              {
+                "segmentId": "1",
+                "cabin": "ECONOMY",
+                "fareBasis": "ULXN0MCI",
+                "brandedFare": "SL",
+                "class": "U",
+                "includedCheckedBags": {
+                  "quantity": 1
+                }
+              },
+              {
+                "segmentId": "2",
+                "cabin": "ECONOMY",
+                "fareBasis": "ULXN0MCI",
+                "brandedFare": "SL",
+                "class": "U",
+                "includedCheckedBags": {
+                  "quantity": 1
+                }
+              }
+            ]
+          }
+        ],
+        "fareRules": {
+          "rules": [
+            {
+              "category": "EXCHANGE",
+              "maxPenaltyAmount": "163.00"
+            },
+            {
+              "category": "REFUND",
+              "notApplicable": true
+            },
+            {
+              "category": "REVALIDATION",
+              "notApplicable": true
+            }
+          ]
+        }
+      },
+      {
+        "type": "flight-offer",
+        "id": "2",
+        "source": "GDS",
+        "instantTicketingRequired": false,
+        "nonHomogeneous": false,
+        "oneWay": false,
+        "lastTicketingDate": "2021-01-17",
+        "numberOfBookableSeats": 7,
+        "itineraries": [
+          {
+            "duration": "PT21H35M",
+            "segments": [
+              {
+                "departure": {
+                  "iataCode": "YYZ",
+                  "terminal": "3",
+                  "at": "2021-08-09T09:15:00"
+                },
+                "arrival": {
+                  "iataCode": "MEX",
+                  "terminal": "2",
+                  "at": "2021-08-09T14:00:00"
+                },
+                "carrierCode": "AM",
+                "number": "693",
+                "aircraft": {
+                  "code": "7S8"
+                },
+                "operating": {
+                  "carrierCode": "AM"
+                },
+                "duration": "PT5H45M",
+                "id": "7",
+                "numberOfStops": 0,
+                "blacklistedInEU": false
+              },
+              {
+                "departure": {
+                  "iataCode": "MEX",
+                  "terminal": "2",
+                  "at": "2021-08-10T01:15:00"
+                },
+                "arrival": {
+                  "iataCode": "BOG",
+                  "terminal": "1",
+                  "at": "2021-08-10T05:50:00"
+                },
+                "carrierCode": "AM",
+                "number": "717",
+                "aircraft": {
+                  "code": "7S8"
+                },
+                "operating": {
+                  "carrierCode": "AM"
+                },
+                "duration": "PT4H35M",
+                "id": "8",
+                "numberOfStops": 0,
+                "blacklistedInEU": false
+              }
+            ]
+          }
+        ],
+        "price": {
+          "currency": "EUR",
+          "total": "748.58",
+          "base": "698.00",
+          "fees": [
+            {
+              "amount": "0.00",
+              "type": "SUPPLIER"
+            },
+            {
+              "amount": "0.00",
+              "type": "TICKETING"
+            }
+          ],
+          "grandTotal": "748.58",
+          "additionalServices": [
+            {
+              "amount": "55.00",
+              "type": "CHECKED_BAGS"
+            }
+          ]
+        },
+        "pricingOptions": {
+          "fareType": [
+            "PUBLISHED"
+          ],
+          "includedCheckedBagsOnly": true
+        },
+        "validatingAirlineCodes": [
+          "HR"
+        ],
+        "travelerPricings": [
+          {
+            "travelerId": "1",
+            "fareOption": "STANDARD",
+            "travelerType": "ADULT",
+            "price": {
+              "currency": "EUR",
+              "total": "748.58",
+              "base": "698.00"
+            },
+            "fareDetailsBySegment": [
+              {
+                "segmentId": "7",
+                "cabin": "ECONOMY",
+                "fareBasis": "ULXN0MCI",
+                "brandedFare": "SL",
+                "class": "U",
+                "includedCheckedBags": {
+                  "quantity": 1
+                }
+              },
+              {
+                "segmentId": "8",
+                "cabin": "ECONOMY",
+                "fareBasis": "ULXN0MCI",
+                "brandedFare": "SL",
+                "class": "U",
+                "includedCheckedBags": {
+                  "quantity": 1
+                }
+              }
+            ]
+          }
+        ],
+        "fareRules": {
+          "rules": [
+            {
+              "category": "EXCHANGE",
+              "maxPenaltyAmount": "163.00"
+            },
+            {
+              "category": "REFUND",
+              "notApplicable": true
+            },
+            {
+              "category": "REVALIDATION",
+              "notApplicable": true
+            }
+          ]
+        }
+      },
+      {
+        "type": "flight-offer",
+        "id": "3",
+        "source": "GDS",
+        "instantTicketingRequired": false,
+        "nonHomogeneous": false,
+        "oneWay": false,
+        "lastTicketingDate": "2021-01-17",
+        "numberOfBookableSeats": 7,
+        "itineraries": [
+          {
+            "duration": "PT30H5M",
+            "segments": [
+              {
+                "departure": {
+                  "iataCode": "YYZ",
+                  "terminal": "3",
+                  "at": "2021-08-09T09:15:00"
+                },
+                "arrival": {
+                  "iataCode": "MEX",
+                  "terminal": "2",
+                  "at": "2021-08-09T14:00:00"
+                },
+                "carrierCode": "AM",
+                "number": "693",
+                "aircraft": {
+                  "code": "7S8"
+                },
+                "operating": {
+                  "carrierCode": "AM"
+                },
+                "duration": "PT5H45M",
+                "id": "3",
+                "numberOfStops": 0,
+                "blacklistedInEU": false
+              },
+              {
+                "departure": {
+                  "iataCode": "MEX",
+                  "terminal": "2",
+                  "at": "2021-08-10T09:50:00"
+                },
+                "arrival": {
+                  "iataCode": "BOG",
+                  "terminal": "1",
+                  "at": "2021-08-10T14:20:00"
+                },
+                "carrierCode": "AM",
+                "number": "761",
+                "aircraft": {
+                  "code": "788"
+                },
+                "operating": {
+                  "carrierCode": "AM"
+                },
+                "duration": "PT4H30M",
+                "id": "4",
+                "numberOfStops": 0,
+                "blacklistedInEU": false
+              }
+            ]
+          }
+        ],
+        "price": {
+          "currency": "EUR",
+          "total": "748.58",
+          "base": "698.00",
+          "fees": [
+            {
+              "amount": "0.00",
+              "type": "SUPPLIER"
+            },
+            {
+              "amount": "0.00",
+              "type": "TICKETING"
+            }
+          ],
+          "grandTotal": "748.58",
+          "additionalServices": [
+            {
+              "amount": "55.00",
+              "type": "CHECKED_BAGS"
+            }
+          ]
+        },
+        "pricingOptions": {
+          "fareType": [
+            "PUBLISHED"
+          ],
+          "includedCheckedBagsOnly": true
+        },
+        "validatingAirlineCodes": [
+          "HR"
+        ],
+        "travelerPricings": [
+          {
+            "travelerId": "1",
+            "fareOption": "STANDARD",
+            "travelerType": "ADULT",
+            "price": {
+              "currency": "EUR",
+              "total": "748.58",
+              "base": "698.00"
+            },
+            "fareDetailsBySegment": [
+              {
+                "segmentId": "3",
+                "cabin": "ECONOMY",
+                "fareBasis": "ULXN0MCI",
+                "brandedFare": "SL",
+                "class": "U",
+                "includedCheckedBags": {
+                  "quantity": 1
+                }
+              },
+              {
+                "segmentId": "4",
+                "cabin": "ECONOMY",
+                "fareBasis": "ULXN0MCI",
+                "brandedFare": "SL",
+                "class": "U",
+                "includedCheckedBags": {
+                  "quantity": 1
+                }
+              }
+            ]
+          }
+        ],
+        "fareRules": {
+          "rules": [
+            {
+              "category": "EXCHANGE",
+              "maxPenaltyAmount": "163.00"
+            },
+            {
+              "category": "REFUND",
+              "notApplicable": true
+            },
+            {
+              "category": "REVALIDATION",
+              "notApplicable": true
+            }
+          ]
+        }
+      },
+      {
+        "type": "flight-offer",
+        "id": "4",
+        "source": "GDS",
+        "instantTicketingRequired": false,
+        "nonHomogeneous": false,
+        "oneWay": false,
+        "lastTicketingDate": "2021-01-18",
+        "numberOfBookableSeats": 4,
+        "itineraries": [
+          {
+            "duration": "PT42H10M",
+            "segments": [
+              {
+                "departure": {
+                  "iataCode": "YYZ",
+                  "terminal": "1",
+                  "at": "2021-08-09T22:20:00"
+                },
+                "arrival": {
+                  "iataCode": "IST",
+                  "at": "2021-08-10T15:15:00"
+                },
+                "carrierCode": "TK",
+                "number": "18",
+                "aircraft": {
+                  "code": "77W"
+                },
+                "operating": {
+                  "carrierCode": "TK"
+                },
+                "duration": "PT9H55M",
+                "id": "5",
+                "numberOfStops": 0,
+                "blacklistedInEU": false
+              },
+              {
+                "departure": {
+                  "iataCode": "IST",
+                  "at": "2021-08-11T10:05:00"
+                },
+                "arrival": {
+                  "iataCode": "BOG",
+                  "at": "2021-08-11T15:30:00"
+                },
+                "carrierCode": "TK",
+                "number": "800",
+                "aircraft": {
+                  "code": "789"
+                },
+                "operating": {
+                  "carrierCode": "TK"
+                },
+                "duration": "PT13H25M",
+                "id": "6",
+                "numberOfStops": 0,
+                "blacklistedInEU": false
+              }
+            ]
+          }
+        ],
+        "price": {
+          "currency": "EUR",
+          "total": "2099.04",
+          "base": "1805.00",
+          "fees": [
+            {
+              "amount": "0.00",
+              "type": "SUPPLIER"
+            },
+            {
+              "amount": "0.00",
+              "type": "TICKETING"
+            }
+          ],
+          "grandTotal": "2099.04"
+        },
+        "pricingOptions": {
+          "fareType": [
+            "PUBLISHED"
+          ],
+          "includedCheckedBagsOnly": true
+        },
+        "validatingAirlineCodes": [
+          "TK"
+        ],
+        "travelerPricings": [
+          {
+            "travelerId": "1",
+            "fareOption": "STANDARD",
+            "travelerType": "ADULT",
+            "price": {
+              "currency": "EUR",
+              "total": "2099.04",
+              "base": "1805.00"
+            },
+            "fareDetailsBySegment": [
+              {
+                "segmentId": "5",
+                "cabin": "BUSINESS",
+                "fareBasis": "JY4BX",
+                "class": "J",
+                "includedCheckedBags": {
+                  "quantity": 2
+                }
+              },
+              {
+                "segmentId": "6",
+                "cabin": "ECONOMY",
+                "fareBasis": "ET3XEX",
+                "class": "E",
+                "includedCheckedBags": {
+                  "quantity": 2
+                }
+              }
+            ]
+          }
+        ],
+        "fareRules": {
+          "rules": [
+            {
+              "category": "EXCHANGE",
+              "maxPenaltyAmount": "0.00"
+            },
+            {
+              "category": "REFUND",
+              "maxPenaltyAmount": "326.00"
+            },
+            {
+              "category": "REVALIDATION",
+              "notApplicable": true
+            }
+          ]
+        }
+      }
+    ],
+    "dictionaries": {
+      "locations": {
+        "MEX": {
+          "cityCode": "MEX",
+          "countryCode": "MX"
+        },
+        "YYZ": {
+          "cityCode": "YTO",
+          "countryCode": "CA"
+        },
+        "BOG": {
+          "cityCode": "BOG",
+          "countryCode": "CO"
+        },
+        "IST": {
+          "cityCode": "IST",
+          "countryCode": "TR"
+        }
+      },
+      "aircraft": {
+        "788": "BOEING 787-8",
+        "789": "BOEING 787-9",
+        "77W": "BOEING 777-300ER",
+        "7S8": "BOEING 737-800 SCIMITAR WINGLETS"
+      },
+      "currencies": {
+        "EUR": "EURO"
+      },
+      "carriers": {
+        "TK": "TURKISH AIRLINES",
+        "AM": "AEROMEXICO"
+      }
+    }
+  }
+}

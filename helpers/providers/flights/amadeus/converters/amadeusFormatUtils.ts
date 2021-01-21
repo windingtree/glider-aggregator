@@ -1,7 +1,8 @@
+import { Gender, LocationType, OperatorType, PassengerType, PriceWithTax, Segment } from './types';
+ 
 const GliderError = require('../../../../error');
 
-
-const createSegment = (segment) => {
+const createSegment = (segment:any):Segment => {
   const { id, carrierCode: marketingCarrier, operating, number: flightNumber, departure, arrival } = segment;
   const { iataCode: originIataCode, at: departureTime } = departure;
   const { iataCode: destinationIataCode, at: arrivalTime } = arrival;
@@ -9,47 +10,32 @@ const createSegment = (segment) => {
   return {
     _id_: id,
     operator: {
-      operatorType: 'airline',
+      operatorType: OperatorType.airline,
       iataCode: operatingCarrier,
       iataCodeM: marketingCarrier,
       flightNumber: flightNumber,
     },
     origin: {
-      locationType: 'airport',
+      locationType: LocationType.airport,
       iataCode: originIataCode,
     },
     destination: {
-      locationType: 'airport',
+      locationType: LocationType.airport,
       iataCode: destinationIataCode,
     },
     departureTime: departureTime,
-    arrivalTime: arrivalTime,
-    Departure: {
-      AirportCode: originIataCode,
-      // Date: 2020-09-13,
-      // Time: 10:15,
-      // Terminal: {
-      //   Name:
-      // }
-    },
-    Arrival: {
-      AirportCode: destinationIataCode,
-      // Date: 2020-09-13,
-      // Time: 12:05,
-      // Terminal: {
-      //   Name:
-      // }
-    },
+    arrivalTime: arrivalTime
   };
 };
-const createPrice = (price, commission = 0) => {
+
+const createPrice = (price:any, commission = 0):PriceWithTax => {
   const { grandTotal, currency } = price;
   //TODO calculate commission
   //calculate offer price
   let tax = 0;
   if(price && price.fees)
   {
-    tax=price.fees.reduce((total, taxItem) => {
+    tax=price.fees.reduce((total:number, taxItem:any) => {
       return total + Number(taxItem.amount);
     }, 0);
   }
@@ -58,35 +44,34 @@ const createPrice = (price, commission = 0) => {
     currency: currency,
     public: grandTotal,
     commission: commission,
-    taxes: Number(tax).toFixed(2),
+    taxes: Number(tax),
   };
 };
-const convertGenderFromAmadeusToGlider = (gender) => {
-  if (gender === 'MALE') return 'Male';
-  else if (gender === 'FEMALE') return 'Female';
+
+
+const convertGenderFromAmadeusToGlider = (gender:Gender):string => {
+  if (gender === Gender.male) return 'Male';
+  else if (gender === Gender.female) return 'Female';
   else throw new GliderError('invalid gender:' + gender, 400);
-  // else return undefined;
 };
-const convertGenderFromGliderToAmadeus = (gender) => {
-  if (gender === 'MR') return 'MALE';
-  else if (gender === 'MRS') return 'FEMALE';
+const convertGenderFromGliderToAmadeus = (gender:string):Gender => {
+  if (gender === 'MR') return Gender.male;
+  else if (gender === 'MRS') return Gender.female;
   else throw new GliderError('invalid gender:' + gender, 400);
-  // else return undefined;
 };
-const convertPassengerTypeFromAmadeusToGlider = (type) => {
-  if (type === 'ADULT') return 'ADT';
-  else if (type === 'CHILD') return 'CHD';
-  else if (type === 'HELD_INFANT') return 'INF';
-  else if (type === 'SEATED_INFANT') return 'INF';
+const convertPassengerTypeFromAmadeusToGlider = (type:string):PassengerType => {
+  if (type === 'ADULT') return PassengerType.ADULT;
+  else if (type === 'CHILD') return PassengerType.CHILD;
+  else if (type === 'HELD_INFANT' || type === 'SEATED_INFANT') return PassengerType.INFANT;
   else throw new GliderError('invalid passenger type:' + type, 400);
 };
-const convertPassengerTypeFromGliderToAmadeus = (type) => {
-  if (type === 'ADT') return 'ADULT';
-  else if (type === 'CHD') return 'CHILD';
-  else if (type === 'INF') return 'HELD_INFANT';
+const convertPassengerTypeFromGliderToAmadeus = (type:PassengerType) => {
+  if (type === PassengerType.ADULT) return 'ADULT';
+  else if (type === PassengerType.CHILD) return 'CHILD';
+  else if (type === PassengerType.INFANT) return 'HELD_INFANT';
   else throw new GliderError('invalid passenger type:' + type, 400);
 };
-const createPassenger = (travelerPricing) => {
+const createPassenger = (travelerPricing:any) => {
   const { travelerId, travelerType } = travelerPricing;
   return {
     _id_: travelerId,

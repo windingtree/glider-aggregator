@@ -1,0 +1,12 @@
+{
+    "diff": true,
+    "extension": ["js"],
+    "package": "./package.json",
+    "reporter": "spec",
+    "slow": 75,
+    "timeout": 70000,
+    "ui": "bdd",
+    "spec": ["./helpers/**/*.test.js"],
+    "require":["./node_modules/dotenv/config"],
+    "recursive":true
+  }

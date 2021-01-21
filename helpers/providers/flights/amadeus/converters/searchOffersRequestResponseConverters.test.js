@@ -17,19 +17,18 @@ describe('flights/amadeus/requestResponseConverters', () => {
     });
 
 
-    it('test', () => {
-      const response = require('../../../../../test/mockresponses/flights/amadeus/amadeusSearchRS_2ADT1CHD_Return.json');
+    it('should not have any empty flight IDs in case of one way (WTR-741)', async () => {
+      const amadeusResponse = require('../../../../../test/mockresponses/flights/amadeus/amadeusSearchRS_1ADT_YYZBOG_Oneway.json');
+      const actualResponse = await processFlightSearchResponse(amadeusResponse.result.data);
+      const { offers } = actualResponse;
 
-      //iterate over all segments and load them into a map for later retrieval
-      let segmentsMap={};
-      response.result.data.map(flightOffer => {
-        flightOffer.itineraries.map(itinerary => {
-          itinerary.segments.map(segment => {
-            segmentsMap[segment.id]=segment;
-          });
+      offers.forEach(offer=>{
+        offer.pricePlansReferences.forEach(pricePlanReference=>{
+          const { _id_, flights } = pricePlanReference;
+          assert.isNotEmpty(_id_);
+          assert.isNotEmpty(flights, 'Flight ID is empty');
         });
       });
-      console.log(segmentsMap);
     });
 
   });

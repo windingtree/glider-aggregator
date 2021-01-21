@@ -2,7 +2,7 @@ const HotelProvider = require('../../hotelProvider');
 const { manager: hotelsManager } = require('../../../models/mongo/hotels');
 const GliderError = require('../../../error');
 const offer = require('../../../models/offer');
-const { createSearchRequest, processSearchResponse, createHotelBookRequest, processHotelBookResponse, createHotelBookingCancellation, processHotelBookingCancellation } = require('./requestResponseConverters');
+const converters = require('./requestResponseConverters');
 const { transform } = require('camaro');
 
 //search templates
@@ -43,11 +43,11 @@ class HotelProviderRevMax extends HotelProvider {
       throw new GliderError('No matching hotels', 404);
     }
     const guestCounts = getGuestCounts(guests);
-    let requestBody = createSearchRequest(hotelCodes, arrival, departure, guests);
+    let requestBody = converters.createSearchRequest(hotelCodes, arrival, departure, guests);
     let response = await revmaxclient.erevmaxHotelSearch(requestBody);
     await assertRevmaxErrors(response);
     let offersToStore = {};
-    let searchResults = await processSearchResponse(response, guestCounts, offersToStore);
+    let searchResults = await converters.processSearchResponse(response, guestCounts, offersToStore);
 
     context.offersToStore=offersToStore;
     return searchResults;
@@ -55,11 +55,11 @@ class HotelProviderRevMax extends HotelProvider {
 
   async createOrder (offer, passengers, card) {
     // Build the request
-    let otaRequestBody = createHotelBookRequest(offer, passengers, card);
+    let otaRequestBody = converters.createHotelBookRequest(offer, passengers, card);
 
     let response = await revmaxclient.erevmaxHotelBook(otaRequestBody);
     await assertRevmaxErrors(response);
-    let result = await processHotelBookResponse(response);
+    let result = await converters.processHotelBookResponse(response);
     //remove unnecessary properties
     delete result.success;
     delete result.errors;
@@ -70,11 +70,11 @@ class HotelProviderRevMax extends HotelProvider {
 
   async cancelOrder (order, offer, passengers, card) {
     const { order: { response, reservationNumber } } = order;
-    let otaRequestBody = createHotelBookingCancellation(offer, passengers, card, reservationNumber);
+    let otaRequestBody = converters.createHotelBookingCancellation(offer, passengers, card, reservationNumber);
     console.log('Request', JSON.stringify(otaRequestBody));
     let revMaxResponse = await revmaxclient.erevmaxHotelBookingCancel(otaRequestBody);
     await assertRevmaxErrors(revMaxResponse);
-    let result = await processHotelBookingCancellation(revMaxResponse);
+    let result = await converters.processHotelBookingCancellation(revMaxResponse);
     let { response: resResponseType, reservationNumber: cancelledReservationId } = result;
     if (resResponseType !== 'Cancelled') {
       throw new GliderError(`Unrecognized resResponseType from provider - expected [Cancelled], received [${response}]`);

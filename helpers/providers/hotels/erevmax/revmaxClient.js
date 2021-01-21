@@ -1,5 +1,5 @@
 const { erevmax } = require('../../../../config');
-const { webserviceDefinition } = require('../../../webservice/webserviceClient');
+const { createWebserviceDefinition } = require('../../../webservice/webserviceClient');
 const WebserviceClient = require('../../../webservice/webserviceClient').WebserviceClient;
 
 const WEBSERVICES = {
@@ -9,9 +9,9 @@ const WEBSERVICES = {
 };
 
 const WEBSERVICES_CONFIG = [
-  webserviceDefinition(WEBSERVICES.HOTEL_AVAILABILITY, erevmax.availabilityUrl),
-  webserviceDefinition(WEBSERVICES.HOTEL_BOOK, erevmax.reservationUrl),
-  webserviceDefinition(WEBSERVICES.HOTEL_CANCEL, erevmax.cancellationUrl),
+  createWebserviceDefinition(WEBSERVICES.HOTEL_AVAILABILITY, erevmax.availabilityUrl),
+  createWebserviceDefinition(WEBSERVICES.HOTEL_BOOK, erevmax.reservationUrl),
+  createWebserviceDefinition(WEBSERVICES.HOTEL_CANCEL, erevmax.cancellationUrl),
 ];
 
 let wbsClient;

@@ -1,5 +1,5 @@
 module.exports = {
-  'extends': 'eslint:recommended',
+  'parser': '@typescript-eslint/parser',
   'env': {
     'es6': true,
     'es2020': true,
@@ -7,6 +7,13 @@ module.exports = {
     'mocha': true,
     'jest': true
   },
+  'plugins': [
+    '@typescript-eslint'
+  ],
+  'extends': [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended'
+  ],
   'globals': {
     'artifacts': false,
     'contract': false,

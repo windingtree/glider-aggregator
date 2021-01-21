@@ -1,5 +1,5 @@
-const { createSearchRequest, processSearchResponse } = require('./resolvers/searchHotelsRequestResponseConverters');
-const { processOrderResponse, createOrderRequest } = require('./resolvers/orderCreateRequestResponseConverters');
+const converters = require('./converters/');
+
 const { convertPolygonToCircle } = require('./enclosingCircle');
 
 const HotelProvider = require('../../hotelProvider');
@@ -29,12 +29,12 @@ class HotelProviderAmadeus extends HotelProvider {
 
   async _searchHotel (context, location, departure, arrival, guests) {
     //Build the request
-    const request = createSearchRequest(location, departure, arrival, guests);
+    const request = converters.createSearchRequest(location, departure, arrival, guests);
     //Make a call to API endpoint
     let response = await amadeusClient.hotelSearch(request);
     assertAmadeusFault(response);
     //process response
-    let searchResults = processSearchResponse(response);
+    let searchResults = converters.processSearchResponse(response);
     let offersToStore ={};
     let guestCounts = getGuestCounts(guests);
     Object.keys(searchResults.offers).forEach(offerId => {
@@ -59,10 +59,10 @@ class HotelProviderAmadeus extends HotelProvider {
   }
 
   async createOrder (offer, passengers, card) {
-    let orderRequest = createOrderRequest(offer, passengers, card);
+    let orderRequest = converters.createOrderRequest(offer, passengers, card);
     let response = await amadeusClient.hotelBook(orderRequest);
     assertAmadeusFault(response);
-    return processOrderResponse(response);
+    return converters.processOrderResponse(response);
   }
 
   getProviderID () {
