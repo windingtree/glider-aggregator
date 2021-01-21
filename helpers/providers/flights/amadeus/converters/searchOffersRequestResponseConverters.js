@@ -218,7 +218,7 @@ const processFlightSearchResponse = async (response) => {
         currentPricePlan = await translateAmenities(_fareSegmentDetail, validatingCarrierCode);
         offerPricePlans.push(currentPricePlan);
         let pricePlanReference = createPricePlansReference(currentPricePlan._id_);
-        pricePlanReference.flights.push(itineraryId);
+        // pricePlanReference.flights.push(itineraryId);
         currentOffer.pricePlansReferences.push(pricePlanReference);
       }
 

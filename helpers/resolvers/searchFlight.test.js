@@ -5,6 +5,7 @@ require('chai').should();
 const providerFactory = require('../providers/providerFactory');
 const amadeusClient = require('../amadeus/amadeusUtils');
 const ndcClientAC = require('../providers/flights/ac/ndcClientAC');
+const { logRQRS } = require('../log/logRQ');
 
 describe('Resolvers/searchFlight', async () => {
 
@@ -76,6 +77,7 @@ describe('Resolvers/searchFlight', async () => {
 
       //search
       let actualResults = await searchFlight(searchCriteria);
+      logRQRS(actualResults, 'actual results');
       assertSearchResults(searchCriteria, actualResults, flightSearchResponse);
     });
   });
@@ -112,7 +114,7 @@ const assertSearchResults = (searchCriteria, searchResults) => {
       //offer flights(itineraries) should not be empty
       flights.should.have.length.above(0);
       //there should be no duplicated itinIDs
-      // checkIfDuplicateExistsInArray(flights).should.be.false;
+      checkIfDuplicateExistsInArray(flights).should.be.false;
 
       //check if flights actually exist and have at least 1 segment
       flights.forEach(flightId => {

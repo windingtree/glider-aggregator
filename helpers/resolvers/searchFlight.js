@@ -3,7 +3,6 @@ const providerFactory = require('../providers/providerFactory');
 const {
   reduceToObjectByKey,
   roundCommissionDecimals,
-  mergeHourAndDate,
   useDictionary,
   reduceObjectToProperty,
   deepMerge,
@@ -22,27 +21,25 @@ const { logRQRS } = require('../log/logRQ');
  * '2 checked bags free' -> checkedBaggages.quantity=2
  * @param searchResults
  */
-const updateCheckedBaggageQuantities =  (searchResults) => {
+const updateCheckedBaggageQuantities = (searchResults) => {
   for (const plan in searchResults.pricePlans) {
-
-    if (!searchResults.pricePlans[plan].checkedBaggages &&
-      searchResults.pricePlans[plan].amenities) {
-
-      if (searchResults.pricePlans[plan].amenities.includes('Checked bags for a fee')) {
-        searchResults.pricePlans[plan].checkedBaggages = {
+    const pricePlan = searchResults.pricePlans[plan];
+    if (!pricePlan.checkedBaggages && pricePlan.amenities) {
+      if (pricePlan.amenities.includes('Checked bags for a fee')) {
+        pricePlan.checkedBaggages = {
           quantity: 0,
         };
-      } else if (searchResults.pricePlans[plan].amenities.includes('1st checked bag free')) {
-        searchResults.pricePlans[plan].checkedBaggages = {
+      } else if (pricePlan.amenities.includes('1st checked bag free')) {
+        pricePlan.checkedBaggages = {
           quantity: 1,
         };
       } else if (
-        searchResults.pricePlans[plan].amenities.includes('2 checked bags free')) {
-        searchResults.pricePlans[plan].checkedBaggages = {
+        pricePlan.amenities.includes('2 checked bags free')) {
+        pricePlan.checkedBaggages = {
           quantity: 2,
         };
       } else {
-        searchResults.pricePlans[plan].checkedBaggages = {
+        pricePlan.checkedBaggages = {
           quantity: 0,
         };
       }
@@ -54,7 +51,7 @@ const updateCheckedBaggageQuantities =  (searchResults) => {
  * Add offer expiry date to every offer (if it does not exist)
  * @param searchResults
  */
-const updateOfferExpiryDate =  (searchResults) => {
+const updateOfferExpiryDate = (searchResults) => {
   let expirationDate = new Date(Date.now() + 60 * 30 * 1000).toISOString();// now + 30 min
   for (let offerId in searchResults.offers) {
     if (searchResults.offers[offerId].expiration === '') {
@@ -64,41 +61,95 @@ const updateOfferExpiryDate =  (searchResults) => {
     if (!searchResults.offers[offerId].expiration.match(/Z$/)) {
       searchResults.offers[offerId].expiration = searchResults.offers[offerId].expiration + 'Z';
     }
-  } ;
+  }
+  ;
+};
+
+/**
+ * Build mapped passengers by types and add unique IDs to every passenger
+ *  FROM:[{  "type": "ADT",  "count": 2}]
+ *  TO: {"ADT": ["4AD2D3BB","0D15033F"]}
+ * @param passengers
+ * @returns {*}
+ */
+const addPassengerIdentifiersAndConvertToMap = (passengers) => {
+  return passengers.reduce(
+    (a, v) => {
+      if (!v.count) {
+        v.count = 1;
+      }
+      if (!a[v.type]) {
+        a[v.type] = [];
+      }
+      for (let i = 0; i < v.count; i++) {
+        a[v.type].push(uuidv4().split('-')[0].toUpperCase());
+      }
+      return a;
+    },
+    {},
+  );
+};
+
+//convert {"ADT":["X","934A5B09"],"CHD":["1772C7D1"]};
+//to  [{ type: 'ADT', id: 'X' },{ type: 'ADT', id: 'Y' },{ type: 'CHD', id: 'Z' }]
+const flattenPassengerTypesMap = (paxTypesMap) => {
+  let result = [];
+  for (const [passengerType, passengerIds] of Object.entries(paxTypesMap)) {
+    let allPaxIdentifiersOfType = passengerIds.map(paxId => {
+      return { type: passengerType, id: paxId };
+    });
+    result.push(...allPaxIdentifiersOfType);
+  }
+  return result;
 };
 
 
-const transformResponse = async (
-  { provider, response: searchResults }, passengersIds,
-) => {
-/*
-  if (provider !== 'AMADEUS') {
-    searchResults.itineraries.segments = mergeHourAndDate(searchResults.itineraries.segments);
-  }
-*/
-
-  searchResults.itineraries.segments = reduceToObjectByKey(searchResults.itineraries.segments);
-
-  // Walk through the flight list
-  const combinations = {};
-  searchResults.itineraries.combinations.forEach(flight => {
-    combinations[flight._id_] = flight._items_.split(' ');
-  });
-  searchResults.itineraries.combinations = combinations;
-
-  const mappedPassengers = {};
-  const mappedPassengersReverse = {};
-  // Create the offers
+/**
+ * Translate passenger identifiers received from provider (AirCanada, Amadeus...) to Glider Identifiers
+ * (which will be returned to the client and used in the subsequent calls, e.g. order creation)
+ * @param searchResults
+ * @param passengersIds
+ */
+const translatePassengersFromProviderIDtoGliderID = (searchResults, passengerIDMapGliderToProvider, passengerIDMapProviderToGlider) => {
+  // replace passengerIDs in offers
   for (const offer of Object.values(searchResults.offers)) {
-    // Add offer items
-    offer.offerItems = reduceToObjectByKey(offer.offerItems);
-    offer.offerItems = reduceObjectToProperty(offer.offerItems, '_value_');
-
-    let flattenedPassengerIds = flattenPassengerTypesMap(passengersIds);
     for (const item in offer.offerItems) {
+      //convert (translate) provider passengerIDs to glider passengerIDs(from search criteria)
       const refs = offer
         .offerItems[item]
         .passengerReferences
+        .split(' ')
+        .map(r => {
+          if (!passengerIDMapProviderToGlider[r])
+            throw new GliderError(`Cannot map passenger from search results to request, passengerID:${r}`);
+          return passengerIDMapProviderToGlider[r];
+        });
+      offer.offerItems[item].passengerReferences = refs.join(' ');
+    }
+  }
+
+  //also replace it in searchResults.passengers map
+  searchResults.passengers = reduceToObjectByKey(
+    searchResults.passengers.map(p => ({
+      '_id_': passengerIDMapProviderToGlider[p._id_],
+      type: p.type,
+    })),
+  );
+};
+
+
+const buildPassengersMap = (searchResults, passengersIds) => {
+
+  const passengerIDMapGliderToProvider = {};
+  const passengerIDMapProviderToGlider = {};
+  for (const offer of Object.values(searchResults.offers)) {
+    //FROM:  {"ADT": ["A875531E","509386B9"]}
+    //TO:  [{"type": "ADT","id": "A875531E"},{"type": "ADT","id": "509386B9"}]
+    let flattenedPassengerIds = flattenPassengerTypesMap(passengersIds);
+    for (const item in offer.offerItems) {
+      //convert (translate) provider passengerIDs to glider passengerIDs(from search criteria)
+      console.log(`item:${item}, passengerReferences:${offer.offerItems[item].passengerReferences}`);
+      offer.offerItems[item].passengerReferences
         .split(' ')
         .map(r => {
           for (const p in searchResults.passengers) {
@@ -115,15 +166,34 @@ const transformResponse = async (
               }
               if (!mappedPassenger)
                 throw new GliderError(`Cannot map passenger from search results to request, _id_:${passenger._id_}, type:${passenger.type}`);
-              mappedPassengers[mappedPassenger.id] = r;
-              mappedPassengersReverse[r] = mappedPassenger.id;
+              passengerIDMapGliderToProvider[mappedPassenger.id] = r;
+              passengerIDMapProviderToGlider[r] = mappedPassenger.id;
               return mappedPassenger.id;
             }
           }
         });
-      offer.offerItems[item].passengerReferences = refs.join(' ');
     }
+  }
+  return { passengerIDMapGliderToProvider, passengerIDMapProviderToGlider };
+};
 
+const flattenOfferItems = (searchResults) => {
+  for (const offer of Object.values(searchResults.offers)) {
+    // Add offer items
+    //FROM: {"_id_": "ZT6SUVZRGO-OfferItemID-3","_value_": {"passengerReferences": "I343C5MNA3-T1 H73FVE3VAS-T2"}    }
+    //TO: {"ZT6SUVZRGO-OfferItemID-3": {"passengerReferences": "I343C5MNA3-T1 H73FVE3VAS-T2"}}
+    offer.offerItems = reduceToObjectByKey(offer.offerItems);
+    offer.offerItems = reduceObjectToProperty(offer.offerItems, '_value_');
+  }
+};
+
+/**
+ * Convert offer.flightsReferences.priceClassRef (provider structure) into offer.pricePlansReferences(glider structure)
+ * @param searchResults
+ */
+const createPricePlansReferences = (searchResults) => {
+  // Create the offers
+  for (const offer of Object.values(searchResults.offers)) {
     // Add the price plan references
     if (offer.flightsReferences) {
       var pricePlansReferences = {};
@@ -150,15 +220,33 @@ const transformResponse = async (
       offer.pricePlansReferences = reduceToObjectByKey(offer.pricePlansReferences);
     }
   }
+};
+
+const transformResponse = async (
+  { provider, response: searchResults }, passengersIds,
+) => {
+  searchResults.itineraries.segments = reduceToObjectByKey(searchResults.itineraries.segments);
+
+  // Walk through the flight list and convert space separated list of segmentIDs into object itinerary(array of segmentIDs)
+  //FROM {"_id_": "DF0I9DABM8-OD5","_items_": "RQCPJYIUV0-SEG5 HLJ5FNLRFN-SEG6"}
+  //TO: {"DF0I9DABM8-OD5": ["RQCPJYIUV0-SEG5","HLJ5FNLRFN-SEG6"]  }
+  const combinations = {};
+  searchResults.itineraries.combinations.forEach(flight => {
+    combinations[flight._id_] = flight._items_.split(' ');
+  });
+  searchResults.itineraries.combinations = combinations;
+
+  flattenOfferItems(searchResults);
+  const {
+    passengerIDMapGliderToProvider,
+    passengerIDMapProviderToGlider,
+  } = buildPassengersMap(searchResults, passengersIds);
+
+  translatePassengersFromProviderIDtoGliderID(searchResults, passengerIDMapGliderToProvider, passengerIDMapProviderToGlider);
+  createPricePlansReferences(searchResults);
 
   searchResults.offers = roundCommissionDecimals(searchResults.offers);
   searchResults.offers = reduceToObjectByKey(searchResults.offers);
-  searchResults.passengers = reduceToObjectByKey(
-    searchResults.passengers.map(p => ({
-      '_id_': mappedPassengersReverse[p._id_],
-      type: p.type,
-    })),
-  );
 
   if (searchResults.checkedBaggages) {
     searchResults.checkedBaggages = reduceToObjectByKey(searchResults.checkedBaggages);
@@ -241,7 +329,7 @@ const transformResponse = async (
             segments,
             destinations,
             passengers: passengersIds,
-            mappedPassengers,
+            mappedPassengers: passengerIDMapGliderToProvider,
           };
         }
       }
@@ -250,7 +338,7 @@ const transformResponse = async (
       // AirFrance offers
       searchResults.offers[offerId].extraData = {
         passengers: passengersIds,
-        mappedPassengers,
+        mappedPassengers: passengerIDMapGliderToProvider,
       };
     }
     if (provider === 'AMADEUS') {
@@ -258,7 +346,7 @@ const transformResponse = async (
         rawOffer: searchResults.offers[offerId].extraData.rawOffer,
         segments: searchResults.offers[offerId].extraData.segments,
         passengers: passengersIds,
-        mappedPassengers,
+        mappedPassengers: passengerIDMapGliderToProvider,
       };
     }
   }
@@ -329,7 +417,6 @@ const transformResponse = async (
         aggregatedCombinationsKeys[updatedCombinations[origCombinationId]] = origCombinationId;
       }
     }
-    ;
     searchResults.itineraries.combinations = aggregatedCombinations;
   }
 
@@ -383,20 +470,6 @@ const transformResponse = async (
 };
 
 
-//convert {"ADT":["X","934A5B09"],"CHD":["1772C7D1"]};
-//to  [{ type: 'ADT', id: 'X' },{ type: 'ADT', id: 'Y' },{ type: 'CHD', id: 'Z' }]
-const flattenPassengerTypesMap = (paxTypesMap) => {
-  let result = [];
-  for (const [passengerType, passengerIds] of Object.entries(paxTypesMap)) {
-    let allPaxIdentifiersOfType = passengerIds.map(paxId => {
-      return { type: passengerType, id: paxId };
-    });
-    result.push(...allPaxIdentifiersOfType);
-  }
-  return result;
-};
-
-
 module.exports.searchFlight = async (body) => {
   logRQRS(body, 'search criteria');
   // Fetching of the flight providers
@@ -437,7 +510,7 @@ module.exports.searchFlight = async (body) => {
     responses.map(({ provider, error }) => {
       if (error) {
         return {
-          provider:provider,
+          provider: provider,
           error: error.message,
         };
       } else {
@@ -455,22 +528,12 @@ module.exports.searchFlight = async (body) => {
     // If at least one provider returned offers then put all errors to the warnings section
     searchResult.warnings = responseErrors;
   }
-  // Build mapped passengers by types
-  const passengersIds = body.passengers.reduce(
-    (a, v) => {
-      if (!v.count) {
-        v.count = 1;
-      }
-      if (!a[v.type]) {
-        a[v.type] = [];
-      }
-      for (let i = 0; i < v.count; i++) {
-        a[v.type].push(uuidv4().split('-')[0].toUpperCase());
-      }
-      return a;
-    },
-    {},
-  );
+
+
+  // Build mapped passengers by types and add unique IDs to every passenger
+  // FROM:{  "type": "ADT",  "count": 2}
+  // TO: {"ADT": ["4AD2D3BB","0D15033F"]}
+  const passengersIds = addPassengerIdentifiersAndConvertToMap(body.passengers);
   const transformedResponses = await Promise.all(
     responses
       .filter(r => !r.error)// Exclude errors
@@ -479,7 +542,7 @@ module.exports.searchFlight = async (body) => {
       ),
   );
 
-  let finalResult =  transformedResponses.reduce((a, v) => deepMerge(a, v), searchResult);
+  let finalResult = transformedResponses.reduce((a, v) => deepMerge(a, v), searchResult);
   logRQRS(finalResult, 'search response');
   return finalResult;
 };
