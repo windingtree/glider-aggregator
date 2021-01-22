@@ -23,7 +23,7 @@ const createOrderRequest = (offer, passengers, card) => {
   });
   let request = {
     'data': {
-      'offerId': offer.rateCode,
+      'offerId': offer.roomTypeCode,
       'guests': guests,
       'payments': [
         {
