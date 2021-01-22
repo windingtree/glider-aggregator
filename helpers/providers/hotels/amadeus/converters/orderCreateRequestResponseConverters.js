@@ -44,11 +44,11 @@ const createOrderRequest = (offer, passengers, card) => {
 //response
 const processOrderResponse = (response) => {
   const { data } = response;
-  const { id: _id, associatedRecords: _associatedRecords } = data[0];
+  const { id: _id, associatedRecords: _associatedRecords, providerConfirmationId } = data[0];
   let order = {
     orderId: _id,
     response: 'Committed',
-    reservationNumber: data.providerConfirmationId,
+    reservationNumber: providerConfirmationId,
     order: {
       price: undefined,
       passengers: [],
