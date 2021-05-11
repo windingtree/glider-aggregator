@@ -51,7 +51,7 @@
     "js-yaml": "^3.14.0",
     "json-rules-engine": "^5.0.4",
     "libphonenumber-js": "^1.8.5",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "mongoose": "5.9.24",
     "redis": "3.0.2",
     "uuid": "8.2.0",
