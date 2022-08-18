@@ -58,7 +58,7 @@
     "web3": "1.2.11"
   },
   "devDependencies": {
-    "@actions/core": "1.2.6",
+    "@actions/core": "1.9.1",
     "@actions/exec": "1.0.4",
     "@actions/github": "4.0.0",
     "@typescript-eslint/eslint-plugin": "^4.13.0",
