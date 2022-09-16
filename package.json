@@ -47,7 +47,7 @@
     "email-validator": "2.0.4",
     "ethers": "4.0.47",
     "express": "4.17.1",
-    "jose": "1.27.2",
+    "jose": "1.28.2",
     "js-yaml": "^3.14.0",
     "json-rules-engine": "^5.0.4",
     "libphonenumber-js": "^1.8.5",
